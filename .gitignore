@@ -2,8 +2,6 @@
 Debug/
 Release/
 .vs/
-**/Debug/
-**/Release/
 
 ##files
 **/*.i
