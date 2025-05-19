@@ -44,7 +44,7 @@ int main()
 	SocketUtils::Init();
 
 	ClientServiceRef service = make_shared<ClientService>(
-		NetAddress(L"127.0.0.1", 7777),
+		NetAddress(L"61.255.49.141", 7777),
 		make_shared<IocpCore>(),
 		[]() { return make_shared<ServerSession>(); }, // TODO : SessionManager 등
 		5);
