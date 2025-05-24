@@ -22,9 +22,9 @@ SendBufferRef ServerPacketHandler::Make_S_TEST(uint64 id, uint32 hp, uint16 atta
 {
 	Protocol::S_TEST pkt;
 
-	pkt.set_id(10);
-	pkt.set_hp(100);
-	pkt.set_attack(10);
+	pkt.set_id(id);
+	pkt.set_hp(hp);
+	pkt.set_attack(attack);
 
 	{
 		Protocol::BuffData* data = pkt.add_buffs();
