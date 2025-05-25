@@ -174,6 +174,7 @@ xcopy /y /d "$(SolutionDir)FMOD_API\studio\lib\x64\*.dll" "$(OutDir)"</Command>
     <ClInclude Include="DialogueComponent.h" />
     <ClInclude Include="DialogueManager.h" />
     <ClInclude Include="EndingScene.h" />
+    <ClInclude Include="Enum.pb.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="FallingProjectile.h" />
     <ClInclude Include="FinalBoss.h" />
@@ -198,6 +199,7 @@ xcopy /y /d "$(SolutionDir)FMOD_API\studio\lib\x64\*.dll" "$(OutDir)"</Command>
     <ClInclude Include="pch.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Projectile.h" />
+    <ClInclude Include="Protocol.pb.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceBase.h" />
     <ClInclude Include="ResourceManager.h" />
@@ -214,6 +216,7 @@ xcopy /y /d "$(SolutionDir)FMOD_API\studio\lib\x64\*.dll" "$(OutDir)"</Command>
     <ClInclude Include="SpriteActor.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="StaticUI.h" />
+    <ClInclude Include="Struct.pb.h" />
     <ClInclude Include="Structure.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Texture.h" />
@@ -261,6 +264,7 @@ xcopy /y /d "$(SolutionDir)FMOD_API\studio\lib\x64\*.dll" "$(OutDir)"</Command>
     <ClCompile Include="DialogueComponent.cpp" />
     <ClCompile Include="DialogueManager.cpp" />
     <ClCompile Include="EndingScene.cpp" />
+    <ClCompile Include="Enum.pb.cc" />
     <ClCompile Include="FallingProjectile.cpp" />
     <ClCompile Include="FinalBoss.cpp" />
     <ClCompile Include="Flipbook.cpp" />
@@ -286,6 +290,7 @@ xcopy /y /d "$(SolutionDir)FMOD_API\studio\lib\x64\*.dll" "$(OutDir)"</Command>
     </ClCompile>
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Projectile.cpp" />
+    <ClCompile Include="Protocol.pb.cc" />
     <ClCompile Include="ResourceBase.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -301,6 +306,7 @@ xcopy /y /d "$(SolutionDir)FMOD_API\studio\lib\x64\*.dll" "$(OutDir)"</Command>
     <ClCompile Include="SpriteActor.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="StaticUI.cpp" />
+    <ClCompile Include="Struct.pb.cc" />
     <ClCompile Include="Structure.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Tilemap.cpp" />

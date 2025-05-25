@@ -13,6 +13,13 @@ XCOPY /Y Struct.pb.cc "../../../Server"
 XCOPY /Y Protocol.pb.h "../../../Server"
 XCOPY /Y Protocol.pb.cc "../../../Server"
 
+XCOPY /Y Enum.pb.h "../../../B1A2_project1"
+XCOPY /Y Enum.pb.cc "../../../B1A2_project1"
+XCOPY /Y Struct.pb.h "../../../B1A2_project1"
+XCOPY /Y Struct.pb.cc "../../../B1A2_project1"
+XCOPY /Y Protocol.pb.h "../../../B1A2_project1"
+XCOPY /Y Protocol.pb.cc "../../../B1A2_project1"
+
 XCOPY /Y Enum.pb.h "../../../DummyClient"
 XCOPY /Y Enum.pb.cc "../../../DummyClient"
 XCOPY /Y Struct.pb.h "../../../DummyClient"
