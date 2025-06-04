@@ -163,6 +163,7 @@ xcopy /y /d "$(SolutionDir)FMOD_API\studio\lib\x64\*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Button.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="CameraActor.h" />
+    <ClInclude Include="ClientPacketHandler.h" />
     <ClInclude Include="CloseAtkMonster.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="CollisionManager.h" />
@@ -196,6 +197,7 @@ xcopy /y /d "$(SolutionDir)FMOD_API\studio\lib\x64\*.dll" "$(OutDir)"</Command>
     <ClInclude Include="LockedDoorAndKey.h" />
     <ClInclude Include="LongAtkMonster.h" />
     <ClInclude Include="Monster.h" />
+    <ClInclude Include="NetworkManager.h" />
     <ClInclude Include="Panel.h" />
     <ClInclude Include="Paper.h" />
     <ClInclude Include="pch.h" />
@@ -207,6 +209,7 @@ xcopy /y /d "$(SolutionDir)FMOD_API\studio\lib\x64\*.dll" "$(OutDir)"</Command>
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="ServerSession.h" />
     <ClInclude Include="SettingPanel.h" />
     <ClInclude Include="SettingScene.h" />
     <ClInclude Include="Slashwave.h" />
@@ -254,6 +257,7 @@ xcopy /y /d "$(SolutionDir)FMOD_API\studio\lib\x64\*.dll" "$(OutDir)"</Command>
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="CameraActor.cpp" />
+    <ClCompile Include="ClientPacketHandler.cpp" />
     <ClCompile Include="CloseAtkMonster.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
@@ -286,6 +290,7 @@ xcopy /y /d "$(SolutionDir)FMOD_API\studio\lib\x64\*.dll" "$(OutDir)"</Command>
     <ClCompile Include="LockedDoorAndKey.cpp" />
     <ClCompile Include="LongAtkMonster.cpp" />
     <ClCompile Include="Monster.cpp" />
+    <ClCompile Include="NetworkManager.cpp" />
     <ClCompile Include="Panel.cpp" />
     <ClCompile Include="Paper.cpp" />
     <ClCompile Include="pch.cpp">
@@ -301,6 +306,7 @@ xcopy /y /d "$(SolutionDir)FMOD_API\studio\lib\x64\*.dll" "$(OutDir)"</Command>
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="ServerSession.cpp" />
     <ClCompile Include="SettingPanel.cpp" />
     <ClCompile Include="SettingScene.cpp" />
     <ClCompile Include="Slashwave.cpp" />

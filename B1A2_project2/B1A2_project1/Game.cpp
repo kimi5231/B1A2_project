@@ -8,6 +8,7 @@
 #include "ValueManager.h"
 #include "CollisionManager.h"
 #include "DialogueManager.h"
+#include "NetworkManager.h"
 
 Game::Game()
 {
@@ -48,6 +49,7 @@ void Game::Init(HWND hwnd)
 	GET_SINGLE(ValueManager)->Init(hwnd);
 	GET_SINGLE(CollisionManager)->Init();
 	GET_SINGLE(DialogueManager)->Init();
+	GET_SINGLE(NetworkManager)->Init();
 
 	GET_SINGLE(SceneManager)->ChangeScene(SceneType::DevScene);
 }
@@ -59,6 +61,7 @@ void Game::Update()
 	GET_SINGLE(SceneManager)->Update();
 	GET_SINGLE(CollisionManager)->Update();
 	GET_SINGLE(DialogueManager)->Update();
+	GET_SINGLE(NetworkManager)->Update();
 }
 
 void Game::Render()

@@ -1,5 +1,8 @@
 #pragma once
 
+// 제일 앞에 둬야 함
+#include "CorePch.h"
+
 #include <windows.h>
 #include <vector>
 #include <list>
@@ -21,6 +24,8 @@
 #include "Utils.h"
 
 // Server
+#include "ClientPacketHandler.h"
+
 #include "Protocol.pb.h"
 #include "Enum.pb.h"
 #include "Struct.pb.h"
