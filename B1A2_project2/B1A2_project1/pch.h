@@ -20,7 +20,18 @@
 #include "Enums.h"
 #include "Utils.h"
 
-//using namespace std;
+// Server
+#include "Protocol.pb.h"
+#include "Enum.pb.h"
+#include "Struct.pb.h"
+
+#ifdef _DEBUG
+#pragma comment(lib, "ServerCore\\Debug\\ServerCore.lib")
+#pragma comment(lib, "Protobuf\\Debug\\libprotobufd.lib")
+#else
+#pragma comment(lib, "ServerCore\\Release\\ServerCore.lib")
+#pragma comment(lib, "Protobuf\\Release\\libprotobuf.lib")
+#endif
 
 // C++ 20
 #include <format>
