@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Enum.pb.h"
+
 enum class SceneType
 {
 	None,
@@ -58,14 +60,13 @@ enum COLLISION_LAYER_TYPE : uint8
 	CLT_NONE,		
 };
 
-// 플레이어 방향
-enum Dir
-{
-	DIR_LEFT,
-	DIR_RIGHT,
-	DIR_UP,
-	DIR_DOWN,
-};
+// Player Direction
+using Dir = Protocol::DIR_TYPE;
+
+#define DIR_LEFT	Dir::DIR_TYPE_LEFT
+#define DIR_RIGHT	Dir::DIR_TYPE_RIGHT
+#define DIR_UP		Dir::DIR_TYPE_UP
+#define DIR_DOWN	Dir::DIR_TYPE_DOWN
 
 // Sound
 enum class SoundType

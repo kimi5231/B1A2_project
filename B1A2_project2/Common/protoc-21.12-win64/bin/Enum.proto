@@ -1,14 +1,6 @@
 syntax = "proto3";
 package Protocol;
 
-enum PlayerType
-{
-	PLAYER_TYPE_NONE = 0;
-	PLAYER_TYPE_KNIGHT = 1;
-	PLAYER_TYPE_MAGE = 2;
-	PLAYER_TYPE_ARCHER = 3;
-}
-
 enum OBJECT_TYPE
 {
 	OBJECT_TYPE_NONE = 0;
@@ -25,8 +17,8 @@ enum OBJECT_STATE_TYPE
 
 enum DIR_TYPE
 {
-	DIR_TYPE_UP = 0;
-	DIR_TYPE_DOWN = 1;
-	DIR_TYPE_LEFT = 2;
-	DIR_TYPE_RIGHT = 3;
+	DIR_TYPE_LEFT = 0;
+	DIR_TYPE_RIGHT = 1;
+	DIR_TYPE_UP = 2;
+	DIR_TYPE_DOWN = 3;
 }

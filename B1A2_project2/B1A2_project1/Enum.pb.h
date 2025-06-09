@@ -47,33 +47,6 @@ PROTOBUF_NAMESPACE_OPEN
 PROTOBUF_NAMESPACE_CLOSE
 namespace Protocol {
 
-enum PlayerType : int {
-  PLAYER_TYPE_NONE = 0,
-  PLAYER_TYPE_KNIGHT = 1,
-  PLAYER_TYPE_MAGE = 2,
-  PLAYER_TYPE_ARCHER = 3,
-  PlayerType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
-  PlayerType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
-};
-bool PlayerType_IsValid(int value);
-constexpr PlayerType PlayerType_MIN = PLAYER_TYPE_NONE;
-constexpr PlayerType PlayerType_MAX = PLAYER_TYPE_ARCHER;
-constexpr int PlayerType_ARRAYSIZE = PlayerType_MAX + 1;
-
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* PlayerType_descriptor();
-template<typename T>
-inline const std::string& PlayerType_Name(T enum_t_value) {
-  static_assert(::std::is_same<T, PlayerType>::value ||
-    ::std::is_integral<T>::value,
-    "Incorrect type passed to function PlayerType_Name.");
-  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
-    PlayerType_descriptor(), enum_t_value);
-}
-inline bool PlayerType_Parse(
-    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, PlayerType* value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<PlayerType>(
-    PlayerType_descriptor(), name, value);
-}
 enum OBJECT_TYPE : int {
   OBJECT_TYPE_NONE = 0,
   OBJECT_TYPE_PLAYER = 1,
@@ -127,16 +100,16 @@ inline bool OBJECT_STATE_TYPE_Parse(
     OBJECT_STATE_TYPE_descriptor(), name, value);
 }
 enum DIR_TYPE : int {
-  DIR_TYPE_UP = 0,
-  DIR_TYPE_DOWN = 1,
-  DIR_TYPE_LEFT = 2,
-  DIR_TYPE_RIGHT = 3,
+  DIR_TYPE_LEFT = 0,
+  DIR_TYPE_RIGHT = 1,
+  DIR_TYPE_UP = 2,
+  DIR_TYPE_DOWN = 3,
   DIR_TYPE_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   DIR_TYPE_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
 bool DIR_TYPE_IsValid(int value);
-constexpr DIR_TYPE DIR_TYPE_MIN = DIR_TYPE_UP;
-constexpr DIR_TYPE DIR_TYPE_MAX = DIR_TYPE_RIGHT;
+constexpr DIR_TYPE DIR_TYPE_MIN = DIR_TYPE_LEFT;
+constexpr DIR_TYPE DIR_TYPE_MAX = DIR_TYPE_DOWN;
 constexpr int DIR_TYPE_ARRAYSIZE = DIR_TYPE_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* DIR_TYPE_descriptor();
@@ -175,11 +148,6 @@ inline bool DIR_TYPE_Parse(
 
 PROTOBUF_NAMESPACE_OPEN
 
-template <> struct is_proto_enum< ::Protocol::PlayerType> : ::std::true_type {};
-template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::PlayerType>() {
-  return ::Protocol::PlayerType_descriptor();
-}
 template <> struct is_proto_enum< ::Protocol::OBJECT_TYPE> : ::std::true_type {};
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::OBJECT_TYPE>() {
