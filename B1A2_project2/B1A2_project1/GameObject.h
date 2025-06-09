@@ -34,7 +34,7 @@ protected:
 	virtual void TickRoaming() {};
 	virtual void TickDash() {};
 	virtual void TickReturn() {};
-	virtual void TickReturnIdle() {};
+	virtual void TickRETURN_IDLE() {};
 	virtual void TickOn() {};
 	virtual void TickOn2() {};
 	virtual void TickReady() {};
@@ -56,7 +56,7 @@ public:
 
 protected:
 	Dir _dir = DIR_RIGHT;
-	ObjectState _state = ObjectState::Idle;
+	ObjectState _state = IDLE;
 
 	int32 _gravity = 1000;
 	float _ySpeed{};

@@ -82,7 +82,7 @@ void BrokenCopyMachine::TickIdle()
 	if (_sumTime >= _stat->attackCoolTime)
 	{
 		_sumTime = 0.f;
-		SetState(ObjectState::LongAttack);
+		SetState(LONG_ATTACK);
 	}
 }
 
@@ -101,7 +101,7 @@ void BrokenCopyMachine::TickLongAttack()
 	if (_currentProjectileCount == _stat->projectileCount)
 	{
 		_sumTime = 0.f;
-		SetState(ObjectState::Idle);
+		SetState(IDLE);
 		_currentProjectileCount = 0;
 	}
 }
@@ -115,7 +115,7 @@ void BrokenCopyMachine::TickHit()
 	if (_sumTime >= 0.5f)
 	{
 		_sumTime = 0.f;
-		SetState(ObjectState::Idle);
+		SetState(IDLE);
 	}
 }
 
@@ -153,19 +153,19 @@ void BrokenCopyMachine::UpdateAnimation()
 
 	switch (_state)
 	{
-	case ObjectState::Idle:
+	case IDLE:
 		SetFlipbook(_flipbookIdle[_dir]);
 		_collider->SetSize({ 40, 55 });
 		break;
-	case ObjectState::LongAttack:
+	case LONG_ATTACK:
 		SetFlipbook(_flipbookLongAttack[_dir]);
 		_collider->SetSize({ 44, 61 });
 		break;
-	case ObjectState::Hit:
+	case HIT:
 		SetFlipbook(_flipbookHit[_dir]);
 		_collider->SetSize({ 43, 59 });
 		break;
-	case ObjectState::Dead:
+	case DEAD:
 		SetFlipbook(_flipbookDead[_dir]);
 		_collider->SetSize({ 45, 75 });
 		break;
@@ -236,7 +236,7 @@ int32 BrokenCopyMachine::GetAttack()
 {
 	switch (_state)
 	{
-	case ObjectState::LongAttack:
+	case LONG_ATTACK:
 		return _stat->projectileAttack;
 		break;
 	}

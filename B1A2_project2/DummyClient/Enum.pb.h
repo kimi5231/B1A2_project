@@ -47,58 +47,6 @@ PROTOBUF_NAMESPACE_OPEN
 PROTOBUF_NAMESPACE_CLOSE
 namespace Protocol {
 
-enum OBJECT_TYPE : int {
-  OBJECT_TYPE_NONE = 0,
-  OBJECT_TYPE_PLAYER = 1,
-  OBJECT_TYPE_MONSTER = 2,
-  OBJECT_TYPE_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
-  OBJECT_TYPE_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
-};
-bool OBJECT_TYPE_IsValid(int value);
-constexpr OBJECT_TYPE OBJECT_TYPE_MIN = OBJECT_TYPE_NONE;
-constexpr OBJECT_TYPE OBJECT_TYPE_MAX = OBJECT_TYPE_MONSTER;
-constexpr int OBJECT_TYPE_ARRAYSIZE = OBJECT_TYPE_MAX + 1;
-
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* OBJECT_TYPE_descriptor();
-template<typename T>
-inline const std::string& OBJECT_TYPE_Name(T enum_t_value) {
-  static_assert(::std::is_same<T, OBJECT_TYPE>::value ||
-    ::std::is_integral<T>::value,
-    "Incorrect type passed to function OBJECT_TYPE_Name.");
-  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
-    OBJECT_TYPE_descriptor(), enum_t_value);
-}
-inline bool OBJECT_TYPE_Parse(
-    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, OBJECT_TYPE* value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<OBJECT_TYPE>(
-    OBJECT_TYPE_descriptor(), name, value);
-}
-enum OBJECT_STATE_TYPE : int {
-  OBJECT_STATE_TYPE_IDLE = 0,
-  OBJECT_STATE_TYPE_MOVE = 1,
-  OBJECT_STATE_TYPE_SKILL = 2,
-  OBJECT_STATE_TYPE_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
-  OBJECT_STATE_TYPE_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
-};
-bool OBJECT_STATE_TYPE_IsValid(int value);
-constexpr OBJECT_STATE_TYPE OBJECT_STATE_TYPE_MIN = OBJECT_STATE_TYPE_IDLE;
-constexpr OBJECT_STATE_TYPE OBJECT_STATE_TYPE_MAX = OBJECT_STATE_TYPE_SKILL;
-constexpr int OBJECT_STATE_TYPE_ARRAYSIZE = OBJECT_STATE_TYPE_MAX + 1;
-
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* OBJECT_STATE_TYPE_descriptor();
-template<typename T>
-inline const std::string& OBJECT_STATE_TYPE_Name(T enum_t_value) {
-  static_assert(::std::is_same<T, OBJECT_STATE_TYPE>::value ||
-    ::std::is_integral<T>::value,
-    "Incorrect type passed to function OBJECT_STATE_TYPE_Name.");
-  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
-    OBJECT_STATE_TYPE_descriptor(), enum_t_value);
-}
-inline bool OBJECT_STATE_TYPE_Parse(
-    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, OBJECT_STATE_TYPE* value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<OBJECT_STATE_TYPE>(
-    OBJECT_STATE_TYPE_descriptor(), name, value);
-}
 enum DIR_TYPE : int {
   DIR_TYPE_LEFT = 0,
   DIR_TYPE_RIGHT = 1,
@@ -126,6 +74,62 @@ inline bool DIR_TYPE_Parse(
   return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<DIR_TYPE>(
     DIR_TYPE_descriptor(), name, value);
 }
+enum OBJECT_STATE_TYPE : int {
+  OBJECT_STATE_TYPE_IDLE = 0,
+  OBJECT_STATE_TYPE_MOVE = 1,
+  OBJECT_STATE_TYPE_DUCK_DOWN = 2,
+  OBJECT_STATE_TYPE_DUCK_DOWN_MOVE = 3,
+  OBJECT_STATE_TYPE_JUMP = 4,
+  OBJECT_STATE_TYPE_CLOSE_ATTACK = 5,
+  OBJECT_STATE_TYPE_LONG_ATTACK = 6,
+  OBJECT_STATE_TYPE_LONG_ATTACK_LENGTH = 7,
+  OBJECT_STATE_TYPE_LONG_ATTACK_WIDTH = 8,
+  OBJECT_STATE_TYPE_THRUST = 9,
+  OBJECT_STATE_TYPE_BACK_STEP = 10,
+  OBJECT_STATE_TYPE_SLASH_WAVE = 11,
+  OBJECT_STATE_TYPE_SKILL_READY = 12,
+  OBJECT_STATE_TYPE_SKILL_WAITING = 13,
+  OBJECT_STATE_TYPE_SKILL_END = 14,
+  OBJECT_STATE_TYPE_HANG = 15,
+  OBJECT_STATE_TYPE_RELEASE = 16,
+  OBJECT_STATE_TYPE_HIT = 17,
+  OBJECT_STATE_TYPE_DEAD = 18,
+  OBJECT_STATE_TYPE_CHASE = 19,
+  OBJECT_STATE_TYPE_ROAMING = 20,
+  OBJECT_STATE_TYPE_DASH = 21,
+  OBJECT_STATE_TYPE_RETURN = 22,
+  OBJECT_STATE_TYPE_RETURN_IDLE = 23,
+  OBJECT_STATE_TYPE_PROJECTILE_FALL = 24,
+  OBJECT_STATE_TYPE_CRYSTAL_CREATION = 25,
+  OBJECT_STATE_TYPE_MONSTER_CREATION = 26,
+  OBJECT_STATE_TYPE_TELEPORT = 27,
+  OBJECT_STATE_TYPE_CUT_SEVERELY = 28,
+  OBJECT_STATE_TYPE_ON = 29,
+  OBJECT_STATE_TYPE_ON2 = 30,
+  OBJECT_STATE_TYPE_READY = 31,
+  OBJECT_STATE_TYPE_OFF = 32,
+  OBJECT_STATE_TYPE_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
+  OBJECT_STATE_TYPE_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
+};
+bool OBJECT_STATE_TYPE_IsValid(int value);
+constexpr OBJECT_STATE_TYPE OBJECT_STATE_TYPE_MIN = OBJECT_STATE_TYPE_IDLE;
+constexpr OBJECT_STATE_TYPE OBJECT_STATE_TYPE_MAX = OBJECT_STATE_TYPE_OFF;
+constexpr int OBJECT_STATE_TYPE_ARRAYSIZE = OBJECT_STATE_TYPE_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* OBJECT_STATE_TYPE_descriptor();
+template<typename T>
+inline const std::string& OBJECT_STATE_TYPE_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, OBJECT_STATE_TYPE>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function OBJECT_STATE_TYPE_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    OBJECT_STATE_TYPE_descriptor(), enum_t_value);
+}
+inline bool OBJECT_STATE_TYPE_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, OBJECT_STATE_TYPE* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<OBJECT_STATE_TYPE>(
+    OBJECT_STATE_TYPE_descriptor(), name, value);
+}
 // ===================================================================
 
 
@@ -148,20 +152,15 @@ inline bool DIR_TYPE_Parse(
 
 PROTOBUF_NAMESPACE_OPEN
 
-template <> struct is_proto_enum< ::Protocol::OBJECT_TYPE> : ::std::true_type {};
+template <> struct is_proto_enum< ::Protocol::DIR_TYPE> : ::std::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::OBJECT_TYPE>() {
-  return ::Protocol::OBJECT_TYPE_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::DIR_TYPE>() {
+  return ::Protocol::DIR_TYPE_descriptor();
 }
 template <> struct is_proto_enum< ::Protocol::OBJECT_STATE_TYPE> : ::std::true_type {};
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::OBJECT_STATE_TYPE>() {
   return ::Protocol::OBJECT_STATE_TYPE_descriptor();
-}
-template <> struct is_proto_enum< ::Protocol::DIR_TYPE> : ::std::true_type {};
-template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::DIR_TYPE>() {
-  return ::Protocol::DIR_TYPE_descriptor();
 }
 
 PROTOBUF_NAMESPACE_CLOSE

@@ -32,7 +32,7 @@ ZipLine::ZipLine()
 		_playerDetectCollider = collider;
 	}
 
-	SetState(ObjectState::Off);
+	SetState(OFF);
 }
 
 ZipLine::~ZipLine()
@@ -58,10 +58,10 @@ void ZipLine::UpdateAnimation()
 {
 	switch (_state)
 	{
-	case ObjectState::On:
+	case ON:
 		SetFlipbook(_flipbookZipLineOn);
 		break;
-	case ObjectState::Off:
+	case OFF:
 		SetFlipbook(_flipbookZipLineOff);
 		break;
 	}
@@ -79,13 +79,13 @@ void ZipLine::OnComponentBeginOverlap(Collider* collider, Collider* other)
 	{
 		if (_zipLineType == ZipLineType::ZipLine)
 		{
-			_state = ObjectState::On;
+			_state = ON;
 		}
 		else if (_zipLineType == ZipLineType::ZipLineWithButton)
 		{
-			if (_zipLineButtonAndDisplay->GetState() == ObjectState::On)
+			if (_zipLineButtonAndDisplay->GetState() == ON)
 			{
-				_state = ObjectState::On;
+				_state = ON;
 			}
 		}
 	}
@@ -103,13 +103,13 @@ void ZipLine::OnComponentEndOverlap(Collider* collider, Collider* other)
 	{
 		if (_zipLineType == ZipLineType::ZipLine)
 		{
-			_state = ObjectState::Off;
+			_state = OFF;
 		}
 		else if (_zipLineType == ZipLineType::ZipLineWithButton)
 		{
-			if (_zipLineButtonAndDisplay->GetState() == ObjectState::On)
+			if (_zipLineButtonAndDisplay->GetState() == ON)
 			{
-				_state = ObjectState::Off;
+				_state = OFF;
 			}
 		}
 	}
@@ -138,7 +138,7 @@ ZipLineButtonAndDisplay::ZipLineButtonAndDisplay()
 		AddComponent(collider);
 	}
 
-	SetState(ObjectState::Off);
+	SetState(OFF);
 }
 
 ZipLineButtonAndDisplay::~ZipLineButtonAndDisplay()
@@ -167,7 +167,7 @@ void ZipLineButtonAndDisplay::Render(HDC hdc)
 	
 	Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"ZipLineDisplay");
 
-	if (_state == ObjectState::On)
+	if (_state == ON)
 	{
 		::TransparentBlt(hdc,
 			((int32)_displayPos.x - texture->GetSize().x / 2) * winSizeAdjustmemt.x - cameraPosAdjustmemt.x,
@@ -201,10 +201,10 @@ void ZipLineButtonAndDisplay::UpdateAnimation()
 {
 	switch (_state)
 	{
-	case ObjectState::On:
+	case ON:
 		SetFlipbook(_flipbookButtonOn);
 		break;
-	case ObjectState::Off:
+	case OFF:
 		SetFlipbook(_flipbookButtonOff);
 		break;
 	}
@@ -222,7 +222,7 @@ void ZipLineButtonAndDisplay::OnComponentBeginOverlap(Collider* collider, Collid
 	{
 		if (b2->GetCollisionLayer() == CLT_PLAYER)
 		{
-			SetState(ObjectState::On);
+			SetState(ON);
 		}
 	}
 }

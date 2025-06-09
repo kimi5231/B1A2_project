@@ -153,7 +153,7 @@ void Player::Tick()
 		}
 	}
 
-	if (_state != ObjectState::CloseAttack && _state != ObjectState::LongAttack)
+	if (_state != CLOSE_ATTACK && _state != LONG_ATTACK)
 	{
 		if (_attackCollider)
 		{
@@ -162,7 +162,7 @@ void Player::Tick()
 			_attackCollider = nullptr;
 		}
 	}	
-	if (_state != ObjectState::SkillWaiting && _state != ObjectState::SkillEnd)
+	if (_state != SKILL_WAITING && _state != SKILL_END)
 	{
 		if (_skillCollider)
 		{
@@ -188,7 +188,7 @@ void Player::Tick()
 			AddComponent(collider);
 		}
 	}
-	if (_state == ObjectState::SkillWaiting || _state == ObjectState::SkillEnd)
+	if (_state == SKILL_WAITING || _state == SKILL_END)
 	{
 		if (_detectCollider)
 		{
@@ -201,7 +201,7 @@ void Player::Tick()
 	// Window
 	if (_window && _isInWindow)
 	{
-		if (_window->GetState() == ObjectState::On)
+		if (_window->GetState() == ON)
 		{
 			if (!_damagedByWindow)
 			{
@@ -211,7 +211,7 @@ void Player::Tick()
 				// 체력이 다 닳으면 사망
 				if (_playerStat->hp == 0)
 				{
-					SetState(ObjectState::Dead);
+					SetState(DEAD);
 					return;
 				}
 
@@ -229,13 +229,13 @@ void Player::Tick()
 	{
 		switch (_footHoldAndZipLineButton->GetState())
 		{
-		case ObjectState::Off:
+		case OFF:
 			if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_1))
-				_footHoldAndZipLineButton->SetState(ObjectState::On);
+				_footHoldAndZipLineButton->SetState(ON);
 			break;
-		case ObjectState::On:
+		case ON:
 			if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_2))
-				_footHoldAndZipLineButton->SetState(ObjectState::On2);
+				_footHoldAndZipLineButton->SetState(ON2);
 			break;
 		}
 	}
@@ -302,7 +302,7 @@ void Player::Tick()
 			}
 		}
 
-		if (_state != ObjectState::Hang)
+		if (_state != HANG)
 		{
 			_isAir = true;
 			_isGround = false;
@@ -330,12 +330,12 @@ void Player::TickIdle()
 	if (GET_SINGLE(InputManager)->GetButton(KeyType::A))
 	{
 		SetDir(DIR_LEFT);
-		SetState(ObjectState::Move);
+		SetState(MOVE);
 	}
 	else if (GET_SINGLE(InputManager)->GetButton(KeyType::D))
 	{
 		SetDir(DIR_RIGHT);
-		SetState(ObjectState::Move);
+		SetState(MOVE);
 	}
 	else if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::SpaceBar))
 	{
@@ -346,20 +346,20 @@ void Player::TickIdle()
 		_isGround = false;
 		_isAir = true;
 
-		SetState(ObjectState::Jump);
+		SetState(JUMP);
 
 		_ySpeed = -_playerStat->jumpSpeed;
 	}
 	else if (GET_SINGLE(InputManager)->GetButton(KeyType::S))
 	{
-		SetState(ObjectState::DuckDown);
+		SetState(DUCK_DOWN);
 	}
 	else if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::LeftMouse))
 	{
 		if (_isCloseAtk)
-			SetState(ObjectState::CloseAttack);
+			SetState(CLOSE_ATTACK);
 		else
-			SetState(ObjectState::LongAttack);
+			SetState(LONG_ATTACK);
 	}
 	else if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::RightMouse))
 	{
@@ -372,14 +372,14 @@ void Player::TickIdle()
 			_leftInputCount = 0;
 			_rightInputCount = 0;
 
-			SetState(ObjectState::SkillReady);
+			SetState(SKILL_READY);
 		}
 	}
 	else
 	{
 		_keyPressed = false;
 
-		if (_state == ObjectState::Idle)
+		if (_state == IDLE)
 			UpdateAnimation();
 	}
 }
@@ -406,7 +406,7 @@ void Player::TickMove()
 	}
 	else
 	{
-		SetState(ObjectState::Idle); // 이동 키를 뗐을 때 Idle 상태로 변경
+		SetState(IDLE); // 이동 키를 뗐을 때 Idle 상태로 변경
 	}
 
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::SpaceBar))
@@ -418,25 +418,25 @@ void Player::TickMove()
 		_isGround = false;
 		_isAir = true;
 
-		SetState(ObjectState::Jump);
+		SetState(JUMP);
 
 		_ySpeed = -_playerStat->jumpSpeed;
 	}
 	else if (GET_SINGLE(InputManager)->GetButton(KeyType::S))
 	{
-		SetState(ObjectState::DuckDownMove);
+		SetState(DUCK_DOWN_MOVE);
 	}
 	else if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::LeftMouse))	// Normal Attack
 	{
 		if (_isCloseAtk)
-			SetState(ObjectState::CloseAttack);
+			SetState(CLOSE_ATTACK);
 		else
-			SetState(ObjectState::LongAttack);
+			SetState(LONG_ATTACK);
 
 	}
 	else if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::RightMouse))	// Skill
 	{
-		SetState(ObjectState::SkillReady);
+		SetState(SKILL_READY);
 	}
 }
 
@@ -445,16 +445,16 @@ void Player::TickDuckDown()
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::A))
 	{
 		SetDir(DIR_LEFT);
-		SetState(ObjectState::DuckDownMove);
+		SetState(DUCK_DOWN_MOVE);
 	}
 	else if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::D))
 	{
 		SetDir(DIR_RIGHT);
-		SetState(ObjectState::DuckDownMove);
+		SetState(DUCK_DOWN_MOVE);
 	}
 	else if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::S))	// 버튼을 뗐을 때
 	{
-		SetState(ObjectState::Idle);
+		SetState(IDLE);
 	}
 }
 
@@ -475,12 +475,12 @@ void Player::TickDuckDownMove()
 	
 	if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::A) || GET_SINGLE(InputManager)->GetButtonUp(KeyType::D))
 	{
-		SetState(ObjectState::DuckDown);
+		SetState(DUCK_DOWN);
 	}
 
 	if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::S))
 	{
-		SetState(ObjectState::Move);
+		SetState(MOVE);
 	}
 }
 
@@ -505,15 +505,15 @@ void Player::TickJump()
 		if (GET_SINGLE(InputManager)->GetButton(KeyType::A))
 		{
 			SetDir(DIR_LEFT);
-			SetState(ObjectState::Move);
+			SetState(MOVE);
 		}
 		else if (GET_SINGLE(InputManager)->GetButton(KeyType::D))
 		{
 			SetDir(DIR_RIGHT);
-			SetState(ObjectState::Move);
+			SetState(MOVE);
 		}
 		else
-			SetState(ObjectState::Idle);
+			SetState(IDLE);
 	}
 	else
 	{
@@ -526,7 +526,7 @@ void Player::TickJump()
 				_dir = DIR_RIGHT;
 
 				_currentZipLine = _nearZipLine;
-				SetState(ObjectState::Hang);
+				SetState(HANG);
 			}
 		}
 	}
@@ -554,7 +554,7 @@ void Player::TickCloseAttack()
 
 	if (this->GetIdx() == 6)
 	{
-		SetState(ObjectState::Idle);
+		SetState(IDLE);
 	}
 }
 
@@ -595,7 +595,7 @@ void Player::TickLongAttack()
 	{
 		sumTime = 0.0f;
 
-		SetState(ObjectState::Idle);
+		SetState(IDLE);
 	}
 }
 
@@ -620,7 +620,7 @@ void Player::TickSkillReady()
 			_skillTimer = 0.f;
 
 			if (_leftInputCount == _rightInputCount)
-				SetState(ObjectState::Idle);
+				SetState(IDLE);
 			else
 			{
 				if (_leftInputCount < _rightInputCount)
@@ -628,7 +628,7 @@ void Player::TickSkillReady()
 				else
 					SetDir(DIR_LEFT);
 
-				SetState(ObjectState::SkillWaiting);
+				SetState(SKILL_WAITING);
 			}
 		}
 	}
@@ -639,7 +639,7 @@ void Player::TickSkillReady()
 		if (_leftInputCount > 0 || _rightInputCount > 0)
 		{
 			if (_leftInputCount == _rightInputCount)
-				SetState(ObjectState::Idle);
+				SetState(IDLE);
 			else
 			{
 				if (_leftInputCount < _rightInputCount)
@@ -647,12 +647,12 @@ void Player::TickSkillReady()
 				else
 					SetDir(DIR_LEFT);
 
-				SetState(ObjectState::SkillWaiting);
+				SetState(SKILL_WAITING);
 			}
 		}
 		else // A, D 미입력
 		{
-			SetState(ObjectState::Idle);
+			SetState(IDLE);
 		}
 	}	
 }
@@ -689,14 +689,14 @@ void Player::TickSkillWaiting()
 	if (sumTime > 0.7f)
 	{
 		sumTime = 0.f;
-		SetState(ObjectState::SkillEnd);
+		SetState(SKILL_END);
 	}
 }
 
 void Player::TickSkillEnd()
 {
 	if (GetIdx() == _flipbookPlayerSkillEnd[_dir]->GetFlipbookEndNum())
-		SetState(ObjectState::Idle);
+		SetState(IDLE);
 }
 
 void Player::TickHang()
@@ -752,7 +752,7 @@ void Player::TickHang()
 
 			_currentZipLine->SetMidPos(_pos);
 
-			SetState(ObjectState::Release);
+			SetState(RELEASE);
 
 			return;
 		}
@@ -769,7 +769,7 @@ void Player::TickHang()
 
 			_currentZipLine->SetMidPos({ 0, 0 });	// 중간 하차 X
 
-			SetState(ObjectState::Release);
+			SetState(RELEASE);
 		}
 	}
 }
@@ -789,7 +789,7 @@ void Player::TickRelease()
 	if (sumTime >= 0.3f)
 	{
 		sumTime = 0.f;
-		SetState(ObjectState::Idle);
+		SetState(IDLE);
 	}
 }
 
@@ -808,7 +808,7 @@ void Player::TickHit()
 	if (sumTime >= 0.5f)
 	{
 		sumTime = 0.f;
-		SetState(ObjectState::Idle);
+		SetState(IDLE);
 	}
 }
 
@@ -824,7 +824,7 @@ void Player::TickDead()
 
 		// 초기화 - 체력, 위치?
 		SetHealthPoint(100);
-		SetState(ObjectState::Idle);
+		SetState(IDLE);
 	}
 }
 
@@ -834,59 +834,59 @@ void Player::UpdateAnimation()
 
 	switch (_state)
 	{
-	case ObjectState::Idle:
+	case IDLE:
 		_playerCollider->SetSize({ 23, 85 });
 		SetFlipbook(_flipbookPlayerIdle[_dir]);		
 		break;
-	case ObjectState::Move:
+	case MOVE:
 		_playerCollider->SetSize({67, 70 });
 		SetFlipbook(_flipbookPlayerMove[_dir]);
 		break;
-	case ObjectState::DuckDown:
+	case DUCK_DOWN:
 		_playerCollider->SetSize({35, 45});
 		SetFlipbook(_flipbookPlayerDuckDown[_dir]);
 		break;
-	case ObjectState::DuckDownMove:
+	case DUCK_DOWN_MOVE:
 		_playerCollider->SetSize({ 34, 50 });
 		SetFlipbook(_flipbookPlayerDuckDownMove[_dir]);
 		break;
-	case ObjectState::Jump:
+	case JUMP:
 		_playerCollider->SetSize({ 34, 55 });
 		SetFlipbook(_flipbookPlayerJump[_dir]);
 		break;
-	case ObjectState::Hang:
+	case HANG:
 		_playerCollider->SetSize({ 30, 80 });
 		SetFlipbook(_flipbookPlayerHang[_dir]);
 		break;
-	case ObjectState::Release:
+	case RELEASE:
 		_playerCollider->SetSize({ 34, 88 });
 		SetFlipbook(_flipbookPlayerRelease[_dir]);
 		break;
-	case ObjectState::SkillReady:
+	case SKILL_READY:
 		_playerCollider->SetSize({140, 85});
 		SetFlipbook(_flipbookPlayerSkillReady[_dir]);
 		break;
-	case ObjectState::SkillWaiting:
+	case SKILL_WAITING:
 		_playerCollider->SetSize({ 140, 85 });
 		SetFlipbook(_flipbookPlayerSkillWaiting[_dir]);
 		break;
-	case ObjectState::SkillEnd:
+	case SKILL_END:
 		_playerCollider->SetSize({ 140, 85 });
 		SetFlipbook(_flipbookPlayerSkillEnd[_dir]);
 		break;
-	case ObjectState::CloseAttack:
+	case CLOSE_ATTACK:
 		//_playerCollider->SetSize({ 75, 90 });
 		SetFlipbook(_flipbookPlayerSlash[_dir]);
 		break;
-	case ObjectState::LongAttack:
+	case LONG_ATTACK:
 		_playerCollider->SetSize({ 75, 90 });
 		SetFlipbook(_flipbookPlayerSlash[_dir]);		
 		break;
-	case ObjectState::Hit:
+	case HIT:
 		_playerCollider->SetSize({ 41, 80 });
 		SetFlipbook(_flipbookPlayerHit[_dir]);
 	break;
-	case ObjectState::Dead:
+	case DEAD:
 	//	SetFlipbook(_flipbookPlayerDead[_dir]);
 	break;
 	}
@@ -903,7 +903,7 @@ int32 Player::GetAttack()
 	// damage 수정 예정
 	switch (_state)
 	{
-	case ObjectState::CloseAttack:
+	case CLOSE_ATTACK:
 		if (GetSkillPoint() >= 5)
 		{
 			SubtractSkillPoint(3);
@@ -914,7 +914,7 @@ int32 Player::GetAttack()
 			return _playerStat->nAtkDamage;
 		}
 		break;
-	case ObjectState::LongAttack:
+	case LONG_ATTACK:
 		if (GetSkillPoint() >= 5)
 		{
 			SubtractSkillPoint(3);
@@ -925,8 +925,8 @@ int32 Player::GetAttack()
 			return _playerStat->nAtkDamage;
 		}
 		break;
-	case ObjectState::SkillWaiting:
-	case ObjectState::SkillEnd:
+	case SKILL_WAITING:
+	case SKILL_END:
 		return _playerStat->skillDamage;
 		break;
 	}
@@ -938,10 +938,10 @@ float Player::GetSpeed()
 {
 	switch (_state)
 	{
-	case ObjectState::Move:
+	case MOVE:
 		return _playerStat->runSpeed;
 		break;
-	case ObjectState::DuckDownMove:
+	case DUCK_DOWN_MOVE:
 		return _playerStat->crouchSpeed;
 		break;
 	}
@@ -960,11 +960,11 @@ void Player::OnDamaged(Creature* other)
 	// 체력이 다 닳으면 사망
 	if (_playerStat->hp == 0)
 	{
-		SetState(ObjectState::Dead);
+		SetState(DEAD);
 		return;
 	}
 
-	SetState(ObjectState::Hit);
+	SetState(HIT);
 }
 
 void Player::OnDamagedByProjectile(Projectile* projectile)
@@ -980,11 +980,11 @@ void Player::OnDamagedByProjectile(Projectile* projectile)
 	// 체력이 다 닳으면 사망
 	if (_playerStat->hp == 0)
 	{
-		SetState(ObjectState::Dead);
+		SetState(DEAD);
 		return;
 	}
 
-	SetState(ObjectState::Hit);
+	SetState(HIT);
 }
 
 void Player::SetHealthPoint(int hp)
@@ -1121,7 +1121,7 @@ void Player::OnComponentBeginOverlap(Collider* collider, Collider* other)
 				else if (zipLine->GetZipLineType() == ZipLineType::ZipLineWithButton)
 				{
 					ZipLineButtonAndDisplay* BD = zipLine->GetZipLineButtonAndDisplay();
-					if (BD->GetState() == ObjectState::On)
+					if (BD->GetState() == ON)
 					{
 						_nearZipLine = zipLine;
 					}
@@ -1260,7 +1260,7 @@ void Player::OnComponentBeginOverlap(Collider* collider, Collider* other)
 	if (b2->GetCollisionLayer() == CLT_STAIR)
 	{
 		// Jump State일때만 충돌
-		if (_state == ObjectState::Jump)
+		if (_state == JUMP)
 		{
 			_isGround = true;
 			_isAir = false;

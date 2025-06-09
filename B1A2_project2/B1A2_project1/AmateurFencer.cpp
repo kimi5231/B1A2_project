@@ -179,35 +179,35 @@ void AmateurFencer::UpdateAnimation()
 {
 	switch (_state)
 	{
-	case ObjectState::Idle:
+	case IDLE:
 		SetFlipbook(_flipbookIdle[_dir]);
 		_collider->SetSize({ 31, 88 });
 		break;
-	case ObjectState::Hit:
+	case HIT:
 		SetFlipbook(_flipbookHit[_dir]);
 		_collider->SetSize({ 75, 65 });
 		break;
-	case ObjectState::Chase:
+	case CHASE:
 		_collider->SetSize({ 90, 100 });
 		SetFlipbook(_flipbookChase[_dir]);
 		break;
-	case ObjectState::Thrust:
+	case THRUST:
 		_collider->SetSize({ 145, 88 });
 		SetFlipbook(_flipbookThrust[_dir]);
 		break;
-	case ObjectState::BackStep:
+	case BACK_STEP:
 		_collider->SetSize({ 145, 88 });
 		SetFlipbook(_flipbookBackStep[_dir]);
 		break;
-	case ObjectState::SlashWave:
+	case SLASH_WAVE:
 		_collider->SetSize({ 85, 88 });
 		SetFlipbook(_flipbookSlashWave[_dir]);
 		break;
-	case ObjectState::Dash:
+	case DASH:
 		_collider->SetSize({ 90, 88 });
 		SetFlipbook(_flipbookDash[_dir]);
 		break;
-	case ObjectState::Dead:
+	case DEAD:
 		_collider->SetSize({ 75, 60 });
 		SetFlipbook(_flipbookDead[_dir]);
 		break;
@@ -253,7 +253,7 @@ int32 AmateurFencer::GetAttack()
 {
 	switch (_state)
 	{
-	case ObjectState::CloseAttack:
+	case CLOSE_ATTACK:
 		return _stat->closeAtkDamage;
 		break;
 	}
@@ -261,7 +261,7 @@ int32 AmateurFencer::GetAttack()
 
 BehaviorState AmateurFencer::is_cur_state_idle()
 {
-	if (_state == ObjectState::Idle)
+	if (_state == IDLE)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -274,7 +274,7 @@ BehaviorState AmateurFencer::Idle()
 
 BehaviorState AmateurFencer::is_cur_state_hit()
 {
-	if (_state == ObjectState::Hit)
+	if (_state == HIT)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -294,7 +294,7 @@ BehaviorState AmateurFencer::Hit()
 	if (_sumTime >= 0.5f)
 	{
 		_sumTime = 0.f;
-		SetState(ObjectState::Chase);
+		SetState(CHASE);
 		
 		return BehaviorState::SUCCESS;
 	}
@@ -304,7 +304,7 @@ BehaviorState AmateurFencer::Hit()
 
 BehaviorState AmateurFencer::is_cur_state_chase()
 {
-	if (_state == ObjectState::Chase)
+	if (_state == CHASE)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -333,12 +333,12 @@ BehaviorState AmateurFencer::Chase()
 	// 근거리 or 원거리 공격
 	if (xDistance <= _stat->closeAtkRangeX)
 	{
-		SetState(ObjectState::Thrust);
+		SetState(THRUST);
 		return BehaviorState::SUCCESS;
 	}
 	else if (std::abs(xDistance - _stat->closeAtkRangeX) > std::abs(xDistance - _stat->longAtkRange))	// |거리 - 근공사| > |거리 - 원공사| 
 	{
-		SetState(ObjectState::SlashWave);
+		SetState(SLASH_WAVE);
 		return BehaviorState::SUCCESS;
 	}
 
@@ -347,7 +347,7 @@ BehaviorState AmateurFencer::Chase()
 
 BehaviorState AmateurFencer::is_cur_state_thrust()
 {
-	if (_state == ObjectState::Thrust)
+	if (_state == THRUST)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -379,7 +379,7 @@ BehaviorState AmateurFencer::Thrust()	// 찌르기
 		RemoveComponent(_attackCollider);
 		SAFE_DELETE(_attackCollider);
 
-		SetState(ObjectState::BackStep);
+		SetState(BACK_STEP);
 		return BehaviorState::SUCCESS;
 	}
 
@@ -388,7 +388,7 @@ BehaviorState AmateurFencer::Thrust()	// 찌르기
 
 BehaviorState AmateurFencer::is_cur_state_backstep()
 {
-	if (_state == ObjectState::BackStep)
+	if (_state == BACK_STEP)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -410,14 +410,14 @@ BehaviorState AmateurFencer::BackStep()
 	{
 		_sumTime = 0.f;
 
-		SetState(ObjectState::Chase);
+		SetState(CHASE);
 		return BehaviorState::SUCCESS;
 		//// Chase
 		//if (GetAbsFromPlayerXDisatance() > _stat->closeAtkRangeX && GetAbsFromPlayerXDisatance() <= _stat->playerDetection.x)
 		//{
 		//	if (GetAbsFromPlayerYDistance() > _stat->playerDetection.y)
 		//	{
-		//		SetState(ObjectState::Chase);
+		//		SetState(CHASE);
 		//		return BehaviorState::SUCCESS;
 		//	}
 		//}
@@ -425,16 +425,16 @@ BehaviorState AmateurFencer::BackStep()
 		//// 근거리 or 원거리 공격
 		//if (GetAbsFromPlayerXDisatance() <= _stat->closeAtkRangeX)
 		//{
-		//	SetState(ObjectState::Thrust);
+		//	SetState(THRUST);
 		//	return BehaviorState::SUCCESS;
 		//}
 		//else if (std::abs(GetAbsFromPlayerXDisatance() - _stat->closeAtkRangeX) > std::abs(GetAbsFromPlayerXDisatance() - _stat->longAtkRange))	// |거리 - 근공사| > |거리 - 원공사| 
 		//{
-		//	SetState(ObjectState::SlashWave);
+		//	SetState(SLASH_WAVE);
 		//	return BehaviorState::SUCCESS;
 		//}
 
-		//SetState(ObjectState::Idle);
+		//SetState(IDLE);
 		//return BehaviorState::SUCCESS;
 	}
 
@@ -443,7 +443,7 @@ BehaviorState AmateurFencer::BackStep()
 
 BehaviorState AmateurFencer::is_cur_state_slashwave()
 {
-	if (_state == ObjectState::SlashWave)
+	if (_state == SLASH_WAVE)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -465,7 +465,7 @@ BehaviorState AmateurFencer::SlashWave()
 	if (_currentProjectileCount == _stat->longAtkProjectileCount)
 	{
 		_sumTime = 0.f;
-		SetState(ObjectState::Dash);
+		SetState(DASH);
 		_currentProjectileCount = 0;
 	
 		return BehaviorState::SUCCESS;
@@ -474,7 +474,7 @@ BehaviorState AmateurFencer::SlashWave()
 
 BehaviorState AmateurFencer::is_cur_state_dash()
 {
-	if (_state == ObjectState::Dash)
+	if (_state == DASH)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -494,7 +494,7 @@ BehaviorState AmateurFencer::Dash()
 	{
 		_sumTime = 0.f;
 
-		SetState(ObjectState::Chase);
+		SetState(CHASE);
 		return BehaviorState::SUCCESS;
 	}
 
@@ -503,7 +503,7 @@ BehaviorState AmateurFencer::Dash()
 
 BehaviorState AmateurFencer::is_cur_state_dead()
 {
-	if (_state == ObjectState::Dead)
+	if (_state == DEAD)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -575,7 +575,7 @@ void AmateurFencer::OnComponentBeginOverlap(Collider* collider, Collider* other)
 	{
 		if (b2->GetCollisionLayer() == CLT_PLAYER)
 		{
-			SetState(ObjectState::Chase);
+			SetState(CHASE);
 			SetTarget(dynamic_cast<Player*>(b2->GetOwner()));
 		}
 	}
@@ -600,7 +600,7 @@ void AmateurFencer::OnComponentEndOverlap(Collider* collider, Collider* other)
 	{
 		if (b2->GetCollisionLayer() == CLT_PLAYER)
 		{
-			SetState(ObjectState::Idle);
+			SetState(IDLE);
 			SetTarget(dynamic_cast<Player*>(b2->GetOwner()));
 		}
 	}

@@ -29,7 +29,7 @@ FallingProjectile::FallingProjectile()
 		}
 	}
 
-	SetState(ObjectState::Move);
+	SetState(MOVE);
 }
 
 FallingProjectile::~FallingProjectile()

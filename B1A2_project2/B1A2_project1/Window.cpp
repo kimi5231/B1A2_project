@@ -37,7 +37,7 @@ void Window::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetState(ObjectState::Off);
+	SetState(OFF);
 }
 
 void Window::Tick()
@@ -58,7 +58,7 @@ void Window::TickOn()
 
 	if (sumTime >= 0.5f)
 	{
-		SetState(ObjectState::Off);
+		SetState(OFF);
 
 		sumTime = 0.f;
 	}
@@ -72,7 +72,7 @@ void Window::TickOff()
 
 	if (sumTime >= 2.f)
 	{
-		SetState(ObjectState::On);
+		SetState(ON);
 
 		sumTime = 0.f;
 	}
@@ -82,10 +82,10 @@ void Window::UpdateAnimation()
 {
 	switch (_state)
 	{
-	case ObjectState::On:
+	case ON:
 		SetFlipbook(_flipbookOn);
 		break;
-	case ObjectState::Off:
+	case OFF:
 		SetFlipbook(_flipbookOff);
 		break;
 	}

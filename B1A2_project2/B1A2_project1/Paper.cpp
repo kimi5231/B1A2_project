@@ -30,7 +30,7 @@ Paper::Paper()
 		}
 	}
 
-	SetState(ObjectState::Move);
+	SetState(MOVE);
 }
 
 Paper::~Paper()
@@ -75,7 +75,7 @@ void Paper::UpdateAnimation()
 {
 	switch (_state)
 	{
-	case ObjectState::Move:
+	case MOVE:
 		SetFlipbook(_flipbookMove[_dir]);
 		break;
 	}

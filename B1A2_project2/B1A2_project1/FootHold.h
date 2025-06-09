@@ -77,7 +77,7 @@ public:
 private:
 	Flipbook* _flipbookFootHold = nullptr;
 
-	ObjectState _state = ObjectState::Off;
+	ObjectState _state = OFF;
 
 	FootHoldAndZipLineButton* _footHoldAndZipLineButton = nullptr;
 };

@@ -34,7 +34,7 @@ Blanket::Blanket()
 	// 공격력 수정 필요
 	SetAttack(5);
 
-	SetState(ObjectState::On);
+	SetState(ON);
 }
 
 Blanket::~Blanket()
@@ -45,7 +45,7 @@ void Blanket::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetState(ObjectState::On);
+	SetState(ON);
 }
 
 void Blanket::Tick()
@@ -79,7 +79,7 @@ void Blanket::UpdateAnimation()
 {
 	switch (_state)
 	{
-	case ObjectState::On:
+	case ON:
 		SetFlipbook(_flipbookBlanket);
 		break;
 	}

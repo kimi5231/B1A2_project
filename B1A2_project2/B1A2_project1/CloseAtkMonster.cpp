@@ -32,8 +32,8 @@ CloseAtkMonster::CloseAtkMonster()
 		_flipbookRoaming[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_TiredOfficeWorkerRoamingLeft");
 		_flipbookReturn[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_TiredOfficeWorkerRoamingRight");
 		_flipbookReturn[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_TiredOfficeWorkerRoamingLeft");
-		_flipbookReturnIdle[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_TiredOfficeWorkerIdleRight");
-		_flipbookReturnIdle[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_TiredOfficeWorkerIdleLeft");
+		_flipbookRETURN_IDLE[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_TiredOfficeWorkerIdleRight");
+		_flipbookRETURN_IDLE[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_TiredOfficeWorkerIdleLeft");
 	}
 
 	// Collider Component
@@ -97,7 +97,7 @@ void CloseAtkMonster::Tick()
 		scene->RemoveActor(this);
 	}
 
-	if (_state != ObjectState::CloseAttack)
+	if (_state != CLOSE_ATTACK)
 	{
 		if (_attackCollider)
 		{
@@ -121,7 +121,7 @@ void CloseAtkMonster::TickIdle()
 	if (_sumTime >= _stat->idleTime)
 	{
 		_currentMoveDistance = _moveDistance;
-		SetState(ObjectState::Roaming);
+		SetState(ROAMING);
 	}
 }
 
@@ -149,11 +149,11 @@ void CloseAtkMonster::TickCloseAttack()
 	{
 		// 공격 범위 체크 (추후 y축 포함하여 수정 예정)
 		if (std::abs(_target->GetPos().x - _pos.x) <= _stat->attackRange)
-			SetState(ObjectState::CloseAttack);
+			SetState(CLOSE_ATTACK);
 		else
 		{
 			_sumTime = 0.f;
-			SetState(ObjectState::Chase);
+			SetState(CHASE);
 		}
 	}
 }
@@ -167,7 +167,7 @@ void CloseAtkMonster::TickHit()
 		_pos.x += _stat->knockBackDistance;
 
 	_sumTime = 0.f;
-	SetState(ObjectState::Chase);
+	SetState(CHASE);
 }
 
 void CloseAtkMonster::TickDead()
@@ -195,7 +195,7 @@ void CloseAtkMonster::TickChase()
 	{
 		_pos.x = std::clamp(_pos.x, _movementLimit.x, _movementLimit.y);
 		_sumTime = 0.f;
-		SetState(ObjectState::ReturnIdle);
+		SetState(RETURN_IDLE);
 	}
 
 	// 추적
@@ -218,12 +218,12 @@ void CloseAtkMonster::TickChase()
 
 		// 3초가 지니면 복귀
 		if (_sumTime >= 3.0f)
-			SetState(ObjectState::Return);
+			SetState(RETURN);
 	}
 
 	// 공격 범위 체크 (추후 y축 포함하여 수정 예정)
 	if (std::abs(_target->GetPos().x - _pos.x) <= _stat->attackRange)
-		SetState(ObjectState::CloseAttack);
+		SetState(CLOSE_ATTACK);
 }
 
 void CloseAtkMonster::TickRoaming()
@@ -240,7 +240,7 @@ void CloseAtkMonster::TickRoaming()
 	if (_currentMoveDistance <= 0.f)
 	{
 		_sumTime = 0.f;
-		SetState(ObjectState::Idle);
+		SetState(IDLE);
 
 		// 방향 전환
 		if (_dir == DIR_RIGHT)
@@ -273,55 +273,55 @@ void CloseAtkMonster::TickReturn()
 	if (_pos.x == _spawnPos.x)
 	{
 		_sumTime = 0.f;
-		SetState(ObjectState::Idle);
+		SetState(IDLE);
 		SetPos(_spawnPos);
 		SetDir(_spawnDir);
 	}
 }
 
-void CloseAtkMonster::TickReturnIdle()
+void CloseAtkMonster::TickRETURN_IDLE()
 {
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 	_sumTime += deltaTime;
 
 	if (_sumTime >= _stat->idleTime)
-		SetState(ObjectState::Return);
+		SetState(RETURN);
 }
 
 void CloseAtkMonster::UpdateAnimation()
 {
 	switch (_state)
 	{
-	case ObjectState::Idle:
+	case IDLE:
 		SetFlipbook(_flipbookIdle[_dir]);
 		_collider->SetSize({ 34, 80 });
 		break;
-	case ObjectState::CloseAttack:
+	case CLOSE_ATTACK:
 		SetFlipbook(_flipbookCloseAttack[_dir]);
 		_collider->SetSize({ 95, 105 });
 		break;
-	case ObjectState::Hit:
+	case HIT:
 		SetFlipbook(_flipbookHit[_dir]);
 		_collider->SetSize({ 50, 70 });
 		break;
-	case ObjectState::Dead:
+	case DEAD:
 		SetFlipbook(_flipbookDead[_dir]);
 		_collider->SetSize({ 60, 78 });
 		break;
-	case ObjectState::Chase:
+	case CHASE:
 		SetFlipbook(_flipbookChase[_dir]);
 		_collider->SetSize({ 97, 77 });
 		break;
-	case ObjectState::Roaming:
+	case ROAMING:
 		SetFlipbook(_flipbookRoaming[_dir]);
 		_collider->SetSize({ 50, 81 });
 		break;
-	case ObjectState::Return:
+	case RETURN:
 		SetFlipbook(_flipbookReturn[_dir]);
 		_collider->SetSize({ 50, 81 });
 		break;
-	case ObjectState::ReturnIdle:
-		SetFlipbook(_flipbookReturnIdle[_dir]);
+	case RETURN_IDLE:
+		SetFlipbook(_flipbookRETURN_IDLE[_dir]);
 		_collider->SetSize({ 34, 80 });
 		break;
 	}
@@ -358,7 +358,7 @@ void CloseAtkMonster::OnComponentBeginOverlap(Collider* collider, Collider* othe
 		if (b2->GetCollisionLayer() == CLT_PLAYER)
 		{
 			_sumTime = 0.f;
-			SetState(ObjectState::Chase);
+			SetState(CHASE);
 			SetTarget(dynamic_cast<Player*>(b2->GetOwner()));
 		}
 	}
@@ -407,10 +407,10 @@ float CloseAtkMonster::GetSpeed()
 {
 	switch (_state)
 	{
-	case ObjectState::Move:
+	case MOVE:
 		return _stat->speed;
 		break;
-	case ObjectState::Chase:
+	case CHASE:
 		return _stat->chaseSpeed;
 		break;
 	}
@@ -420,7 +420,7 @@ int32 CloseAtkMonster::GetAttack()
 {
 	switch (_state)
 	{
-	case ObjectState::CloseAttack:
+	case CLOSE_ATTACK:
 		return _stat->attack;
 		break;
 	}

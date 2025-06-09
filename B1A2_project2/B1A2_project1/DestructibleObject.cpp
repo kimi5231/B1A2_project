@@ -43,7 +43,7 @@ void DestructibleObject::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetState(ObjectState::On);
+	SetState(ON);
 }
 
 void DestructibleObject::Tick()
@@ -90,10 +90,10 @@ void DestructibleObject::UpdateAnimation()
 {
 	switch (_state)
 	{
-	case ObjectState::On:
+	case ON:
 		SetFlipbook(_flipbookObject);
 		break;
-	case ObjectState::Dead:
+	case DEAD:
 		SetFlipbook(_flipbookBreakingObject);
 		break;
 	}
@@ -119,7 +119,7 @@ void DestructibleObject::OnComponentBeginOverlap(Collider* collider, Collider* o
 
 		if (_hp == 0)
 		{
-			SetState(ObjectState::Dead);
+			SetState(DEAD);
 			return;
 		}
 	}

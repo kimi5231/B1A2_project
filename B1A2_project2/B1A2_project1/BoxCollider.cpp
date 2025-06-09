@@ -82,11 +82,11 @@ void BoxCollider::BeginPlay()
 		ZipLine* owner = dynamic_cast<ZipLine*>(GetOwner());
 		Player* player = dynamic_cast<Player*>(owner->GetPlayer());
 
-		if (player->GetState() == ObjectState::Hang)	// Player를 따라감
+		if (player->GetState() == HANG)	// Player를 따라감
 		{
 			owner->GetPlayerDetectCollider()->SetPos({ player->GetPos() });
 		}
-		else if (player->GetState() == ObjectState::Release)
+		else if (player->GetState() == RELEASE)
 		{
 			_pos = owner->GetMidPos();
 		}
@@ -164,11 +164,11 @@ void BoxCollider::TickComponent()
 		if (owner == nullptr || player == nullptr)
 			return;
 
-		if (player->GetState() == ObjectState::Hang)	// Player를 따라감
+		if (player->GetState() == HANG)	// Player를 따라감
 		{
 			owner->GetPlayerDetectCollider()->SetPos({ player->GetPos() });
 		}
-		else if (player->GetState() == ObjectState::Release)
+		else if (player->GetState() == RELEASE)
 		{
 			_pos = owner->GetMidPos();
 		}

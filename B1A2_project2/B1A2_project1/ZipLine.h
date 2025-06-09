@@ -56,7 +56,7 @@ private:
 
 	ZipLineButtonAndDisplay* _zipLineButtonAndDisplay = nullptr;
 
-	ObjectState _state = ObjectState::Off;
+	ObjectState _state = OFF;
 
 	BoxCollider* _playerDetectCollider = nullptr;
 

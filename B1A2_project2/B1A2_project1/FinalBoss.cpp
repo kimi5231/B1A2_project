@@ -178,7 +178,7 @@ void FinalBoss::BeginPlay()
 	RootSelector->addChild(CutSeverelySequence);
 	_rootNode = RootSelector;
 
-	SetState(ObjectState::Idle);
+	SetState(IDLE);
 }
 
 void FinalBoss::Tick()
@@ -222,7 +222,7 @@ void FinalBoss::Tick()
 		_isMonsterCreation = true; //  몬스터 생성했으니 대기 시작
 		_monsterIdleSumTime = 0.f;  // 몬스터 생성 Idle 타이머 초기화
 
-		SetState(ObjectState::Idle);
+		SetState(IDLE);
 	}
 }
 
@@ -235,51 +235,51 @@ void FinalBoss::UpdateAnimation()
 {
 	switch (_state)
 	{
-	case ObjectState::Idle:
+	case IDLE:
 		_collider->SetSize({ 35, 90 });
 		SetFlipbook(_flipbookIdle[_dir]);
 		break;
-	case ObjectState::Chase:
+	case CHASE:
 		_collider->SetSize({ 60, 90 });
 		SetFlipbook(_flipbookChase[_dir]);
 		break;
-	case ObjectState::Hit:
+	case HIT:
 		_collider->SetSize({ 60, 86 });
 		SetFlipbook(_flipbookHit[_dir]);
 		break;
-	case ObjectState::Dead:
+	case DEAD:
 		_collider->SetSize({ 60, 60 });
 		SetFlipbook(_flipbookDead[_dir]);
 		break;
-	case ObjectState::CrystalCreation:
+	case CRYSTAL_CREATION:
 		_collider->SetSize({ 35, 90 });
 		SetFlipbook(_flipbookIdle[_dir]);
 		break;
-	case ObjectState::Thrust:
+	case THRUST:
 		_collider->SetSize({ 115, 97 });
 		SetFlipbook(_flipbookThrust[_dir]);
 		break;
-	case ObjectState::BackStep:
+	case BACK_STEP:
 		_collider->SetSize({ 115, 97 });
 		SetFlipbook(_flipbookBackStep[_dir]);
 		break;
-	case ObjectState::LongAttackLength:
+	case LONG_ATTACK_LENGTH:
 		_collider->SetSize({ 94, 105 });
 		SetFlipbook(_flipbookLongAttackLength[_dir]);
 		break;
-	case ObjectState::LongAttackWidth:
+	case LONG_ATTACK_WIDTH:
 		_collider->SetSize({ 65, 97 });
 		SetFlipbook(_flipbookLongAttackWidth[_dir]);
 		break;
-	case ObjectState::Dash:
+	case DASH:
 		_collider->SetSize({ 66, 97 });
 		SetFlipbook(_flipbookDash[_dir]);
 		break;
-	case ObjectState::Teleport:
+	case TELEPORT:
 		_collider->SetSize({ 35, 90 }); 
 		SetFlipbook(_flipbookIdle[_dir]);
 		break;
-	case ObjectState::CutSeverely:
+	case CUT_SEVERELY:
 		_collider->SetSize({ 110, 65 });
 		SetFlipbook(_flipbookCutSeverely[_dir]);
 		break;
@@ -290,7 +290,7 @@ int32 FinalBoss::GetAttack()
 {
 	switch (_state)
 	{
-	case ObjectState::CloseAttack:
+	case CLOSE_ATTACK:
 		return _stat->closeAtkDamage;
 		break;
 	}
@@ -333,7 +333,7 @@ void FinalBoss::CalPixelPerSecond()
 
 BehaviorState FinalBoss::is_cur_state_idle()
 {
-	if (_state == ObjectState::Idle)
+	if (_state == IDLE)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -372,12 +372,12 @@ BehaviorState FinalBoss::Idle()
 
 		if (_bossFloor != _playerFloor)
 		{
- 			SetState(ObjectState::Teleport);
+ 			SetState(TELEPORT);
 			return BehaviorState::SUCCESS;
 		}
 		else 
 		{
-			SetState(ObjectState::Chase);
+			SetState(CHASE);
 			return BehaviorState::SUCCESS;
 		}
 	}
@@ -387,7 +387,7 @@ BehaviorState FinalBoss::Idle()
 
 BehaviorState FinalBoss::is_cur_state_chase()
 {
-	if (_state == ObjectState::Chase)
+	if (_state == CHASE)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -422,7 +422,7 @@ BehaviorState FinalBoss::Chase()
 
 		if (_bossFloor != _playerFloor)
 		{
-			SetState(ObjectState::Teleport);
+			SetState(TELEPORT);
 			return BehaviorState::SUCCESS;
 		}
 	}
@@ -430,7 +430,7 @@ BehaviorState FinalBoss::Chase()
 	// 근거리 or 원거리 공격
  	if (xDistance <= _stat->closeAtkRange && _bossFloor == _playerFloor)
 	{
-		SetState(ObjectState::Thrust);
+		SetState(THRUST);
 		return BehaviorState::SUCCESS;
 	}
 	else if (std::abs(xDistance - _stat->closeAtkRange) > std::abs(xDistance - _stat->longAtkRange) 
@@ -443,20 +443,20 @@ BehaviorState FinalBoss::Chase()
 		bool isWidth = (dist(gen) == 0);
 
 		if (isWidth)
-			SetState(ObjectState::LongAttackWidth);
+			SetState(LONG_ATTACK_WIDTH);
 		else
-			SetState(ObjectState::LongAttackLength);
+			SetState(LONG_ATTACK_LENGTH);
 
 		return BehaviorState::SUCCESS;
 	}
 
-	SetState(ObjectState::Idle);
+	SetState(IDLE);
 	return BehaviorState::SUCCESS;
 }
 
 BehaviorState FinalBoss::is_cur_state_hit()
 {
-	if (_state == ObjectState::Hit)
+	if (_state == HIT)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -491,7 +491,7 @@ BehaviorState FinalBoss::Hit()
 			ItemActor* item = scene->SpawnObject<ItemActor>({ _pos.x, _pos.y }, LAYER_ITEM, 300100, itemData->GetItems());
 		}
 
-		SetState(ObjectState::Chase);
+		SetState(CHASE);
 
 		return BehaviorState::SUCCESS;
 	}
@@ -501,25 +501,25 @@ BehaviorState FinalBoss::Hit()
 	{
 		_isFirstCrystalCreationWork = true;
 
-		SetState(ObjectState::CrystalCreation);
+		SetState(CRYSTAL_CREATION);
 	}
 	else if (_stat->hp <= 600 && _stat->hp > 500 && !_isSecondCrystalCreationWork)
 	{
 		_isSecondCrystalCreationWork = true;
 		_currentCrystalCount = 2;
 
-		SetState(ObjectState::CrystalCreation);
+		SetState(CRYSTAL_CREATION);
 	}
 	else if (_stat->hp <= 100 && _isThirdCrystalCreationWork)
 	{
 		_isThirdCrystalCreationWork = true;
 		_currentCrystalCount = 3;
 
-		SetState(ObjectState::CrystalCreation);
+		SetState(CRYSTAL_CREATION);
 	}
 	else
 	{
-		SetState(ObjectState::Chase);
+		SetState(CHASE);
 	}
 
 	return BehaviorState::SUCCESS;
@@ -527,7 +527,7 @@ BehaviorState FinalBoss::Hit()
 
 BehaviorState FinalBoss::is_cur_state_dead()
 {
-	if (_state == ObjectState::Dead)
+	if (_state == DEAD)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -545,7 +545,7 @@ BehaviorState FinalBoss::Dead()
 
 BehaviorState FinalBoss::is_cur_state_crystal_creation()
 {
-	if (_state == ObjectState::CrystalCreation)
+	if (_state == CRYSTAL_CREATION)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -607,7 +607,7 @@ BehaviorState FinalBoss::CrystalCreation()
 	{
 		_crystalCreationSumTime = 0.f;
 
-		SetState(ObjectState::Chase);
+		SetState(CHASE);
 		return BehaviorState::SUCCESS;
 	}
 
@@ -616,7 +616,7 @@ BehaviorState FinalBoss::CrystalCreation()
 
 BehaviorState FinalBoss::is_cur_state_thrust()
 {
-	if (_state == ObjectState::Thrust)
+	if (_state == THRUST)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -648,7 +648,7 @@ BehaviorState FinalBoss::Thrust()
 		RemoveComponent(_attackCollider);
 		SAFE_DELETE(_attackCollider);
 
-		SetState(ObjectState::BackStep);
+		SetState(BACK_STEP);
 
 		return BehaviorState::SUCCESS;
 	}
@@ -656,7 +656,7 @@ BehaviorState FinalBoss::Thrust()
 
 BehaviorState FinalBoss::is_cur_state_backstep()
 {
-	if (_state == ObjectState::BackStep)
+	if (_state == BACK_STEP)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -675,7 +675,7 @@ BehaviorState FinalBoss::BackStep()
 	if (_sumTime >= 0.5f)
 	{
 		_sumTime = 0.f;
-		SetState(ObjectState::Chase);
+		SetState(CHASE);
 
 		return BehaviorState::SUCCESS;
 	}
@@ -685,7 +685,7 @@ BehaviorState FinalBoss::BackStep()
 
 BehaviorState FinalBoss::is_cur_state_long_attack_length()
 {
-	if (_state == ObjectState::LongAttackLength)
+	if (_state == LONG_ATTACK_LENGTH)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -706,7 +706,7 @@ BehaviorState FinalBoss::LongAttackLength()
 
 	if (_currentProjectileCount == _stat->longAtkProjectileCount)
 	{
-		SetState(ObjectState::Dash);
+		SetState(DASH);
 
 		_currentProjectileCount = 0;
 		_sumTime = 0.f;
@@ -717,7 +717,7 @@ BehaviorState FinalBoss::LongAttackLength()
 
 BehaviorState FinalBoss::is_cur_state_long_attack_width()
 {
-	if (_state == ObjectState::LongAttackWidth)
+	if (_state == LONG_ATTACK_WIDTH)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -738,7 +738,7 @@ BehaviorState FinalBoss::LongAttackWidth()
 
 	if (_currentProjectileCount == _stat->longAtkProjectileCount)
 	{
-		SetState(ObjectState::Dash);
+		SetState(DASH);
 
 		_currentProjectileCount = 0;
 		_sumTime = 0.f;
@@ -749,7 +749,7 @@ BehaviorState FinalBoss::LongAttackWidth()
 
 BehaviorState FinalBoss::is_cur_state_dash()
 {
-	if (_state == ObjectState::Dash)
+	if (_state == DASH)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -770,7 +770,7 @@ BehaviorState FinalBoss::Dash()
 	{
 		_sumTime = 0.f;
 
-		SetState(ObjectState::Chase);
+		SetState(CHASE);
 		return BehaviorState::SUCCESS;
 	}
 
@@ -779,7 +779,7 @@ BehaviorState FinalBoss::Dash()
 
 BehaviorState FinalBoss::is_cur_state_teleport()
 {
-	if (_state == ObjectState::Teleport)
+	if (_state == TELEPORT)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -803,7 +803,7 @@ BehaviorState FinalBoss::Teleport()
 	else
 		_pos = { playerPos.x + 20, yPos };
 
-	SetState(ObjectState::CutSeverely);
+	SetState(CUT_SEVERELY);
 	return BehaviorState::SUCCESS;
 	// 찌르기 or 마구 베기 5:5
 	//std::random_device rd;
@@ -814,19 +814,19 @@ BehaviorState FinalBoss::Teleport()
 
 	//if (isThrust)
 	//{
-	//	SetState(ObjectState::Thrust);
+	//	SetState(THRUST);
 	//	return BehaviorState::SUCCESS;
 	//}
 	//else
 	//{
-	//	SetState(ObjectState::CutSeverely);
+	//	SetState(CUT_SEVERELY);
 	//	return BehaviorState::SUCCESS;
 	//}
 }
 
 BehaviorState FinalBoss::is_cur_state_cut_severely()
 {
-	if (_state == ObjectState::CutSeverely)
+	if (_state == CUT_SEVERELY)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -863,7 +863,7 @@ BehaviorState FinalBoss::CutSeverely()
 		RemoveComponent(_attackCollider);
 		SAFE_DELETE(_attackCollider);
 
-		SetState(ObjectState::Chase);
+		SetState(CHASE);
 		return BehaviorState::SUCCESS;
 	}
 

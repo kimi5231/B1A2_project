@@ -27,7 +27,7 @@ SlashwaveW::SlashwaveW()
 		AddComponent(collider);
 	}
 
-	SetState(ObjectState::Move);
+	SetState(MOVE);
 }
 
 SlashwaveW::~SlashwaveW()
@@ -74,7 +74,7 @@ void SlashwaveW::UpdateAnimation()
 {
 	switch (_state)
 	{
-	case ObjectState::Move:
+	case MOVE:
 		SetFlipbook(_flipbookMove[_dir]);
 		break;
 	}
@@ -120,7 +120,7 @@ SlashwaveL::SlashwaveL()
 		AddComponent(collider);
 	}
 
-	SetState(ObjectState::Move);
+	SetState(MOVE);
 }
 
 SlashwaveL::~SlashwaveL()
@@ -162,7 +162,7 @@ void SlashwaveL::UpdateAnimation()
 {
 	switch (_state)
 	{
-	case ObjectState::Move:
+	case MOVE:
 		SetFlipbook(_flipbookMove[_dir]);
 		break;
 	}

@@ -149,7 +149,7 @@ public:
 
 	void SetIsCloseAtk(bool isCloseAtk) { _isCloseAtk = isCloseAtk; }
 
-	bool isSkillActive() const { return _state == ObjectState::SkillReady || _state == ObjectState::SkillWaiting || _state == ObjectState::SkillEnd; }
+	bool isSkillActive() const { return _state == SKILL_READY || _state == SKILL_WAITING || _state == SKILL_END; }
 private:
 	// Flipbook
 	Flipbook* _flipbookPlayerIdle[2] = {};

@@ -16,8 +16,8 @@ void GameObject::BeginPlay()
 	Super::BeginPlay();
 
 	// 처음 상태 지정
-	SetState(ObjectState::Dead);
-	SetState(ObjectState::Idle);
+	SetState(DEAD);
+	SetState(IDLE);
 }
 
 void GameObject::Tick()
@@ -29,81 +29,81 @@ void GameObject::Tick()
 
 	switch (_state)
 	{
-	case ObjectState::Idle:
+	case IDLE:
 		TickIdle();
 		break;
-	case ObjectState::Move:
+	case MOVE:
 		TickMove();
 		break;
-	case ObjectState::DuckDown:
+	case DUCK_DOWN:
 		TickDuckDown();
 		break;
-	case ObjectState::DuckDownMove:
+	case DUCK_DOWN_MOVE:
 		TickDuckDownMove();
 		break;
-	case ObjectState::Jump:
+	case JUMP:
 		TickJump();
 		break;
-	case ObjectState::CloseAttack:
+	case CLOSE_ATTACK:
 		TickCloseAttack();
 		break;
-	case ObjectState::LongAttack:
+	case LONG_ATTACK:
 		TickLongAttack();
 		break;
-	case ObjectState::Thrust:
+	case THRUST:
 		TickThrust();
 		break;
-	case ObjectState::BackStep:
+	case BACK_STEP:
 		TickBackStep();
 		break;
-	case ObjectState::SlashWave:
+	case SLASH_WAVE:
 		TickSlashWave();
 		break;
-	case ObjectState::SkillReady:
+	case SKILL_READY:
 		TickSkillReady();
 		break;
-	case ObjectState::SkillWaiting:
+	case SKILL_WAITING:
 		TickSkillWaiting();
 		break;
-	case ObjectState::SkillEnd:
+	case SKILL_END:
 		TickSkillEnd();
 		break;
-	case ObjectState::Hang:
+	case HANG:
 		TickHang();
 		break;
-	case ObjectState::Release:
+	case RELEASE:
 		TickRelease();
 		break;
-	case ObjectState::Hit:
+	case HIT:
 		TickHit();
 		break;
-	case ObjectState::Dead:
+	case DEAD:
 		TickDead();
 		break;
-	case ObjectState::Chase:
+	case CHASE:
 		TickChase();
 		break;
-	case ObjectState::Roaming:
+	case ROAMING:
 		TickRoaming();
 		break;
-	case ObjectState::Dash:
+	case DASH:
 		TickDash();
 		break;
-	case ObjectState::Return:
+	case RETURN:
 		TickReturn();
 		break;
-	case ObjectState::ReturnIdle:
-		TickReturnIdle();
+	case RETURN_IDLE:
+		TickRETURN_IDLE();
 		break;
-	case ObjectState::On:
+	case ON:
 		TickOn();
 		break;
-	case ObjectState::On2:
+	case ON2:
 		TickOn2();
-	case ObjectState::Ready:
+	case READY:
 		TickReady();
 		break;
-	case ObjectState::Off:
+	case OFF:
 		TickOff();
 		break;
 	}

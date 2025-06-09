@@ -13,14 +13,13 @@ message BuffData
 message ObjectInfo
 {
 	uint64 objectId = 1;
-	OBJECT_TYPE objectType = 2;
-	OBJECT_STATE_TYPE state = 3;
-	DIR_TYPE dir = 4;
-	string name = 5;
-	int32 hp = 6;
-	int32 maxHp = 7;
-	int32 attack = 8;
-	int32 defence = 9;
-	int32 posX = 10;
-	int32 posY = 11;
+	OBJECT_STATE_TYPE state = 2;
+	DIR_TYPE dir = 3;
+	string name = 4;
+	int32 hp = 5;
+	int32 maxHp = 6;
+	int32 attack = 7;
+	int32 defence = 8;
+	int32 posX = 9;
+	int32 posY = 10;
 }

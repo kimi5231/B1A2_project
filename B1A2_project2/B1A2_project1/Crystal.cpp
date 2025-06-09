@@ -41,7 +41,7 @@ void Crystal::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetState(ObjectState::On);
+	SetState(ON);
 }
 
 void Crystal::Tick()
@@ -77,10 +77,10 @@ void Crystal::UpdateAnimation()
 {
 	switch (_state)
 	{
-	case ObjectState::On:
+	case ON:
 		SetFlipbook(_flipbookCrystal);
 		break;
-	case ObjectState::Dead:
+	case DEAD:
 		SetFlipbook(_flipbookCrystal);
 		break;
 	}
@@ -106,7 +106,7 @@ void Crystal::OnComponentBeginOverlap(Collider* collider, Collider* other)
 
 		if (_hp == 0)
 		{
-			SetState(ObjectState::Dead);
+			SetState(DEAD);
 			return;
 		}
 	}

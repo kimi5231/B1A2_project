@@ -47,7 +47,7 @@ LockedDoorAndKey::LockedDoorAndKey()
 	}
 
 
-	SetState(ObjectState::Off);
+	SetState(OFF);
 }
 
 LockedDoorAndKey::~LockedDoorAndKey()
@@ -64,7 +64,7 @@ void LockedDoorAndKey::Tick()
 	Super::Tick();
 
 	if (_isKeyAcquired)
-		SetState(ObjectState::On);
+		SetState(ON);
 }
 
 void LockedDoorAndKey::Render(HDC hdc)
@@ -76,10 +76,10 @@ void LockedDoorAndKey::UpdateAnimation()
 {
 	switch (_state)
 	{
-	case ObjectState::On:
+	case ON:
 		SetFlipbook(_flipbookUnlockedDoor);
 		break;
-	case ObjectState::Off:
+	case OFF:
 		SetFlipbook(_flipbookLockedDoor);
 	}
 }

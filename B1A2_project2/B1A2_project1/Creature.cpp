@@ -37,11 +37,11 @@ void Creature::OnDamaged(Creature* other)
 	// Ã¼·ÂÀÌ ´Ù ´â¸é »ç¸Á
 	if (hp == 0)
 	{
-		SetState(ObjectState::Dead);
+		SetState(DEAD);
 		return;
 	}
 
-	SetState(ObjectState::Hit);
+	SetState(HIT);
 }
 
 void Creature::OnDamagedNoHit(Creature* other)
@@ -57,7 +57,7 @@ void Creature::OnDamagedNoHit(Creature* other)
 	// Ã¼·ÂÀÌ ´Ù ´â¸é »ç¸Á
 	if (hp == 0)
 	{
-		SetState(ObjectState::Dead);
+		SetState(DEAD);
 		return;
 	}
 }

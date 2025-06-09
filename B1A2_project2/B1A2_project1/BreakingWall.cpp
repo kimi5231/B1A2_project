@@ -41,7 +41,7 @@ void BreakingWall::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetState(ObjectState::On);
+	SetState(ON);
 }
 
 void BreakingWall::Tick()
@@ -76,10 +76,10 @@ void BreakingWall::UpdateAnimation()
 {
 	switch (_state)
 	{
-	case ObjectState::On:
+	case ON:
 		SetFlipbook(_flipbookWall);
 		break;
-	case ObjectState::Dead:
+	case DEAD:
 		SetFlipbook(_flipbookBreakingWall);
 		break;
 	}
@@ -105,7 +105,7 @@ void BreakingWall::OnComponentBeginOverlap(Collider* collider, Collider* other)
 
 		if (_hp == 0)
 		{
-			SetState(ObjectState::Dead);
+			SetState(DEAD);
 			return;
 		}
 	}

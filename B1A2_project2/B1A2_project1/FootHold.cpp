@@ -29,7 +29,7 @@ FootHoldAndZipLineButton::FootHoldAndZipLineButton()
 		AddComponent(collider);
 	}
 
-	SetState(ObjectState::Off);
+	SetState(OFF);
 }
 
 FootHoldAndZipLineButton::~FootHoldAndZipLineButton()
@@ -40,7 +40,7 @@ void FootHoldAndZipLineButton::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetState(ObjectState::Off);
+	SetState(OFF);
 }
 
 void FootHoldAndZipLineButton::Tick()
@@ -57,13 +57,13 @@ void FootHoldAndZipLineButton::UpdateAnimation()
 {
 	switch (_state)
 	{
-	case ObjectState::Off:
+	case OFF:
 		SetFlipbook(_flipbookFootHoldAndZipLineButtonOff);
 		break;
-	case ObjectState::On:
+	case ON:
 		SetFlipbook(_flipbookFootHoldAndZipLineButtonOn1);
 		break;
-	case ObjectState::On2:
+	case ON2:
 		SetFlipbook(_flipbookFootHoldAndZipLineButtonOn2);
 		break;
 	}
@@ -78,7 +78,7 @@ void FootHoldAndZipLineButton::TickOn2()
 	zipLine->SetBeginPos({_zipLineBegin});
 	zipLine->SetEndPos({_zipLineEnd});
 
-	SetState(ObjectState::Idle);	// 계속 생성되지 않도록 상태 바꿈
+	SetState(IDLE);	// 계속 생성되지 않도록 상태 바꿈
 }
 
 void FootHoldAndZipLineButton::OnComponentBeginOverlap(Collider* collider, Collider* other)
@@ -109,7 +109,7 @@ FootHold::FootHold()
 		AddComponent(collider);
 	}
 
-	SetState(ObjectState::Off);
+	SetState(OFF);
 }
 
 FootHold::~FootHold()
@@ -120,7 +120,7 @@ void FootHold::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetState(ObjectState::Off);
+	SetState(OFF);
 }
 
 void FootHold::Tick()
@@ -137,13 +137,13 @@ void FootHold::UpdateAnimation()
 {
 	switch (_state)
 	{
-	case ObjectState::Off:
+	case OFF:
 		SetFlipbook(_flipbookFootHold);
 		break;
-	case ObjectState::Ready:
+	case READY:
 		SetFlipbook(_flipbookFootHold);
 		break;
-	case ObjectState::On:
+	case ON:
 		SetFlipbook(_flipbookFootHold);
 		break;
 	}
@@ -151,9 +151,9 @@ void FootHold::UpdateAnimation()
 
 void FootHold::TickOff()
 {
-	if (_footHoldAndZipLineButton->GetState() == ObjectState::On && _state == ObjectState::Off)
+	if (_footHoldAndZipLineButton->GetState() == ON && _state == OFF)
 	{
-		SetState(ObjectState::Ready);
+		SetState(READY);
 	}
 }
 
@@ -167,7 +167,7 @@ void FootHold::TickReady()
 
 	if (sumTime >= 0.5f)
 	{
-		SetState(ObjectState::On);
+		SetState(ON);
 		sumTime = 0.f;
 	}
 }

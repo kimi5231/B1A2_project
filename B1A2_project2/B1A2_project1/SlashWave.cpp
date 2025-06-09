@@ -30,7 +30,7 @@ Slashwave::Slashwave()
 		}
 	}
 
-	SetState(ObjectState::Move);
+	SetState(MOVE);
 }
 
 Slashwave::~Slashwave()
@@ -72,7 +72,7 @@ void Slashwave::UpdateAnimation()
 {
 	switch (_state)
 	{
-	case ObjectState::Move:
+	case MOVE:
 		SetFlipbook(_flipbookMove[_dir]);
 		break;
 	}
