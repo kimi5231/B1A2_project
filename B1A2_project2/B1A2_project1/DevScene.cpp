@@ -42,6 +42,7 @@
 #include "LongAtkMonster.h"
 #include "FinalBoss.h"
 #include "DestructibleObject.h"
+#include "MyPlayer.h"
 
 DevScene::DevScene()
 {
@@ -1480,7 +1481,7 @@ void DevScene::SetStage1()
 		// Player가 없다면 생성
 		if (!_player)
 		{
-			Player* player = SpawnObject<Player>(1, { 400, 200 }, LAYER_PLAYER);
+			MyPlayer* player = SpawnObject<MyPlayer>(1, { 400, 200 }, LAYER_PLAYER);
 			_player = player;
 		}
 		
@@ -1610,7 +1611,7 @@ void DevScene::SetStage2()
 		// Player가 없다면 생성
 		if (!_player)
 		{
-			Player* player = SpawnObject<Player>({ 400, 200 }, LAYER_PLAYER);
+			MyPlayer* player = SpawnObject<MyPlayer>({ 400, 200 }, LAYER_PLAYER);
 			_player = player;
 		}
 
@@ -1754,7 +1755,7 @@ void DevScene::SetStage3()
 		// Player가 없다면 생성
 		if (!_player)
 		{
-			Player* player = SpawnObject<Player>({ 400, 200 }, LAYER_PLAYER);
+			MyPlayer* player = SpawnObject<MyPlayer>({ 400, 200 }, LAYER_PLAYER);
 			_player = player;
 		}
 
@@ -1881,7 +1882,7 @@ void DevScene::SetFinalBossStage()
 		// Player가 없다면 생성
 		if (!_player)
 		{
-			Player* player = SpawnObject<Player>({ 200, 520 }, LAYER_PLAYER);
+			MyPlayer* player = SpawnObject<MyPlayer>({ 200, 520 }, LAYER_PLAYER);
 			_player = player;
 		}
 

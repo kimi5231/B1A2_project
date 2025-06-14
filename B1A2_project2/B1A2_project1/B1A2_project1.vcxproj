@@ -197,6 +197,7 @@ xcopy /y /d "$(SolutionDir)FMOD_API\studio\lib\x64\*.dll" "$(OutDir)"</Command>
     <ClInclude Include="LockedDoorAndKey.h" />
     <ClInclude Include="LongAtkMonster.h" />
     <ClInclude Include="Monster.h" />
+    <ClInclude Include="MyPlayer.h" />
     <ClInclude Include="NetworkManager.h" />
     <ClInclude Include="Panel.h" />
     <ClInclude Include="Paper.h" />
@@ -290,6 +291,7 @@ xcopy /y /d "$(SolutionDir)FMOD_API\studio\lib\x64\*.dll" "$(OutDir)"</Command>
     <ClCompile Include="LockedDoorAndKey.cpp" />
     <ClCompile Include="LongAtkMonster.cpp" />
     <ClCompile Include="Monster.cpp" />
+    <ClCompile Include="MyPlayer.cpp" />
     <ClCompile Include="NetworkManager.cpp" />
     <ClCompile Include="Panel.cpp" />
     <ClCompile Include="Paper.cpp" />

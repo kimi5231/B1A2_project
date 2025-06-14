@@ -79,7 +79,7 @@ public:
 	virtual void Tick() override;
 	virtual void Render(HDC hdc) override;
 
-private:
+protected:
 	// Player State
 	virtual void TickIdle() override;
 	virtual void TickMove() override;
@@ -166,7 +166,7 @@ private:
 	Flipbook* _flipbookPlayerHit[2] = {};
 	Flipbook* _flipbookPlayerDead[2] = {};
 
-private:
+protected:
 	bool _keyPressed = false;
 
 	PlayerStat* _playerStat = {};
@@ -196,9 +196,11 @@ private:
 	bool _isInWindow = false;
 	bool _damagedByWindow = false;	
 	bool _isReleaseInMid = false;
+	bool _isMoving = false;
 
 	// Skill
 	float _skillTimer = 0.f;
+	float _hangTimer = 0.f;
 	int32 _leftInputCount = 0;
 	int32 _rightInputCount = 0;
 
