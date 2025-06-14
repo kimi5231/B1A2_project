@@ -80,7 +80,7 @@ void Window::TickOff()
 
 void Window::UpdateAnimation()
 {
-	switch (_state)
+	switch (_info.state())
 	{
 	case ON:
 		SetFlipbook(_flipbookOn);

@@ -74,7 +74,7 @@ void BreakingWall::TickDead()
 
 void BreakingWall::UpdateAnimation()
 {
-	switch (_state)
+	switch (_info.state())
 	{
 	case ON:
 		SetFlipbook(_flipbookWall);

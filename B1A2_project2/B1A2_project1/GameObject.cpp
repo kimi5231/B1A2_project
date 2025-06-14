@@ -27,7 +27,7 @@ void GameObject::Tick()
 	if (GET_SINGLE(DialogueManager)->GetIsDialouge())
 		return;
 
-	switch (_state)
+	switch (_info.state())
 	{
 	case IDLE:
 		TickIdle();
@@ -133,15 +133,15 @@ void GameObject::TickGravity()
 
 void GameObject::SetState(ObjectState state)
 {
-	if (_state == state)
+	if (_info.state() == state)
 		return;
 
-	_state = state;
+	_info.set_state(state);
 	UpdateAnimation();
 }
 
 void GameObject::SetDir(Dir dir)
 {
-	_dir = dir;
+	_info.set_dir(dir);
 	UpdateAnimation();
 }

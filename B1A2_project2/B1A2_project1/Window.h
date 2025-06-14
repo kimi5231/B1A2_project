@@ -19,7 +19,7 @@ protected:
 
 public:
 	virtual float GetSpeed() { return 0.f; }
-	ObjectState GetState() { return _state; }
+	ObjectState GetState() { return _info.state(); }
 
 private:
 	virtual void OnComponentBeginOverlap(Collider* collider, Collider* other);

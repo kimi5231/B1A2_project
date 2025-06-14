@@ -233,62 +233,62 @@ void FinalBoss::Render(HDC hdc)
 
 void FinalBoss::UpdateAnimation()
 {
-	switch (_state)
+	switch (_info.state())
 	{
 	case IDLE:
 		_collider->SetSize({ 35, 90 });
-		SetFlipbook(_flipbookIdle[_dir]);
+		SetFlipbook(_flipbookIdle[_info.dir()]);
 		break;
 	case CHASE:
 		_collider->SetSize({ 60, 90 });
-		SetFlipbook(_flipbookChase[_dir]);
+		SetFlipbook(_flipbookChase[_info.dir()]);
 		break;
 	case HIT:
 		_collider->SetSize({ 60, 86 });
-		SetFlipbook(_flipbookHit[_dir]);
+		SetFlipbook(_flipbookHit[_info.dir()]);
 		break;
 	case DEAD:
 		_collider->SetSize({ 60, 60 });
-		SetFlipbook(_flipbookDead[_dir]);
+		SetFlipbook(_flipbookDead[_info.dir()]);
 		break;
 	case CRYSTAL_CREATION:
 		_collider->SetSize({ 35, 90 });
-		SetFlipbook(_flipbookIdle[_dir]);
+		SetFlipbook(_flipbookIdle[_info.dir()]);
 		break;
 	case THRUST:
 		_collider->SetSize({ 115, 97 });
-		SetFlipbook(_flipbookThrust[_dir]);
+		SetFlipbook(_flipbookThrust[_info.dir()]);
 		break;
 	case BACK_STEP:
 		_collider->SetSize({ 115, 97 });
-		SetFlipbook(_flipbookBackStep[_dir]);
+		SetFlipbook(_flipbookBackStep[_info.dir()]);
 		break;
 	case LONG_ATTACK_LENGTH:
 		_collider->SetSize({ 94, 105 });
-		SetFlipbook(_flipbookLongAttackLength[_dir]);
+		SetFlipbook(_flipbookLongAttackLength[_info.dir()]);
 		break;
 	case LONG_ATTACK_WIDTH:
 		_collider->SetSize({ 65, 97 });
-		SetFlipbook(_flipbookLongAttackWidth[_dir]);
+		SetFlipbook(_flipbookLongAttackWidth[_info.dir()]);
 		break;
 	case DASH:
 		_collider->SetSize({ 66, 97 });
-		SetFlipbook(_flipbookDash[_dir]);
+		SetFlipbook(_flipbookDash[_info.dir()]);
 		break;
 	case TELEPORT:
 		_collider->SetSize({ 35, 90 }); 
-		SetFlipbook(_flipbookIdle[_dir]);
+		SetFlipbook(_flipbookIdle[_info.dir()]);
 		break;
 	case CUT_SEVERELY:
 		_collider->SetSize({ 110, 65 });
-		SetFlipbook(_flipbookCutSeverely[_dir]);
+		SetFlipbook(_flipbookCutSeverely[_info.dir()]);
 		break;
 	}
 }
 
 int32 FinalBoss::GetAttack()
 {
-	switch (_state)
+	switch (_info.state())
 	{
 	case CLOSE_ATTACK:
 		return _stat->closeAtkDamage;
@@ -333,7 +333,7 @@ void FinalBoss::CalPixelPerSecond()
 
 BehaviorState FinalBoss::is_cur_state_idle()
 {
-	if (_state == IDLE)
+	if (_info.state() == IDLE)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -387,7 +387,7 @@ BehaviorState FinalBoss::Idle()
 
 BehaviorState FinalBoss::is_cur_state_chase()
 {
-	if (_state == CHASE)
+	if (_info.state() == CHASE)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -407,7 +407,7 @@ BehaviorState FinalBoss::Chase()
 	// Chase À¯Áö
 	if (xDistance > _stat->closeAtkRange && _bossFloor == _playerFloor)
 	{
-		if (_dir == DIR_RIGHT)
+		if (_info.dir() == DIR_RIGHT)
 			_pos.x += _stat->speed * deltaTime;
 		else
 			_pos.x -= _stat->speed * deltaTime;
@@ -456,7 +456,7 @@ BehaviorState FinalBoss::Chase()
 
 BehaviorState FinalBoss::is_cur_state_hit()
 {
-	if (_state == HIT)
+	if (_info.state() == HIT)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -468,7 +468,7 @@ BehaviorState FinalBoss::Hit()
 	_sumTime += deltaTime;
 
 	// knock back
-	if (_dir == DIR_RIGHT)
+	if (_info.dir() == DIR_RIGHT)
 		_pos.x -= (_stat->knockBackDistance * 2) * deltaTime;
 	else
 		_pos.x += (_stat->knockBackDistance * 2) * deltaTime;
@@ -527,7 +527,7 @@ BehaviorState FinalBoss::Hit()
 
 BehaviorState FinalBoss::is_cur_state_dead()
 {
-	if (_state == DEAD)
+	if (_info.state() == DEAD)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -545,7 +545,7 @@ BehaviorState FinalBoss::Dead()
 
 BehaviorState FinalBoss::is_cur_state_crystal_creation()
 {
-	if (_state == CRYSTAL_CREATION)
+	if (_info.state() == CRYSTAL_CREATION)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -616,7 +616,7 @@ BehaviorState FinalBoss::CrystalCreation()
 
 BehaviorState FinalBoss::is_cur_state_thrust()
 {
-	if (_state == THRUST)
+	if (_info.state() == THRUST)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -642,7 +642,7 @@ BehaviorState FinalBoss::Thrust()
 		}
 	}
 
-	if (GetIdx() == _flipbookThrust[_dir]->GetFlipbookEndNum())	// _flipbookThrust[_dir}->GetFlipbookEndNum()
+	if (GetIdx() == _flipbookThrust[_info.dir()]->GetFlipbookEndNum())	// _flipbookThrust[_info.dir()}->GetFlipbookEndNum()
 	{
 		GET_SINGLE(CollisionManager)->RemoveCollider(_attackCollider);
 		RemoveComponent(_attackCollider);
@@ -656,7 +656,7 @@ BehaviorState FinalBoss::Thrust()
 
 BehaviorState FinalBoss::is_cur_state_backstep()
 {
-	if (_state == BACK_STEP)
+	if (_info.state() == BACK_STEP)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -667,7 +667,7 @@ BehaviorState FinalBoss::BackStep()
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 	_sumTime += deltaTime;
 
-	if (_dir == DIR_RIGHT)
+	if (_info.dir() == DIR_RIGHT)
 		_pos.x -= (_stat->backStepDistance * 2) * deltaTime;
 	else
 		_pos.x += (_stat->backStepDistance * 2) * deltaTime;
@@ -685,7 +685,7 @@ BehaviorState FinalBoss::BackStep()
 
 BehaviorState FinalBoss::is_cur_state_long_attack_length()
 {
-	if (_state == LONG_ATTACK_LENGTH)
+	if (_info.state() == LONG_ATTACK_LENGTH)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -717,7 +717,7 @@ BehaviorState FinalBoss::LongAttackLength()
 
 BehaviorState FinalBoss::is_cur_state_long_attack_width()
 {
-	if (_state == LONG_ATTACK_WIDTH)
+	if (_info.state() == LONG_ATTACK_WIDTH)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -749,7 +749,7 @@ BehaviorState FinalBoss::LongAttackWidth()
 
 BehaviorState FinalBoss::is_cur_state_dash()
 {
-	if (_state == DASH)
+	if (_info.state() == DASH)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -760,7 +760,7 @@ BehaviorState FinalBoss::Dash()
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 	_sumTime += deltaTime;
 
-	if (_dir = DIR_RIGHT)
+	if (_info.dir() == DIR_RIGHT)
 		_pos.x += _stat->dashSpeed * deltaTime;
 	else
 		_pos.x -= _stat->dashSpeed * deltaTime;
@@ -779,7 +779,7 @@ BehaviorState FinalBoss::Dash()
 
 BehaviorState FinalBoss::is_cur_state_teleport()
 {
-	if (_state == TELEPORT)
+	if (_info.state() == TELEPORT)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -826,7 +826,7 @@ BehaviorState FinalBoss::Teleport()
 
 BehaviorState FinalBoss::is_cur_state_cut_severely()
 {
-	if (_state == CUT_SEVERELY)
+	if (_info.state() == CUT_SEVERELY)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -926,7 +926,7 @@ void FinalBoss::CreateWidthProjectile()
 	slashwaveW->SetAttack(_stat->longAtkProjectileDamage);
 	slashwaveW->SetRange(_stat->longAtkRange);
 	slashwaveW->SetOwner(this);
-	slashwaveW->SetDir(_dir);
+	slashwaveW->SetDir(_info.dir());
 
 	_currentProjectileCount++;
 }
@@ -940,7 +940,7 @@ void FinalBoss::CreateLengthProjectile()
 	slashwaveH->SetAttack(_stat->longAtkProjectileDamage);
 	slashwaveH->SetRange(_stat->longAtkRange);
 	slashwaveH->SetOwner(this);
-	slashwaveH->SetDir(_dir);
+	slashwaveH->SetDir(_info.dir());
 
 	_currentProjectileCount++;
 }

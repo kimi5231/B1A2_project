@@ -55,7 +55,7 @@ void FootHoldAndZipLineButton::Render(HDC hdc)
 
 void FootHoldAndZipLineButton::UpdateAnimation()
 {
-	switch (_state)
+	switch (_info.state())
 	{
 	case OFF:
 		SetFlipbook(_flipbookFootHoldAndZipLineButtonOff);

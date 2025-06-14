@@ -82,7 +82,7 @@ void LongAtkMonster::Tick()
 	else if (_pos.x >= _movementLimit.y)
 		SetDir(DIR_LEFT);
 
-	if (_dir == DIR_RIGHT)
+	if (_info.dir() == DIR_RIGHT)
 		_pos.x += _stat->speed * deltaTime;
 	else
 		_pos.x -= _stat->speed * deltaTime;
@@ -157,22 +157,22 @@ void LongAtkMonster::TickDead()
 
 void LongAtkMonster::UpdateAnimation()
 {
-	switch (_state)
+	switch (_info.state())
 	{
 	case IDLE:
-		SetFlipbook(_flipbookIdle[_dir]);
+		SetFlipbook(_flipbookIdle[_info.dir()]);
 		_collider->SetSize({ 40, 55 });
 		break;
 	case LONG_ATTACK:
-		SetFlipbook(_flipbookLongAttack[_dir]);
+		SetFlipbook(_flipbookLongAttack[_info.dir()]);
 		_collider->SetSize({ 44, 61 });
 		break;
 	case HIT:
-		SetFlipbook(_flipbookHit[_dir]);
+		SetFlipbook(_flipbookHit[_info.dir()]);
 		_collider->SetSize({ 43, 59 });
 		break;
 	case DEAD:
-		SetFlipbook(_flipbookDead[_dir]);
+		SetFlipbook(_flipbookDead[_info.dir()]);
 		_collider->SetSize({ 45, 75 });
 		break;
 	}
@@ -216,7 +216,7 @@ float LongAtkMonster::GetSpeed()
 
 int32 LongAtkMonster::GetAttack()
 {
-	switch (_state)
+	switch (_info.state())
 	{
 	case LONG_ATTACK:
 		return _stat->projectileAttack;

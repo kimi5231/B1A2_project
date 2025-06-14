@@ -211,7 +211,7 @@ void TiredOfficeWorker::TickChase()
 
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 
-	if (_dir == DIR_RIGHT)
+	if (_info.dir() == DIR_RIGHT)
 		_pos.x += _stat->chaseSpeed * deltaTime;
 	else
 		_pos.x -= _stat->chaseSpeed * deltaTime;
@@ -237,7 +237,7 @@ void TiredOfficeWorker::TickRoaming()
 {
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 
-	if(_dir == DIR_RIGHT)
+	if(_info.dir() == DIR_RIGHT)
 		_pos.x += _stat->speed * deltaTime;
 	else
 		_pos.x -= _stat->speed * deltaTime;
@@ -250,7 +250,7 @@ void TiredOfficeWorker::TickRoaming()
 		SetState(IDLE);
 
 		// 방향 전환
-		if (_dir == DIR_RIGHT)
+		if (_info.dir() == DIR_RIGHT)
 			SetDir(DIR_LEFT);
 		else
 			SetDir(DIR_RIGHT);
@@ -266,13 +266,13 @@ void TiredOfficeWorker::TickReturn()
 
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 
-	if (_dir == DIR_RIGHT)
+	if (_info.dir() == DIR_RIGHT)
 		_pos.x += _stat->speed * deltaTime;
 	else
 		_pos.x -= _stat->speed * deltaTime;
 
 	// 위치 확인
-	if (_dir == DIR_LEFT)
+	if (_info.dir() == DIR_LEFT)
 		_pos.x = max(_spawnPos.x, _pos.x);
 	else
 		_pos.x = min(_pos.x, _spawnPos.x);
@@ -299,38 +299,38 @@ void TiredOfficeWorker::UpdateAnimation()
 {
 	Vec2 colliderSize = _collider->GetSize();
 
-	switch (_state)
+	switch (_info.state())
 	{
 	case IDLE:
-		SetFlipbook(_flipbookIdle[_dir]);
+		SetFlipbook(_flipbookIdle[_info.dir()]);
 		_collider->SetSize({34, 80});
 		break;
 	case CLOSE_ATTACK:
-		SetFlipbook(_flipbookCloseAttack[_dir]);
+		SetFlipbook(_flipbookCloseAttack[_info.dir()]);
 		_collider->SetSize({ 95, 105 });
 		break;
 	case HIT:
-		SetFlipbook(_flipbookHit[_dir]);
+		SetFlipbook(_flipbookHit[_info.dir()]);
 		_collider->SetSize({ 50, 70 });
 		break;
 	case DEAD:
-		SetFlipbook(_flipbookDead[_dir]);
+		SetFlipbook(_flipbookDead[_info.dir()]);
 		_collider->SetSize({ 60, 78 });
 		break;
 	case CHASE:
-		SetFlipbook(_flipbookChase[_dir]);
+		SetFlipbook(_flipbookChase[_info.dir()]);
 		_collider->SetSize({ 97, 77 });
 		break;
 	case ROAMING:
-		SetFlipbook(_flipbookRoaming[_dir]);
+		SetFlipbook(_flipbookRoaming[_info.dir()]);
 		_collider->SetSize({ 50, 81 });
 		break;
 	case RETURN:
-		SetFlipbook(_flipbookReturn[_dir]);
+		SetFlipbook(_flipbookReturn[_info.dir()]);
 		_collider->SetSize({ 50, 81 });
 		break;
 	case RETURN_IDLE:
-		SetFlipbook(_flipbookRETURN_IDLE[_dir]);
+		SetFlipbook(_flipbookRETURN_IDLE[_info.dir()]);
 		_collider->SetSize({ 34, 80 });
 		break;
 	}
@@ -364,7 +364,7 @@ void TiredOfficeWorker::OnComponentBeginOverlap(Collider* collider, Collider* ot
 			SetTarget(dynamic_cast<Player*>(b2->GetOwner()));
 			
 			// knockback
-			if (_dir == DIR_RIGHT)
+			if (_info.dir() == DIR_RIGHT)
 				_pos.x -= _stat->knockBackDistance;
 			else
 				_pos.x += _stat->knockBackDistance;
@@ -466,7 +466,7 @@ void TiredOfficeWorker::SetMoveDistance(float distance)
 
 float TiredOfficeWorker::GetSpeed()
 {
-	switch (_state)
+	switch (_info.state())
 	{
 	case MOVE:
 		return _stat->speed;
@@ -479,7 +479,7 @@ float TiredOfficeWorker::GetSpeed()
 
 int32 TiredOfficeWorker::GetAttack()
 {
-	switch (_state)
+	switch (_info.state())
 	{
 	case CLOSE_ATTACK:
 		return _stat->attack;

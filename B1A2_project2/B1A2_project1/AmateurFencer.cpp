@@ -177,39 +177,39 @@ void AmateurFencer::Render(HDC hdc)
 
 void AmateurFencer::UpdateAnimation()
 {
-	switch (_state)
+	switch (_info.state())
 	{
 	case IDLE:
-		SetFlipbook(_flipbookIdle[_dir]);
+		SetFlipbook(_flipbookIdle[_info.dir()]);
 		_collider->SetSize({ 31, 88 });
 		break;
 	case HIT:
-		SetFlipbook(_flipbookHit[_dir]);
+		SetFlipbook(_flipbookHit[_info.dir()]);
 		_collider->SetSize({ 75, 65 });
 		break;
 	case CHASE:
 		_collider->SetSize({ 90, 100 });
-		SetFlipbook(_flipbookChase[_dir]);
+		SetFlipbook(_flipbookChase[_info.dir()]);
 		break;
 	case THRUST:
 		_collider->SetSize({ 145, 88 });
-		SetFlipbook(_flipbookThrust[_dir]);
+		SetFlipbook(_flipbookThrust[_info.dir()]);
 		break;
 	case BACK_STEP:
 		_collider->SetSize({ 145, 88 });
-		SetFlipbook(_flipbookBackStep[_dir]);
+		SetFlipbook(_flipbookBackStep[_info.dir()]);
 		break;
 	case SLASH_WAVE:
 		_collider->SetSize({ 85, 88 });
-		SetFlipbook(_flipbookSlashWave[_dir]);
+		SetFlipbook(_flipbookSlashWave[_info.dir()]);
 		break;
 	case DASH:
 		_collider->SetSize({ 90, 88 });
-		SetFlipbook(_flipbookDash[_dir]);
+		SetFlipbook(_flipbookDash[_info.dir()]);
 		break;
 	case DEAD:
 		_collider->SetSize({ 75, 60 });
-		SetFlipbook(_flipbookDead[_dir]);
+		SetFlipbook(_flipbookDead[_info.dir()]);
 		break;
 	}
 }
@@ -251,7 +251,7 @@ void AmateurFencer::CalPixelPerSecond()
 
 int32 AmateurFencer::GetAttack()
 {
-	switch (_state)
+	switch (_info.state())
 	{
 	case CLOSE_ATTACK:
 		return _stat->closeAtkDamage;
@@ -261,7 +261,7 @@ int32 AmateurFencer::GetAttack()
 
 BehaviorState AmateurFencer::is_cur_state_idle()
 {
-	if (_state == IDLE)
+	if (_info.state() == IDLE)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -274,7 +274,7 @@ BehaviorState AmateurFencer::Idle()
 
 BehaviorState AmateurFencer::is_cur_state_hit()
 {
-	if (_state == HIT)
+	if (_info.state() == HIT)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -286,7 +286,7 @@ BehaviorState AmateurFencer::Hit()
 	_sumTime += deltaTime;
 
 	// knockback
-	if (_dir == DIR_RIGHT)
+	if (_info.dir() == DIR_RIGHT)
 		_pos.x -= (_stat->knockBackDistance * 2) * deltaTime;
 	else
 		_pos.x += (_stat->knockBackDistance * 2) * deltaTime;
@@ -304,7 +304,7 @@ BehaviorState AmateurFencer::Hit()
 
 BehaviorState AmateurFencer::is_cur_state_chase()
 {
-	if (_state == CHASE)
+	if (_info.state() == CHASE)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -321,7 +321,7 @@ BehaviorState AmateurFencer::Chase()
 	{
 		if (yDistance > _stat->playerDetection.y)
 		{
-			if (_dir == DIR_RIGHT)
+			if (_info.dir() == DIR_RIGHT)
 				_pos.x += _stat->speed * deltaTime;
 			else
 				_pos.x -= _stat->speed * deltaTime;
@@ -347,7 +347,7 @@ BehaviorState AmateurFencer::Chase()
 
 BehaviorState AmateurFencer::is_cur_state_thrust()
 {
-	if (_state == THRUST)
+	if (_info.state() == THRUST)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -373,7 +373,7 @@ BehaviorState AmateurFencer::Thrust()	// Âî¸£±â
 			}
 	}
 
-	if (GetIdx() == _flipbookThrust[_dir]->GetFlipbookEndNum())	// _flipbookThrust[_dir}->GetFlipbookEndNum()
+	if (GetIdx() == _flipbookThrust[_info.dir()]->GetFlipbookEndNum())	// _flipbookThrust[_info.dir()}->GetFlipbookEndNum()
 	{
 		GET_SINGLE(CollisionManager)->RemoveCollider(_attackCollider);
 		RemoveComponent(_attackCollider);
@@ -388,7 +388,7 @@ BehaviorState AmateurFencer::Thrust()	// Âî¸£±â
 
 BehaviorState AmateurFencer::is_cur_state_backstep()
 {
-	if (_state == BACK_STEP)
+	if (_info.state() == BACK_STEP)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -401,7 +401,7 @@ BehaviorState AmateurFencer::BackStep()
 	float yDistance = GetAbsFromPlayerYDistance();
 	_sumTime += deltaTime;
 
-	if (_dir == DIR_RIGHT)
+	if (_info.dir() == DIR_RIGHT)
 		_pos.x -= (_stat->backStepDistance * 2) * deltaTime;
 	else
 		_pos.x += (_stat->backStepDistance * 2) * deltaTime;
@@ -443,7 +443,7 @@ BehaviorState AmateurFencer::BackStep()
 
 BehaviorState AmateurFencer::is_cur_state_slashwave()
 {
-	if (_state == SLASH_WAVE)
+	if (_info.state() == SLASH_WAVE)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -474,7 +474,7 @@ BehaviorState AmateurFencer::SlashWave()
 
 BehaviorState AmateurFencer::is_cur_state_dash()
 {
-	if (_state == DASH)
+	if (_info.state() == DASH)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -485,7 +485,7 @@ BehaviorState AmateurFencer::Dash()
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 	_sumTime += deltaTime;
 
-	if (_dir = DIR_RIGHT)
+	if (_info.dir() == DIR_RIGHT)
 		_pos.x += _stat->dashSpeed * deltaTime;
 	else
 		_pos.x -= _stat->dashSpeed * deltaTime;
@@ -503,7 +503,7 @@ BehaviorState AmateurFencer::Dash()
 
 BehaviorState AmateurFencer::is_cur_state_dead()
 {
-	if (_state == DEAD)
+	if (_info.state() == DEAD)
 		return BehaviorState::SUCCESS;
 	else
 		return BehaviorState::FAIL;
@@ -615,7 +615,7 @@ void AmateurFencer::CreateProjectile()
 	slashwave->SetAttack(_stat->longAtkProjectileDamage);
 	slashwave->SetRange(_stat->longAtkRange);
 	slashwave->SetOwner(this);
-	slashwave->SetDir(_dir);
+	slashwave->SetDir(_info.dir());
 
 	_currentProjectileCount++;
 }

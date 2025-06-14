@@ -28,7 +28,7 @@ private:
 	virtual void OnComponentEndOverlap(Collider* collider, Collider* other);
 
 public:
-	ObjectState GetState() { return _state; }
+	ObjectState GetState() { return _info.state(); }
 
 	void SetZipLinePos(Vec2 pos) { _zipLinePos = pos; }
 	Vec2 GetZipLinePos() { return _zipLinePos; }

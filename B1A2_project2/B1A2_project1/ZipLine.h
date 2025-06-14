@@ -93,7 +93,7 @@ public:
 
 	void SetDisplayPos(Vec2Int pos) { _displayPos = pos; }
 
-	ObjectState GetState() { return _state; }
+	ObjectState GetState() { return _info.state(); }
 
 private:
 	Flipbook* _flipbookButtonOff = nullptr;

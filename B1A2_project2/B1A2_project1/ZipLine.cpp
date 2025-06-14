@@ -167,7 +167,7 @@ void ZipLineButtonAndDisplay::Render(HDC hdc)
 	
 	Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"ZipLineDisplay");
 
-	if (_state == ON)
+	if (_info.state() == ON)
 	{
 		::TransparentBlt(hdc,
 			((int32)_displayPos.x - texture->GetSize().x / 2) * winSizeAdjustmemt.x - cameraPosAdjustmemt.x,
@@ -199,7 +199,7 @@ void ZipLineButtonAndDisplay::Render(HDC hdc)
 
 void ZipLineButtonAndDisplay::UpdateAnimation()
 {
-	switch (_state)
+	switch (_info.state())
 	{
 	case ON:
 		SetFlipbook(_flipbookButtonOn);

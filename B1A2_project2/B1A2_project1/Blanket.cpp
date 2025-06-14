@@ -77,7 +77,7 @@ void Blanket::TickMove()
 
 void Blanket::UpdateAnimation()
 {
-	switch (_state)
+	switch (_info.state())
 	{
 	case ON:
 		SetFlipbook(_flipbookBlanket);

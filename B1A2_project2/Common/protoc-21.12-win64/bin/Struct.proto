@@ -15,11 +15,4 @@ message ObjectInfo
 	uint64 objectId = 1;
 	OBJECT_STATE_TYPE state = 2;
 	DIR_TYPE dir = 3;
-	string name = 4;
-	int32 hp = 5;
-	int32 maxHp = 6;
-	int32 attack = 7;
-	int32 defence = 8;
-	int32 posX = 9;
-	int32 posY = 10;
 }

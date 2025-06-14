@@ -88,7 +88,7 @@ void DestructibleObject::TickDead()
 
 void DestructibleObject::UpdateAnimation()
 {
-	switch (_state)
+	switch (_info.state())
 	{
 	case ON:
 		SetFlipbook(_flipbookObject);

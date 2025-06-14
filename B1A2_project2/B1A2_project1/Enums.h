@@ -118,44 +118,6 @@ enum class SceneState
 	Inventory,
 };
 
-// Object
-//enum class ObjectState
-//{
-//	Idle,	// 대기
-//	Move,	// 달리기
-//	DuckDown,	// 숙이기
-//	DuckDownMove,	// 숙이면서 달리기
-//	Jump,	// 점프
-//	CloseAttack,	// 기본 공격
-//	LongAttack,
-//	LongAttackLength,
-//	LongAttackWidth,
-//	Thrust,		// 찌르기
-//	BackStep,	// 백스텝
-//	SlashWave,	// 검기 날리기
-//	SkillReady,	// 스킬
-//	SkillWaiting,
-//	SkillEnd, 
-//	Hang,	// 매달리기
-//	Release,	// 놓기
-//	Hit,	// 피격
-//	Dead,	// 사망
-//	Chase,	// 추적
-//	Roaming,	// 배회
-//	Dash,	// 대쉬
-//	Return,		// 복귀
-//	RETURN_IDLE,		// 복귀 대기(복귀하기 전 대기하는 상태)
-//	ProjectileFall,
-//	CrystalCreation,
-//	MonsterCreation,
-//	Teleport,
-//	CutSeverely,
-//	On,		// 구조물
-//	On2,
-//	Ready,
-//	Off,
-//};
-
 // Object State
 using ObjectState = Protocol::OBJECT_STATE_TYPE;
 

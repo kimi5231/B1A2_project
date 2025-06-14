@@ -75,7 +75,7 @@ void Crystal::TickDead()
 
 void Crystal::UpdateAnimation()
 {
-	switch (_state)
+	switch (_info.state())
 	{
 	case ON:
 		SetFlipbook(_flipbookCrystal);

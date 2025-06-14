@@ -23,7 +23,7 @@ private:
 	virtual void OnComponentEndOverlap(Collider* collider, Collider* other);
 
 public:
-	void SetDir(Dir dir) { _dir = dir; }
+	void SetDir(Dir dir) { _info.set_dir(dir); }
 
 private:
 	Flipbook* _flipbookMove[2];

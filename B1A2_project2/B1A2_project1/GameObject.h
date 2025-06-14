@@ -49,14 +49,13 @@ public:
 
 public:
 	void SetState(ObjectState state);
-	ObjectState GetState() { return _state; }
+	ObjectState GetState() { return _info.state(); }
 
 	void SetDir(Dir dir);
-	Dir GetDir() { return _dir; }
+	Dir GetDir() { return _info.dir(); }
 
 protected:
-	Dir _dir = DIR_RIGHT;
-	ObjectState _state = IDLE;
+	Protocol::ObjectInfo _info{};
 
 	int32 _gravity = 1000;
 	float _ySpeed{};

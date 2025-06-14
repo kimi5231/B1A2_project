@@ -56,7 +56,7 @@ void Slashwave::TickMove()
 {
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 
-	if (_dir == DIR_RIGHT)
+	if (_info.dir() == DIR_RIGHT)
 		_pos.x += _speed * deltaTime;
 	else
 		_pos.x -= _speed * deltaTime;
@@ -70,10 +70,10 @@ void Slashwave::TickMove()
 
 void Slashwave::UpdateAnimation()
 {
-	switch (_state)
+	switch (_info.state())
 	{
 	case MOVE:
-		SetFlipbook(_flipbookMove[_dir]);
+		SetFlipbook(_flipbookMove[_info.dir()]);
 		break;
 	}
 }

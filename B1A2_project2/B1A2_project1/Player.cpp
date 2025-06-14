@@ -153,7 +153,7 @@ void Player::Tick()
 		}
 	}
 
-	if (_state != CLOSE_ATTACK && _state != LONG_ATTACK)
+	if (_info.state() != CLOSE_ATTACK && _info.state() != LONG_ATTACK)
 	{
 		if (_attackCollider)
 		{
@@ -162,7 +162,7 @@ void Player::Tick()
 			_attackCollider = nullptr;
 		}
 	}	
-	if (_state != SKILL_WAITING && _state != SKILL_END)
+	if (_info.state() != SKILL_WAITING && _info.state() != SKILL_END)
 	{
 		if (_skillCollider)
 		{
@@ -188,7 +188,7 @@ void Player::Tick()
 			AddComponent(collider);
 		}
 	}
-	if (_state == SKILL_WAITING || _state == SKILL_END)
+	if (_info.state() == SKILL_WAITING || _info.state() == SKILL_END)
 	{
 		if (_detectCollider)
 		{
@@ -302,7 +302,7 @@ void Player::Tick()
 			}
 		}
 
-		if (_state != HANG)
+		if (_info.state() != HANG)
 		{
 			_isAir = true;
 			_isGround = false;
@@ -379,7 +379,7 @@ void Player::TickIdle()
 	{
 		_keyPressed = false;
 
-		if (_state == IDLE)
+		if (_info.state() == IDLE)
 			UpdateAnimation();
 	}
 }
@@ -523,7 +523,7 @@ void Player::TickJump()
 			if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::SpaceBar))
 			{
 				// 바라보는 방향 설정
-				_dir = DIR_RIGHT;
+				SetDir(DIR_RIGHT);
 
 				_currentZipLine = _nearZipLine;
 				SetState(HANG);
@@ -583,7 +583,7 @@ void Player::TickLongAttack()
 
 	if (sumTime <= 0.7f)
 	{
-		if (_dir == DIR_RIGHT)
+		if (_info.dir() == DIR_RIGHT)
 		{
 			_pos.x += 114 * deltaTime;
 		}
@@ -681,7 +681,7 @@ void Player::TickSkillWaiting()
 		_skillCollider = collider;
 	}
 
-	if (_dir == DIR_RIGHT)
+	if (_info.dir() == DIR_RIGHT)
 		_pos.x += (distance / 0.7) * deltaTime;		// 속 = 거 / 시
 	else
 		_pos.x -= (distance / 0.7) * deltaTime;
@@ -695,7 +695,7 @@ void Player::TickSkillWaiting()
 
 void Player::TickSkillEnd()
 {
-	if (GetIdx() == _flipbookPlayerSkillEnd[_dir]->GetFlipbookEndNum())
+	if (GetIdx() == _flipbookPlayerSkillEnd[_info.dir()]->GetFlipbookEndNum())
 		SetState(IDLE);
 }
 
@@ -781,7 +781,7 @@ void Player::TickRelease()
 
 	sumTime += deltaTime;
 
-	if (_dir == DIR_RIGHT)
+	if (_info.dir() == DIR_RIGHT)
 		_pos.x += _playerStat->runSpeed * deltaTime;
 	else
 		_pos.x -= _playerStat->runSpeed * deltaTime;
@@ -800,7 +800,7 @@ void Player::TickHit()
 	sumTime += deltaTime;
 
 	// knockback
-	if (_dir == DIR_RIGHT)
+	if (_info.dir() == DIR_RIGHT)
 		_pos.x -= (_playerStat->knockBackDistance * 2) * deltaTime;		// 속 = 거 / 시
 	else
 		_pos.x += (_playerStat->knockBackDistance * 2) * deltaTime;
@@ -832,62 +832,62 @@ void Player::UpdateAnimation()
 {
 	Vec2 colliderSize = _playerCollider->GetSize();
 
-	switch (_state)
+	switch (_info.state())
 	{
 	case IDLE:
 		_playerCollider->SetSize({ 23, 85 });
-		SetFlipbook(_flipbookPlayerIdle[_dir]);		
+		SetFlipbook(_flipbookPlayerIdle[_info.dir()]);		
 		break;
 	case MOVE:
 		_playerCollider->SetSize({67, 70 });
-		SetFlipbook(_flipbookPlayerMove[_dir]);
+		SetFlipbook(_flipbookPlayerMove[_info.dir()]);
 		break;
 	case DUCK_DOWN:
 		_playerCollider->SetSize({35, 45});
-		SetFlipbook(_flipbookPlayerDuckDown[_dir]);
+		SetFlipbook(_flipbookPlayerDuckDown[_info.dir()]);
 		break;
 	case DUCK_DOWN_MOVE:
 		_playerCollider->SetSize({ 34, 50 });
-		SetFlipbook(_flipbookPlayerDuckDownMove[_dir]);
+		SetFlipbook(_flipbookPlayerDuckDownMove[_info.dir()]);
 		break;
 	case JUMP:
 		_playerCollider->SetSize({ 34, 55 });
-		SetFlipbook(_flipbookPlayerJump[_dir]);
+		SetFlipbook(_flipbookPlayerJump[_info.dir()]);
 		break;
 	case HANG:
 		_playerCollider->SetSize({ 30, 80 });
-		SetFlipbook(_flipbookPlayerHang[_dir]);
+		SetFlipbook(_flipbookPlayerHang[_info.dir()]);
 		break;
 	case RELEASE:
 		_playerCollider->SetSize({ 34, 88 });
-		SetFlipbook(_flipbookPlayerRelease[_dir]);
+		SetFlipbook(_flipbookPlayerRelease[_info.dir()]);
 		break;
 	case SKILL_READY:
 		_playerCollider->SetSize({140, 85});
-		SetFlipbook(_flipbookPlayerSkillReady[_dir]);
+		SetFlipbook(_flipbookPlayerSkillReady[_info.dir()]);
 		break;
 	case SKILL_WAITING:
 		_playerCollider->SetSize({ 140, 85 });
-		SetFlipbook(_flipbookPlayerSkillWaiting[_dir]);
+		SetFlipbook(_flipbookPlayerSkillWaiting[_info.dir()]);
 		break;
 	case SKILL_END:
 		_playerCollider->SetSize({ 140, 85 });
-		SetFlipbook(_flipbookPlayerSkillEnd[_dir]);
+		SetFlipbook(_flipbookPlayerSkillEnd[_info.dir()]);
 		break;
 	case CLOSE_ATTACK:
 		//_playerCollider->SetSize({ 75, 90 });
-		SetFlipbook(_flipbookPlayerSlash[_dir]);
+		SetFlipbook(_flipbookPlayerSlash[_info.dir()]);
 		break;
 	case LONG_ATTACK:
 		_playerCollider->SetSize({ 75, 90 });
-		SetFlipbook(_flipbookPlayerSlash[_dir]);		
+		SetFlipbook(_flipbookPlayerSlash[_info.dir()]);		
 		break;
 	case HIT:
 		_playerCollider->SetSize({ 41, 80 });
-		SetFlipbook(_flipbookPlayerHit[_dir]);
+		SetFlipbook(_flipbookPlayerHit[_info.dir()]);
 	break;
 	case DEAD:
-	//	SetFlipbook(_flipbookPlayerDead[_dir]);
+	//	SetFlipbook(_flipbookPlayerDead[_info.dir()]);
 	break;
 	}
 
@@ -901,7 +901,7 @@ void Player::UpdateAnimation()
 int32 Player::GetAttack()
 {
 	// damage 수정 예정
-	switch (_state)
+	switch (_info.state())
 	{
 	case CLOSE_ATTACK:
 		if (GetSkillPoint() >= 5)
@@ -936,7 +936,7 @@ int32 Player::GetAttack()
 
 float Player::GetSpeed()
 {
-	switch (_state)
+	switch (_info.state())
 	{
 	case MOVE:
 		return _playerStat->runSpeed;
@@ -1260,7 +1260,7 @@ void Player::OnComponentBeginOverlap(Collider* collider, Collider* other)
 	if (b2->GetCollisionLayer() == CLT_STAIR)
 	{
 		// Jump State일때만 충돌
-		if (_state == JUMP)
+		if (_info.state() == JUMP)
 		{
 			_isGround = true;
 			_isAir = false;

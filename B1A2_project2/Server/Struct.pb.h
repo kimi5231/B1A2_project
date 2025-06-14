@@ -366,31 +366,10 @@ class ObjectInfo final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kNameFieldNumber = 4,
     kObjectIdFieldNumber = 1,
     kStateFieldNumber = 2,
     kDirFieldNumber = 3,
-    kHpFieldNumber = 5,
-    kMaxHpFieldNumber = 6,
-    kAttackFieldNumber = 7,
-    kDefenceFieldNumber = 8,
-    kPosXFieldNumber = 9,
-    kPosYFieldNumber = 10,
   };
-  // string name = 4;
-  void clear_name();
-  const std::string& name() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_name(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_name();
-  PROTOBUF_NODISCARD std::string* release_name();
-  void set_allocated_name(std::string* name);
-  private:
-  const std::string& _internal_name() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_name(const std::string& value);
-  std::string* _internal_mutable_name();
-  public:
-
   // uint64 objectId = 1;
   void clear_objectid();
   uint64_t objectid() const;
@@ -418,60 +397,6 @@ class ObjectInfo final :
   void _internal_set_dir(::Protocol::DIR_TYPE value);
   public:
 
-  // int32 hp = 5;
-  void clear_hp();
-  int32_t hp() const;
-  void set_hp(int32_t value);
-  private:
-  int32_t _internal_hp() const;
-  void _internal_set_hp(int32_t value);
-  public:
-
-  // int32 maxHp = 6;
-  void clear_maxhp();
-  int32_t maxhp() const;
-  void set_maxhp(int32_t value);
-  private:
-  int32_t _internal_maxhp() const;
-  void _internal_set_maxhp(int32_t value);
-  public:
-
-  // int32 attack = 7;
-  void clear_attack();
-  int32_t attack() const;
-  void set_attack(int32_t value);
-  private:
-  int32_t _internal_attack() const;
-  void _internal_set_attack(int32_t value);
-  public:
-
-  // int32 defence = 8;
-  void clear_defence();
-  int32_t defence() const;
-  void set_defence(int32_t value);
-  private:
-  int32_t _internal_defence() const;
-  void _internal_set_defence(int32_t value);
-  public:
-
-  // int32 posX = 9;
-  void clear_posx();
-  int32_t posx() const;
-  void set_posx(int32_t value);
-  private:
-  int32_t _internal_posx() const;
-  void _internal_set_posx(int32_t value);
-  public:
-
-  // int32 posY = 10;
-  void clear_posy();
-  int32_t posy() const;
-  void set_posy(int32_t value);
-  private:
-  int32_t _internal_posy() const;
-  void _internal_set_posy(int32_t value);
-  public:
-
   // @@protoc_insertion_point(class_scope:Protocol.ObjectInfo)
  private:
   class _Internal;
@@ -480,16 +405,9 @@ class ObjectInfo final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
     uint64_t objectid_;
     int state_;
     int dir_;
-    int32_t hp_;
-    int32_t maxhp_;
-    int32_t attack_;
-    int32_t defence_;
-    int32_t posx_;
-    int32_t posy_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -655,176 +573,6 @@ inline void ObjectInfo::_internal_set_dir(::Protocol::DIR_TYPE value) {
 inline void ObjectInfo::set_dir(::Protocol::DIR_TYPE value) {
   _internal_set_dir(value);
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.dir)
-}
-
-// string name = 4;
-inline void ObjectInfo::clear_name() {
-  _impl_.name_.ClearToEmpty();
-}
-inline const std::string& ObjectInfo::name() const {
-  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.name)
-  return _internal_name();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void ObjectInfo::set_name(ArgT0&& arg0, ArgT... args) {
- 
- _impl_.name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.name)
-}
-inline std::string* ObjectInfo::mutable_name() {
-  std::string* _s = _internal_mutable_name();
-  // @@protoc_insertion_point(field_mutable:Protocol.ObjectInfo.name)
-  return _s;
-}
-inline const std::string& ObjectInfo::_internal_name() const {
-  return _impl_.name_.Get();
-}
-inline void ObjectInfo::_internal_set_name(const std::string& value) {
-  
-  _impl_.name_.Set(value, GetArenaForAllocation());
-}
-inline std::string* ObjectInfo::_internal_mutable_name() {
-  
-  return _impl_.name_.Mutable(GetArenaForAllocation());
-}
-inline std::string* ObjectInfo::release_name() {
-  // @@protoc_insertion_point(field_release:Protocol.ObjectInfo.name)
-  return _impl_.name_.Release();
-}
-inline void ObjectInfo::set_allocated_name(std::string* name) {
-  if (name != nullptr) {
-    
-  } else {
-    
-  }
-  _impl_.name_.SetAllocated(name, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.name_.IsDefault()) {
-    _impl_.name_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Protocol.ObjectInfo.name)
-}
-
-// int32 hp = 5;
-inline void ObjectInfo::clear_hp() {
-  _impl_.hp_ = 0;
-}
-inline int32_t ObjectInfo::_internal_hp() const {
-  return _impl_.hp_;
-}
-inline int32_t ObjectInfo::hp() const {
-  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.hp)
-  return _internal_hp();
-}
-inline void ObjectInfo::_internal_set_hp(int32_t value) {
-  
-  _impl_.hp_ = value;
-}
-inline void ObjectInfo::set_hp(int32_t value) {
-  _internal_set_hp(value);
-  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.hp)
-}
-
-// int32 maxHp = 6;
-inline void ObjectInfo::clear_maxhp() {
-  _impl_.maxhp_ = 0;
-}
-inline int32_t ObjectInfo::_internal_maxhp() const {
-  return _impl_.maxhp_;
-}
-inline int32_t ObjectInfo::maxhp() const {
-  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.maxHp)
-  return _internal_maxhp();
-}
-inline void ObjectInfo::_internal_set_maxhp(int32_t value) {
-  
-  _impl_.maxhp_ = value;
-}
-inline void ObjectInfo::set_maxhp(int32_t value) {
-  _internal_set_maxhp(value);
-  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.maxHp)
-}
-
-// int32 attack = 7;
-inline void ObjectInfo::clear_attack() {
-  _impl_.attack_ = 0;
-}
-inline int32_t ObjectInfo::_internal_attack() const {
-  return _impl_.attack_;
-}
-inline int32_t ObjectInfo::attack() const {
-  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.attack)
-  return _internal_attack();
-}
-inline void ObjectInfo::_internal_set_attack(int32_t value) {
-  
-  _impl_.attack_ = value;
-}
-inline void ObjectInfo::set_attack(int32_t value) {
-  _internal_set_attack(value);
-  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.attack)
-}
-
-// int32 defence = 8;
-inline void ObjectInfo::clear_defence() {
-  _impl_.defence_ = 0;
-}
-inline int32_t ObjectInfo::_internal_defence() const {
-  return _impl_.defence_;
-}
-inline int32_t ObjectInfo::defence() const {
-  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.defence)
-  return _internal_defence();
-}
-inline void ObjectInfo::_internal_set_defence(int32_t value) {
-  
-  _impl_.defence_ = value;
-}
-inline void ObjectInfo::set_defence(int32_t value) {
-  _internal_set_defence(value);
-  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.defence)
-}
-
-// int32 posX = 9;
-inline void ObjectInfo::clear_posx() {
-  _impl_.posx_ = 0;
-}
-inline int32_t ObjectInfo::_internal_posx() const {
-  return _impl_.posx_;
-}
-inline int32_t ObjectInfo::posx() const {
-  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.posX)
-  return _internal_posx();
-}
-inline void ObjectInfo::_internal_set_posx(int32_t value) {
-  
-  _impl_.posx_ = value;
-}
-inline void ObjectInfo::set_posx(int32_t value) {
-  _internal_set_posx(value);
-  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.posX)
-}
-
-// int32 posY = 10;
-inline void ObjectInfo::clear_posy() {
-  _impl_.posy_ = 0;
-}
-inline int32_t ObjectInfo::_internal_posy() const {
-  return _impl_.posy_;
-}
-inline int32_t ObjectInfo::posy() const {
-  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.posY)
-  return _internal_posy();
-}
-inline void ObjectInfo::_internal_set_posy(int32_t value) {
-  
-  _impl_.posy_ = value;
-}
-inline void ObjectInfo::set_posy(int32_t value) {
-  _internal_set_posy(value);
-  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.posY)
 }
 
 #ifdef __GNUC__

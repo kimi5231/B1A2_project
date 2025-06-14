@@ -74,7 +74,7 @@ void LockedDoorAndKey::Render(HDC hdc)
 
 void LockedDoorAndKey::UpdateAnimation()
 {
-	switch (_state)
+	switch (_info.state())
 	{
 	case ON:
 		SetFlipbook(_flipbookUnlockedDoor);
