@@ -20,6 +20,9 @@
     <Filter Include="소스 파일\Game\Room">
       <UniqueIdentifier>{b258b9cc-328a-45d8-8eb0-618f074befdf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Game\Objects">
+      <UniqueIdentifier>{c2513743-8e23-4035-b879-e79a540b954a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameSessionManager.cpp">
@@ -49,6 +52,12 @@
     <ClCompile Include="GameRoom.cpp">
       <Filter>소스 파일\Game\Room</Filter>
     </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>소스 파일\Game\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>소스 파일\Game\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameSession.h">
@@ -74,6 +83,12 @@
     </ClInclude>
     <ClInclude Include="GameRoom.h">
       <Filter>소스 파일\Game\Room</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>소스 파일\Game\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>소스 파일\Game\Objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
