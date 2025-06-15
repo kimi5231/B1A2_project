@@ -15,3 +15,8 @@
 #endif
 
 using GameSessionRef = std::shared_ptr<class GameSession>;
+
+using GameRoomRef = std::shared_ptr<class GameRoom>;
+
+using GameObjectRef = std::shared_ptr<class GameObject>;
+using PlayerRef = std::shared_ptr<class Player>;
