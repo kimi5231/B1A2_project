@@ -25,7 +25,7 @@ void Game::Init(HWND hwnd)
 
 	// 상대 경로 path 알아내는 코드
 	_resourcePath = std::filesystem::current_path().relative_path();
-	std::filesystem::path _resourcePath = std::filesystem::current_path().parent_path().parent_path() / "B1A2_project2\\Resources";
+	std::filesystem::path _resourcePath = std::filesystem::current_path().parent_path().parent_path().parent_path() / "Resources";
 
 	// 폰트 경로
 	std::filesystem::path fullPath = _resourcePath / L"Font\\DungGeunMo.ttf";
