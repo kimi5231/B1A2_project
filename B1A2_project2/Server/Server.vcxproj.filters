@@ -23,6 +23,12 @@
     <Filter Include="소스 파일\Game\Objects">
       <UniqueIdentifier>{c2513743-8e23-4035-b879-e79a540b954a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Game\Managers">
+      <UniqueIdentifier>{edf7e316-6c5f-4794-b517-a569016083ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Game\Data">
+      <UniqueIdentifier>{8627e74d-a626-4812-b321-b9bca099c8a8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameSessionManager.cpp">
@@ -58,6 +64,12 @@
     <ClCompile Include="Player.cpp">
       <Filter>소스 파일\Game\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="DataManager.cpp">
+      <Filter>소스 파일\Game\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Stat.cpp">
+      <Filter>소스 파일\Game\Data</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameSession.h">
@@ -89,6 +101,15 @@
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>소스 파일\Game\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="DataManager.h">
+      <Filter>소스 파일\Game\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Defines.h">
+      <Filter>소스 파일\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Stat.h">
+      <Filter>소스 파일\Game\Data</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

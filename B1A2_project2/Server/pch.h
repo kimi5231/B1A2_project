@@ -1,11 +1,17 @@
 #pragma once
 
+// 제일 위에 둬야 함
 #include "CorePch.h"
 
 #include "Protocol.pb.h"
 #include "Enum.pb.h"
 #include "Struct.pb.h"
 
+#include "Defines.h"
+
+#include <filesystem>
+
+// 라이브러리
 #ifdef _DEBUG   // 디버그 모드일 때
 #pragma comment(lib, "ServerCore\\Debug\\ServerCore.lib")
 #pragma comment(lib, "Protobuf\\Debug\\libprotobufd.lib")

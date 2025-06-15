@@ -2,7 +2,6 @@
 #include <iostream>
 #include <thread>
 #include <vector>
-using namespace std;
 #include <atomic>
 #include <mutex>
 #include "ThreadManager.h"
@@ -12,11 +11,21 @@ using namespace std;
 #include "GameSession.h"
 #include "GameSessionManager.h"
 #include "ServerPacketHandler.h"
+#include "DataManager.h"
+#include "Stat.h"
 
 #include <chrono>
 
 int main()
 {
+	// 상대 경로 알아오기
+	std::filesystem::path resourcePath = std::filesystem::current_path().relative_path();
+	
+	// DataBase 파일 경로 설정
+	resourcePath = std::filesystem::current_path().parent_path().parent_path().parent_path() / "Data";
+	GET_SINGLE(DataManager)->Init(resourcePath);
+	Stat* stat = GET_SINGLE(DataManager)->LoadStat();
+
 	SocketUtils::Init();
 
 	ServerServiceRef service = make_shared<ServerService>(
