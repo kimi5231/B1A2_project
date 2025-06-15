@@ -14,6 +14,12 @@
     <Filter Include="소스 파일\Protocol\Proto">
       <UniqueIdentifier>{99f546b6-6a92-4535-b6ad-4544305b0553}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Game">
+      <UniqueIdentifier>{53e83452-dc85-4b5a-b734-a0b378535a4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Game\Room">
+      <UniqueIdentifier>{b258b9cc-328a-45d8-8eb0-618f074befdf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameSessionManager.cpp">
@@ -40,6 +46,9 @@
     <ClCompile Include="Struct.pb.cc">
       <Filter>소스 파일\Protocol</Filter>
     </ClCompile>
+    <ClCompile Include="GameRoom.cpp">
+      <Filter>소스 파일\Game\Room</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameSession.h">
@@ -62,6 +71,9 @@
     </ClInclude>
     <ClInclude Include="Struct.pb.h">
       <Filter>소스 파일\Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="GameRoom.h">
+      <Filter>소스 파일\Game\Room</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

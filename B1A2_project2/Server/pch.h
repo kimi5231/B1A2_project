@@ -14,3 +14,4 @@
 #pragma comment(lib, "Protobuf\\Release\\libprotobuf.lib")
 #endif
 
+using GameSessionRef = std::shared_ptr<class GameSession>;
