@@ -39,13 +39,15 @@ private:
 	void SetFinalBossStage();
 
 public:
-	// Save
+	// Load&&Save
 	void SaveCurData();
 	void LoadGameData();
 
 public:
 	void SetSceneState();	// ESC 입력으로 Menu
 	void SetItemAcquireState(ItemActor* item) { _sceneState = SceneState::ItemAcquire; _acquireItem = item; };
+
+	void SetPlayer(MyPlayer* player) { _player = player; }
 
 	void BackGroundRender(HDC hdc);	// 어두운 투명 배경 - 메뉴, 아이템 획득 등에 사용
 

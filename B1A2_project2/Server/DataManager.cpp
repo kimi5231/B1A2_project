@@ -20,7 +20,8 @@ Stat* DataManager::LoadStat()
 {
 	Stat* stat = new Stat();
 
-	stat->LoadFile(_dataPath);
+	// 필요한 Stat 전부 Load
+	stat->LoadPlayerStatFile(_dataPath);
 
 	_stat = stat;
 

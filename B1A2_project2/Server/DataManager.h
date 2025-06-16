@@ -13,7 +13,7 @@ public:
 	void Init(std::filesystem::path dataPath);
 	void Clear();
 
-	const Stat* GetStat() { return _stat; }
+	Stat* GetStat() { return _stat; }
 	Stat* LoadStat();
 
 private:

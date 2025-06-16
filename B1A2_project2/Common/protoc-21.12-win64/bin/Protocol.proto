@@ -20,12 +20,20 @@ message S_EnterGame
 
 message S_MyPlayer
 {
-	ObjectInfo info = 1;
+	ActorInfo actor = 1;
+	ObjectInfo object = 2;
 }
 
 message S_AddObject
 {
 	repeated ObjectInfo objects = 1;
+}
+
+message S_AddPlayer
+{
+	repeated ActorInfo actor = 1;
+	repeated ObjectInfo object = 2;
+	repeated PlayerStat stat = 3;
 }
 
 message S_RemoveObject

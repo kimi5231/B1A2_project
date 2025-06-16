@@ -2,7 +2,7 @@
 #include "ServerPacketHandler.h"
 #include "BufferReader.h"
 #include "BufferWriter.h"
-
+#include "Player.h"
 
 void ServerPacketHandler::HandlePacket(BYTE* buffer, int32 len)
 {
@@ -44,4 +44,33 @@ SendBufferRef ServerPacketHandler::Make_S_TEST(uint64 id, uint32 hp, uint16 atta
 	}
 
 	return MakeSendBuffer(pkt, S_TEST);
+}
+
+SendBufferRef ServerPacketHandler::Make_S_EnterGame()
+{
+	Protocol::S_EnterGame pkt;
+
+	pkt.set_success(true);
+	pkt.set_accountid(0);
+
+	return MakeSendBuffer(pkt, S_EnterGame);
+}
+
+SendBufferRef ServerPacketHandler::Make_S_AddPlayer(const Protocol::S_AddPlayer& pkt)
+{
+	return MakeSendBuffer(pkt, S_AddPlayer);
+}
+
+SendBufferRef ServerPacketHandler::Make_S_MyPlayer(const PlayerRef& player)
+{
+	Protocol::S_MyPlayer pkt;
+
+	Protocol::ActorInfo* actorInfo = pkt.mutable_actor();
+	Protocol::ObjectInfo* objectInfo = pkt.mutable_object();
+	//Protocol::PlayerStat* playerStat = pkt.mutable_stat();
+
+	*actorInfo = player->GetActorInfo();
+	*objectInfo = player->GetObjectInfo();
+
+	return MakeSendBuffer(pkt, S_MyPlayer);
 }

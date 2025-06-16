@@ -12,7 +12,6 @@
 #include "GameSessionManager.h"
 #include "ServerPacketHandler.h"
 #include "DataManager.h"
-#include "Stat.h"
 
 #include <chrono>
 
@@ -24,7 +23,6 @@ int main()
 	// DataBase 파일 경로 설정
 	resourcePath = std::filesystem::current_path().parent_path().parent_path().parent_path() / "Data";
 	GET_SINGLE(DataManager)->Init(resourcePath);
-	Stat* stat = GET_SINGLE(DataManager)->LoadStat();
 
 	SocketUtils::Init();
 

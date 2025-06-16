@@ -101,16 +101,6 @@ void DevScene::Init()
 		actor->SetID(21);
 	}
 
-	// Monster
-	{
-			//	// 중간 저장할 데이터, hp는 중간에 업데이트 필요
-			//	// ID와 Hp 객체에서 가져오는 걸로 수정 필요, 현재는 쓰레기값임 (CommonStat.id, hp 등)
-			//	_monsterHpData[20101] = 100;
-			//}
-	
-			//	_monsterHpData[20201] = 100;
-	}
-
 	// Start Dialogue
 	/*{
 		std::vector<Actor*> actors;

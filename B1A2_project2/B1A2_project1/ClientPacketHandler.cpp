@@ -1,8 +1,12 @@
 #include "pch.h"
 #include "ClientPacketHandler.h"
 #include "BufferReader.h"
+#include "SceneManager.h"
+#include "Scene.h"
+#include "DevScene.h"
+#include "MyPlayer.h"
 
-void ClientPacketHandler::HandlePacket(BYTE* buffer, int32 len)
+void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, int32 len)
 {
 	BufferReader br(buffer, len);
 
@@ -13,6 +17,12 @@ void ClientPacketHandler::HandlePacket(BYTE* buffer, int32 len)
 	{
 	case S_TEST:
 		Handle_S_TEST(buffer, len);
+		break;
+	case S_AddPlayer:
+		Handle_S_AddPlayer(session, buffer, len);
+		break;
+	case S_MyPlayer:
+		Handle_S_MyPlayer(session, buffer, len);
 		break;
 	}
 }
@@ -36,5 +46,62 @@ void ClientPacketHandler::Handle_S_TEST(BYTE* buffer, int32 len)
 	{
 		const Protocol::BuffData& data = pkt.buffs(i);
 		std::cout << "BuffInfo : " << data.buffid() << " " << data.remaintime() << endl;
+	}
+}
+
+void ClientPacketHandler::Handle_S_MyPlayer(ServerSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	uint16 size = header->size;
+
+	Protocol::S_MyPlayer pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	const Protocol::ActorInfo& actorInfo = pkt.actor();
+	const Protocol::ObjectInfo& objectInfo = pkt.object();
+	//const Protocol::PlayerStat& playerStat = pkt.stat();
+
+	Scene* scene = GET_SINGLE(SceneManager)->GetCurrentScene();
+
+	// 추후 GameScene으로 변정 예정
+	if (dynamic_cast<DevScene*>(scene))
+	{
+		DevScene* devScene = dynamic_cast<DevScene*>(scene);
+
+		MyPlayer* player = devScene->SpawnObject<MyPlayer>(actorInfo.id(), Vec2{ actorInfo.posx(), actorInfo.posx() }, LAYER_PLAYER);
+		player->SetState(objectInfo.state());
+		player->SetDir(objectInfo.dir());
+		devScene->SetPlayer(player);
+	}
+}
+
+void ClientPacketHandler::Handle_S_AddPlayer(ServerSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	uint16 size = header->size;
+
+	Protocol::S_AddPlayer pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	Scene* scene = GET_SINGLE(SceneManager)->GetCurrentScene();
+
+	// 추후 GameScene으로 변정 예정
+	if (dynamic_cast<DevScene*>(scene))
+	{
+		DevScene* devScene = dynamic_cast<DevScene*>(scene);
+
+		const int32 size = pkt.actor_size();
+		for (int32 i = 0; i < size; i++)
+		{
+			const Protocol::ActorInfo& actorInfo = pkt.actor(i);
+			const Protocol::ObjectInfo& objectInfo = pkt.object(i);
+			const Protocol::PlayerStat& playerStat = pkt.stat(i);
+
+			// 자기 자신은 제외
+
+			Player* player = devScene->SpawnObject<Player>(actorInfo.id(), Vec2{ actorInfo.posx(), actorInfo.posx() }, LAYER_PLAYER);
+			player->SetState(objectInfo.state());
+			player->SetDir(objectInfo.dir());
+		}	
 	}
 }
