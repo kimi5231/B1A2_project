@@ -70,26 +70,26 @@ void DevScene::Init()
 	SetStage(1);
 
 	// Inventory
-	{
-		Inventory* inventory = new Inventory();
-		_player->AddComponent(inventory);
+	//{
+	//	Inventory* inventory = new Inventory();
+	//	_player->AddComponent(inventory);
 
-		inventory->SetOwner(_player);
+	//	inventory->SetOwner(_player);
 
-		// Update에서 inventory의 멤버 변수에 접근하기 위해
-		_inventory = inventory;
-	}
+	//	// Update에서 inventory의 멤버 변수에 접근하기 위해
+	//	_inventory = inventory;
+	//}
 
 	// InGame UI
-	InGamePanel* panel = new InGamePanel();
+	/*InGamePanel* panel = new InGamePanel();
 	panel->SetPlayer(_player);
-	AddPanel(panel);
+	AddPanel(panel);*/
 
 	// player의 체력 변경 시 UI 업데이트 등록
-	_player->SetHealthObserver([panel](int health) {  if (panel) panel->UpdateHealthPoint(health); });
+	//_player->SetHealthObserver([panel](int health) {  if (panel) panel->UpdateHealthPoint(health); });
 
 	// 현재 Scene 정보 넣기 (세이브 포인트 정보 저장 위해)
-	_player->SetCurrentScene(this);
+	//_player->SetCurrentScene(this);
 
 	// Announcemet
 	{
@@ -1467,16 +1467,16 @@ void DevScene::SetStage1()
 	}
 	
 	// Player
-	{
-		// Player가 없다면 생성
-		if (!_player)
-		{
-			MyPlayer* player = SpawnObject<MyPlayer>(1, { 400, 200 }, LAYER_PLAYER);
-			_player = player;
-		}
-		
-		_player->SetCurStageNum(_curStageNum);
-	}
+	//{
+	//	// Player가 없다면 생성
+	//	if (!_player)
+	//	{
+	//		MyPlayer* player = SpawnObject<MyPlayer>(1, { 400, 200 }, LAYER_PLAYER);
+	//		_player = player;
+	//	}
+	//	
+	//	_player->SetCurStageNum(_curStageNum);
+	//}
 
 	// Monster
 	{
@@ -1507,42 +1507,42 @@ void DevScene::SetStage1()
 	}
 
 	// Structure
-	{
-		// LockedDoorAndKey
-		{
-			LockedDoorAndKey* lockedDoorAndKey = SpawnObject<LockedDoorAndKey>({1920, 520}, LAYER_STRUCTURE);
-			lockedDoorAndKey->SetItemPos({ 2250, 280 });
-		}
+	//{
+	//	// LockedDoorAndKey
+	//	{
+	//		LockedDoorAndKey* lockedDoorAndKey = SpawnObject<LockedDoorAndKey>({1920, 520}, LAYER_STRUCTURE);
+	//		lockedDoorAndKey->SetItemPos({ 2250, 280 });
+	//	}
 
-		// ZipLine
-		{
-			ZipLine* zipLine = SpawnObject<ZipLine>({ 3490, 695 }, LAYER_STRUCTURE);
-			zipLine->SetZipLineType(ZipLineType::ZipLineWithButton);
-			zipLine->SetBeginPos({ 3490, 970 });
-			zipLine->SetEndPos({ 3490, 400 });
-			zipLine->SetPlayer(_player);
+	//	// ZipLine
+	//	{
+	//		ZipLine* zipLine = SpawnObject<ZipLine>({ 3490, 695 }, LAYER_STRUCTURE);
+	//		zipLine->SetZipLineType(ZipLineType::ZipLineWithButton);
+	//		zipLine->SetBeginPos({ 3490, 970 });
+	//		zipLine->SetEndPos({ 3490, 400 });
+	//		zipLine->SetPlayer(_player);
 
-			// Button이 필요 없는 짚라인은 아래 코드 작성X
-			ZipLineButtonAndDisplay* zipLineButtonAndDisplay = SpawnObject<ZipLineButtonAndDisplay>({ 3920, 1060 }, LAYER_STRUCTURE);
-			zipLineButtonAndDisplay->SetOwner(zipLine);
-			zipLineButtonAndDisplay->SetDisplayPos({ 3580, 880 });
+	//		// Button이 필요 없는 짚라인은 아래 코드 작성X
+	//		ZipLineButtonAndDisplay* zipLineButtonAndDisplay = SpawnObject<ZipLineButtonAndDisplay>({ 3920, 1060 }, LAYER_STRUCTURE);
+	//		zipLineButtonAndDisplay->SetOwner(zipLine);
+	//		zipLineButtonAndDisplay->SetDisplayPos({ 3580, 880 });
 
-			zipLine->SetZipLineButtonAndDisplay(zipLineButtonAndDisplay);
-		}
-		{
-			ZipLine* zipLine2 = SpawnObject<ZipLine>({ 5020, 585 }, LAYER_STRUCTURE);
-			zipLine2->SetZipLineType(ZipLineType::ZipLine);
-			zipLine2->SetBeginPos({ 4520, 450 });
-			zipLine2->SetEndPos({ 5520, 720 });
-			zipLine2->SetPlayer(_player);
-		}
+	//		zipLine->SetZipLineButtonAndDisplay(zipLineButtonAndDisplay);
+	//	}
+	//	{
+	//		ZipLine* zipLine2 = SpawnObject<ZipLine>({ 5020, 585 }, LAYER_STRUCTURE);
+	//		zipLine2->SetZipLineType(ZipLineType::ZipLine);
+	//		zipLine2->SetBeginPos({ 4520, 450 });
+	//		zipLine2->SetEndPos({ 5520, 720 });
+	//		zipLine2->SetPlayer(_player);
+	//	}
 
-		// BreakingWall
-		{
-			BreakingWall* breakingWall = SpawnObject<BreakingWall>({ 3760, 1040 }, LAYER_STRUCTURE);
-			breakingWall->SetPlayer(_player);
-		}
-	}
+	//	// BreakingWall
+	//	{
+	//		BreakingWall* breakingWall = SpawnObject<BreakingWall>({ 3760, 1040 }, LAYER_STRUCTURE);
+	//		breakingWall->SetPlayer(_player);
+	//	}
+	//}
 
 	// Item
 	{
