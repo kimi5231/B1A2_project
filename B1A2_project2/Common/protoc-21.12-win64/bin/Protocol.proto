@@ -22,6 +22,7 @@ message S_MyPlayer
 {
 	ActorInfo actor = 1;
 	ObjectInfo object = 2;
+	PlayerStat stat = 3;
 }
 
 message S_AddObject

@@ -38,7 +38,7 @@ void GameRoom::EnterRoom(GameSessionRef session)
 		session->Send(sendBuffer);
 	}
 
-	// 모든 오브젝트 정보 전송
+	// Room에 있는 모든 Object 정보를 입장한 client에 전송
 	{
 		Protocol::S_AddPlayer pkt;
 
@@ -50,7 +50,7 @@ void GameRoom::EnterRoom(GameSessionRef session)
 
 			*actorInfo = item.second->GetActorInfo();
 			*objectInfo = item.second->GetObjectInfo();
-
+			*playerStat = item.second->GetStat();
 		}
 
 		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddPlayer(pkt);

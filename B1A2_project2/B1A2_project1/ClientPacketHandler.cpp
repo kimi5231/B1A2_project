@@ -59,7 +59,7 @@ void ClientPacketHandler::Handle_S_MyPlayer(ServerSessionRef session, BYTE* buff
 
 	const Protocol::ActorInfo& actorInfo = pkt.actor();
 	const Protocol::ObjectInfo& objectInfo = pkt.object();
-	//const Protocol::PlayerStat& playerStat = pkt.stat();
+	const Protocol::PlayerStat& playerStat = pkt.stat();
 
 	Scene* scene = GET_SINGLE(SceneManager)->GetCurrentScene();
 
