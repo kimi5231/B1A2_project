@@ -61,6 +61,11 @@ SendBufferRef ServerPacketHandler::Make_S_AddPlayer(const Protocol::S_AddPlayer&
 	return MakeSendBuffer(pkt, S_AddPlayer);
 }
 
+SendBufferRef ServerPacketHandler::Make_S_RemoveObject(const Protocol::S_RemoveObject& pkt)
+{
+	return MakeSendBuffer(pkt, S_RemoveObject);
+}
+
 SendBufferRef ServerPacketHandler::Make_S_MyPlayer(const PlayerRef& player)
 {
 	Protocol::S_MyPlayer pkt;

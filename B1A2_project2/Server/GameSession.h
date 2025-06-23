@@ -20,5 +20,5 @@ public:
 
 public:
 	weak_ptr<GameRoom> gameRoom;
-	weak_ptr<Player> player;
+	PlayerRef player;
 };

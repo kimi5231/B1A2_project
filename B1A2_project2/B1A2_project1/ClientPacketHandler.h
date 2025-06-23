@@ -4,8 +4,11 @@ enum
 {
 	S_TEST = 1,
 	S_EnterGame = 2,
+
 	S_AddPlayer = 3,
-	S_MyPlayer = 4,
+	S_RemoveObject = 4,
+
+	S_MyPlayer = 5,
 };
 
 class ClientPacketHandler
@@ -17,6 +20,7 @@ public:
 	static void Handle_S_TEST(BYTE* buffer, int32 len);
 	static void Handle_S_MyPlayer(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_AddPlayer(ServerSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_S_RemoveObject(ServerSessionRef session, BYTE* buffer, int32 len);
 
 	// º¸³»±â
 	template<typename T>

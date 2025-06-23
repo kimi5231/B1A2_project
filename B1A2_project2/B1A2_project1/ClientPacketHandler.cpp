@@ -21,6 +21,9 @@ void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, i
 	case S_AddPlayer:
 		Handle_S_AddPlayer(session, buffer, len);
 		break;
+	case S_RemoveObject:
+		Handle_S_RemoveObject(session, buffer, len);
+		break;
 	case S_MyPlayer:
 		Handle_S_MyPlayer(session, buffer, len);
 		break;
@@ -106,5 +109,27 @@ void ClientPacketHandler::Handle_S_AddPlayer(ServerSessionRef session, BYTE* buf
 			player->SetDir(objectInfo.dir());
 			// stat
 		}	
+	}
+}
+
+void ClientPacketHandler::Handle_S_RemoveObject(ServerSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	uint16 size = header->size;
+
+	Protocol::S_RemoveObject pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	Scene* scene = GET_SINGLE(SceneManager)->GetCurrentScene();
+
+	{
+		const int32 size = pkt.ids_size();
+		for (int32 i = 0; i < size; i++)
+		{
+			const uint64& id = pkt.ids(i);
+
+			Actor* actor = scene->GetActor(id);
+			scene->RemoveActor(actor);
+		}
 	}
 }

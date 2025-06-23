@@ -17,6 +17,7 @@ public:
 
 public:
 	void AddObject(GameObjectRef object);
+	void RemoveObject(GameObjectRef object);
 	void Broadcast(SendBufferRef& sendBuffer);
 
 public:
