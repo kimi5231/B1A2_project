@@ -54,8 +54,7 @@ struct ActorInfoDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 ActorInfoDefaultTypeInternal _ActorInfo_default_instance_;
 PROTOBUF_CONSTEXPR ObjectInfo::ObjectInfo(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.objectid_)*/uint64_t{0u}
-  , /*decltype(_impl_.state_)*/0
+    /*decltype(_impl_.state_)*/0
   , /*decltype(_impl_.dir_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct ObjectInfoDefaultTypeInternal {
@@ -123,7 +122,6 @@ const uint32_t TableStruct_Struct_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.objectid_),
   PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.state_),
   PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.dir_),
   ~0u,  // no _has_bits_
@@ -151,7 +149,7 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 0, -1, -1, sizeof(::Protocol::BuffData)},
   { 9, -1, -1, sizeof(::Protocol::ActorInfo)},
   { 18, -1, -1, sizeof(::Protocol::ObjectInfo)},
-  { 27, -1, -1, sizeof(::Protocol::PlayerStat)},
+  { 26, -1, -1, sizeof(::Protocol::PlayerStat)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -165,25 +163,25 @@ const char descriptor_table_protodef_Struct_2eproto[] PROTOBUF_SECTION_VARIABLE(
   "\n\014Struct.proto\022\010Protocol\032\nEnum.proto\"\?\n\010"
   "BuffData\022\016\n\006buffId\030\001 \001(\004\022\022\n\nremainTime\030\002"
   " \001(\002\022\017\n\007victims\030\003 \003(\004\"3\n\tActorInfo\022\n\n\002id"
-  "\030\001 \001(\003\022\014\n\004posX\030\002 \001(\002\022\014\n\004posY\030\003 \001(\002\"k\n\nOb"
-  "jectInfo\022\020\n\010objectId\030\001 \001(\004\022*\n\005state\030\002 \001("
-  "\0162\033.Protocol.OBJECT_STATE_TYPE\022\037\n\003dir\030\003 "
-  "\001(\0162\022.Protocol.DIR_TYPE\"\272\002\n\nPlayerStat\022\n"
-  "\n\002hp\030\001 \001(\005\022\020\n\010runSpeed\030\002 \001(\002\022\023\n\013crouchSp"
-  "eed\030\003 \001(\002\022\021\n\tjumpSpeed\030\004 \001(\002\022\022\n\nskillPoi"
-  "nt\030\005 \001(\005\022\021\n\tnAtkRange\030\006 \001(\005\022\030\n\020nLongAtkD"
-  "istance\030\007 \001(\005\022\031\n\021knockBackDistance\030\010 \001(\005"
-  "\022\033\n\023strongAtkMultiplier\030\t \001(\002\022\022\n\nnAtkDam"
-  "age\030\n \001(\005\022\023\n\013skillDamage\030\013 \001(\005\022\022\n\nskillR"
-  "ange\030\014 \001(\005\022\025\n\rskillDuration\030\r \001(\002\022\031\n\021ski"
-  "llStepDistance\030\016 \001(\005b\006proto3"
+  "\030\001 \001(\003\022\014\n\004posX\030\002 \001(\002\022\014\n\004posY\030\003 \001(\002\"Y\n\nOb"
+  "jectInfo\022*\n\005state\030\001 \001(\0162\033.Protocol.OBJEC"
+  "T_STATE_TYPE\022\037\n\003dir\030\002 \001(\0162\022.Protocol.DIR"
+  "_TYPE\"\272\002\n\nPlayerStat\022\n\n\002hp\030\001 \001(\005\022\020\n\010runS"
+  "peed\030\002 \001(\002\022\023\n\013crouchSpeed\030\003 \001(\002\022\021\n\tjumpS"
+  "peed\030\004 \001(\002\022\022\n\nskillPoint\030\005 \001(\005\022\021\n\tnAtkRa"
+  "nge\030\006 \001(\005\022\030\n\020nLongAtkDistance\030\007 \001(\005\022\031\n\021k"
+  "nockBackDistance\030\010 \001(\005\022\033\n\023strongAtkMulti"
+  "plier\030\t \001(\002\022\022\n\nnAtkDamage\030\n \001(\005\022\023\n\013skill"
+  "Damage\030\013 \001(\005\022\022\n\nskillRange\030\014 \001(\005\022\025\n\rskil"
+  "lDuration\030\r \001(\002\022\031\n\021skillStepDistance\030\016 \001"
+  "(\005b\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Struct_2eproto_deps[1] = {
   &::descriptor_table_Enum_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_Struct_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Struct_2eproto = {
-    false, false, 588, descriptor_table_protodef_Struct_2eproto,
+    false, false, 570, descriptor_table_protodef_Struct_2eproto,
     "Struct.proto",
     &descriptor_table_Struct_2eproto_once, descriptor_table_Struct_2eproto_deps, 1, 4,
     schemas, file_default_instances, TableStruct_Struct_2eproto::offsets,
@@ -738,15 +736,14 @@ ObjectInfo::ObjectInfo(const ObjectInfo& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   ObjectInfo* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.objectid_){}
-    , decltype(_impl_.state_){}
+      decltype(_impl_.state_){}
     , decltype(_impl_.dir_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::memcpy(&_impl_.objectid_, &from._impl_.objectid_,
+  ::memcpy(&_impl_.state_, &from._impl_.state_,
     static_cast<size_t>(reinterpret_cast<char*>(&_impl_.dir_) -
-    reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.dir_));
+    reinterpret_cast<char*>(&_impl_.state_)) + sizeof(_impl_.dir_));
   // @@protoc_insertion_point(copy_constructor:Protocol.ObjectInfo)
 }
 
@@ -755,8 +752,7 @@ inline void ObjectInfo::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.objectid_){uint64_t{0u}}
-    , decltype(_impl_.state_){0}
+      decltype(_impl_.state_){0}
     , decltype(_impl_.dir_){0}
     , /*decltype(_impl_._cached_size_)*/{}
   };
@@ -785,9 +781,9 @@ void ObjectInfo::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  ::memset(&_impl_.objectid_, 0, static_cast<size_t>(
+  ::memset(&_impl_.state_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&_impl_.dir_) -
-      reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.dir_));
+      reinterpret_cast<char*>(&_impl_.state_)) + sizeof(_impl_.dir_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -797,26 +793,18 @@ const char* ObjectInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ct
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // uint64 objectId = 1;
+      // .Protocol.OBJECT_STATE_TYPE state = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
-          _impl_.objectid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // .Protocol.OBJECT_STATE_TYPE state = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
           _internal_set_state(static_cast<::Protocol::OBJECT_STATE_TYPE>(val));
         } else
           goto handle_unusual;
         continue;
-      // .Protocol.DIR_TYPE dir = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+      // .Protocol.DIR_TYPE dir = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
           _internal_set_dir(static_cast<::Protocol::DIR_TYPE>(val));
@@ -852,24 +840,18 @@ uint8_t* ObjectInfo::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // uint64 objectId = 1;
-  if (this->_internal_objectid() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_objectid(), target);
-  }
-
-  // .Protocol.OBJECT_STATE_TYPE state = 2;
+  // .Protocol.OBJECT_STATE_TYPE state = 1;
   if (this->_internal_state() != 0) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteEnumToArray(
-      2, this->_internal_state(), target);
+      1, this->_internal_state(), target);
   }
 
-  // .Protocol.DIR_TYPE dir = 3;
+  // .Protocol.DIR_TYPE dir = 2;
   if (this->_internal_dir() != 0) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteEnumToArray(
-      3, this->_internal_dir(), target);
+      2, this->_internal_dir(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -888,18 +870,13 @@ size_t ObjectInfo::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // uint64 objectId = 1;
-  if (this->_internal_objectid() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_objectid());
-  }
-
-  // .Protocol.OBJECT_STATE_TYPE state = 2;
+  // .Protocol.OBJECT_STATE_TYPE state = 1;
   if (this->_internal_state() != 0) {
     total_size += 1 +
       ::_pbi::WireFormatLite::EnumSize(this->_internal_state());
   }
 
-  // .Protocol.DIR_TYPE dir = 3;
+  // .Protocol.DIR_TYPE dir = 2;
   if (this->_internal_dir() != 0) {
     total_size += 1 +
       ::_pbi::WireFormatLite::EnumSize(this->_internal_dir());
@@ -923,9 +900,6 @@ void ObjectInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PRO
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from._internal_objectid() != 0) {
-    _this->_internal_set_objectid(from._internal_objectid());
-  }
   if (from._internal_state() != 0) {
     _this->_internal_set_state(from._internal_state());
   }
@@ -952,9 +926,9 @@ void ObjectInfo::InternalSwap(ObjectInfo* other) {
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
       PROTOBUF_FIELD_OFFSET(ObjectInfo, _impl_.dir_)
       + sizeof(ObjectInfo::_impl_.dir_)
-      - PROTOBUF_FIELD_OFFSET(ObjectInfo, _impl_.objectid_)>(
-          reinterpret_cast<char*>(&_impl_.objectid_),
-          reinterpret_cast<char*>(&other->_impl_.objectid_));
+      - PROTOBUF_FIELD_OFFSET(ObjectInfo, _impl_.state_)>(
+          reinterpret_cast<char*>(&_impl_.state_),
+          reinterpret_cast<char*>(&other->_impl_.state_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata ObjectInfo::GetMetadata() const {

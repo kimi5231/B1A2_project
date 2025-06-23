@@ -544,20 +544,10 @@ class ObjectInfo final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kObjectIdFieldNumber = 1,
-    kStateFieldNumber = 2,
-    kDirFieldNumber = 3,
+    kStateFieldNumber = 1,
+    kDirFieldNumber = 2,
   };
-  // uint64 objectId = 1;
-  void clear_objectid();
-  uint64_t objectid() const;
-  void set_objectid(uint64_t value);
-  private:
-  uint64_t _internal_objectid() const;
-  void _internal_set_objectid(uint64_t value);
-  public:
-
-  // .Protocol.OBJECT_STATE_TYPE state = 2;
+  // .Protocol.OBJECT_STATE_TYPE state = 1;
   void clear_state();
   ::Protocol::OBJECT_STATE_TYPE state() const;
   void set_state(::Protocol::OBJECT_STATE_TYPE value);
@@ -566,7 +556,7 @@ class ObjectInfo final :
   void _internal_set_state(::Protocol::OBJECT_STATE_TYPE value);
   public:
 
-  // .Protocol.DIR_TYPE dir = 3;
+  // .Protocol.DIR_TYPE dir = 2;
   void clear_dir();
   ::Protocol::DIR_TYPE dir() const;
   void set_dir(::Protocol::DIR_TYPE value);
@@ -583,7 +573,6 @@ class ObjectInfo final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    uint64_t objectid_;
     int state_;
     int dir_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -1048,27 +1037,7 @@ inline void ActorInfo::set_posy(float value) {
 
 // ObjectInfo
 
-// uint64 objectId = 1;
-inline void ObjectInfo::clear_objectid() {
-  _impl_.objectid_ = uint64_t{0u};
-}
-inline uint64_t ObjectInfo::_internal_objectid() const {
-  return _impl_.objectid_;
-}
-inline uint64_t ObjectInfo::objectid() const {
-  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.objectId)
-  return _internal_objectid();
-}
-inline void ObjectInfo::_internal_set_objectid(uint64_t value) {
-  
-  _impl_.objectid_ = value;
-}
-inline void ObjectInfo::set_objectid(uint64_t value) {
-  _internal_set_objectid(value);
-  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.objectId)
-}
-
-// .Protocol.OBJECT_STATE_TYPE state = 2;
+// .Protocol.OBJECT_STATE_TYPE state = 1;
 inline void ObjectInfo::clear_state() {
   _impl_.state_ = 0;
 }
@@ -1088,7 +1057,7 @@ inline void ObjectInfo::set_state(::Protocol::OBJECT_STATE_TYPE value) {
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.state)
 }
 
-// .Protocol.DIR_TYPE dir = 3;
+// .Protocol.DIR_TYPE dir = 2;
 inline void ObjectInfo::clear_dir() {
   _impl_.dir_ = 0;
 }

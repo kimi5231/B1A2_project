@@ -62,7 +62,6 @@ void ClientPacketHandler::Handle_S_MyPlayer(ServerSessionRef session, BYTE* buff
 
 	const Protocol::ActorInfo& actorInfo = pkt.actor();
 	const Protocol::ObjectInfo& objectInfo = pkt.object();
-	const Protocol::PlayerStat& playerStat = pkt.stat();
 
 	Scene* scene = GET_SINGLE(SceneManager)->GetCurrentScene();
 
@@ -98,7 +97,6 @@ void ClientPacketHandler::Handle_S_AddPlayer(ServerSessionRef session, BYTE* buf
 		{
 			const Protocol::ActorInfo& actorInfo = pkt.actor(i);
 			const Protocol::ObjectInfo& objectInfo = pkt.object(i);
-			const Protocol::PlayerStat& playerStat = pkt.stat(i);
 
 			// 자기 자신은 제외
 			if (actorInfo.id() == devScene->GetMyPlayer()->GetID())
@@ -107,7 +105,6 @@ void ClientPacketHandler::Handle_S_AddPlayer(ServerSessionRef session, BYTE* buf
 			Player* player = devScene->SpawnObject<Player>(actorInfo.id(), Vec2{ actorInfo.posx(), actorInfo.posx() }, LAYER_PLAYER);
 			player->SetState(objectInfo.state());
 			player->SetDir(objectInfo.dir());
-			// stat
 		}	
 	}
 }

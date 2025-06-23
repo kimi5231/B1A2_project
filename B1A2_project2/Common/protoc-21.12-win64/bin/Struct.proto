@@ -19,11 +19,11 @@ message ActorInfo
 
 message ObjectInfo
 {
-	uint64 objectId = 1;
-	OBJECT_STATE_TYPE state = 2;
-	DIR_TYPE dir = 3;
+	OBJECT_STATE_TYPE state = 1;
+	DIR_TYPE dir = 2;
 }
 
+// 삭제 예정
 message PlayerStat
 {
 	int32 hp = 1; // A
@@ -41,6 +41,3 @@ message PlayerStat
 	float skillDuration = 13;	// M
 	int32 skillStepDistance = 14;	// N
 }
-
-//
-

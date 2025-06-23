@@ -18,17 +18,10 @@ message S_EnterGame
 	uint64 accountId = 2;
 }
 
-message S_LeaveGame
-{
-	bool success = 1;
-	uint64 accountId = 2;
-}
-
 message S_MyPlayer
 {
 	ActorInfo actor = 1;
 	ObjectInfo object = 2;
-	PlayerStat stat = 3;
 }
 
 message S_AddObject
@@ -40,7 +33,6 @@ message S_AddPlayer
 {
 	repeated ActorInfo actor = 1;
 	repeated ObjectInfo object = 2;
-	repeated PlayerStat stat = 3;
 }
 
 message S_RemoveObject

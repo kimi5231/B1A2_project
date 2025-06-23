@@ -1,15 +1,11 @@
 #include "pch.h"
 #include "GameObject.h"
-#include "Stat.h"
 #include "Player.h"
-#include "DataManager.h"
 
 atomic<uint64> GameObject::_idGenerator = 1;
 
 GameObject::GameObject()
 {
-	// Stat Load
-	GET_SINGLE(DataManager)->LoadStat();
 }
 
 GameObject::~GameObject()
@@ -35,10 +31,6 @@ PlayerRef GameObject::CreatePlayer()
 
 	// ObjectInfo
 	player->SetObjectInfo(Protocol::OBJECT_STATE_TYPE_IDLE, Protocol::DIR_TYPE_RIGHT);
-
-	// PlayerStat
-	Stat& stat = GET_SINGLE(DataManager)->GetStat();
-	player->SetStat(stat.GetPlayerStat());
 
 	return player;
 }
