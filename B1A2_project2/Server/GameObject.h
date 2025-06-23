@@ -1,8 +1,6 @@
 #pragma once
 #include "Actor.h"
 
-
-
 class GameObject : public Actor, public enable_shared_from_this<GameObject>
 {
 public:
@@ -21,4 +19,7 @@ public:
 public:
 	Protocol::ObjectInfo _info;
 	GameRoomRef _room;
+
+private:
+	static atomic<uint64> _idGenerator;
 };

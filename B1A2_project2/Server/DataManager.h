@@ -1,6 +1,5 @@
 #pragma once
-
-class Stat;
+#include "Stat.h"
 
 class DataManager
 {
@@ -13,11 +12,11 @@ public:
 	void Init(std::filesystem::path dataPath);
 	void Clear();
 
-	Stat* GetStat() { return _stat; }
-	Stat* LoadStat();
+	Stat& GetStat() { return _stat; }
+	Stat& LoadStat();
 
 private:
 	std::filesystem::path _dataPath;
 
-	Stat* _stat;
+	Stat _stat;
 };

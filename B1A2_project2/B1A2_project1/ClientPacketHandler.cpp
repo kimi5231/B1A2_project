@@ -98,10 +98,13 @@ void ClientPacketHandler::Handle_S_AddPlayer(ServerSessionRef session, BYTE* buf
 			const Protocol::PlayerStat& playerStat = pkt.stat(i);
 
 			// 자기 자신은 제외
+			if (actorInfo.id() == devScene->GetMyPlayer()->GetID())
+				continue;
 
 			Player* player = devScene->SpawnObject<Player>(actorInfo.id(), Vec2{ actorInfo.posx(), actorInfo.posx() }, LAYER_PLAYER);
 			player->SetState(objectInfo.state());
 			player->SetDir(objectInfo.dir());
+			// stat
 		}	
 	}
 }

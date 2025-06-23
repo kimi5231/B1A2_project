@@ -4,6 +4,8 @@
 #include "Player.h"
 #include "DataManager.h"
 
+atomic<uint64> GameObject::_idGenerator = 1;
+
 GameObject::GameObject()
 {
 	// Stat Load
@@ -29,14 +31,14 @@ PlayerRef GameObject::CreatePlayer()
 	PlayerRef player = std::make_shared<Player>();
 
 	// ActorInfo
-	player->SetActorInfo(1, 400, 200);
+	player->SetActorInfo(_idGenerator++, 400, 200);
 
 	// ObjectInfo
 	player->SetObjectInfo(Protocol::OBJECT_STATE_TYPE_IDLE, Protocol::DIR_TYPE_RIGHT);
 
 	// PlayerStat
-	Stat* stat = GET_SINGLE(DataManager)->GetStat();
-	player->SetStat(stat->GetPlayerStat());
+	Stat& stat = GET_SINGLE(DataManager)->GetStat();
+	player->SetStat(stat.GetPlayerStat());
 
 	return player;
 }

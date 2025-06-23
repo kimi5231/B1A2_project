@@ -16,12 +16,12 @@ void DataManager::Clear()
 
 }
 
-Stat* DataManager::LoadStat()
+Stat& DataManager::LoadStat()
 {
-	Stat* stat = new Stat();
+	Stat stat;
 
 	// 필요한 Stat 전부 Load
-	stat->LoadPlayerStatFile(_dataPath);
+	stat.LoadPlayerStatFile(_dataPath);
 
 	_stat = stat;
 

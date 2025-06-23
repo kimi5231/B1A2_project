@@ -11,7 +11,7 @@ void Stat::LoadPlayerStatFile(std::filesystem::path dataPath)
 
 	std::string line;
 
-	Protocol::PlayerStat* stat = new Protocol::PlayerStat();
+	Protocol::PlayerStat stat;
 
 	if (std::getline(ifs, line))
 	{
@@ -23,20 +23,20 @@ void Stat::LoadPlayerStatFile(std::filesystem::path dataPath)
 		{
 			switch (column)
 			{
-			case 0:stat->set_hp(std::stoi(cell)); break;	// A
-			case 1: stat->set_runspeed(std::stof(cell)); break;	// B
-			case 2: stat->set_crouchspeed(std::stof(cell)); break;	// C
-			case 3: stat->set_jumpspeed(std::stof(cell)); break;	// D
-			case 4: stat->set_skillpoint(std::stoi(cell)); break;	// E
-			case 5: stat->set_natkrange(std::stoi(cell)); break;	// F
-			case 6: stat->set_nlongatkdistance(std::stoi(cell)); break;	// G
-			case 7: stat->set_knockbackdistance(std::stoi(cell)); break;	// H
-			case 8: stat->set_strongatkmultiplier(std::stof(cell)); break;	// I
-			case 9: stat->set_natkdamage(std::stoi(cell)); break;	// J
-			case 10: stat->set_skilldamage(std::stoi(cell)); break;	// K
-			case 11: stat->set_skillrange(std::stoi(cell)); break;	// L
-			case 12: stat->set_skillduration(std::stof(cell)); break;	// M
-			case 13: stat->set_skillstepdistance(std::stoi(cell)); break;	// N
+			case 0:stat.set_hp(std::stoi(cell)); break;	// A
+			case 1: stat.set_runspeed(std::stof(cell)); break;	// B
+			case 2: stat.set_crouchspeed(std::stof(cell)); break;	// C
+			case 3: stat.set_jumpspeed(std::stof(cell)); break;	// D
+			case 4: stat.set_skillpoint(std::stoi(cell)); break;	// E
+			case 5: stat.set_natkrange(std::stoi(cell)); break;	// F
+			case 6: stat.set_nlongatkdistance(std::stoi(cell)); break;	// G
+			case 7: stat.set_knockbackdistance(std::stoi(cell)); break;	// H
+			case 8: stat.set_strongatkmultiplier(std::stof(cell)); break;	// I
+			case 9: stat.set_natkdamage(std::stoi(cell)); break;	// J
+			case 10: stat.set_skilldamage(std::stoi(cell)); break;	// K
+			case 11: stat.set_skillrange(std::stoi(cell)); break;	// L
+			case 12: stat.set_skillduration(std::stof(cell)); break;	// M
+			case 13: stat.set_skillstepdistance(std::stoi(cell)); break;	// N
 			}
 			++column;
 		}

@@ -68,31 +68,33 @@ void GameRoom::AddObject(GameObjectRef object)
 {
 	int64 id = object->GetId();
 
-	static int32 test = 0;
-
-	if (id == 1)
+	// id를 이용해 객체 타입 구분
+	if (1 <= id || id >= 100)	// Player
 	{
-		_players[id+test] = static_pointer_cast<Player>(object);
-		test++;
+		// 신규 Player 추가
+		PlayerRef player = static_pointer_cast<Player>(object);
+		_players[id] = player;
+		
+		// 신규 Player 정보를 기존 Player들에게 전송
+		{
+			Protocol::S_AddPlayer pkt;
+
+			Protocol::ActorInfo* actorInfo = pkt.add_actor();
+			Protocol::ObjectInfo* objectInfo = pkt.add_object();
+			Protocol::PlayerStat* playerStat = pkt.add_stat();
+
+			// 값을 수정
+			*actorInfo = player->GetActorInfo();
+			*objectInfo = player->GetObjectInfo();
+			*playerStat = player->GetStat();
+
+			SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddPlayer(pkt);
+			Broadcast(sendBuffer);
+		}
 	}
 	
+	// 신규 Object가 현재 존재하는 Room 기록
 	object->SetRoom(shared_from_this());
-
-	// 신규 objcet 정보 전송
-	{
-		Protocol::S_AddPlayer pkt;
-
-		Protocol::ActorInfo* actorInfo = pkt.add_actor();
-		Protocol::ObjectInfo * objectInfo = pkt.add_object();
-		Protocol::PlayerStat* playerStat = pkt.add_stat();
-
-		*actorInfo = object->GetActorInfo();
-		*objectInfo = object->GetObjectInfo();
-
-
-		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddPlayer(pkt);
-		Broadcast(sendBuffer);
-	}
 }
 
 void GameRoom::Broadcast(SendBufferRef& sendBuffer)
