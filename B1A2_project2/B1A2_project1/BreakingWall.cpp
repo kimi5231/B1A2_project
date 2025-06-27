@@ -10,27 +10,6 @@
 
 BreakingWall::BreakingWall()
 {
-	// Flipbook
-	_flipbookWall = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_Wall");
-	_flipbookBreakingWall = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_BreakingWall");
-
-	// Collider
-	{
-		// Structure
-		{
-			BoxCollider* collider = new BoxCollider();
-			collider->ResetCollisionFlag();
-			collider->SetCollisionLayer(CLT_STRUCTURE);
-
-			collider->AddCollisionFlagLayer(CLT_PLAYER);
-			collider->AddCollisionFlagLayer(CLT_PLAYER_ATTACK);
-
-			collider->SetSize({ 80, 240 });
-
-			GET_SINGLE(CollisionManager)->AddCollider(collider);
-			AddComponent(collider);
-		}
-	}
 }
 
 BreakingWall::~BreakingWall()
@@ -52,6 +31,49 @@ void BreakingWall::Tick()
 void BreakingWall::Render(HDC hdc)
 {
 	Super::Render(hdc);
+}
+
+void BreakingWall::SetWallType(BreakingWallType type)
+{
+	// Flipbook
+	switch (type)
+	{
+	case BreakingWallType::Normal:
+		_flipbookWall = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_Wall");
+		_flipbookBreakingWall = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_BreakingWall");
+		break;
+	case BreakingWallType::Short:
+		_flipbookWall = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_WallShort");
+		_flipbookBreakingWall = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_BreakingWallShort");
+		break;
+	case BreakingWallType::Long:
+		_flipbookWall = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_WallLong");
+		_flipbookBreakingWall = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_BreakingWallLong");
+		break;
+	}
+
+	// Collider
+	{
+		// Structure
+		{
+			BoxCollider* collider = new BoxCollider();
+			collider->ResetCollisionFlag();
+			collider->SetCollisionLayer(CLT_STRUCTURE_COLLISION);
+
+			collider->AddCollisionFlagLayer(CLT_PLAYER);
+			collider->AddCollisionFlagLayer(CLT_PLAYER_ATTACK);
+
+			if (type == BreakingWallType::Normal)
+				collider->SetSize({ 80, 240 });
+			else if (type == BreakingWallType::Short)
+				collider->SetSize({ 80, 160 });
+			else
+				collider->SetSize({ 80, 280 });
+
+			GET_SINGLE(CollisionManager)->AddCollider(collider);
+			AddComponent(collider);
+		}
+	}
 }
 
 

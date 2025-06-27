@@ -25,8 +25,14 @@ private:
 	virtual void OnComponentBeginOverlap(Collider* collider, Collider* other);
 	virtual void OnComponentEndOverlap(Collider* collider, Collider* other);
 
+	void SetFlickeringDuration(float duration) { _flickeringDuration = duration; }
+	void SetFlickeringCycle(float cycle) { _flickeringCycle = cycle; }
+
 private:
 	Flipbook* _flipbookOn = nullptr;
 	Flipbook* _flipbookOff = nullptr;
+
+	float _flickeringDuration = 0.f;
+	float _flickeringCycle = 0.f;
 };
 

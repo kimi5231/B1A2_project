@@ -10,6 +10,7 @@
 #include "Texture.h"
 #include "Player.h"
 #include "ZipLine.h"
+#include "FootHold.h"
 
 BoxCollider::BoxCollider() : Collider(ColliderType::Box)
 {
@@ -98,6 +99,13 @@ void BoxCollider::BeginPlay()
 				_pos = owner->GetMidPos();
 		}
 	}
+
+	if (_isManual && GetCollisionLayer() == CLT_GROUND)		// Foothold의 Collider 중 아래 발판
+	{
+		FootHold* footHold = dynamic_cast<FootHold*>(GetOwner());
+
+		_pos.y = footHold->GetPos().y + 40;
+	}
 }
 
 void BoxCollider::TickComponent()
@@ -179,6 +187,13 @@ void BoxCollider::TickComponent()
 			else  // 중간 하차 후 위치 유지
 				_pos = owner->GetMidPos();		
 		}
+	}
+	
+	if (_isManual && GetCollisionLayer() == CLT_GROUND)		// Foothold의 Collider 중 아래 발판
+	{
+		FootHold* footHold = dynamic_cast<FootHold*>(GetOwner());
+
+		_pos.y = footHold->GetPos().y + 40;
 	}
 }
 

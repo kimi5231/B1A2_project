@@ -23,7 +23,7 @@ FootHoldAndZipLineButton::FootHoldAndZipLineButton()
 
 		collider->AddCollisionFlagLayer(CLT_PLAYER);
 
-		collider->SetSize({ 150, 105 }); 
+		collider->SetSize({ 84, 96 });
 
 		GET_SINGLE(CollisionManager)->AddCollider(collider);
 		AddComponent(collider);
@@ -97,16 +97,33 @@ FootHold::FootHold()
 
 	// Collider
 	{
-		BoxCollider* collider = new BoxCollider();
-		collider->ResetCollisionFlag();
-		collider->SetCollisionLayer(CLT_GROUND);
+		{
+			BoxCollider* collider = new BoxCollider();
+			collider->ResetCollisionFlag();
+			collider->SetCollisionLayer(CLT_GROUND);
 
-		collider->AddCollisionFlagLayer(CLT_PLAYER);
+			collider->AddCollisionFlagLayer(CLT_PLAYER);
 
-		collider->SetSize({ 320, 120 });
+			collider->SetSize({ 320, 120 });
 
-		GET_SINGLE(CollisionManager)->AddCollider(collider);
-		AddComponent(collider);
+			GET_SINGLE(CollisionManager)->AddCollider(collider);
+			AddComponent(collider);
+		}
+
+		{
+			BoxCollider* collider = new BoxCollider();
+			collider->ResetCollisionFlag();
+			collider->SetCollisionLayer(CLT_GROUND);
+
+			collider->AddCollisionFlagLayer(CLT_PLAYER);
+
+			collider->SetSize({ 400, 40 });
+
+			collider->SetManual(true);
+
+			GET_SINGLE(CollisionManager)->AddCollider(collider);
+			AddComponent(collider);
+		}
 	}
 
 	SetState(OFF);

@@ -16,6 +16,9 @@ public:
 	virtual void Tick() override;
 	virtual void Render(HDC hdc) override;
 
+	void LineRender(HDC hdc);
+	void GripRender(HDC hdc);
+
 protected:
 	virtual void UpdateAnimation();
 
@@ -29,6 +32,8 @@ private:
 public:
 	void SetZipLineType(ZipLineType type) { _zipLineType = type; }
 	ZipLineType GetZipLineType() { return _zipLineType; }
+	void SetZipLineRenderType(ZipLineRenderType type) { _renderType = type; }
+	ZipLineRenderType GetZipLineRenderType() { return _renderType; }
 
 	ObjectState GetZipLineState() { return _state; }
 
@@ -48,11 +53,12 @@ public:
 
 	void SetPlayer(Player* player) { _player = player; }
 	Player* GetPlayer() { return _player; }
+
 private:
-	Flipbook* _flipbookZipLineOff = nullptr;
-	Flipbook* _flipbookZipLineOn = nullptr;
+	Flipbook* _flipbookZipLine = nullptr;
 
 	ZipLineType _zipLineType;
+	ZipLineRenderType _renderType = ZipLineRenderType::None;
 
 	ZipLineButtonAndDisplay* _zipLineButtonAndDisplay = nullptr;
 
@@ -91,7 +97,7 @@ private:
 public:
 	void SetOwner(ZipLine* zipLine) { _owner = zipLine; }
 
-	void SetDisplayPos(Vec2Int pos) { _displayPos = pos; }
+	void SetDisplayPos(Vec2 pos) { _displayPos = pos; }
 
 	ObjectState GetState() { return _info.state(); }
 
@@ -105,5 +111,7 @@ private:
 	ZipLine* _owner = nullptr;
 
 	// Display
-	Vec2Int _displayPos;
+	Vec2 _displayPos;
+
+	bool _isCollide = false;	// Player와 충돌 중인지 확인
 };

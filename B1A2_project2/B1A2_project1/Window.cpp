@@ -56,7 +56,7 @@ void Window::TickOn()
 	static float sumTime = 0.f;
 	sumTime += deltaTime;
 
-	if (sumTime >= 0.5f)
+	if (sumTime >= _flickeringDuration)
 	{
 		SetState(OFF);
 
@@ -70,7 +70,7 @@ void Window::TickOff()
 	static float sumTime = 0.f;
 	sumTime += deltaTime;
 
-	if (sumTime >= 2.f)
+	if (sumTime >= _flickeringCycle)
 	{
 		SetState(ON);
 

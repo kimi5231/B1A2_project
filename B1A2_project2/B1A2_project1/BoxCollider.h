@@ -23,7 +23,11 @@ public:
 
 	RECT GetRect();
 
+	void SetManual(bool isManual) { _isManual = isManual; }
+
 private:
 	Vec2 _size{};
+
+	bool _isManual = false;		// 발판 전용 - Collider 2개 생성하는데, 1개만 위치 수정 필요해서 사용
 };
 

@@ -56,6 +56,7 @@ enum COLLISION_LAYER_TYPE : uint8
 
 	CLT_STRUCTURE,	// 14 - 예. 짚라인 버튼
 	CLT_STRUCTURE_DETECT, // 15 - 예. 짚라인
+	CLT_STRUCTURE_COLLISION,
 
 	CLT_NONE,		
 };
@@ -161,8 +162,21 @@ enum class ZipLineType
 	ZipLineWithButton,
 };
 
+enum class ZipLineRenderType
+{
+	None,	// 대각선 - 그리지 않음
+	Line,	// 직선 - 그림
+};
+
 enum class SlashWaveType
 {
 	W,
 	H,
+};
+
+enum class BreakingWallType
+{
+	Normal,
+	Short,
+	Long,
 };

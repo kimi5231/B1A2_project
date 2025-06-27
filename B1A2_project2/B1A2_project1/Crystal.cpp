@@ -25,12 +25,14 @@ Crystal::Crystal()
 			collider->AddCollisionFlagLayer(CLT_PLAYER);
 			collider->AddCollisionFlagLayer(CLT_PLAYER_ATTACK);
 
-			collider->SetSize({ 80, 120 });
+			collider->SetSize({ 41, 77 });
 
 			GET_SINGLE(CollisionManager)->AddCollider(collider);
 			AddComponent(collider);
 		}
 	}
+
+	SetState(ON);
 }
 
 Crystal::~Crystal()
@@ -40,8 +42,6 @@ Crystal::~Crystal()
 void Crystal::BeginPlay()
 {
 	Super::BeginPlay();
-
-	SetState(ON);
 }
 
 void Crystal::Tick()

@@ -14,6 +14,8 @@ public:
 	virtual void Tick() override;
 	virtual void Render(HDC hdc) override;
 
+	void SetWallType(BreakingWallType type);
+
 protected:
 	// On 가만히 있음, Breaking 부서지는 중, Dead 부서져서 사라짐
 	virtual void TickOn() override;
