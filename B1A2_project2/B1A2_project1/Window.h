@@ -21,12 +21,12 @@ public:
 	virtual float GetSpeed() { return 0.f; }
 	ObjectState GetState() { return _info.state(); }
 
+	void SetFlickeringDuration(float duration) { _flickeringDuration = duration; }
+	void SetFlickeringCycle(float cycle) { _flickeringCycle = cycle; }
+
 private:
 	virtual void OnComponentBeginOverlap(Collider* collider, Collider* other);
 	virtual void OnComponentEndOverlap(Collider* collider, Collider* other);
-
-	void SetFlickeringDuration(float duration) { _flickeringDuration = duration; }
-	void SetFlickeringCycle(float cycle) { _flickeringCycle = cycle; }
 
 private:
 	Flipbook* _flipbookOn = nullptr;

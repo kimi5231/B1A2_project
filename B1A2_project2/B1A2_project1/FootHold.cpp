@@ -5,7 +5,7 @@
 #include "CollisionManager.h"
 #include "TimeManager.h"
 #include "ZipLine.h"
-#include "DevScene.h"
+#include "GameScene.h"
 #include "SceneManager.h"
 
 FootHoldAndZipLineButton::FootHoldAndZipLineButton()
@@ -71,7 +71,7 @@ void FootHoldAndZipLineButton::UpdateAnimation()
 
 void FootHoldAndZipLineButton::TickOn2()
 {
-	DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+	GameScene* scene = dynamic_cast<GameScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
 
 	ZipLine* zipLine = scene->SpawnObject<ZipLine>({ _zipLineBegin }, LAYER_STRUCTURE);
 	zipLine->SetZipLineType(ZipLineType::ZipLine);

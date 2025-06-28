@@ -5,7 +5,7 @@
 #include "CollisionManager.h"
 #include "Player.h"
 #include "TimeManager.h"
-#include "DevScene.h"
+#include "GameScene.h"
 #include "SceneManager.h"
 #include "FinalBoss.h"
 
@@ -55,7 +55,7 @@ void Crystal::Tick()
 	{
 		_finalBoss->SubtractCurrentCrystalCount(1);
 
-		DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+		GameScene* scene = dynamic_cast<GameScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
 		scene->RemoveActor(this);
 	}
 }
@@ -69,7 +69,7 @@ void Crystal::TickDead()
 {
 	_finalBoss->SubtractCurrentCrystalCount(1);
 
-	DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+	GameScene* scene = dynamic_cast<GameScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
 	scene->RemoveActor(this);
 }
 

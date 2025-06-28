@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Paper.h"
-#include "DevScene.h"
+#include "GameScene.h"
 #include "Creature.h"
 #include "BoxCollider.h"
 #include "ResourceManager.h"
@@ -65,7 +65,7 @@ void Paper::TickMove()
 	if (abs(_owner->GetPos().x - _pos.x) >= _range)
 	{
 		// 추후 GameScene으로 변경
-		DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+		GameScene* scene = dynamic_cast<GameScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
 		// 투사체 삭제
 		scene->RemoveActor(this);
 	}
@@ -99,7 +99,7 @@ void Paper::OnComponentBeginOverlap(Collider* collider, Collider* other)
 	if (b2->GetCollisionLayer() == CLT_PLAYER)
 	{
 		// 추후 GameScene으로 변경
-		DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+		GameScene* scene = dynamic_cast<GameScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
 		// 투사체 삭제
 		scene->RemoveActor(this);
 	}

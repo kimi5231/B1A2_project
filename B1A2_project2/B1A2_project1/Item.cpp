@@ -14,9 +14,9 @@ Item::~Item()
 
 void Item::LoadFile(const std::wstring& path)
 {
-	std::wifstream ifs;
-	ifs.imbue(std::locale("ko_KR.UTF-8"));
-	ifs.open(path);
+    std::wifstream ifs;
+    ifs.imbue(std::locale("ko_KR.UTF-8"));
+    ifs.open(path);
 
     std::wstring line;
 
@@ -36,7 +36,7 @@ void Item::LoadFile(const std::wstring& path)
 
         // 아이템 이름
         std::getline(wiss, info->name, L',');
-        
+
         // 설명 
         std::wstring strExplain;
         std::getline(wiss, strExplain, L',');
@@ -50,35 +50,6 @@ void Item::LoadFile(const std::wstring& path)
         }
 
         info->explain = strExplain;
-
-        // F 키로 습득
-        std::wstring strAcquiredByFkey;
-        std::getline(wiss, strAcquiredByFkey, L',');
-        int32 intAcquiredByFkey = std::stoi(strAcquiredByFkey);
-        if (intAcquiredByFkey == -1)
-            info->acquiredByFKey = false;
-        else
-            info->acquiredByFKey = true;
-
-        // 드랍하는 몬스터 고유 ID - 없으면 0
-        std::wstring strDroppingMonsterPersonalID;
-        std::getline(wiss, strDroppingMonsterPersonalID, L',');
-        info->droppingMonsterPersonalID = std::stoi(strDroppingMonsterPersonalID);
-
-        // 스폰 위치 - 없으면 음수값
-        std::wstring strSpawnPosX;
-        std::getline(wiss, strSpawnPosX, L',');
-        info->spawnPos.x = std::stoi(strSpawnPosX);
-
-        std::wstring strSpawnPosY;
-        std::getline(wiss, strSpawnPosY, L',');
-        info->spawnPos.y = std::stoi(strSpawnPosY);
-
-        
-        // 메모리 누수 방지용 - 근데 지금은 필요없어서 보류...
-        //if (!std::getline(wiss, info->ID, L',')) { delete info; continue; }
-        //if (!std::getline(wiss, info->name, L',')) { delete info; continue; }
-        //if (!std::getline(wiss, info->explain)) { delete info; continue; }
 
         _items[info->ID] = info;
     }

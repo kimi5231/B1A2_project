@@ -23,18 +23,18 @@ private:
 	virtual void OnComponentEndOverlap(Collider* collider, Collider* other);
 
 public:
-	void SetDoorPos(Vec2Int pos) { _doorPos = pos; }
-	Vec2Int GetDoorPos() { return _doorPos; }
-	void SetItemPos(Vec2Int pos) { _itemPos = pos; }
-	Vec2Int GetItemPos() { return _itemPos; }
+	void SetDoorPos(Vec2 pos) { _doorPos = pos; }
+	Vec2 GetDoorPos() { return _doorPos; }
+	void SetItemPos(Vec2 pos) { _itemPos = pos; }
+	Vec2 GetItemPos() { return _itemPos; }
 
 private:
 	Flipbook* _flipbookLockedDoor = nullptr;
 	Flipbook* _flipbookUnlockedDoor = nullptr;
 	Flipbook* _flipbookKey = nullptr;
 
-	Vec2Int _doorPos;
-	Vec2Int _itemPos;
+	Vec2 _doorPos;
+	Vec2 _itemPos;
 
 public:
 	bool _isKeyAcquired = false;

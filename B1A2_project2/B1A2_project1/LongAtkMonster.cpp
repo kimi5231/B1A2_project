@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "LongAtkMonster.h"
 #include "Paper.h"
-#include "DevScene.h"
+#include "GameScene.h"
 #include "BoxCollider.h"
 #include "ResourceManager.h"
 #include "TimeManager.h"
@@ -73,7 +73,7 @@ void LongAtkMonster::Tick()
 		GET_SINGLE(CollisionManager)->RemoveCollider(_collider);
 
 		// 추후 GameScene으로 변경
-		DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+		GameScene* scene = dynamic_cast<GameScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
 		scene->RemoveActor(this);
 	}
 
@@ -145,7 +145,7 @@ void LongAtkMonster::TickDead()
 	if (_sumTime >= 0.5f)
 	{
 		// 힐템 드랍
-		DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+		GameScene* scene = dynamic_cast<GameScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
 		Item* itemData = GET_SINGLE(ResourceManager)->GetItem(L"Item");
 		ItemActor* item = scene->SpawnObject<ItemActor>({ _pos.x, _pos.y }, LAYER_ITEM, 300100, itemData->GetItems());
 
@@ -253,7 +253,7 @@ void LongAtkMonster::CalPixelPerSecond()
 void LongAtkMonster::CreateProjectile()
 {
 	// 추후 GameScene으로 변경
-	DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+	GameScene* scene = dynamic_cast<GameScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
 
 	// 추후 Layer, Pos 변경 예정
 	Paper* paper = scene->SpawnObject<Paper>({ _pos.x, _pos.y }, LAYER_PLAYER);

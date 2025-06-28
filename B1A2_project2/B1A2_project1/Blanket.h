@@ -20,6 +20,8 @@ protected:
 
 public:
 	virtual float GetSpeed() override;
+
+	void SetDuartion(float duration) { _duration = duration; }
 private:
 	virtual void OnComponentBeginOverlap(Collider* collider, Collider* other);
 	virtual void OnComponentEndOverlap(Collider* collider, Collider* other);
@@ -33,6 +35,9 @@ private:
 	float _sumTime = 0.f;
 
 	BoxCollider* _collider;
+
+	float _spawnInterval;
+	float _duration;
 };
 
  

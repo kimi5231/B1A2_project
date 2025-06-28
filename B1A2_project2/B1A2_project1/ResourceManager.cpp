@@ -9,6 +9,8 @@
 #include "SoundManager.h"
 #include "Item.h"
 #include "Stage.h"
+#include "ItemStage.h"
+#include "StructureStage.h"
 #include "Player.h"
 #include "TiredOfficeWorker.h"
 #include "BrokenCopyMachine.h"
@@ -122,7 +124,7 @@ Tilemap* ResourceManager::LoadTilemap(const std::wstring& key, const std::wstrin
 
 	std::filesystem::path fullPath = _resourcePath / path;
 	tilemap->LoadFile(fullPath);
-	
+
 	return tilemap;
 }
 
@@ -175,6 +177,34 @@ Stage* ResourceManager::LoadStage(const std::wstring& key, const std::wstring& p
 	_stages[key] = stage;
 
 	return stage;
+}
+
+ItemStage* ResourceManager::LoadItemStage(const std::wstring& key, const std::wstring& path)
+{
+	if (_itemStages[key])
+		return _itemStages[key];
+
+	std::filesystem::path fullpath = _resourcePath / path;
+
+	ItemStage* itemStage = new ItemStage();
+	itemStage->LoadFile(fullpath);
+	_itemStages[key] = itemStage;
+
+	return itemStage;
+}
+
+StructureStage* ResourceManager::LoadStructureStage(const std::wstring& key, const std::wstring& path)
+{
+	if (_structureStages[key])
+		return _structureStages[key];
+
+	std::filesystem::path fullpath = _resourcePath / path;
+
+	StructureStage* structureStage = new StructureStage();
+	structureStage->LoadFile(fullpath);
+	_structureStages[key] = structureStage;
+
+	return structureStage;
 }
 
 PlayerStat* ResourceManager::LoadPlayerStat(const std::wstring& path)

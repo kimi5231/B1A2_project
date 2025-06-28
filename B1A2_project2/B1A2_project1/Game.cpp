@@ -51,7 +51,7 @@ void Game::Init(HWND hwnd)
 	GET_SINGLE(DialogueManager)->Init();
 	GET_SINGLE(NetworkManager)->Init();
 
-	GET_SINGLE(SceneManager)->ChangeScene(SceneType::DevScene);
+	GET_SINGLE(SceneManager)->ChangeScene(SceneType::GameScene);
 }
 
 void Game::Update()

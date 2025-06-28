@@ -13,7 +13,7 @@
 #include "BoxCollider.h"
 #include "ItemActor.h"
 #include "Item.h"
-#include "DevScene.h"
+#include "GameScene.h"
 #include "ZipLine.h"
 #include "Flipbook.h"
 #include "LockedDoorAndKey.h"
@@ -51,6 +51,8 @@ Player::Player()
 	_flipbookPlayerRelease[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_PlayerReleaseLeft");
 	_flipbookPlayerSlash[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_PlayerSlashRight");
 	_flipbookPlayerSlash[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_PlayerSlashLeft");
+	_flipbookPlayerThrust[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_PlayerThrustRight");
+	_flipbookPlayerThrust[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_PlayerThrustLeft");
 	_flipbookPlayerHit[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_PlayerHitRight");
 	_flipbookPlayerHit[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_PlayerHitLeft");
 	_flipbookPlayerSkillReady[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_PlayerSkillReadyRight");
@@ -80,9 +82,12 @@ Player::Player()
 			collider->AddCollisionFlagLayer(CLT_STAIR);
 			collider->AddCollisionFlagLayer(CLT_WALL);
 			collider->AddCollisionFlagLayer(CLT_SAVE_POINT);
+			collider->AddCollisionFlagLayer(CLT_GAME_OVER);
+			collider->AddCollisionFlagLayer(CLT_NEXT);
 			collider->AddCollisionFlagLayer(CLT_DETECT);
 			collider->AddCollisionFlagLayer(CLT_STRUCTURE);
 			collider->AddCollisionFlagLayer(CLT_STRUCTURE_DETECT);
+			collider->AddCollisionFlagLayer(CLT_STRUCTURE_COLLISION);
 
 			collider->SetSize({ 23, 75 });
 
@@ -113,130 +118,20 @@ void Player::Tick()
 	/*if (GetDialogue()->GetState() == DialogueState::Running || GetDialogue()->GetState() == DialogueState::Wait)
 		return;*/
 
-		// F key가 활성화되면 획득할 수 있음
-		// 획득 후 F key와 Item을 화면에서 지움
-	if (_collideItem)
-	{
-		if (_collideItem->GetFKeyState() == FKeyState::Show)
-		{
-			if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::F))
-			{
-				_acquiredItems[_collideItem->GetItemID()]++;
 
-				Collider* collider = _collideItem->GetCollider();
-				if (collider)
-				{
-					collider->SetCollisionLayer(CLT_NONE);
-				}
+	TickCollideItem();
 
-				// Scene에 아이템 획득 효과 그리기
-				// 추후 GameScene로 변경할 예정
-				DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
-				scene->SetItemAcquireState(_collideItem);
+	TickColliderCreationAndRemove();
 
-				// 잠긴 문과 열쇠의 열쇠 획득시 문 열리도록 설정
-				if (_collideItem->GetItemID() == 310100)
-					_isKeyAcquire = true;
+	TickWindow();
 
-				// 아이템 숨기기
-				_collideItem->SetFKeyState(FKeyState::Hidden);
-				_collideItem->SetItemState(ItemState::Hidden);
-			}
-		}
-	}
-
-	if (_info.state() != CLOSE_ATTACK && _info.state() != LONG_ATTACK)
-	{
-		if (_attackCollider)
-		{
-			GET_SINGLE(CollisionManager)->RemoveCollider(_attackCollider);
-			RemoveComponent(_attackCollider);
-			_attackCollider = nullptr;
-		}
-	}	
-	if (_info.state() != SKILL_WAITING && _info.state() != SKILL_END)
-	{
-		if (_skillCollider)
-		{
-			GET_SINGLE(CollisionManager)->RemoveCollider(_skillCollider);
-			RemoveComponent(_skillCollider);
-			_skillCollider = nullptr;
-		}
-
-		// Detect Collider 생성
-		if (!_detectCollider)
-		{
-			BoxCollider* collider = new BoxCollider();
-			collider->ResetCollisionFlag();
-			collider->SetCollisionLayer(CLT_DETECT);
-
-			collider->AddCollisionFlagLayer(CLT_MONSTER);
-
-			collider->SetSize({ 80, 80 });
-
-			_detectCollider = collider;
-
-			GET_SINGLE(CollisionManager)->AddCollider(collider);
-			AddComponent(collider);
-		}
-	}
-	if (_info.state() == SKILL_WAITING || _info.state() == SKILL_END)
-	{
-		if (_detectCollider)
-		{
-			GET_SINGLE(CollisionManager)->RemoveCollider(_detectCollider);
-			RemoveComponent(_detectCollider);
-			_detectCollider = nullptr;
-		}
-	}
-
-	// Window
-	if (_window && _isInWindow)
-	{
-		if (_window->GetState() == ON)
-		{
-			if (!_damagedByWindow)
-			{
-				// 체력 감소 함수 호출
-				SubtractHealthPoint(20);
-
-				// 체력이 다 닳으면 사망
-				if (_playerStat->hp == 0)
-				{
-					SetState(DEAD);
-					return;
-				}
-
-				_damagedByWindow = true;
-			}
-		}
-	}
-	else
-	{
-		_damagedByWindow = false;
-	}
-
-	// FootHoldAndZipLineButton
-	if (_footHoldAndZipLineButton)
-	{
-		switch (_footHoldAndZipLineButton->GetState())
-		{
-		case OFF:
-			if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_1))
-				_footHoldAndZipLineButton->SetState(ON);
-			break;
-		case ON:
-			if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_2))
-				_footHoldAndZipLineButton->SetState(ON2);
-			break;
-		}
-	}
+	TickFootHold();
 
 	TickGravity();
 
 	// 플레이어가 화면 밖으로 넘어가지 않도록
 	Vec2Int mapSize = GET_SINGLE(ValueManager)->GetMapSize();
-	_pos.x = std::clamp(_pos.x, (float)(67 / 2), (float)mapSize.x);		// 67은 DevScene에서 설정한 Player collider 크기
+	_pos.x = std::clamp(_pos.x, (float)(67 / 2), (float)mapSize.x);
 
 	// Ground or Air 판단 코드(추후 코드 정리 필요)
 	{
@@ -252,13 +147,13 @@ void Player::Tick()
 			{
 				BoxCollider* collider = dynamic_cast<BoxCollider*>(component);
 
-				if (collider->GetCollisionLayer() == CLT_GROUND || collider->GetCollisionLayer() == CLT_STAIR)
+				if (collider->GetCollisionLayer() == CLT_GROUND || collider->GetCollisionLayer() == CLT_STAIR || collider->GetCollisionLayer() == CLT_GAME_OVER)
 				{
 					Vec2 pos = _playerCollider->GetPos();
 					float posX1 = pos.x - _playerCollider->GetSize().x / 2;
 					float posX2 = pos.x + _playerCollider->GetSize().x / 2;
-					float posY = pos.y +  _playerCollider->GetSize().y / 2;
-					
+					float posY = pos.y + _playerCollider->GetSize().y / 2;
+
 					if (collider->GetPos().x - 20 < posX1 && posX1 < collider->GetPos().x + 20)
 					{
 						if (collider->GetPos().y - 20 < posY && posY < collider->GetPos().y + 20)
@@ -309,41 +204,169 @@ void Player::Render(HDC hdc)
 
 void Player::TickIdle()
 {
-	
-}
+	if (GetDialogue()->GetState() == DialogueState::Running || GetDialogue()->GetState() == DialogueState::Wait)
+		return;
 
+	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+	static float sumTime = 0.0f;
+
+	sumTime += deltaTime;
+
+	_keyPressed = true;
+
+	if (GET_SINGLE(InputManager)->GetButton(KeyType::A))
+	{
+		SetDir(DIR_LEFT);
+		SetState(MOVE);
+	}
+	else if (GET_SINGLE(InputManager)->GetButton(KeyType::D))
+	{
+		SetDir(DIR_RIGHT);
+		SetState(MOVE);
+	}
+	else if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::SpaceBar))
+	{
+		// 이미 점프 중이면 리턴
+		if (!_isGround && _isAir)
+			return;
+
+		_isGround = false;
+		_isAir = true;
+
+		SetState(JUMP);
+
+		_ySpeed = -_playerStat->jumpSpeed;
+	}
+	else if (GET_SINGLE(InputManager)->GetButton(KeyType::S))
+	{
+		SetState(DUCK_DOWN);
+	}
+	else if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::LeftMouse))
+	{
+		if (_isCloseAtk)
+			SetState(CLOSE_ATTACK);
+		else
+			SetState(LONG_ATTACK);
+	}
+	else if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::RightMouse))
+	{
+		if (GetSkillPoint() >= 3)
+		{
+			SubtractSkillPoint(3);
+
+			_skillTimer = 0.f;
+
+			_leftInputCount = 0;
+			_rightInputCount = 0;
+
+			SetState(SKILL_READY);
+		}
+	}
+	else
+	{
+		_keyPressed = false;
+
+		if (_info.state() == IDLE)
+			UpdateAnimation();
+	}
+}
 void Player::TickMove()
 {
-	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+	if (GetDialogue()->GetState() == DialogueState::Running || GetDialogue()->GetState() == DialogueState::Wait)
+		return;
 
-	switch (_info.dir())
+	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+	static float sumTime = 0.0f;
+
+	sumTime += deltaTime;
+
+	if (GET_SINGLE(InputManager)->GetButton(KeyType::A))
 	{
-	case DIR_LEFT:
+		SetDir(DIR_LEFT);
 		_pos.x -= _playerStat->runSpeed * deltaTime;
-		break;
-	case DIR_RIGHT:
+	}
+	else if (GET_SINGLE(InputManager)->GetButton(KeyType::D))
+	{
+		SetDir(DIR_RIGHT);
 		_pos.x += _playerStat->runSpeed * deltaTime;
-		break;
+	}
+	else
+	{
+		SetState(IDLE); // 이동 키를 뗐을 때 Idle 상태로 변경
+	}
+
+	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::SpaceBar))
+	{
+		// 이미 점프 중이면 리턴
+		if (!_isGround && _isAir)
+			return;
+
+		_isGround = false;
+		_isAir = true;
+
+		SetState(JUMP);
+
+		_ySpeed = -_playerStat->jumpSpeed;
+	}
+	else if (GET_SINGLE(InputManager)->GetButton(KeyType::S))
+	{
+		SetState(DUCK_DOWN_MOVE);
+	}
+	else if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::LeftMouse))	// Normal Attack
+	{
+		if (_isCloseAtk)
+			SetState(CLOSE_ATTACK);
+		else
+			SetState(LONG_ATTACK);
+
+	}
+	else if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::RightMouse))	// Skill
+	{
+		SetState(SKILL_READY);
 	}
 }
 
 void Player::TickDuckDown()
 {
-	
+	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::A))
+	{
+		SetDir(DIR_LEFT);
+		SetState(DUCK_DOWN_MOVE);
+	}
+	else if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::D))
+	{
+		SetDir(DIR_RIGHT);
+		SetState(DUCK_DOWN_MOVE);
+	}
+	else if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::S))	// 버튼을 뗐을 때
+	{
+		SetState(IDLE);
+	}
 }
 
 void Player::TickDuckDownMove()
 {
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 
-	switch (_info.dir())
+	if (GET_SINGLE(InputManager)->GetButton(KeyType::A))
 	{
-	case DIR_LEFT:
+		SetDir(DIR_LEFT);
 		_pos.x -= _playerStat->runSpeed * deltaTime;
-		break;
-	case DIR_RIGHT:
+	}
+	else if (GET_SINGLE(InputManager)->GetButton(KeyType::D))
+	{
+		SetDir(DIR_RIGHT);
 		_pos.x += _playerStat->runSpeed * deltaTime;
-		break;
+	}
+
+	if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::A) || GET_SINGLE(InputManager)->GetButtonUp(KeyType::D))
+	{
+		SetState(DUCK_DOWN);
+	}
+
+	if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::S))
+	{
+		SetState(MOVE);
 	}
 }
 
@@ -351,14 +374,47 @@ void Player::TickJump()
 {
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 
-	switch (_info.dir())
+	// 좌우 이동도 가능하도록 추가
+	if (GET_SINGLE(InputManager)->GetButton(KeyType::A))
 	{
-	case DIR_LEFT:
+		SetDir(DIR_LEFT);
 		_pos.x -= _playerStat->runSpeed * deltaTime;
-		break;
-	case DIR_RIGHT:
+	}
+	else if (GET_SINGLE(InputManager)->GetButton(KeyType::D))
+	{
+		SetDir(DIR_RIGHT);
 		_pos.x += _playerStat->runSpeed * deltaTime;
-		break;
+	}
+
+	if (_isGround && !_isAir)	// 땅에 닿았을 때
+	{
+		if (GET_SINGLE(InputManager)->GetButton(KeyType::A))
+		{
+			SetDir(DIR_LEFT);
+			SetState(MOVE);
+		}
+		else if (GET_SINGLE(InputManager)->GetButton(KeyType::D))
+		{
+			SetDir(DIR_RIGHT);
+			SetState(MOVE);
+		}
+		else
+			SetState(IDLE);
+	}
+	else
+	{
+		// ZipLine 
+		if (_nearZipLine)
+		{
+			if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::SpaceBar))
+			{
+				// 바라보는 방향 설정
+				SetDir(DIR_RIGHT);
+
+				_currentZipLine = _nearZipLine;
+				SetState(HANG);
+			}
+		}
 	}
  }
 
@@ -380,7 +436,6 @@ void Player::TickCloseAttack()
 		AddComponent(collider);
 	}
 
-	// EndAnimation?
 	if (this->GetIdx() == 6)
 	{
 		SetState(IDLE);
@@ -410,19 +465,17 @@ void Player::TickLongAttack()
 		AddComponent(collider);
 	}
 
-	// 114?
 	if (sumTime <= 0.7f)
 	{
 		if (_info.dir() == DIR_RIGHT)
 		{
 			_pos.x += 114 * deltaTime;
 		}
-		else 
+		else
 			_pos.x -= 114 * deltaTime;
 	}
 
-	// EndAnmation?
-	if (this->GetIdx() == 6)
+	if (this->GetIdx() == 14)
 	{
 		sumTime = 0.0f;
 
@@ -435,6 +488,34 @@ void Player::TickSkillReady()
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 	_skillTimer += deltaTime;
 
+	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::A) && _leftInputCount < 5)
+	{
+		_leftInputCount++;
+	}
+	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::D) && _rightInputCount < 5)
+	{
+		_rightInputCount++;
+	}
+
+	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::RightMouse))
+	{
+		if (_leftInputCount > 0 || _rightInputCount > 0)
+		{
+			_skillTimer = 0.f;
+
+			if (_leftInputCount == _rightInputCount)
+				SetState(IDLE);
+			else
+			{
+				if (_leftInputCount < _rightInputCount)
+					SetDir(DIR_RIGHT);
+				else
+					SetDir(DIR_LEFT);
+
+				SetState(SKILL_WAITING);
+			}
+		}
+	}
 	if (_skillTimer >= 2.0f)
 	{
 		_skillTimer = 0.f;
@@ -457,7 +538,7 @@ void Player::TickSkillReady()
 		{
 			SetState(IDLE);
 		}
-	}	
+	}
 }
 
 void Player::TickSkillWaiting()
@@ -480,7 +561,7 @@ void Player::TickSkillWaiting()
 
 		GET_SINGLE(CollisionManager)->AddCollider(collider);
 		AddComponent(collider);
-		
+
 		_skillCollider = collider;
 	}
 
@@ -498,13 +579,15 @@ void Player::TickSkillWaiting()
 
 void Player::TickSkillEnd()
 {
-	// EndAnimation?
 	if (GetIdx() == _flipbookPlayerSkillEnd[_info.dir()]->GetFlipbookEndNum())
 		SetState(IDLE);
 }
 
 void Player::TickHang()
 {
+	static bool isMoving = false;	// 이동 하는지
+	static float sumTime = 0.0f;
+
 	if (!_currentZipLine)
 		return;
 
@@ -515,22 +598,21 @@ void Player::TickHang()
 	if (_currentZipLine->GetMidPos().x != 0 && _currentZipLine->GetMidPos().y != 0)	// 중간 탑승
 		beginPos = _currentZipLine->GetMidPos();
 
-
 	// 매달리기 시작 - 짚라인 시작 위치로 이동
-	if (!_isMoving)
+	if (!isMoving)
 	{
-		_pos = beginPos;
+		_pos.x = beginPos.x;
+		_pos.y = beginPos.y + 50;	// 위치 보정
 
 		_isGround = true;
 		_isAir = false;
 
-		_hangTimer += GET_SINGLE(TimeManager)->GetDeltaTime();
+		sumTime += GET_SINGLE(TimeManager)->GetDeltaTime();
 
-		// 1초 대기 후 이동 시작
-		if (_hangTimer >= 1.0f)
+		if (sumTime >= 1.0f)	// 1초 대기 후 이동 시작
 		{
-			_isMoving = true;
-			_hangTimer = 0.0f;
+			isMoving = true;
+			sumTime = 0.0f;
 		}
 	}
 	// 이동 시작
@@ -538,15 +620,35 @@ void Player::TickHang()
 	{
 		float speed = 300.0f;
 		float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
-		
+
 		_pos += direction * speed * deltaTime;
+		//_zipLine->GetPlayerDetectCollider()->SetPos({ _pos });
+
+		// 이동 중 SpaceBar 입력 시 놓기
+		if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::SpaceBar))
+		{
+			isMoving = false;
+
+			sumTime = 0.0f;
+
+			_pos.y -= 50;	// 위치 보정
+
+			_isGround = false;
+			_isAir = true;
+
+			_currentZipLine->SetMidPos(_pos);
+
+			SetState(RELEASE);
+
+			return;
+		}
 
 		// endPos에 도착하면 놓기
 		Vec2 toEnd = endPos - _pos;
 		if (toEnd.Dot(direction) <= 0.f)
 		{
-			_isMoving = false;
-			_hangTimer = 0.0f;
+			isMoving = false;
+			sumTime = 0.0f;
 
 			_isGround = false;
 			_isAir = true;
@@ -580,19 +682,27 @@ void Player::TickRelease()
 void Player::TickHit()
 {
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+	static bool knockBackApplied = false;
 	static float sumTime = 0.f;
-	sumTime += deltaTime;
 
 	// knockback
-	if (_info.dir() == DIR_RIGHT)
-		_pos.x -= (_playerStat->knockBackDistance * 2) * deltaTime;		// 속 = 거 / 시
-	else
-		_pos.x += (_playerStat->knockBackDistance * 2) * deltaTime;
+	if (!knockBackApplied)
+	{
+		if (_info.dir() == DIR_RIGHT)
+			_pos.x -= _playerStat->knockBackDistance;
+		else
+			_pos.x += _playerStat->knockBackDistance;
+
+		knockBackApplied = true;
+	}
+
+	sumTime += deltaTime;
 
 	if (sumTime >= 0.5f)
 	{
-		sumTime = 0.f;
 		SetState(IDLE);
+		knockBackApplied = false;
+		sumTime = 0.f;
 	}
 }
 
@@ -606,8 +716,36 @@ void Player::TickDead()
 	{
 		sumTime = 0.f;
 
-		// 초기화 - 체력, 위치?
-		SetHealthPoint(100);
+		// 보스 스테이지
+		if (_curStageNum == 4)
+		{
+			SetPos({ 200, 520 });
+			AddHealthPoint(100);
+			SubtractSkillPoint(5);
+
+			SetState(IDLE);
+			return;
+		}
+
+		// 나머지 스테이지
+		GameScene* scene = dynamic_cast<GameScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+		if (scene->isSaveFile())
+		{
+			scene->LoadGameData();
+			LoadData data = scene->GetLoadData();
+
+			SetPos(data.playerPos);
+			AddHealthPoint(100);
+			SubtractSkillPoint(5);
+			SetAcquireItems(data.playerItems);
+		}
+		else
+		{
+			SetPos({ 400, 200 });
+			AddHealthPoint(100);
+			SubtractSkillPoint(5);
+		}
+
 		SetState(IDLE);
 	}
 }
@@ -659,19 +797,19 @@ void Player::UpdateAnimation()
 		SetFlipbook(_flipbookPlayerSkillEnd[_info.dir()]);
 		break;
 	case CLOSE_ATTACK:
-		//_playerCollider->SetSize({ 75, 90 });
+		_playerCollider->SetSize({ 75, 90 });
 		SetFlipbook(_flipbookPlayerSlash[_info.dir()]);
 		break;
 	case LONG_ATTACK:
-		_playerCollider->SetSize({ 75, 90 });
-		SetFlipbook(_flipbookPlayerSlash[_info.dir()]);		
+		_playerCollider->SetSize({ 125, 85 });
+		SetFlipbook(_flipbookPlayerThrust[_info.dir()]);		
 		break;
 	case HIT:
 		_playerCollider->SetSize({ 41, 80 });
 		SetFlipbook(_flipbookPlayerHit[_info.dir()]);
 	break;
 	case DEAD:
-	//	SetFlipbook(_flipbookPlayerDead[_info.dir()]);
+		SetFlipbook(_flipbookPlayerDead[_info.dir()]);
 	break;
 	}
 
@@ -681,6 +819,137 @@ void Player::UpdateAnimation()
 		_isAir = true;
 	}
 }
+
+void Player::TickColliderCreationAndRemove()
+{
+	if (_info.state() != CLOSE_ATTACK && _info.state() != LONG_ATTACK)
+	{
+		if (_attackCollider)
+		{
+			GET_SINGLE(CollisionManager)->RemoveCollider(_attackCollider);
+			RemoveComponent(_attackCollider);
+			_attackCollider = nullptr;
+		}
+	}
+	if (_info.state() != SKILL_WAITING && _info.state() != SKILL_END)
+	{
+		if (_skillCollider)
+		{
+			GET_SINGLE(CollisionManager)->RemoveCollider(_skillCollider);
+			RemoveComponent(_skillCollider);
+			_skillCollider = nullptr;
+		}
+
+		// Detect Collider 생성
+		if (!_detectCollider)
+		{
+			BoxCollider* collider = new BoxCollider();
+			collider->ResetCollisionFlag();
+			collider->SetCollisionLayer(CLT_DETECT);
+
+			collider->AddCollisionFlagLayer(CLT_MONSTER);
+
+			collider->SetSize({ 80, 80 });
+
+			_detectCollider = collider;
+
+			GET_SINGLE(CollisionManager)->AddCollider(collider);
+			AddComponent(collider);
+		}
+	}
+	if (_info.state() == SKILL_WAITING || _info.state() == SKILL_END)
+	{
+		if (_detectCollider)
+		{
+			GET_SINGLE(CollisionManager)->RemoveCollider(_detectCollider);
+			RemoveComponent(_detectCollider);
+			_detectCollider = nullptr;
+		}
+	}
+}
+
+void Player::TickCollideItem()
+{
+	// F key가 활성화되면 획득할 수 있음
+	// 획득 후 F key와 Item을 화면에서 지움
+
+	if (!_collideItem)
+		return;
+
+	if (_collideItem->GetFKeyState() == FKeyState::Show)
+	{
+		if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::F))
+		{
+			_acquiredItems[_collideItem->GetItemID()]++;
+
+			Collider* collider = _collideItem->GetCollider();
+			if (collider)
+			{
+				collider->SetCollisionLayer(CLT_NONE);
+			}
+
+			GameScene* scene = dynamic_cast<GameScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+			scene->SetItemAcquireState(_collideItem);
+
+			// 잠긴 문과 열쇠의 열쇠 획득시 문 열리도록 설정
+			if (_collideItem->GetItemID() == 310100)
+				_isKeyAcquire = true;
+
+			// 아이템 숨기기
+			_collideItem->SetFKeyState(FKeyState::Hidden);
+			_collideItem->SetItemState(ItemState::Hidden);
+		}
+	}
+
+}
+
+void Player::TickWindow()
+{
+	if (_window && _isInWindow)
+	{
+		if (_window->GetState() == ON)
+		{
+			if (!_damagedByWindow)
+			{
+				// 체력 감소 함수 호출
+				SubtractHealthPoint(20);
+
+				// 체력이 다 닳으면 사망
+				if (_playerStat->hp == 0)
+				{
+					SetState(DEAD);
+					return;
+				}
+
+				_damagedByWindow = true;
+			}
+		}
+	}
+	else
+	{
+		_damagedByWindow = false;
+	}
+}
+
+void Player::TickFootHold()
+{
+	// FootHoldAndZipLineButton
+	if (_footHoldAndZipLineButton)
+	{
+		switch (_footHoldAndZipLineButton->GetState())
+		{
+		case OFF:
+			if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_1))
+				_footHoldAndZipLineButton->SetState(ON);
+			break;
+		case ON:
+			if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_2))
+				_footHoldAndZipLineButton->SetState(ON2);
+			break;
+		}
+	}
+}
+
 
 int32 Player::GetAttack()
 {
@@ -796,13 +1065,26 @@ void Player::AddHealthPoint(int hp)
 
 void Player::SubtractHealthPoint(int hp)
 {
-	if (_playerStat->hp <= 0)
-		return;
-
-	_playerStat->hp -= hp;
+	_playerStat->hp = max(0, _playerStat->hp - hp);
 
 	// 관찰자에게 알림
 	_healthObserver(_playerStat->hp);
+}
+
+void Player::AddSkillPoint(int32 skillPoint)
+{
+	_playerStat->skillPoint = min(5, _playerStat->skillPoint + skillPoint);
+
+	// 관찰자에게 알림
+	_skillPointObserver(_playerStat->skillPoint);
+}
+
+void Player::SubtractSkillPoint(int32 skillPoint)
+{
+	_playerStat->skillPoint = max(0, _playerStat->skillPoint - skillPoint);
+
+	// 관찰자에게 알림
+	_skillPointObserver(_playerStat->skillPoint);
 }
 
 void Player::CalPixelPerSecond()
@@ -868,7 +1150,7 @@ void Player::OnComponentBeginOverlap(Collider* collider, Collider* other)
 			item->SetFKeyState(FKeyState::Show);
 		else
 		{
-			AddHealthPoint(20);	// 숫자 수정 필요
+			AddHealthPoint(20);
 			item->SetItemState(ItemState::Hidden);
 		}
 
@@ -877,14 +1159,6 @@ void Player::OnComponentBeginOverlap(Collider* collider, Collider* other)
 		return;
 	}
 
-	// Save Point에 충돌하면 저장하기(밀어내기 X)
-	if (b2->GetCollisionLayer() == CLT_SAVE_POINT)
-	{
-		_devScene->SaveCurData();
-
-		return;
-	}
-	
 	// Structure Detect
 	if (b2->GetCollisionLayer() == CLT_STRUCTURE_DETECT)
 	{
@@ -936,33 +1210,6 @@ void Player::OnComponentBeginOverlap(Collider* collider, Collider* other)
 		if (!structure)
 			return;
 
-		// LcokedDoorAndKey
-		{
-			LockedDoorAndKey* lockedDoorAndKey = dynamic_cast<LockedDoorAndKey*>(structure);
-
-			if (lockedDoorAndKey)
-			{
-				if (!lockedDoorAndKey->_isKeyAcquired)
-				{
-					AdjustCollisionPos(b1, b2);
-					return;
-				}
-				return;
-			}
-		}
-
-		// BreakingWall
-		{
-			BreakingWall* breakingWall = dynamic_cast<BreakingWall*>(structure);
-
-			if (breakingWall)
-			{
-				_isCloseAtk = true;
-				AdjustCollisionPos(b1, b2);
-				return;
-			}
-		}
-
 		// DestructibleObject
 		{
 			DestructibleObject* destructibleObject = dynamic_cast<DestructibleObject*>(structure);
@@ -970,7 +1217,6 @@ void Player::OnComponentBeginOverlap(Collider* collider, Collider* other)
 			if (destructibleObject)
 			{
 				_isCloseAtk = true;
-				AdjustCollisionPos(b1, b2);
 			}
 		}
 
@@ -996,14 +1242,21 @@ void Player::OnComponentBeginOverlap(Collider* collider, Collider* other)
 				return;
 			}
 		}
+	}
+	// Structure Collision
+	if (b2->GetCollisionLayer() == CLT_STRUCTURE_COLLISION)
+	{
+		Structure* structure = dynamic_cast<Structure*>(b2->GetOwner());
+		if (!structure)
+			return;
 
-		// Crystal
+		// BreakingWall
 		{
-			Crystal* crystal = dynamic_cast<Crystal*>(structure);
+			BreakingWall* breakingWall = dynamic_cast<BreakingWall*>(structure);
 
-			if (crystal)
+			if (breakingWall)
 			{
-				AdjustCollisionPos(b1, b2);
+				_isCloseAtk = true;
 				return;
 			}
 		}
@@ -1019,6 +1272,10 @@ void Player::OnComponentBeginOverlap(Collider* collider, Collider* other)
 	// Projectile
 	if (b2->GetCollisionLayer() == CLT_PROJECTILE)
 	{
+		// 스킬 중엔 Projectile 안 맞도록
+		if (_info.state() == SKILL_READY || _info.state() == SKILL_END || _info.state() == SKILL_WAITING)
+			return;
+
 		Projectile* projectile = dynamic_cast<Projectile*>(b2->GetOwner());
 		if (!projectile)
 			return;
@@ -1026,18 +1283,37 @@ void Player::OnComponentBeginOverlap(Collider* collider, Collider* other)
 		OnDamagedByProjectile(projectile);
 	}
 
-	// 벽 충돌하면 밀어내기
-	if (b2->GetCollisionLayer() == CLT_WALL)
+	// 낙사
+	if (b2->GetCollisionLayer() == CLT_GAME_OVER)
 	{
-		AdjustCollisionPos(b1, b2);
+		SetState(DEAD);
 		return;
 	}
 
-	// 땅과 충돌 - 상하좌우 확인
-	if (b2->GetCollisionLayer() == CLT_GROUND)
+	// Save Point에 충돌하면 저장하기(밀어내기 X)
+	if (b2->GetCollisionLayer() == CLT_SAVE_POINT)
 	{
-		_isGround = true;
-		_isAir = false;
+		_gameScene->SaveCurData();
+
+		return;
+	}
+
+	// Next - 다음 스테이지로
+	if (b2->GetCollisionLayer() == CLT_NEXT)
+	{
+		GameScene* scene = dynamic_cast<GameScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+
+		switch (_curStageNum)
+		{
+		case 1:
+			scene->RequestStageChange(2); break;
+		case 2:
+			scene->RequestStageChange(3); break;
+		case 3:
+			scene->RequestStageChange(4);	break;
+		}
+
+		return;
 	}
 
 	// 계단
@@ -1054,10 +1330,18 @@ void Player::OnComponentBeginOverlap(Collider* collider, Collider* other)
 
 	if (b1->GetCollisionLayer() == CLT_PLAYER && (b2->GetCollisionLayer() == CLT_MONSTER_ATTACK || b2->GetCollisionLayer() == CLT_FINAL_BOSS_SLASH))
 	{
+		if (_info.state() == HIT)
+			return;
+
 		Creature* otherOwner = dynamic_cast<Creature*>(b2->GetOwner());
 		OnDamaged(otherOwner);
 
 		return;
+	}
+
+	if (b1->GetCollisionLayer() == CLT_PLAYER_ATTACK && b2->GetCollisionLayer() == CLT_MONSTER)
+	{
+		AddSkillPoint(1);
 	}
 }
 
@@ -1091,7 +1375,7 @@ void Player::OnComponentEndOverlap(Collider* collider, Collider* other)
 	if (b2->GetCollisionLayer() == CLT_STRUCTURE)
 	{
 		Structure* structure = dynamic_cast<Structure*>(b2->GetOwner());
-	
+
 		// Window
 		{
 			Window* window = dynamic_cast<Window*>(structure);
@@ -1151,6 +1435,35 @@ void Player::OnComponentOverlapping(Collider* collider, Collider* other)
 		AdjustCollisionPosGround(b1, b2);
 		return;
 	}
+
+	if (b2->GetCollisionLayer() == CLT_GAME_OVER)
+	{
+		AdjustCollisionPos(b1, b2);
+		return;
+	}
+
+	if (b2->GetCollisionLayer() == CLT_STRUCTURE_COLLISION)
+	{
+		Structure* structure = dynamic_cast<Structure*>(b2->GetOwner());
+
+		// LcokedDoorAndKey - 잠겼을 때만 위치 조정
+		{
+			LockedDoorAndKey* lockedDoorAndKey = dynamic_cast<LockedDoorAndKey*>(structure);
+
+			if (lockedDoorAndKey)
+			{
+				if (!lockedDoorAndKey->_isKeyAcquired)
+				{
+					AdjustCollisionPos(b1, b2);
+					return;
+				}
+				return;
+			}
+		}
+
+		AdjustCollisionPos(b1, b2);
+		return;
+	}
 }
 
 void Player::AdjustCollisionPos(BoxCollider* b1, BoxCollider* b2)
@@ -1165,7 +1478,7 @@ void Player::AdjustCollisionPos(BoxCollider* b1, BoxCollider* b2)
 	{
 		int32 w = intersect.right - intersect.left;
 		int32 h = intersect.bottom - intersect.top;
-		
+
 		if (w > h)
 		{
 			if (intersect.top == r2.top)
@@ -1191,7 +1504,7 @@ void Player::AdjustCollisionPos(BoxCollider* b1, BoxCollider* b2)
 			}
 		}
 	}
-	
+
 	SetPos(pos);
 }
 
@@ -1211,7 +1524,7 @@ void Player::AdjustCollisionPosGround(BoxCollider* b1, BoxCollider* b2)
 		int32 h = intersect.bottom - intersect.top;
 
 		// 위로 올려 보내기
-		pos.y -= h;	
+		pos.y -= h;
 		colliderPos.y -= h;
 	}
 

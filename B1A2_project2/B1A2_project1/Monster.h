@@ -36,6 +36,10 @@ public:
 
 	void SetTarget(Player* player) { _target = player; }
 
+	void SetMonsterId(int32 id) { _id = id; }
+
 protected:
 	Player* _target = nullptr;
+
+	int32 _id = 0;
 };

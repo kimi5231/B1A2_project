@@ -26,6 +26,8 @@ protected:
 public:
 	void RemoveActor(Actor* actor);
 
+	void SetSceneState(SceneState state) { _sceneState = state; }
+
 protected:
 	std::vector<Actor*> _actors[LAYER_MAXCOUNT];
 	std::vector<Panel*> _panels;

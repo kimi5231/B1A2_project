@@ -2,7 +2,7 @@
 #include "TiredOfficeWorker.h"
 #include "BoxCollider.h"
 #include "Player.h"
-#include "DevScene.h"
+#include "GameScene.h"
 #include "Item.h"
 #include "ItemActor.h"
 #include "TimeManager.h"
@@ -173,7 +173,7 @@ void TiredOfficeWorker::TickDead()
 	if (_sumTime >= 0.5f)
 	{
 		// 추후 GameScene로 변경할 예정
-		DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+		GameScene* scene = dynamic_cast<GameScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
 
 		// 난수 생성
 		std::random_device rd;

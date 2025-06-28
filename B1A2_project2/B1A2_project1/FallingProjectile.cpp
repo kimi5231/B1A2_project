@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "FallingProjectile.h"
-#include "DevScene.h"
+#include "GameScene.h"
 #include "Creature.h"
 #include "BoxCollider.h"
 #include "ResourceManager.h"
@@ -8,9 +8,9 @@
 #include "SceneManager.h"
 #include "CollisionManager.h"
 
-FallingProjectile::FallingProjectile()
+FallingProjectile1::FallingProjectile1()
 {
-	_flipbookMove = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_FallingProjectile");
+	_flipbookMove = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_FallingProjectile1");
 
 	// Collider Component
 	{
@@ -22,7 +22,7 @@ FallingProjectile::FallingProjectile()
 
 			collider->AddCollisionFlagLayer(CLT_PLAYER);
 
-			collider->SetSize({ 40, 40 });
+			collider->SetSize({ 54, 142 });
 
 			GET_SINGLE(CollisionManager)->AddCollider(collider);
 			AddComponent(collider);
@@ -32,53 +32,206 @@ FallingProjectile::FallingProjectile()
 	SetState(MOVE);
 }
 
-FallingProjectile::~FallingProjectile()
+FallingProjectile1::~FallingProjectile1()
 {
 }
 
-void FallingProjectile::BeginPlay()
+void FallingProjectile1::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-void FallingProjectile::Tick()
+void FallingProjectile1::Tick()
 {
 	Super::Tick();
 }
 
-void FallingProjectile::Render(HDC hdc)
+void FallingProjectile1::Render(HDC hdc)
 {
 	Super::Render(hdc);
 }
 
-void FallingProjectile::TickMove()
+void FallingProjectile1::TickMove()
 {
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 
+	if (_isHitPlayer)
+	{
+		_sumTime += deltaTime;
+
+		if (_sumTime >= _playerHitFallingProjectileDuration)
+		{
+			GameScene* scene = dynamic_cast<GameScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+			scene->RemoveActor(this);
+			return;
+		}
+	}
+
+	if (_isArriveGround)
+	{
+		_sumTime += deltaTime;
+
+		if (_sumTime >= _landedFallingProjectileDuration)
+		{
+			GameScene* scene = dynamic_cast<GameScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+			scene->RemoveActor(this);
+			return;
+		}
+		return;
+	}
+
 	_pos.y += _speed * deltaTime;
 
-	if (_pos.y >= 300)
+	if (_pos.y >= 560)
 	{
-		// 추후 GameScene으로 변경
-		DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
-		// 투사체 삭제
-		scene->RemoveActor(this);
+		_isArriveGround = true;
 	}
 }
 
-void FallingProjectile::UpdateAnimation()
+void FallingProjectile1::UpdateAnimation()
+{
+	switch (_info.state())
+	{
+	case MOVE:
+		SetFlipbook(_flipbookMove);
+		break;
+	}
+}
+
+float FallingProjectile1::GetSpeed()
+{
+	return _speed;
+}
+
+void FallingProjectile1::OnComponentBeginOverlap(Collider* collider, Collider* other)
+{
+	BoxCollider* b1 = dynamic_cast<BoxCollider*>(collider);
+	BoxCollider* b2 = dynamic_cast<BoxCollider*>(other);
+
+	if (b1 == nullptr || b2 == nullptr)
+		return;
+
+	if (b2->GetCollisionLayer() == CLT_PLAYER)
+	{
+		_isHitPlayer = true;
+	}
+}
+
+void FallingProjectile1::OnComponentEndOverlap(Collider* collider, Collider* other)
 {
 }
 
-float FallingProjectile::GetSpeed()
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+FallingProjectile2::FallingProjectile2()
 {
-	return 0.0f;
+	_flipbookMove = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_FallingProjectile2");
+
+	// Collider Component
+	{
+		// Projectile Collider
+		{
+			BoxCollider* collider = new BoxCollider();
+			collider->ResetCollisionFlag();
+			collider->SetCollisionLayer(CLT_PROJECTILE);
+
+			collider->AddCollisionFlagLayer(CLT_PLAYER);
+
+			collider->SetSize({ 54, 122 });
+
+			GET_SINGLE(CollisionManager)->AddCollider(collider);
+			AddComponent(collider);
+		}
+	}
+
+	SetState(MOVE);
 }
 
-void FallingProjectile::OnComponentBeginOverlap(Collider* collider, Collider* other)
+FallingProjectile2::~FallingProjectile2()
 {
 }
 
-void FallingProjectile::OnComponentEndOverlap(Collider* collider, Collider* other)
+void FallingProjectile2::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
+void FallingProjectile2::Tick()
+{
+	Super::Tick();
+}
+
+void FallingProjectile2::Render(HDC hdc)
+{
+	Super::Render(hdc);
+}
+
+void FallingProjectile2::TickMove()
+{
+	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+
+	if (_isHitPlayer)
+	{
+		_sumTime += deltaTime;
+
+		if (_sumTime >= _playerHitFallingProjectileDuration)
+		{
+			GameScene* scene = dynamic_cast<GameScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+			scene->RemoveActor(this);
+			return;
+		}
+	}
+
+	if (_isArriveGround)
+	{
+		_sumTime += deltaTime;
+
+		if (_sumTime >= _landedFallingProjectileDuration)
+		{
+			GameScene* scene = dynamic_cast<GameScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+			scene->RemoveActor(this);
+			return;
+		}
+		return;
+	}
+
+	_pos.y += _speed * deltaTime;
+
+	if (_pos.y >= 560)
+	{
+		_isArriveGround = true;
+	}
+}
+
+void FallingProjectile2::UpdateAnimation()
+{
+	switch (_info.state())
+	{
+	case MOVE:
+		SetFlipbook(_flipbookMove);
+		break;
+	}
+}
+
+float FallingProjectile2::GetSpeed()
+{
+	return _speed;
+}
+
+void FallingProjectile2::OnComponentBeginOverlap(Collider* collider, Collider* other)
+{
+	BoxCollider* b1 = dynamic_cast<BoxCollider*>(collider);
+	BoxCollider* b2 = dynamic_cast<BoxCollider*>(other);
+
+	if (b1 == nullptr || b2 == nullptr)
+		return;
+
+	if (b2->GetCollisionLayer() == CLT_PLAYER)
+	{
+		_isHitPlayer = true;
+	}
+}
+
+void FallingProjectile2::OnComponentEndOverlap(Collider* collider, Collider* other)
 {
 }

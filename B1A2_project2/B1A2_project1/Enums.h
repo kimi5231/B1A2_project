@@ -8,7 +8,6 @@ enum class SceneType
 	TitleScene,	// 타이틀 씬
 	SettingScene, // 설정 씬
 	GameScene,	// 인게임 씬
-	DevScene,	// 개발 씬
 	TilemapScene,
 };
 
@@ -36,29 +35,30 @@ enum class ColliderType
 
 enum COLLISION_LAYER_TYPE : uint8
 {
-	CLT_PLAYER,		// 0
-	CLT_MONSTER,	// 1
-	CLT_PROJECTILE, // 2
+	CLT_PLAYER,
+	CLT_MONSTER,
+	CLT_PROJECTILE,
 
-	CLT_ITEM,		// 3
-	
-	CLT_GROUND,		// 4
-	CLT_WALL,		// 5
-	CLT_STAIR,		// 6
-	CLT_SAVE_POINT,	// 7
-	CLT_GAME_OVER,	// 8
+	CLT_ITEM,
 
-	CLT_DETECT,		// 9
-	CLT_MONSTER_ATTACK,	// 10
-	CLT_FINAL_BOSS_SLASH, // 12
-	CLT_PLAYER_ATTACK,	// 13
+	CLT_GROUND,
+	CLT_WALL,
+	CLT_STAIR,
+	CLT_SAVE_POINT,
+	CLT_GAME_OVER,
+	CLT_NEXT,
+
+	CLT_DETECT,
+	CLT_MONSTER_ATTACK,
+	CLT_FINAL_BOSS_SLASH,
+	CLT_PLAYER_ATTACK,
 	CLT_PLAYER_SKILL,
 
-	CLT_STRUCTURE,	// 14 - 예. 짚라인 버튼
-	CLT_STRUCTURE_DETECT, // 15 - 예. 짚라인
-	CLT_STRUCTURE_COLLISION,
+	CLT_STRUCTURE,	//  예. 짚라인 버튼
+	CLT_STRUCTURE_DETECT, // 예. 짚라인
+	CLT_STRUCTURE_COLLISION,	// 충돌 처리 필요
 
-	CLT_NONE,		
+	CLT_NONE,
 };
 
 // Player Direction
@@ -113,6 +113,11 @@ enum class InventoryState
 // Scene
 enum class SceneState
 {
+	// Title Scene
+	Title,
+	SelectStart,
+
+	// Game Scene
 	Play,
 	Menu,
 	ItemAcquire,

@@ -22,6 +22,7 @@ struct AmateurFencerStat
 	float longAtkProjectileSpeed;	// N
 	int32 longAtkProjectileDamage;	// O
 	int32 longAtkProjectileCount;	// P
+	float atkCooldown;	// Q
 
 	void LoadFile(const std::wstring& path)
 	{
@@ -56,6 +57,7 @@ struct AmateurFencerStat
 				case 13: this->longAtkProjectileSpeed = std::stof(cell); break;	// N
 				case 14: this->longAtkProjectileDamage = std::stoi(cell); break;	// O
 				case 15: this->longAtkProjectileCount = std::stoi(cell); break;		// P
+				case 16: this->atkCooldown = std::stof(cell); break;
 				}
 				++column;
 			}
@@ -71,7 +73,7 @@ public:
 	AmateurFencer();
 	virtual ~AmateurFencer() override;
 
-	virtual void BeginPlay() override;		// Build BT
+	virtual void BeginPlay() override;		
 	virtual void Tick() override;
 	virtual void Render(HDC hdc) override;
 

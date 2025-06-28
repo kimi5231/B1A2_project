@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "SlashWave.h"
-#include "DevScene.h"
+#include "GameScene.h"
 #include "BoxCollider.h"
 #include "CollisionManager.h"
 #include "ResourceManager.h"
@@ -63,7 +63,7 @@ void Slashwave::TickMove()
 
 	if (abs(_owner->GetPos().x - _pos.x) >= _range)
 	{
-		DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+		GameScene* scene = dynamic_cast<GameScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
 		scene->RemoveActor(this);
 	}
 }
@@ -93,7 +93,7 @@ void Slashwave::OnComponentBeginOverlap(Collider* collider, Collider* other)
 
 	if (b2->GetCollisionLayer() == CLT_PLAYER)
 	{
-		DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+		GameScene* scene = dynamic_cast<GameScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
 		scene->RemoveActor(this);
 	}
 }

@@ -8,22 +8,57 @@ class BoxCollider;
 
 struct FinalBossStat
 {
-	int32 hp;	// A
-	float healItemDropRate;	// B
-	float speed;	//C
-	int32 knockBackDistance;	// D
-	int32 backStepDistance;	// E
-	float dashSpeed;	// F
-	int32 dashDistance;	// G
-	int32 closeAtkRange;	// H
-	int32 closeAtkDamage;	// I
-	int32 longAtkRange;	// J
-	int32 longAtkProjectileDamage;	// K
-	float longAtkProjectileSpeed;	// L
-	int32 longAtkProjectileCount;	// M
-	std::string projetileTypeWidth;	// N
-	std::string projectileTypeHeight;	// O
-	int32 slashAtkDamage;	// P
+	int32 id;
+	int32 hp;
+	float healItemDropRate;
+	float speed;
+	Vec2Int playerDetection;
+	int32 knockBackDistance;
+	int32 backStepDistance;
+	float dashSpeed;
+	int32 dashDistance;
+	int32 closeAtkRange;
+	int32 closeAtkDamage;
+	int32 longAtkRange;
+	int32 longAtkProjectileDamage;
+	float longAtkProjectileSpeed;
+	int32 longAtkProjectileCount;
+	int32 slashAtkDamage;
+	float atkCooldown;
+	int32 blanketDamage;
+	float blanketSpawnInterval;
+	float blanketDuration;
+
+	float landedFallingProjectileDuration;
+	float playerHitFallingProjectileDuration;
+	int32 fallingProjectile1Count;
+	int32 fallingProjectile2Count;
+
+	float fallingProjectile1Speed1st;
+	int32 fallingProjectile1Damage1st;
+	float fallingProjectile1Speed2nd;
+	int32 fallingProjectile1Damage2nd;
+	float fallingProjectile1Speed3rd;
+	int32 fallingProjectile1Damage3rd;
+	float fallingProjectile1Speed4th;
+	int32 fallingProjectile1Damage4th;
+
+	float fallingProjectile2Speed1st;
+	int32 fallingProjectile2Damage1st;
+	float fallingProjectile2Speed2nd;
+	int32 fallingProjectile2Damage2nd;
+	float fallingProjectile2Speed3rd;
+	int32 fallingProjectile2Damage3rd;
+	float fallingProjectile2Speed4th;
+	int32 fallingProjectile2Damage4th;
+	float monsterSpawnInterval;
+	float monsterDuration;
+	float crystalDuration;
+	int32 skillPointOnCrystalDestroy;
+	int32 firstCrustalHealPerSec;
+	int32 secondCrystalHealPerSec;
+	int32 thridCrystalHealPerSec;
+
 
 	void LoadFile(const std::wstring& path)
 	{
@@ -42,22 +77,55 @@ struct FinalBossStat
 			{
 				switch (column)
 				{
-				case 0:this->hp = std::stoi(cell); break;	// A
-				case 1: this->healItemDropRate = std::stof(cell); break;	// B
-				case 2: this->speed = std::stof(cell); break;	// C
-				case 3: this->knockBackDistance = std::stoi(cell); break;	// D
-				case 4: this->backStepDistance = std::stoi(cell); break;	// E
-				case 5: this->dashSpeed = std::stof(cell); break;	// F
-				case 6: this->dashDistance = std::stoi(cell); break;	// G
-				case 7: this->closeAtkRange = std::stoi(cell); break;	// H
-				case 8: this->closeAtkDamage = std::stoi(cell); break;	// I
-				case 9: this->longAtkRange = std::stoi(cell); break;	// J
-				case 10: this->longAtkProjectileDamage = std::stoi(cell); break;	// K
-				case 11: this->longAtkProjectileSpeed = std::stof(cell); break;	// L
-				case 12: this->longAtkProjectileCount = std::stoi(cell); break;	// M
-				case 13: this->projetileTypeWidth = cell; break;	// N
-				case 14: this->projectileTypeHeight = cell; break;	// O
-				case 15: this->slashAtkDamage = std::stoi(cell); break;	// P
+				case 0: id = std::stoi(cell); break;
+				case 1: hp = std::stoi(cell); break;
+				case 2: healItemDropRate = std::stof(cell); break;
+				case 3: speed = std::stof(cell); break;
+				case 4: playerDetection.x = std::stoi(cell); break;
+				case 5: playerDetection.y = std::stoi(cell); break;
+				case 6: knockBackDistance = std::stoi(cell); break;
+				case 7: backStepDistance = std::stoi(cell); break;
+				case 8: dashSpeed = std::stof(cell); break;
+				case 9: dashDistance = std::stoi(cell); break;
+				case 10: closeAtkRange = std::stoi(cell); break;
+				case 11: closeAtkDamage = std::stoi(cell); break;
+				case 12: longAtkRange = std::stoi(cell); break;
+				case 13: longAtkProjectileDamage = std::stoi(cell); break;
+				case 14: longAtkProjectileSpeed = std::stof(cell); break;
+				case 15: longAtkProjectileCount = std::stoi(cell); break;
+				case 16: slashAtkDamage = std::stoi(cell); break;
+				case 17: atkCooldown = std::stof(cell); break;
+				case 18: blanketDamage = std::stoi(cell); break;
+				case 19: blanketSpawnInterval = std::stof(cell); break;
+				case 20: blanketDuration = std::stof(cell); break;
+				case 21: landedFallingProjectileDuration = std::stof(cell); break;
+				case 22: playerHitFallingProjectileDuration = std::stof(cell); break;
+				case 23: fallingProjectile1Count = std::stoi(cell); break;
+				case 24: fallingProjectile2Count = std::stoi(cell); break;
+				case 25: fallingProjectile1Speed1st = std::stof(cell); break;
+				case 26: fallingProjectile1Damage1st = std::stoi(cell); break;
+				case 27: fallingProjectile1Speed2nd = std::stof(cell); break;
+				case 28: fallingProjectile1Damage2nd = std::stoi(cell); break;
+				case 29: fallingProjectile1Speed3rd = std::stof(cell); break;
+				case 30: fallingProjectile1Damage3rd = std::stoi(cell); break;
+				case 31: fallingProjectile1Speed4th = std::stof(cell); break;
+				case 32: fallingProjectile1Damage4th = std::stoi(cell); break;
+				case 33: fallingProjectile2Speed1st = std::stof(cell); break;
+				case 34: fallingProjectile2Damage1st = std::stoi(cell); break;
+				case 35: fallingProjectile2Speed2nd = std::stof(cell); break;
+				case 36: fallingProjectile2Damage2nd = std::stoi(cell); break;
+				case 37: fallingProjectile2Speed3rd = std::stof(cell); break;
+				case 38: fallingProjectile2Damage3rd = std::stoi(cell); break;
+				case 39: fallingProjectile2Speed4th = std::stof(cell); break;
+				case 40: fallingProjectile2Damage4th = std::stoi(cell); break;
+				case 41: monsterSpawnInterval = std::stof(cell); break;
+				case 42: monsterDuration = std::stof(cell); break;
+				case 43: crystalDuration = std::stof(cell); break;
+				case 44: skillPointOnCrystalDestroy = std::stoi(cell); break;
+				case 45: firstCrustalHealPerSec = std::stoi(cell); break;
+				case 46: secondCrystalHealPerSec = std::stoi(cell); break;
+				case 47: thridCrystalHealPerSec = std::stoi(cell); break;
+				default: break;
 				}
 				++column;
 			}
@@ -65,6 +133,7 @@ struct FinalBossStat
 		ifs.close();
 	}
 };
+
 
 class FinalBoss : public Monster
 {
@@ -97,6 +166,16 @@ public:
 	virtual int32& GetHp() override { return _stat->hp; }
 	virtual float GetSpeed() override { return _stat->speed; };
 	virtual Vec2Int GetPlayerDetection() { return { 0, 0 }; }
+	
+	virtual void OnDamaged(Creature* other);
+public:
+	// Hp 
+	using HealthObserver = void(*)(int);	// hp 변화시 호출될 콜백 함수 타입
+	void SetHealthObserver(std::function<void(int)> observer) { _healthObserver = observer; }
+
+	void SetHealthPoint(int hp);
+	void AddHealthPoint(int hp);
+	void SubtractHealthPoint(int hp);
 
 public:
 	void CalPixelPerSecond();
@@ -147,7 +226,9 @@ public:
 
 public:
 	float GetFromPlayerXDistance();
-	float GetAbsFromPlayerXDisatance();
+	float GetAbsFromPlayerXDistance();
+	float GetFromPlayerYDistance();
+	float GetAbsFromPlayerYDistance();
 
 	void SetSpawnPos(Vec2 pos);
 	void SetSpawnDir(Dir dir);
@@ -161,13 +242,14 @@ public:
 	virtual void OnComponentEndOverlap(Collider* collider, Collider* other);
 
 public:
-	void CreateWidthProjectile();	
+	void CreateWidthProjectile();
 	void CreateLengthProjectile();
-	void CreateProjectileFall();	// Projectile Fall
+	void CreateProjectileFall1(int32 crystalCreationNumber);	// Projectile Fall
+	void CreateProjectileFall2(int32 crystalCreationNumber);
 	void CreateBlanket();
 	void CreateMonster();
 
-	void SubtractCurrentCrystalCount(int32) { _currentCrystalCount--; }
+	void SubtractCurrentCrystalCount(int32) { _currentCryatalNum--; }
 
 	void UpdatePlayerFloor();
 	void UpdateBossFloor();
@@ -198,15 +280,21 @@ private:
 
 	float _currentMoveDistance;
 
+	std::function<void(int)> _healthObserver;	// 체력 변화 알림 받을 함수 포인터
+
 	BoxCollider* _collider = nullptr;
 	Collider* _attackCollider = nullptr;
 
 	int32 _currentProjectileCount = 0;
+	int32 _currentFallingProjectile1Count = 0;
+	int32 _currentFallingProjectile2Count = 0;
+
 	int32 _currentMonsterCreationCount = 0;		// 생성할 때
 	int32 _currentMonsterCount = 0;		// 생성 후
-	int32 _currentCrystalCount = 0;
+	int32 _currentCrystalCreationNumber = 0;
 
 	float _sumTime = 0.f;
+	float _atkCoolTime = 0.f;
 	float _IdlesumTime = 0.f;
 	float _dashTeleportSumTime = 0.f;
 	float _crystalCreationSumTime = 0.f;
@@ -218,15 +306,15 @@ private:
 
 	int32 _playerFloor = 0;
 	int32 _bossFloor = 0;
-	float _firstFloorYpos = 550;
+	float _firstFloorYpos = 520;
 	float _secondFloorYPos = 370;
-	float _thirdFloorYPos = 260;
+	float _thirdFloorYPos = 250;
 
 	bool _isFirstCrystalCreationWork = false;
 	bool _isSecondCrystalCreationWork = false;
 	bool _isThirdCrystalCreationWork = false;
-
 	bool _isCrystalSpawned = false;
+	int32 _currentCryatalNum = 0;
 
 	bool _isMonsterCreation = false;
 

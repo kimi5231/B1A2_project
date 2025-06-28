@@ -6,6 +6,7 @@
 #include "Flipbook.h"
 #include "SceneManager.h"
 #include "ResourceManager.h"
+#include "TitleScene.h"
 
 TitlePanel::TitlePanel()
 {
@@ -127,7 +128,7 @@ void TitlePanel::Render(HDC hdc)
 // CallBack ÇÔ¼ö
 void TitlePanel::OnClickStartButton()
 {
-	GET_SINGLE(SceneManager)->ChangeScene(SceneType::DevScene);
+	_owner->SetSceneState(SceneState::SelectStart);
 }
 
 void TitlePanel::OnClickSettingButton()

@@ -158,7 +158,7 @@
     <ClInclude Include="Sprite.h">
       <Filter>소스 파일\04. Resources\paper2D</Filter>
     </ClInclude>
-    <ClInclude Include="DevScene.h">
+    <ClInclude Include="GameScene.h">
       <Filter>소스 파일\02. Scene</Filter>
     </ClInclude>
     <ClInclude Include="SettingScene.h">
@@ -181,9 +181,6 @@
     </ClInclude>
     <ClInclude Include="FlipbookUI.h">
       <Filter>소스 파일\06. UI</Filter>
-    </ClInclude>
-    <ClInclude Include="GameScene.h">
-      <Filter>소스 파일\02. Scene\Game</Filter>
     </ClInclude>
     <ClInclude Include="Sound.h">
       <Filter>소스 파일\04. Resources\Sound</Filter>
@@ -353,6 +350,15 @@
     <ClInclude Include="MyPlayer.h">
       <Filter>소스 파일\03. Objects\Game\Creature</Filter>
     </ClInclude>
+    <ClInclude Include="ItemStage.h">
+      <Filter>소스 파일\04. Resources\DataBase</Filter>
+    </ClInclude>
+    <ClInclude Include="StructureStage.h">
+      <Filter>소스 파일\04. Resources\DataBase</Filter>
+    </ClInclude>
+    <ClInclude Include="BossStagePanel.h">
+      <Filter>소스 파일\06. UI\Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="B1A2_project1.cpp">
@@ -403,7 +409,7 @@
     <ClCompile Include="Sprite.cpp">
       <Filter>소스 파일\04. Resources\paper2D</Filter>
     </ClCompile>
-    <ClCompile Include="DevScene.cpp">
+    <ClCompile Include="GameScene.cpp">
       <Filter>소스 파일\02. Scene</Filter>
     </ClCompile>
     <ClCompile Include="SettingScene.cpp">
@@ -426,9 +432,6 @@
     </ClCompile>
     <ClCompile Include="FlipbookUI.cpp">
       <Filter>소스 파일\06. UI</Filter>
-    </ClCompile>
-    <ClCompile Include="GameScene.cpp">
-      <Filter>소스 파일\02. Scene\Game</Filter>
     </ClCompile>
     <ClCompile Include="Sound.cpp">
       <Filter>소스 파일\04. Resources\Sound</Filter>
@@ -597,6 +600,15 @@
     </ClCompile>
     <ClCompile Include="MyPlayer.cpp">
       <Filter>소스 파일\03. Objects\Game\Creature</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemStage.cpp">
+      <Filter>소스 파일\04. Resources\DataBase</Filter>
+    </ClCompile>
+    <ClCompile Include="StructureStage.cpp">
+      <Filter>소스 파일\04. Resources\DataBase</Filter>
+    </ClCompile>
+    <ClCompile Include="BossStagePanel.cpp">
+      <Filter>소스 파일\06. UI\Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

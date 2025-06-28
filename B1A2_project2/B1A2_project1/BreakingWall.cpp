@@ -5,7 +5,7 @@
 #include "CollisionManager.h"
 #include "Player.h"
 #include "TimeManager.h"
-#include "DevScene.h"
+#include "GameScene.h"
 #include "SceneManager.h"
 
 BreakingWall::BreakingWall()
@@ -89,7 +89,7 @@ void BreakingWall::TickDead()
 
 		// 객체 제거
 		// 추후 GameScene으로 변경할 예정
-		DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+		GameScene* scene = dynamic_cast<GameScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
 		scene->RemoveActor(this);
 	}
 }

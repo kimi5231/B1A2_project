@@ -157,6 +157,7 @@ xcopy /y /d "$(SolutionDir)FMOD_API\studio\lib\x64\*.dll" "$(OutDir)"</Command>
     <ClInclude Include="B1A2_project1.h" />
     <ClInclude Include="BehaviorTree.h" />
     <ClInclude Include="Blanket.h" />
+    <ClInclude Include="BossStagePanel.h" />
     <ClInclude Include="BoxCollider.h" />
     <ClInclude Include="BreakingWall.h" />
     <ClInclude Include="BrokenCopyMachine.h" />
@@ -172,7 +173,7 @@ xcopy /y /d "$(SolutionDir)FMOD_API\studio\lib\x64\*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Crystal.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DestructibleObject.h" />
-    <ClInclude Include="DevScene.h" />
+    <ClInclude Include="GameScene.h" />
     <ClInclude Include="Dialogue.h" />
     <ClInclude Include="DialogueComponent.h" />
     <ClInclude Include="DialogueManager.h" />
@@ -188,12 +189,12 @@ xcopy /y /d "$(SolutionDir)FMOD_API\studio\lib\x64\*.dll" "$(OutDir)"</Command>
     <ClInclude Include="framework.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
-    <ClInclude Include="GameScene.h" />
     <ClInclude Include="InGamePanel.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="ItemActor.h" />
+    <ClInclude Include="ItemStage.h" />
     <ClInclude Include="LockedDoorAndKey.h" />
     <ClInclude Include="LongAtkMonster.h" />
     <ClInclude Include="Monster.h" />
@@ -224,6 +225,7 @@ xcopy /y /d "$(SolutionDir)FMOD_API\studio\lib\x64\*.dll" "$(OutDir)"</Command>
     <ClInclude Include="StaticUI.h" />
     <ClInclude Include="Struct.pb.h" />
     <ClInclude Include="Structure.h" />
+    <ClInclude Include="StructureStage.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Tilemap.h" />
@@ -252,6 +254,7 @@ xcopy /y /d "$(SolutionDir)FMOD_API\studio\lib\x64\*.dll" "$(OutDir)"</Command>
     <ClCompile Include="B1A2_project1.cpp" />
     <ClCompile Include="BehaviorTree.cpp" />
     <ClCompile Include="Blanket.cpp" />
+    <ClCompile Include="BossStagePanel.cpp" />
     <ClCompile Include="BoxCollider.cpp" />
     <ClCompile Include="BreakingWall.cpp" />
     <ClCompile Include="BrokenCopyMachine.cpp" />
@@ -266,7 +269,7 @@ xcopy /y /d "$(SolutionDir)FMOD_API\studio\lib\x64\*.dll" "$(OutDir)"</Command>
     <ClCompile Include="Creature.cpp" />
     <ClCompile Include="Crystal.cpp" />
     <ClCompile Include="DestructibleObject.cpp" />
-    <ClCompile Include="DevScene.cpp" />
+    <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="Dialogue.cpp" />
     <ClCompile Include="DialogueComponent.cpp" />
     <ClCompile Include="DialogueManager.cpp" />
@@ -282,12 +285,12 @@ xcopy /y /d "$(SolutionDir)FMOD_API\studio\lib\x64\*.dll" "$(OutDir)"</Command>
     <ClCompile Include="FootHold.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="InGamePanel.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="ItemActor.cpp" />
+    <ClCompile Include="ItemStage.cpp" />
     <ClCompile Include="LockedDoorAndKey.cpp" />
     <ClCompile Include="LongAtkMonster.cpp" />
     <ClCompile Include="Monster.cpp" />
@@ -324,6 +327,7 @@ xcopy /y /d "$(SolutionDir)FMOD_API\studio\lib\x64\*.dll" "$(OutDir)"</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Structure.cpp" />
+    <ClCompile Include="StructureStage.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Tilemap.cpp" />
     <ClCompile Include="TilemapActor.cpp" />

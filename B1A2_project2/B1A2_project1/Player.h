@@ -9,7 +9,7 @@ class ZipLine;
 class LockedDoorAndKey;
 class Window;
 class FootHoldAndZipLineButton;
-class DevScene;
+class GameScene;
 class Projectile;
 
 struct PlayerStat
@@ -97,6 +97,11 @@ protected:
 	virtual void TickDead() override;
 	virtual void UpdateAnimation() override;
 
+	void TickColliderCreationAndRemove();
+	void TickCollideItem();
+	void TickWindow();
+	void TickFootHold();
+
 public:
 	virtual int32 GetAttack() override;
 	virtual float GetSpeed() override;
@@ -104,10 +109,10 @@ public:
 	virtual void OnDamaged(Creature* other);
 	void OnDamagedByProjectile(Projectile* projectile);
 
-	// Hp 바뀔 때
+	// Hp 
 	using HealthObserver = void(*)(int);	// hp 변화시 호출될 콜백 함수 타입
 	void SetHealthObserver(std::function<void(int)> observer) { _healthObserver = observer; }
-	
+
 	void SetHealthPoint(int hp);
 	void AddHealthPoint(int hp);
 	void SubtractHealthPoint(int hp);
@@ -115,16 +120,20 @@ public:
 	int32& GetHp() { return _playerStat->hp; }
 	void SetHp(int32 hp) { _playerStat->hp = hp; }
 
+	// SkillPoint
+	using SkillPointObserver = void(*)(int);
+	void SetSkillPointObserver(std::function<void(int)> observer) { _skillPointObserver = observer; }
+
 	int32 GetSkillPoint() { return _playerStat->skillPoint; }
 	void SetSkillPoint(int32 skillPoint) { _playerStat->skillPoint = skillPoint; }
-	void AddSkillPoint(int32 skillPoint) { _playerStat->skillPoint = min(5, _playerStat->skillPoint + skillPoint); }
-	void SubtractSkillPoint(int32 skillPoint) { _playerStat->skillPoint = max(0, _playerStat->skillPoint - skillPoint); }
+	void AddSkillPoint(int32 skillPoint);
+	void SubtractSkillPoint(int32 skillPoint);
 
 public:
-	void SetCurrentScene(DevScene* devScene) { _devScene = devScene; }		// GameScene으로 수정 필요
+	void SetCurrentScene(GameScene* gameScene) { _gameScene = gameScene; }		// GameScene으로 수정 필요
 	void SetCurStageNum(int32 stage) { _curStageNum = stage; }
 
-public: 
+public:
 	void CalPixelPerSecond();
 
 	// Collider
@@ -159,6 +168,7 @@ private:
 	Flipbook* _flipbookPlayerDuckDownMove[2] = {};
 	Flipbook* _flipbookPlayerHang[2] = {};
 	Flipbook* _flipbookPlayerSlash[2] = {};		// CloseAtk
+	Flipbook* _flipbookPlayerThrust[2] = {};
 	Flipbook* _flipbookPlayerSkillReady[2] = {};
 	Flipbook* _flipbookPlayerSkillWaiting[2] = {};
 	Flipbook* _flipbookPlayerSkillEnd[2] = {};
@@ -172,6 +182,7 @@ protected:
 	PlayerStat* _playerStat = {};
 
 	std::function<void(int)> _healthObserver;	// 체력 변화 알림 받을 함수 포인터
+	std::function<void(int)> _skillPointObserver;
 
 	bool _isOnStair = false;
 
@@ -179,7 +190,7 @@ protected:
 	ItemActor* _collideItem = {};	// unordered map에 저장하기 위해, 충돌한 아이템을 담을 변수
 	std::unordered_map<int32, int32> _acquiredItems;		// [아이템 ID, 개수]
 
-	DevScene* _devScene = nullptr;	// 현재 씬 데이터 정보 저장을 위해 필요, 다른 게임 Scene 추가시 수정 필요
+	GameScene* _gameScene = nullptr;	// 현재 씬 데이터 정보 저장을 위해 필요, 다른 게임 Scene 추가시 수정 필요
 
 	ZipLine* _currentZipLine = nullptr;
 	ZipLine* _nearZipLine = nullptr;
@@ -194,7 +205,7 @@ protected:
 	bool _isCloseAtk = false;
 	bool _isKeyAcquire = false;
 	bool _isInWindow = false;
-	bool _damagedByWindow = false;	
+	bool _damagedByWindow = false;
 	bool _isReleaseInMid = false;
 	bool _isMoving = false;
 

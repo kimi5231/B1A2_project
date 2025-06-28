@@ -4,7 +4,7 @@
 #include "TitleScene.h"
 #include "SettingScene.h"
 #include "GameScene.h"
-#include "DevScene.h"
+#include "GameScene.h"
 #include "TilemapScene.h"
 
 void SceneManager::Init()
@@ -51,9 +51,6 @@ void SceneManager::ChangeScene(SceneType sceneType)
 		break;
 	case SceneType::GameScene:
 		newScene = new GameScene();
-		break;
-	case SceneType::DevScene:
-		newScene = new DevScene();
 		break;
 	case SceneType::TilemapScene:
 		newScene = new TilemapScene();

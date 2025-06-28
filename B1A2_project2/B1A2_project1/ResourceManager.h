@@ -8,7 +8,8 @@ class Tilemap;
 class Dialogue;
 class Item;
 class Stage;
-struct LineInfo;
+class ItemStage;
+class StructureStage;
 struct StageInfo;
 struct PlayerStat;
 struct TiredOfficeWorkerStat;
@@ -55,6 +56,12 @@ public:
 	Stage* GetStage(const std::wstring& key) { return _stages[key]; }
 	Stage* LoadStage(const std::wstring& key, const std::wstring& path);
 
+	ItemStage* GetItemStage(const std::wstring& key) { return _itemStages[key]; }
+	ItemStage* LoadItemStage(const std::wstring& key, const std::wstring& path);
+
+	StructureStage* GetStructureStage(const std::wstring& key) { return _structureStages[key]; }
+	StructureStage* LoadStructureStage(const std::wstring& key, const std::wstring& path);
+
 	PlayerStat* GetPlayerStat() { return _playerStat; }
 	PlayerStat* LoadPlayerStat(const std::wstring& path);
 
@@ -83,6 +90,8 @@ private:
 	std::unordered_map<std::wstring, Dialogue*> _dialogues;
 	std::unordered_map<std::wstring, Item*> _items;
 	std::unordered_map<std::wstring, Stage*> _stages;
+	std::unordered_map<std::wstring, ItemStage*> _itemStages;
+	std::unordered_map<std::wstring, StructureStage*> _structureStages;
 	PlayerStat* _playerStat;
 	TiredOfficeWorkerStat* _tiredOfficeWorkerStat;
 	BrokenCopyMachineStat* _brokenCopyMachineStat;

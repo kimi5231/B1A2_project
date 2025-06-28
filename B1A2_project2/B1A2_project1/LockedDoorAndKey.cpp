@@ -6,7 +6,7 @@
 #include "ValueManager.h"
 #include "Texture.h"
 #include "SceneManager.h"
-#include "DevScene.h"
+#include "GameScene.h"
 #include "ItemActor.h"
 
 LockedDoorAndKey::LockedDoorAndKey()
@@ -98,7 +98,7 @@ void LockedDoorAndKey::OnComponentBeginOverlap(Collider* collider, Collider* oth
 	if (b2->GetCollisionLayer() == CLT_PLAYER)
 	{
 		// 추후 GameScene로 변경할 예정
-		DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+		GameScene* scene = dynamic_cast<GameScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
 		
 		// Key 생성
 		Item* itemData = GET_SINGLE(ResourceManager)->GetItem(L"Item");

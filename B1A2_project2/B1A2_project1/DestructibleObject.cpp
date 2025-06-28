@@ -5,7 +5,7 @@
 #include "CollisionManager.h"
 #include "Player.h"
 #include "TimeManager.h"
-#include "DevScene.h"
+#include "GameScene.h"
 #include "SceneManager.h"
 #include "ItemActor.h"
 
@@ -62,7 +62,7 @@ void DestructibleObject::TickOn()
 
 void DestructibleObject::TickDead()
 {	
-	DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+	GameScene* scene = dynamic_cast<GameScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
 
 	if (GetIdx() == 2)
 	{

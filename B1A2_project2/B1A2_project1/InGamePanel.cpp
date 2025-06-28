@@ -19,30 +19,51 @@ void InGamePanel::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// InGame UI Texture Load
-	GET_SINGLE(ResourceManager)->LoadTexture(L"HpBar", L"Sprite\\UI\\HpBar.bmp", RGB(55, 255, 0));
-	GET_SINGLE(ResourceManager)->LoadTexture(L"HpPoint", L"Sprite\\UI\\HpPoint.bmp", RGB(55, 255, 0));
-
-	// HP bar
+	// HP
 	{
-		Texture* texutre = GET_SINGLE(ResourceManager)->GetTexture(L"HpBar");
+		// Bar
+		{
+			Texture* texutre = GET_SINGLE(ResourceManager)->GetTexture(L"HpBar");
 
-		StaticUI* HpBar = new StaticUI();
-		HpBar->SetPos({ 15, 10 });
-		HpBar->SetSize({ 119, 25 });
-		AddChild(HpBar);
+			StaticUI* HpBar = new StaticUI();
+			HpBar->SetPos({ 15, 10 });
+			HpBar->SetSize({ 119, 25 });
+			AddChild(HpBar);
+		}
+
+		// HP point
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"HpPoint");
+
+			StaticUI* HpPoint = new StaticUI();
+			HpPoint->SetPos({ 27, 13 });
+			HpPoint->SetSize({ 100, 25 });
+			AddChild(HpPoint);
+		}
 	}
 
-	// HP point
+	// Skill Point
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"HpPoint");
+		// Bar
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"SkillPointBar");
 
-		StaticUI* HpPoint = new StaticUI();
-		HpPoint->SetPos({ 27, 13 });
-		HpPoint->SetSize({ 100, 25 });
-		AddChild(HpPoint);
+			StaticUI* skillPointBar = new StaticUI();
+			skillPointBar->SetPos({ 1100, 640 });
+			skillPointBar->SetSize({ 159, 40 });
+			AddChild(skillPointBar);
+		}
+
+		// Skill Point
+		{
+			Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"SkillPoint");
+
+			StaticUI* skillPoint = new StaticUI();
+			skillPoint->SetPos({ 1100, 640 });
+			skillPoint->SetSize({ 160, 40 });
+			AddChild(skillPoint);
+		}
 	}
-
 }
 
 void InGamePanel::Tick()
@@ -51,6 +72,13 @@ void InGamePanel::Tick()
 }
 
 void InGamePanel::Render(HDC hdc)
+{
+	HpRender(hdc);
+
+	SkillPointRender(hdc);
+}
+
+void InGamePanel::HpRender(HDC hdc)
 {
 	Vec2 winSizeAdjustmemt = GET_SINGLE(ValueManager)->GetWinSizeAdjustment();
 
@@ -62,7 +90,7 @@ void InGamePanel::Render(HDC hdc)
 			48 * winSizeAdjustmemt.x,
 			15 * winSizeAdjustmemt.y,
 			_hp * winSizeAdjustmemt.x,		// hp에 따라 변경
-			hpPoint->GetSize().y * winSizeAdjustmemt.y,	
+			hpPoint->GetSize().y * winSizeAdjustmemt.y,
 			hpPoint->GetDC(),
 			0,
 			0,
@@ -74,11 +102,11 @@ void InGamePanel::Render(HDC hdc)
 	// HP Bar
 	{
 		Texture* hpBar = GET_SINGLE(ResourceManager)->GetTexture(L"HpBar");
-		
+
 		::TransparentBlt(hdc,
 			15 * winSizeAdjustmemt.x,
 			10 * winSizeAdjustmemt.y,
-			hpBar->GetSize().x * winSizeAdjustmemt.x,	
+			hpBar->GetSize().x * winSizeAdjustmemt.x,
 			hpBar->GetSize().y * winSizeAdjustmemt.y,
 			hpBar->GetDC(),
 			0,
@@ -89,8 +117,51 @@ void InGamePanel::Render(HDC hdc)
 	}
 }
 
-void InGamePanel::UpdateHealthPoint(int32 health)
+void InGamePanel::SkillPointRender(HDC hdc)
 {
-	_hp = health;
+	Vec2 winSizeAdjustmemt = GET_SINGLE(ValueManager)->GetWinSizeAdjustment();
+
+	// SkillPoint Bar
+	{
+		Texture* SkillPointBar = GET_SINGLE(ResourceManager)->GetTexture(L"SkillPointBar");
+
+		::TransparentBlt(hdc,
+			1100 * winSizeAdjustmemt.x,
+			640 * winSizeAdjustmemt.y,
+			SkillPointBar->GetSize().x * winSizeAdjustmemt.x,
+			SkillPointBar->GetSize().y * winSizeAdjustmemt.y,
+			SkillPointBar->GetDC(),
+			0,
+			0,
+			SkillPointBar->GetSize().x,
+			SkillPointBar->GetSize().y,
+			SkillPointBar->GetTransparent());
+	}
+
+	// SkillPoint
+	{
+		Texture* SkillPoint = GET_SINGLE(ResourceManager)->GetTexture(L"SkillPoint");
+
+		::TransparentBlt(hdc,
+			1100 * winSizeAdjustmemt.x,
+			640 * winSizeAdjustmemt.y,
+			_skillPoint * 32 * winSizeAdjustmemt.x,
+			SkillPoint->GetSize().y * winSizeAdjustmemt.y,
+			SkillPoint->GetDC(),
+			0,
+			0,
+			_skillPoint * 32 * winSizeAdjustmemt.x,
+			SkillPoint->GetSize().y,
+			SkillPoint->GetTransparent());
+	}
 }
 
+void InGamePanel::UpdateHealthPoint(int32 health)
+{
+	SetHealthPoint(health);
+}
+
+void InGamePanel::UpdateSkillPoint(int32 sp)
+{
+	SetSkillPoint(sp);
+}

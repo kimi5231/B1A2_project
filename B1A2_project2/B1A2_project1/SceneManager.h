@@ -27,7 +27,12 @@ public:
 	Vec2 GetCameraPos() { return _cameraPos; }
 	void SetCameraPos(Vec2 pos) { _cameraPos = pos; }
 
+	void SetIsContinue(bool isContinue) { _isContinue = isContinue; }
+	bool GetIsContinue() const { return _isContinue; }
+
 private:
 	Vec2  _cameraPos{};
+
+	bool _isContinue = false;	// 이어하기
 };
 

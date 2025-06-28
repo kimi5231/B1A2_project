@@ -3,7 +3,7 @@
 #include "BufferReader.h"
 #include "SceneManager.h"
 #include "Scene.h"
-#include "DevScene.h"
+#include "GameScene.h"
 #include "MyPlayer.h"
 
 void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, int32 len)
@@ -66,14 +66,14 @@ void ClientPacketHandler::Handle_S_MyPlayer(ServerSessionRef session, BYTE* buff
 	Scene* scene = GET_SINGLE(SceneManager)->GetCurrentScene();
 
 	// 추후 GameScene으로 변정 예정
-	if (dynamic_cast<DevScene*>(scene))
+	if (dynamic_cast<GameScene*>(scene))
 	{
-		DevScene* devScene = dynamic_cast<DevScene*>(scene);
+		GameScene* Scene = dynamic_cast<GameScene*>(scene);
 
-		MyPlayer* player = devScene->SpawnObject<MyPlayer>(actorInfo.id(), Vec2{ actorInfo.posx(), actorInfo.posx() }, LAYER_PLAYER);
+		MyPlayer* player = Scene->SpawnObject<MyPlayer>(actorInfo.id(), Vec2{ actorInfo.posx(), actorInfo.posx() }, LAYER_PLAYER);
 		player->SetState(objectInfo.state());
 		player->SetDir(objectInfo.dir());
-		devScene->SetPlayer(player);
+		Scene->SetPlayer(player);
 	}
 }
 
@@ -88,9 +88,9 @@ void ClientPacketHandler::Handle_S_AddPlayer(ServerSessionRef session, BYTE* buf
 	Scene* scene = GET_SINGLE(SceneManager)->GetCurrentScene();
 
 	// 추후 GameScene으로 변정 예정
-	if (dynamic_cast<DevScene*>(scene))
+	if (dynamic_cast<GameScene*>(scene))
 	{
-		DevScene* devScene = dynamic_cast<DevScene*>(scene);
+		GameScene* Scene = dynamic_cast<GameScene*>(scene);
 
 		const int32 size = pkt.actor_size();
 		for (int32 i = 0; i < size; i++)
@@ -99,10 +99,10 @@ void ClientPacketHandler::Handle_S_AddPlayer(ServerSessionRef session, BYTE* buf
 			const Protocol::ObjectInfo& objectInfo = pkt.object(i);
 
 			// 자기 자신은 제외
-			if (actorInfo.id() == devScene->GetMyPlayer()->GetID())
+			if (actorInfo.id() == Scene->GetMyPlayer()->GetID())
 				continue;
 
-			Player* player = devScene->SpawnObject<Player>(actorInfo.id(), Vec2{ actorInfo.posx(), actorInfo.posx() }, LAYER_PLAYER);
+			Player* player = Scene->SpawnObject<Player>(actorInfo.id(), Vec2{ actorInfo.posx(), actorInfo.posx() }, LAYER_PLAYER);
 			player->SetState(objectInfo.state());
 			player->SetDir(objectInfo.dir());
 		}	

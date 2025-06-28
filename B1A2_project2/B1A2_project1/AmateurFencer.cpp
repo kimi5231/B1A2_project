@@ -3,7 +3,7 @@
 #include "BehaviorTree.h"
 #include "Player.h"
 #include "Slashwave.h"
-#include "DevScene.h"
+#include "GameScene.h"
 #include "BoxCollider.h"
 #include "ResourceManager.h"
 #include "TimeManager.h"
@@ -72,6 +72,77 @@ AmateurFencer::AmateurFencer()
 			AddComponent(collider);
 		}
 	}
+
+	// Build BT
+	{
+		// Idle Sequence
+		Condition* c1 = new Condition("is cur state Idle?", [&]() {return is_cur_state_idle(); });
+		Action* a1 = new Action("Idle", [&]() {return Idle(); });
+		Sequence* IdleSequence = new Sequence();
+		IdleSequence->addChild(c1);
+		IdleSequence->addChild(a1);
+
+		// Hit Sequence
+		Condition* c2 = new Condition("is cur state Hit?", [&]() {return is_cur_state_hit(); });
+		Action* a2 = new Action("Hit", [&]() {return Hit(); });
+		Sequence* HitSequence = new Sequence();
+		HitSequence->addChild(c2);
+		HitSequence->addChild(a2);
+
+		// Chase Sequence
+		Condition* c3 = new Condition("is cur state Chase?", [&]() {return is_cur_state_chase(); });
+		Action* a3 = new Action("Chase", [&]() {return Chase(); });
+		Sequence* ChaseSequence = new Sequence();
+		ChaseSequence->addChild(c3);
+		ChaseSequence->addChild(a3);
+
+		// Thrust Sequence
+		Condition* c4 = new Condition("is cur state Thrust?", [&]() {return is_cur_state_thrust(); });
+		Action* a4 = new Action("Thrust", [&]() {return Thrust(); });
+		Sequence* ThrustSequence = new Sequence();
+		ThrustSequence->addChild(c4);
+		ThrustSequence->addChild(a4);
+
+		// BackStep Sequence
+		Condition* c4_2 = new Condition("is cur state BackStep?", [&]() {return is_cur_state_backstep(); });
+		Action* a4_2 = new Action("BackStep", [&]() {return BackStep(); });
+		Sequence* BackStepSequence = new Sequence();
+		BackStepSequence->addChild(c4_2);
+		BackStepSequence->addChild(a4_2);
+
+		// SlashWave Sequeuce
+		Condition* c5_1 = new Condition("is cur state SlashWave?", [&]() {return is_cur_state_slashwave(); });
+		Action* a5_1 = new Action("SlashWave", [&]() {return SlashWave(); });
+		Sequence* SlashWaveSequeuce = new Sequence();
+		SlashWaveSequeuce->addChild(c5_1);
+		SlashWaveSequeuce->addChild(a5_1);
+
+		// Dash Sequeuce
+		Condition* c5_2 = new Condition("is cur State Dash?", [&]() {return is_cur_state_dash(); });
+		Action* a5_2 = new Action("Dash", [&]() {return Dash(); });
+		Sequence* DashSequence = new Sequence();
+		DashSequence->addChild(c5_2);
+		DashSequence->addChild(a5_2);
+
+		// Dead Sequence
+		Condition* c6 = new Condition("is cur state Dead?", [&]() {return is_cur_state_dead(); });
+		Action* a6 = new Action("Dead", [&]() {return Dead(); });
+		Sequence* DeadSequence = new Sequence();
+		DeadSequence->addChild(c6);
+		DeadSequence->addChild(a6);
+
+		// rootNode 설정
+		Selector* RootSelector = new Selector();
+		RootSelector->addChild(IdleSequence);
+		RootSelector->addChild(HitSequence);
+		RootSelector->addChild(ChaseSequence);
+		RootSelector->addChild(ThrustSequence);
+		RootSelector->addChild(BackStepSequence);
+		RootSelector->addChild(SlashWaveSequeuce);
+		RootSelector->addChild(DashSequence);
+		RootSelector->addChild(DeadSequence);
+		_rootNode = RootSelector;
+	}
 }
 
 AmateurFencer::~AmateurFencer()
@@ -83,74 +154,6 @@ AmateurFencer::~AmateurFencer()
 void AmateurFencer::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// Idle Sequence
-	Condition* c1 = new Condition("is cur state Idle?", [&]() {return is_cur_state_idle(); });
-	Action* a1 = new Action("Idle", [&]() {return Idle(); });
-	Sequence* IdleSequence = new Sequence();
-	IdleSequence->addChild(c1);
-	IdleSequence->addChild(a1);
-
-	// Hit Sequence
-	Condition* c2 = new Condition("is cur state Hit?", [&]() {return is_cur_state_hit(); });
-	Action* a2 = new Action("Hit", [&]() {return Hit(); });
-	Sequence* HitSequence = new Sequence();
-	HitSequence->addChild(c2);
-	HitSequence->addChild(a2);
-
-	// Chase Sequence
-	Condition* c3 = new Condition("is cur state Chase?", [&]() {return is_cur_state_chase(); });
-	Action* a3 = new Action("Chase", [&]() {return Chase(); });
-	Sequence* ChaseSequence = new Sequence();
-	ChaseSequence->addChild(c3);
-	ChaseSequence->addChild(a3);
-
-	// Thrust Sequence
-	Condition* c4 = new Condition("is cur state Thrust?", [&]() {return is_cur_state_thrust(); });
-	Action* a4 = new Action("Thrust", [&]() {return Thrust(); });
-	Sequence* ThrustSequence = new Sequence();
-	ThrustSequence->addChild(c4);
-	ThrustSequence->addChild(a4);
-
-	// BackStep Sequence
-	Condition* c4_2 = new Condition("is cur state BackStep?", [&]() {return is_cur_state_backstep(); });
-	Action* a4_2 = new Action("BackStep", [&]() {return BackStep(); });
-	Sequence* BackStepSequence = new Sequence();
-	BackStepSequence->addChild(c4_2);
-	BackStepSequence->addChild(a4_2);
-	
-	// SlashWave Sequeuce
-	Condition* c5_1 = new Condition("is cur state SlashWave?", [&]() {return is_cur_state_slashwave(); });
-	Action* a5_1 = new Action("SlashWave", [&]() {return SlashWave(); });
-	Sequence* SlashWaveSequeuce = new Sequence();
-	SlashWaveSequeuce->addChild(c5_1);
-	SlashWaveSequeuce->addChild(a5_1);
-
-	// Dash Sequeuce
-	Condition* c5_2 = new Condition("is cur State Dash?", [&]() {return is_cur_state_dash(); });
-	Action* a5_2 = new Action("Dash", [&]() {return Dash(); });
-	Sequence* DashSequence = new Sequence();
-	DashSequence->addChild(c5_2);
-	DashSequence->addChild(a5_2);
-
-	// Dead Sequence
-	Condition* c6 = new Condition("is cur state Dead?", [&]() {return is_cur_state_dead(); });
-	Action* a6 = new Action("Dead", [&]() {return Dead(); });
-	Sequence* DeadSequence = new Sequence();
-	DeadSequence->addChild(c6);
-	DeadSequence->addChild(a6);
-
-	// rootNode 설정
-	Selector* RootSelector = new Selector();
-	RootSelector->addChild(IdleSequence);
-	RootSelector->addChild(HitSequence);
-	RootSelector->addChild(ChaseSequence);
-	RootSelector->addChild(ThrustSequence);
-	RootSelector->addChild(BackStepSequence);
-	RootSelector->addChild(SlashWaveSequeuce);
-	RootSelector->addChild(DashSequence);
-	RootSelector->addChild(DeadSequence);
-	_rootNode = RootSelector;
 }
 
 void AmateurFencer::Tick()
@@ -331,15 +334,20 @@ BehaviorState AmateurFencer::Chase()
 	}
 	
 	// 근거리 or 원거리 공격
-	if (xDistance <= _stat->closeAtkRangeX)
+	if (_sumTime >= _stat->atkCooldown)
 	{
-		SetState(THRUST);
-		return BehaviorState::SUCCESS;
-	}
-	else if (std::abs(xDistance - _stat->closeAtkRangeX) > std::abs(xDistance - _stat->longAtkRange))	// |거리 - 근공사| > |거리 - 원공사| 
-	{
-		SetState(SLASH_WAVE);
-		return BehaviorState::SUCCESS;
+		_sumTime = 0.f;
+
+		if (xDistance <= _stat->closeAtkRangeX)
+		{
+			SetState(THRUST);
+			return BehaviorState::SUCCESS;
+		}
+		else if (std::abs(xDistance - _stat->closeAtkRangeX) > std::abs(xDistance - _stat->longAtkRange))	// |거리 - 근공사| > |거리 - 원공사| 
+		{
+			SetState(SLASH_WAVE);
+			return BehaviorState::SUCCESS;
+		}
 	}
 
 	// Idle 상태 변경은 Detection Collision 충돌이 끝났을 때 호출됨
@@ -412,30 +420,6 @@ BehaviorState AmateurFencer::BackStep()
 
 		SetState(CHASE);
 		return BehaviorState::SUCCESS;
-		//// Chase
-		//if (GetAbsFromPlayerXDisatance() > _stat->closeAtkRangeX && GetAbsFromPlayerXDisatance() <= _stat->playerDetection.x)
-		//{
-		//	if (GetAbsFromPlayerYDistance() > _stat->playerDetection.y)
-		//	{
-		//		SetState(CHASE);
-		//		return BehaviorState::SUCCESS;
-		//	}
-		//}
-
-		//// 근거리 or 원거리 공격
-		//if (GetAbsFromPlayerXDisatance() <= _stat->closeAtkRangeX)
-		//{
-		//	SetState(THRUST);
-		//	return BehaviorState::SUCCESS;
-		//}
-		//else if (std::abs(GetAbsFromPlayerXDisatance() - _stat->closeAtkRangeX) > std::abs(GetAbsFromPlayerXDisatance() - _stat->longAtkRange))	// |거리 - 근공사| > |거리 - 원공사| 
-		//{
-		//	SetState(SLASH_WAVE);
-		//	return BehaviorState::SUCCESS;
-		//}
-
-		//SetState(IDLE);
-		//return BehaviorState::SUCCESS;
 	}
 
 	return BehaviorState::RUNNING;
@@ -518,7 +502,9 @@ BehaviorState AmateurFencer::Dead()
 	{	
 		// 객체 제거
 		// 추후 GameScene로 변경할 예정
-		DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+		GameScene* scene = dynamic_cast<GameScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+
+		scene->InputDeadMonsterIdAndErasePointer(_id);
 		scene->RemoveActor(this);
 	
 		return BehaviorState::SUCCESS;
@@ -608,7 +594,7 @@ void AmateurFencer::OnComponentEndOverlap(Collider* collider, Collider* other)
 
 void AmateurFencer::CreateProjectile()
 {
-	DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+	GameScene* scene = dynamic_cast<GameScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
 
 	Slashwave* slashwave = scene->SpawnObject<Slashwave>({ _pos.x, _pos.y }, LAYER_PROJECTILE);
 	slashwave->SetSpeed(_stat->longAtkProjectileSpeed);
