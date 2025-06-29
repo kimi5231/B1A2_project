@@ -195,6 +195,7 @@
     </ClCompile>
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="ServerPacketHandler.cpp" />
+    <ClCompile Include="Stage.cpp" />
     <ClCompile Include="Stat.cpp" />
     <ClCompile Include="Struct.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
@@ -216,6 +217,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Protocol.pb.h" />
     <ClInclude Include="ServerPacketHandler.h" />
+    <ClInclude Include="Stage.h" />
     <ClInclude Include="Stat.h" />
     <ClInclude Include="Struct.pb.h" />
   </ItemGroup>

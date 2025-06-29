@@ -2,6 +2,14 @@
 #include "Stat.h"
 #include <fstream>
 
+Stat::Stat()
+{
+}
+
+Stat::~Stat()
+{
+}
+
 void Stat::LoadPlayerStatFile(std::filesystem::path dataPath)
 {
 	std::filesystem::path path = dataPath / L"playerStat.csv";

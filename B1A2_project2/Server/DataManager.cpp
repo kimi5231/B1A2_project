@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "DataManager.h"
 #include "Stat.h"
+#include "Stage.h"
 
 DataManager::~DataManager()
 {
@@ -11,6 +12,7 @@ void DataManager::Init(std::filesystem::path dataPath)
 	_dataPath = dataPath;
 
 	LoadStat();
+	LoadStages();
 }
 
 void DataManager::Clear()
@@ -28,4 +30,18 @@ Stat* DataManager::LoadStat()
 	_stat = stat;
 
 	return stat;
+}
+
+void DataManager::LoadStages()
+{
+	// Stage1
+	{
+		Stage* stage = new Stage();
+		stage->LoadFieldMonster(_dataPath, L"Stage1_FieldMonster.csv");
+
+		_stages[1] = stage;
+	}
+	
+	// Stage2
+
 }

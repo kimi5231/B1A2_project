@@ -73,6 +73,9 @@
     <ClCompile Include="Actor.cpp">
       <Filter>소스 파일\Game\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="Stage.cpp">
+      <Filter>소스 파일\Game\Data</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameSession.h">
@@ -116,6 +119,9 @@
     </ClInclude>
     <ClInclude Include="Actor.h">
       <Filter>소스 파일\Game\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage.h">
+      <Filter>소스 파일\Game\Data</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

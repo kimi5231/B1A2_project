@@ -9,6 +9,7 @@ GameRoomRef GRoom = make_shared<GameRoom>();
 
 GameRoom::GameRoom()
 {
+
 }
 
 GameRoom::~GameRoom()
