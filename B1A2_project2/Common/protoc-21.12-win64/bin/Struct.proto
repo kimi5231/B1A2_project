@@ -23,7 +23,6 @@ message ObjectInfo
 	DIR_TYPE dir = 2;
 }
 
-// 삭제 예정
 message PlayerStat
 {
 	int32 hp = 1; // A

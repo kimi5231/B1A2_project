@@ -9,6 +9,8 @@ DataManager::~DataManager()
 void DataManager::Init(std::filesystem::path dataPath)
 {
 	_dataPath = dataPath;
+
+	LoadStat();
 }
 
 void DataManager::Clear()
@@ -16,12 +18,12 @@ void DataManager::Clear()
 
 }
 
-Stat& DataManager::LoadStat()
+Stat* DataManager::LoadStat()
 {
-	Stat stat;
+	Stat* stat = new Stat();
 
 	// 필요한 Stat 전부 Load
-	stat.LoadPlayerStatFile(_dataPath);
+	stat->LoadPlayerStatFile(_dataPath);
 
 	_stat = stat;
 

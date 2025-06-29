@@ -28,12 +28,6 @@
 
 Player::Player()
 {
-	// PlayerStat
-	PlayerStat* playerStat = new PlayerStat();
-	playerStat = GET_SINGLE(ResourceManager)->LoadPlayerStat(L"DataBase\\playerStat.csv");
-	_playerStat = playerStat;
-	CalPixelPerSecond();
-	
 	// Flipbook Sprite
 	_flipbookPlayerIdle[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_PlayerIdleRight");
 	_flipbookPlayerIdle[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_PlayerIdleLeft");
@@ -803,6 +797,29 @@ void Player::SubtractHealthPoint(int hp)
 
 	// 관찰자에게 알림
 	_healthObserver(_playerStat->hp);
+}
+
+void Player::SetPlayerStat(const Protocol::PlayerStat& stat)
+{
+	PlayerStat* playerStat = new PlayerStat();
+
+	playerStat->hp = stat.hp();
+	playerStat->runSpeed = stat.runspeed();
+	playerStat->crouchSpeed = stat.crouchspeed();
+	playerStat->jumpSpeed = stat.jumpspeed();
+	playerStat->skillPoint = stat.skillpoint();
+	playerStat->nLongAtkDistance = stat.nlongatkdistance();
+	playerStat->knockBackDistance = stat.knockbackdistance();
+	playerStat->strongAtkMultiplier = stat.strongatkmultiplier();
+	playerStat->nAtkDamage = stat.natkdamage();
+	playerStat->skillDamage = stat.skilldamage();
+	playerStat->skillRange = stat.skillrange();
+	playerStat->skillDuration = stat.skillduration();
+	playerStat->skillStepDistance = stat.skillstepdistance();
+
+	_playerStat = playerStat;
+
+	CalPixelPerSecond();
 }
 
 void Player::CalPixelPerSecond()

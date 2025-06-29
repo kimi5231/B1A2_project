@@ -72,9 +72,11 @@ SendBufferRef ServerPacketHandler::Make_S_MyPlayer(const PlayerRef& player)
 
 	Protocol::ActorInfo* actorInfo = pkt.mutable_actor();
 	Protocol::ObjectInfo* objectInfo = pkt.mutable_object();
+	Protocol::PlayerStat* playerStat = pkt.mutable_stat();
 
 	*actorInfo = player->GetActorInfo();
 	*objectInfo = player->GetObjectInfo();
+	*playerStat = player->GetPlayerStat();
 
 	return MakeSendBuffer(pkt, S_MyPlayer);
 }
