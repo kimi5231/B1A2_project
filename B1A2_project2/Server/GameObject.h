@@ -15,6 +15,7 @@ public:
 
 public:
 	static PlayerRef CreatePlayer();
+	static MonsterRef CreateMonster(class FieldMonster fieldMonster);
 
 public:
 	Protocol::ObjectInfo _info;

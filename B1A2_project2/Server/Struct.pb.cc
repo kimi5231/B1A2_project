@@ -92,8 +92,34 @@ struct PlayerStatDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PlayerStatDefaultTypeInternal _PlayerStat_default_instance_;
+PROTOBUF_CONSTEXPR TiredOfficeWorkerStat::TiredOfficeWorkerStat(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.hp_)*/0
+  , /*decltype(_impl_.healtemdroprate_)*/0
+  , /*decltype(_impl_.speed_)*/0
+  , /*decltype(_impl_.chasespeed_)*/0
+  , /*decltype(_impl_.playerdetectionx_)*/0
+  , /*decltype(_impl_.playerdetectiony_)*/0
+  , /*decltype(_impl_.knockbackdistance_)*/0
+  , /*decltype(_impl_.attackrangex_)*/0
+  , /*decltype(_impl_.attackrangey_)*/0
+  , /*decltype(_impl_.attack_)*/0
+  , /*decltype(_impl_.idletime_)*/0
+  , /*decltype(_impl_.movingdistance_)*/0
+  , /*decltype(_impl_.movementlimitx_)*/0
+  , /*decltype(_impl_.movementlimity_)*/0
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct TiredOfficeWorkerStatDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR TiredOfficeWorkerStatDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~TiredOfficeWorkerStatDefaultTypeInternal() {}
+  union {
+    TiredOfficeWorkerStat _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 TiredOfficeWorkerStatDefaultTypeInternal _TiredOfficeWorkerStat_default_instance_;
 }  // namespace Protocol
-static ::_pb::Metadata file_level_metadata_Struct_2eproto[4];
+static ::_pb::Metadata file_level_metadata_Struct_2eproto[5];
 static constexpr ::_pb::EnumDescriptor const** file_level_enum_descriptors_Struct_2eproto = nullptr;
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_Struct_2eproto = nullptr;
 
@@ -144,12 +170,33 @@ const uint32_t TableStruct_Struct_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
   PROTOBUF_FIELD_OFFSET(::Protocol::PlayerStat, _impl_.skillrange_),
   PROTOBUF_FIELD_OFFSET(::Protocol::PlayerStat, _impl_.skillduration_),
   PROTOBUF_FIELD_OFFSET(::Protocol::PlayerStat, _impl_.skillstepdistance_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::Protocol::TiredOfficeWorkerStat, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::Protocol::TiredOfficeWorkerStat, _impl_.hp_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::TiredOfficeWorkerStat, _impl_.healtemdroprate_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::TiredOfficeWorkerStat, _impl_.speed_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::TiredOfficeWorkerStat, _impl_.chasespeed_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::TiredOfficeWorkerStat, _impl_.playerdetectionx_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::TiredOfficeWorkerStat, _impl_.playerdetectiony_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::TiredOfficeWorkerStat, _impl_.knockbackdistance_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::TiredOfficeWorkerStat, _impl_.attackrangex_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::TiredOfficeWorkerStat, _impl_.attackrangey_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::TiredOfficeWorkerStat, _impl_.attack_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::TiredOfficeWorkerStat, _impl_.idletime_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::TiredOfficeWorkerStat, _impl_.movingdistance_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::TiredOfficeWorkerStat, _impl_.movementlimitx_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::TiredOfficeWorkerStat, _impl_.movementlimity_),
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Protocol::BuffData)},
   { 9, -1, -1, sizeof(::Protocol::ActorInfo)},
   { 18, -1, -1, sizeof(::Protocol::ObjectInfo)},
   { 26, -1, -1, sizeof(::Protocol::PlayerStat)},
+  { 46, -1, -1, sizeof(::Protocol::TiredOfficeWorkerStat)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -157,6 +204,7 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::Protocol::_ActorInfo_default_instance_._instance,
   &::Protocol::_ObjectInfo_default_instance_._instance,
   &::Protocol::_PlayerStat_default_instance_._instance,
+  &::Protocol::_TiredOfficeWorkerStat_default_instance_._instance,
 };
 
 const char descriptor_table_protodef_Struct_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
@@ -174,16 +222,24 @@ const char descriptor_table_protodef_Struct_2eproto[] PROTOBUF_SECTION_VARIABLE(
   "plier\030\t \001(\002\022\022\n\nnAtkDamage\030\n \001(\005\022\023\n\013skill"
   "Damage\030\013 \001(\005\022\022\n\nskillRange\030\014 \001(\005\022\025\n\rskil"
   "lDuration\030\r \001(\002\022\031\n\021skillStepDistance\030\016 \001"
-  "(\005b\006proto3"
+  "(\005\"\304\002\n\025TiredOfficeWorkerStat\022\n\n\002hp\030\001 \001(\005"
+  "\022\027\n\017healtemDropRate\030\002 \001(\002\022\r\n\005speed\030\003 \001(\002"
+  "\022\022\n\nchaseSpeed\030\004 \001(\002\022\030\n\020playerDetectionX"
+  "\030\005 \001(\005\022\030\n\020playerDetectionY\030\006 \001(\005\022\031\n\021knoc"
+  "kBackDistance\030\007 \001(\005\022\024\n\014attackRangeX\030\010 \001("
+  "\005\022\024\n\014attackRangeY\030\t \001(\005\022\016\n\006attack\030\n \001(\005\022"
+  "\020\n\010idleTime\030\013 \001(\002\022\026\n\016movingDistance\030\014 \001("
+  "\002\022\026\n\016movementLimitX\030\r \001(\002\022\026\n\016movementLim"
+  "itY\030\016 \001(\002b\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Struct_2eproto_deps[1] = {
   &::descriptor_table_Enum_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_Struct_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Struct_2eproto = {
-    false, false, 570, descriptor_table_protodef_Struct_2eproto,
+    false, false, 897, descriptor_table_protodef_Struct_2eproto,
     "Struct.proto",
-    &descriptor_table_Struct_2eproto_once, descriptor_table_Struct_2eproto_deps, 1, 4,
+    &descriptor_table_Struct_2eproto_once, descriptor_table_Struct_2eproto_deps, 1, 5,
     schemas, file_default_instances, TableStruct_Struct_2eproto::offsets,
     file_level_metadata_Struct_2eproto, file_level_enum_descriptors_Struct_2eproto,
     file_level_service_descriptors_Struct_2eproto,
@@ -1496,6 +1552,589 @@ void PlayerStat::InternalSwap(PlayerStat* other) {
       file_level_metadata_Struct_2eproto[3]);
 }
 
+// ===================================================================
+
+class TiredOfficeWorkerStat::_Internal {
+ public:
+};
+
+TiredOfficeWorkerStat::TiredOfficeWorkerStat(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:Protocol.TiredOfficeWorkerStat)
+}
+TiredOfficeWorkerStat::TiredOfficeWorkerStat(const TiredOfficeWorkerStat& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  TiredOfficeWorkerStat* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.hp_){}
+    , decltype(_impl_.healtemdroprate_){}
+    , decltype(_impl_.speed_){}
+    , decltype(_impl_.chasespeed_){}
+    , decltype(_impl_.playerdetectionx_){}
+    , decltype(_impl_.playerdetectiony_){}
+    , decltype(_impl_.knockbackdistance_){}
+    , decltype(_impl_.attackrangex_){}
+    , decltype(_impl_.attackrangey_){}
+    , decltype(_impl_.attack_){}
+    , decltype(_impl_.idletime_){}
+    , decltype(_impl_.movingdistance_){}
+    , decltype(_impl_.movementlimitx_){}
+    , decltype(_impl_.movementlimity_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::memcpy(&_impl_.hp_, &from._impl_.hp_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.movementlimity_) -
+    reinterpret_cast<char*>(&_impl_.hp_)) + sizeof(_impl_.movementlimity_));
+  // @@protoc_insertion_point(copy_constructor:Protocol.TiredOfficeWorkerStat)
+}
+
+inline void TiredOfficeWorkerStat::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.hp_){0}
+    , decltype(_impl_.healtemdroprate_){0}
+    , decltype(_impl_.speed_){0}
+    , decltype(_impl_.chasespeed_){0}
+    , decltype(_impl_.playerdetectionx_){0}
+    , decltype(_impl_.playerdetectiony_){0}
+    , decltype(_impl_.knockbackdistance_){0}
+    , decltype(_impl_.attackrangex_){0}
+    , decltype(_impl_.attackrangey_){0}
+    , decltype(_impl_.attack_){0}
+    , decltype(_impl_.idletime_){0}
+    , decltype(_impl_.movingdistance_){0}
+    , decltype(_impl_.movementlimitx_){0}
+    , decltype(_impl_.movementlimity_){0}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+}
+
+TiredOfficeWorkerStat::~TiredOfficeWorkerStat() {
+  // @@protoc_insertion_point(destructor:Protocol.TiredOfficeWorkerStat)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void TiredOfficeWorkerStat::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void TiredOfficeWorkerStat::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void TiredOfficeWorkerStat::Clear() {
+// @@protoc_insertion_point(message_clear_start:Protocol.TiredOfficeWorkerStat)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  ::memset(&_impl_.hp_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&_impl_.movementlimity_) -
+      reinterpret_cast<char*>(&_impl_.hp_)) + sizeof(_impl_.movementlimity_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* TiredOfficeWorkerStat::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // int32 hp = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.hp_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // float healtemDropRate = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 21)) {
+          _impl_.healtemdroprate_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // float speed = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 29)) {
+          _impl_.speed_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // float chaseSpeed = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 37)) {
+          _impl_.chasespeed_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 playerDetectionX = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 40)) {
+          _impl_.playerdetectionx_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 playerDetectionY = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 48)) {
+          _impl_.playerdetectiony_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 knockBackDistance = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 56)) {
+          _impl_.knockbackdistance_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 attackRangeX = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 64)) {
+          _impl_.attackrangex_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 attackRangeY = 9;
+      case 9:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 72)) {
+          _impl_.attackrangey_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 attack = 10;
+      case 10:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 80)) {
+          _impl_.attack_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // float idleTime = 11;
+      case 11:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 93)) {
+          _impl_.idletime_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // float movingDistance = 12;
+      case 12:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 101)) {
+          _impl_.movingdistance_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // float movementLimitX = 13;
+      case 13:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 109)) {
+          _impl_.movementlimitx_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // float movementLimitY = 14;
+      case 14:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 117)) {
+          _impl_.movementlimity_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* TiredOfficeWorkerStat::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Protocol.TiredOfficeWorkerStat)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // int32 hp = 1;
+  if (this->_internal_hp() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_hp(), target);
+  }
+
+  // float healtemDropRate = 2;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_healtemdroprate = this->_internal_healtemdroprate();
+  uint32_t raw_healtemdroprate;
+  memcpy(&raw_healtemdroprate, &tmp_healtemdroprate, sizeof(tmp_healtemdroprate));
+  if (raw_healtemdroprate != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(2, this->_internal_healtemdroprate(), target);
+  }
+
+  // float speed = 3;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_speed = this->_internal_speed();
+  uint32_t raw_speed;
+  memcpy(&raw_speed, &tmp_speed, sizeof(tmp_speed));
+  if (raw_speed != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(3, this->_internal_speed(), target);
+  }
+
+  // float chaseSpeed = 4;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_chasespeed = this->_internal_chasespeed();
+  uint32_t raw_chasespeed;
+  memcpy(&raw_chasespeed, &tmp_chasespeed, sizeof(tmp_chasespeed));
+  if (raw_chasespeed != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(4, this->_internal_chasespeed(), target);
+  }
+
+  // int32 playerDetectionX = 5;
+  if (this->_internal_playerdetectionx() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(5, this->_internal_playerdetectionx(), target);
+  }
+
+  // int32 playerDetectionY = 6;
+  if (this->_internal_playerdetectiony() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(6, this->_internal_playerdetectiony(), target);
+  }
+
+  // int32 knockBackDistance = 7;
+  if (this->_internal_knockbackdistance() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(7, this->_internal_knockbackdistance(), target);
+  }
+
+  // int32 attackRangeX = 8;
+  if (this->_internal_attackrangex() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(8, this->_internal_attackrangex(), target);
+  }
+
+  // int32 attackRangeY = 9;
+  if (this->_internal_attackrangey() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(9, this->_internal_attackrangey(), target);
+  }
+
+  // int32 attack = 10;
+  if (this->_internal_attack() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(10, this->_internal_attack(), target);
+  }
+
+  // float idleTime = 11;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_idletime = this->_internal_idletime();
+  uint32_t raw_idletime;
+  memcpy(&raw_idletime, &tmp_idletime, sizeof(tmp_idletime));
+  if (raw_idletime != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(11, this->_internal_idletime(), target);
+  }
+
+  // float movingDistance = 12;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_movingdistance = this->_internal_movingdistance();
+  uint32_t raw_movingdistance;
+  memcpy(&raw_movingdistance, &tmp_movingdistance, sizeof(tmp_movingdistance));
+  if (raw_movingdistance != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(12, this->_internal_movingdistance(), target);
+  }
+
+  // float movementLimitX = 13;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_movementlimitx = this->_internal_movementlimitx();
+  uint32_t raw_movementlimitx;
+  memcpy(&raw_movementlimitx, &tmp_movementlimitx, sizeof(tmp_movementlimitx));
+  if (raw_movementlimitx != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(13, this->_internal_movementlimitx(), target);
+  }
+
+  // float movementLimitY = 14;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_movementlimity = this->_internal_movementlimity();
+  uint32_t raw_movementlimity;
+  memcpy(&raw_movementlimity, &tmp_movementlimity, sizeof(tmp_movementlimity));
+  if (raw_movementlimity != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(14, this->_internal_movementlimity(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Protocol.TiredOfficeWorkerStat)
+  return target;
+}
+
+size_t TiredOfficeWorkerStat::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Protocol.TiredOfficeWorkerStat)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // int32 hp = 1;
+  if (this->_internal_hp() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_hp());
+  }
+
+  // float healtemDropRate = 2;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_healtemdroprate = this->_internal_healtemdroprate();
+  uint32_t raw_healtemdroprate;
+  memcpy(&raw_healtemdroprate, &tmp_healtemdroprate, sizeof(tmp_healtemdroprate));
+  if (raw_healtemdroprate != 0) {
+    total_size += 1 + 4;
+  }
+
+  // float speed = 3;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_speed = this->_internal_speed();
+  uint32_t raw_speed;
+  memcpy(&raw_speed, &tmp_speed, sizeof(tmp_speed));
+  if (raw_speed != 0) {
+    total_size += 1 + 4;
+  }
+
+  // float chaseSpeed = 4;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_chasespeed = this->_internal_chasespeed();
+  uint32_t raw_chasespeed;
+  memcpy(&raw_chasespeed, &tmp_chasespeed, sizeof(tmp_chasespeed));
+  if (raw_chasespeed != 0) {
+    total_size += 1 + 4;
+  }
+
+  // int32 playerDetectionX = 5;
+  if (this->_internal_playerdetectionx() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_playerdetectionx());
+  }
+
+  // int32 playerDetectionY = 6;
+  if (this->_internal_playerdetectiony() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_playerdetectiony());
+  }
+
+  // int32 knockBackDistance = 7;
+  if (this->_internal_knockbackdistance() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_knockbackdistance());
+  }
+
+  // int32 attackRangeX = 8;
+  if (this->_internal_attackrangex() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_attackrangex());
+  }
+
+  // int32 attackRangeY = 9;
+  if (this->_internal_attackrangey() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_attackrangey());
+  }
+
+  // int32 attack = 10;
+  if (this->_internal_attack() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_attack());
+  }
+
+  // float idleTime = 11;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_idletime = this->_internal_idletime();
+  uint32_t raw_idletime;
+  memcpy(&raw_idletime, &tmp_idletime, sizeof(tmp_idletime));
+  if (raw_idletime != 0) {
+    total_size += 1 + 4;
+  }
+
+  // float movingDistance = 12;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_movingdistance = this->_internal_movingdistance();
+  uint32_t raw_movingdistance;
+  memcpy(&raw_movingdistance, &tmp_movingdistance, sizeof(tmp_movingdistance));
+  if (raw_movingdistance != 0) {
+    total_size += 1 + 4;
+  }
+
+  // float movementLimitX = 13;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_movementlimitx = this->_internal_movementlimitx();
+  uint32_t raw_movementlimitx;
+  memcpy(&raw_movementlimitx, &tmp_movementlimitx, sizeof(tmp_movementlimitx));
+  if (raw_movementlimitx != 0) {
+    total_size += 1 + 4;
+  }
+
+  // float movementLimitY = 14;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_movementlimity = this->_internal_movementlimity();
+  uint32_t raw_movementlimity;
+  memcpy(&raw_movementlimity, &tmp_movementlimity, sizeof(tmp_movementlimity));
+  if (raw_movementlimity != 0) {
+    total_size += 1 + 4;
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData TiredOfficeWorkerStat::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    TiredOfficeWorkerStat::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*TiredOfficeWorkerStat::GetClassData() const { return &_class_data_; }
+
+
+void TiredOfficeWorkerStat::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<TiredOfficeWorkerStat*>(&to_msg);
+  auto& from = static_cast<const TiredOfficeWorkerStat&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:Protocol.TiredOfficeWorkerStat)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_hp() != 0) {
+    _this->_internal_set_hp(from._internal_hp());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_healtemdroprate = from._internal_healtemdroprate();
+  uint32_t raw_healtemdroprate;
+  memcpy(&raw_healtemdroprate, &tmp_healtemdroprate, sizeof(tmp_healtemdroprate));
+  if (raw_healtemdroprate != 0) {
+    _this->_internal_set_healtemdroprate(from._internal_healtemdroprate());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_speed = from._internal_speed();
+  uint32_t raw_speed;
+  memcpy(&raw_speed, &tmp_speed, sizeof(tmp_speed));
+  if (raw_speed != 0) {
+    _this->_internal_set_speed(from._internal_speed());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_chasespeed = from._internal_chasespeed();
+  uint32_t raw_chasespeed;
+  memcpy(&raw_chasespeed, &tmp_chasespeed, sizeof(tmp_chasespeed));
+  if (raw_chasespeed != 0) {
+    _this->_internal_set_chasespeed(from._internal_chasespeed());
+  }
+  if (from._internal_playerdetectionx() != 0) {
+    _this->_internal_set_playerdetectionx(from._internal_playerdetectionx());
+  }
+  if (from._internal_playerdetectiony() != 0) {
+    _this->_internal_set_playerdetectiony(from._internal_playerdetectiony());
+  }
+  if (from._internal_knockbackdistance() != 0) {
+    _this->_internal_set_knockbackdistance(from._internal_knockbackdistance());
+  }
+  if (from._internal_attackrangex() != 0) {
+    _this->_internal_set_attackrangex(from._internal_attackrangex());
+  }
+  if (from._internal_attackrangey() != 0) {
+    _this->_internal_set_attackrangey(from._internal_attackrangey());
+  }
+  if (from._internal_attack() != 0) {
+    _this->_internal_set_attack(from._internal_attack());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_idletime = from._internal_idletime();
+  uint32_t raw_idletime;
+  memcpy(&raw_idletime, &tmp_idletime, sizeof(tmp_idletime));
+  if (raw_idletime != 0) {
+    _this->_internal_set_idletime(from._internal_idletime());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_movingdistance = from._internal_movingdistance();
+  uint32_t raw_movingdistance;
+  memcpy(&raw_movingdistance, &tmp_movingdistance, sizeof(tmp_movingdistance));
+  if (raw_movingdistance != 0) {
+    _this->_internal_set_movingdistance(from._internal_movingdistance());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_movementlimitx = from._internal_movementlimitx();
+  uint32_t raw_movementlimitx;
+  memcpy(&raw_movementlimitx, &tmp_movementlimitx, sizeof(tmp_movementlimitx));
+  if (raw_movementlimitx != 0) {
+    _this->_internal_set_movementlimitx(from._internal_movementlimitx());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_movementlimity = from._internal_movementlimity();
+  uint32_t raw_movementlimity;
+  memcpy(&raw_movementlimity, &tmp_movementlimity, sizeof(tmp_movementlimity));
+  if (raw_movementlimity != 0) {
+    _this->_internal_set_movementlimity(from._internal_movementlimity());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void TiredOfficeWorkerStat::CopyFrom(const TiredOfficeWorkerStat& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.TiredOfficeWorkerStat)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool TiredOfficeWorkerStat::IsInitialized() const {
+  return true;
+}
+
+void TiredOfficeWorkerStat::InternalSwap(TiredOfficeWorkerStat* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(TiredOfficeWorkerStat, _impl_.movementlimity_)
+      + sizeof(TiredOfficeWorkerStat::_impl_.movementlimity_)
+      - PROTOBUF_FIELD_OFFSET(TiredOfficeWorkerStat, _impl_.hp_)>(
+          reinterpret_cast<char*>(&_impl_.hp_),
+          reinterpret_cast<char*>(&other->_impl_.hp_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata TiredOfficeWorkerStat::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_Struct_2eproto_getter, &descriptor_table_Struct_2eproto_once,
+      file_level_metadata_Struct_2eproto[4]);
+}
+
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace Protocol
 PROTOBUF_NAMESPACE_OPEN
@@ -1514,6 +2153,10 @@ Arena::CreateMaybeMessage< ::Protocol::ObjectInfo >(Arena* arena) {
 template<> PROTOBUF_NOINLINE ::Protocol::PlayerStat*
 Arena::CreateMaybeMessage< ::Protocol::PlayerStat >(Arena* arena) {
   return Arena::CreateMessageInternal< ::Protocol::PlayerStat >(arena);
+}
+template<> PROTOBUF_NOINLINE ::Protocol::TiredOfficeWorkerStat*
+Arena::CreateMaybeMessage< ::Protocol::TiredOfficeWorkerStat >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::TiredOfficeWorkerStat >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

@@ -53,6 +53,9 @@ extern C_MoveDefaultTypeInternal _C_Move_default_instance_;
 class S_AddPlayer;
 struct S_AddPlayerDefaultTypeInternal;
 extern S_AddPlayerDefaultTypeInternal _S_AddPlayer_default_instance_;
+class S_AddTiredOfficeWorker;
+struct S_AddTiredOfficeWorkerDefaultTypeInternal;
+extern S_AddTiredOfficeWorkerDefaultTypeInternal _S_AddTiredOfficeWorker_default_instance_;
 class S_EnterGame;
 struct S_EnterGameDefaultTypeInternal;
 extern S_EnterGameDefaultTypeInternal _S_EnterGame_default_instance_;
@@ -72,6 +75,7 @@ extern S_TESTDefaultTypeInternal _S_TEST_default_instance_;
 PROTOBUF_NAMESPACE_OPEN
 template<> ::Protocol::C_Move* Arena::CreateMaybeMessage<::Protocol::C_Move>(Arena*);
 template<> ::Protocol::S_AddPlayer* Arena::CreateMaybeMessage<::Protocol::S_AddPlayer>(Arena*);
+template<> ::Protocol::S_AddTiredOfficeWorker* Arena::CreateMaybeMessage<::Protocol::S_AddTiredOfficeWorker>(Arena*);
 template<> ::Protocol::S_EnterGame* Arena::CreateMaybeMessage<::Protocol::S_EnterGame>(Arena*);
 template<> ::Protocol::S_Move* Arena::CreateMaybeMessage<::Protocol::S_Move>(Arena*);
 template<> ::Protocol::S_MyPlayer* Arena::CreateMaybeMessage<::Protocol::S_MyPlayer>(Arena*);
@@ -825,6 +829,203 @@ class S_AddPlayer final :
 };
 // -------------------------------------------------------------------
 
+class S_AddTiredOfficeWorker final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S_AddTiredOfficeWorker) */ {
+ public:
+  inline S_AddTiredOfficeWorker() : S_AddTiredOfficeWorker(nullptr) {}
+  ~S_AddTiredOfficeWorker() override;
+  explicit PROTOBUF_CONSTEXPR S_AddTiredOfficeWorker(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  S_AddTiredOfficeWorker(const S_AddTiredOfficeWorker& from);
+  S_AddTiredOfficeWorker(S_AddTiredOfficeWorker&& from) noexcept
+    : S_AddTiredOfficeWorker() {
+    *this = ::std::move(from);
+  }
+
+  inline S_AddTiredOfficeWorker& operator=(const S_AddTiredOfficeWorker& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline S_AddTiredOfficeWorker& operator=(S_AddTiredOfficeWorker&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const S_AddTiredOfficeWorker& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const S_AddTiredOfficeWorker* internal_default_instance() {
+    return reinterpret_cast<const S_AddTiredOfficeWorker*>(
+               &_S_AddTiredOfficeWorker_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    4;
+
+  friend void swap(S_AddTiredOfficeWorker& a, S_AddTiredOfficeWorker& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(S_AddTiredOfficeWorker* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(S_AddTiredOfficeWorker* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  S_AddTiredOfficeWorker* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<S_AddTiredOfficeWorker>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const S_AddTiredOfficeWorker& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const S_AddTiredOfficeWorker& from) {
+    S_AddTiredOfficeWorker::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(S_AddTiredOfficeWorker* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.S_AddTiredOfficeWorker";
+  }
+  protected:
+  explicit S_AddTiredOfficeWorker(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kActorsFieldNumber = 1,
+    kObjectsFieldNumber = 2,
+    kStatsFieldNumber = 3,
+  };
+  // repeated .Protocol.ActorInfo actors = 1;
+  int actors_size() const;
+  private:
+  int _internal_actors_size() const;
+  public:
+  void clear_actors();
+  ::Protocol::ActorInfo* mutable_actors(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ActorInfo >*
+      mutable_actors();
+  private:
+  const ::Protocol::ActorInfo& _internal_actors(int index) const;
+  ::Protocol::ActorInfo* _internal_add_actors();
+  public:
+  const ::Protocol::ActorInfo& actors(int index) const;
+  ::Protocol::ActorInfo* add_actors();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ActorInfo >&
+      actors() const;
+
+  // repeated .Protocol.ObjectInfo objects = 2;
+  int objects_size() const;
+  private:
+  int _internal_objects_size() const;
+  public:
+  void clear_objects();
+  ::Protocol::ObjectInfo* mutable_objects(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >*
+      mutable_objects();
+  private:
+  const ::Protocol::ObjectInfo& _internal_objects(int index) const;
+  ::Protocol::ObjectInfo* _internal_add_objects();
+  public:
+  const ::Protocol::ObjectInfo& objects(int index) const;
+  ::Protocol::ObjectInfo* add_objects();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >&
+      objects() const;
+
+  // repeated .Protocol.TiredOfficeWorkerStat stats = 3;
+  int stats_size() const;
+  private:
+  int _internal_stats_size() const;
+  public:
+  void clear_stats();
+  ::Protocol::TiredOfficeWorkerStat* mutable_stats(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::TiredOfficeWorkerStat >*
+      mutable_stats();
+  private:
+  const ::Protocol::TiredOfficeWorkerStat& _internal_stats(int index) const;
+  ::Protocol::TiredOfficeWorkerStat* _internal_add_stats();
+  public:
+  const ::Protocol::TiredOfficeWorkerStat& stats(int index) const;
+  ::Protocol::TiredOfficeWorkerStat* add_stats();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::TiredOfficeWorkerStat >&
+      stats() const;
+
+  // @@protoc_insertion_point(class_scope:Protocol.S_AddTiredOfficeWorker)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ActorInfo > actors_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo > objects_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::TiredOfficeWorkerStat > stats_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
 class S_RemoveObject final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S_RemoveObject) */ {
  public:
@@ -873,7 +1074,7 @@ class S_RemoveObject final :
                &_S_RemoveObject_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    4;
+    5;
 
   friend void swap(S_RemoveObject& a, S_RemoveObject& b) {
     a.Swap(&b);
@@ -1035,7 +1236,7 @@ class C_Move final :
                &_C_Move_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    5;
+    6;
 
   friend void swap(C_Move& a, C_Move& b) {
     a.Swap(&b);
@@ -1192,7 +1393,7 @@ class S_Move final :
                &_S_Move_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    6;
+    7;
 
   friend void swap(S_Move& a, S_Move& b) {
     a.Swap(&b);
@@ -1827,6 +2028,121 @@ S_AddPlayer::stats() const {
 
 // -------------------------------------------------------------------
 
+// S_AddTiredOfficeWorker
+
+// repeated .Protocol.ActorInfo actors = 1;
+inline int S_AddTiredOfficeWorker::_internal_actors_size() const {
+  return _impl_.actors_.size();
+}
+inline int S_AddTiredOfficeWorker::actors_size() const {
+  return _internal_actors_size();
+}
+inline ::Protocol::ActorInfo* S_AddTiredOfficeWorker::mutable_actors(int index) {
+  // @@protoc_insertion_point(field_mutable:Protocol.S_AddTiredOfficeWorker.actors)
+  return _impl_.actors_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ActorInfo >*
+S_AddTiredOfficeWorker::mutable_actors() {
+  // @@protoc_insertion_point(field_mutable_list:Protocol.S_AddTiredOfficeWorker.actors)
+  return &_impl_.actors_;
+}
+inline const ::Protocol::ActorInfo& S_AddTiredOfficeWorker::_internal_actors(int index) const {
+  return _impl_.actors_.Get(index);
+}
+inline const ::Protocol::ActorInfo& S_AddTiredOfficeWorker::actors(int index) const {
+  // @@protoc_insertion_point(field_get:Protocol.S_AddTiredOfficeWorker.actors)
+  return _internal_actors(index);
+}
+inline ::Protocol::ActorInfo* S_AddTiredOfficeWorker::_internal_add_actors() {
+  return _impl_.actors_.Add();
+}
+inline ::Protocol::ActorInfo* S_AddTiredOfficeWorker::add_actors() {
+  ::Protocol::ActorInfo* _add = _internal_add_actors();
+  // @@protoc_insertion_point(field_add:Protocol.S_AddTiredOfficeWorker.actors)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ActorInfo >&
+S_AddTiredOfficeWorker::actors() const {
+  // @@protoc_insertion_point(field_list:Protocol.S_AddTiredOfficeWorker.actors)
+  return _impl_.actors_;
+}
+
+// repeated .Protocol.ObjectInfo objects = 2;
+inline int S_AddTiredOfficeWorker::_internal_objects_size() const {
+  return _impl_.objects_.size();
+}
+inline int S_AddTiredOfficeWorker::objects_size() const {
+  return _internal_objects_size();
+}
+inline ::Protocol::ObjectInfo* S_AddTiredOfficeWorker::mutable_objects(int index) {
+  // @@protoc_insertion_point(field_mutable:Protocol.S_AddTiredOfficeWorker.objects)
+  return _impl_.objects_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >*
+S_AddTiredOfficeWorker::mutable_objects() {
+  // @@protoc_insertion_point(field_mutable_list:Protocol.S_AddTiredOfficeWorker.objects)
+  return &_impl_.objects_;
+}
+inline const ::Protocol::ObjectInfo& S_AddTiredOfficeWorker::_internal_objects(int index) const {
+  return _impl_.objects_.Get(index);
+}
+inline const ::Protocol::ObjectInfo& S_AddTiredOfficeWorker::objects(int index) const {
+  // @@protoc_insertion_point(field_get:Protocol.S_AddTiredOfficeWorker.objects)
+  return _internal_objects(index);
+}
+inline ::Protocol::ObjectInfo* S_AddTiredOfficeWorker::_internal_add_objects() {
+  return _impl_.objects_.Add();
+}
+inline ::Protocol::ObjectInfo* S_AddTiredOfficeWorker::add_objects() {
+  ::Protocol::ObjectInfo* _add = _internal_add_objects();
+  // @@protoc_insertion_point(field_add:Protocol.S_AddTiredOfficeWorker.objects)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >&
+S_AddTiredOfficeWorker::objects() const {
+  // @@protoc_insertion_point(field_list:Protocol.S_AddTiredOfficeWorker.objects)
+  return _impl_.objects_;
+}
+
+// repeated .Protocol.TiredOfficeWorkerStat stats = 3;
+inline int S_AddTiredOfficeWorker::_internal_stats_size() const {
+  return _impl_.stats_.size();
+}
+inline int S_AddTiredOfficeWorker::stats_size() const {
+  return _internal_stats_size();
+}
+inline ::Protocol::TiredOfficeWorkerStat* S_AddTiredOfficeWorker::mutable_stats(int index) {
+  // @@protoc_insertion_point(field_mutable:Protocol.S_AddTiredOfficeWorker.stats)
+  return _impl_.stats_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::TiredOfficeWorkerStat >*
+S_AddTiredOfficeWorker::mutable_stats() {
+  // @@protoc_insertion_point(field_mutable_list:Protocol.S_AddTiredOfficeWorker.stats)
+  return &_impl_.stats_;
+}
+inline const ::Protocol::TiredOfficeWorkerStat& S_AddTiredOfficeWorker::_internal_stats(int index) const {
+  return _impl_.stats_.Get(index);
+}
+inline const ::Protocol::TiredOfficeWorkerStat& S_AddTiredOfficeWorker::stats(int index) const {
+  // @@protoc_insertion_point(field_get:Protocol.S_AddTiredOfficeWorker.stats)
+  return _internal_stats(index);
+}
+inline ::Protocol::TiredOfficeWorkerStat* S_AddTiredOfficeWorker::_internal_add_stats() {
+  return _impl_.stats_.Add();
+}
+inline ::Protocol::TiredOfficeWorkerStat* S_AddTiredOfficeWorker::add_stats() {
+  ::Protocol::TiredOfficeWorkerStat* _add = _internal_add_stats();
+  // @@protoc_insertion_point(field_add:Protocol.S_AddTiredOfficeWorker.stats)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::TiredOfficeWorkerStat >&
+S_AddTiredOfficeWorker::stats() const {
+  // @@protoc_insertion_point(field_list:Protocol.S_AddTiredOfficeWorker.stats)
+  return _impl_.stats_;
+}
+
+// -------------------------------------------------------------------
+
 // S_RemoveObject
 
 // repeated uint64 ids = 1;
@@ -2057,6 +2373,8 @@ inline void S_Move::set_allocated_info(::Protocol::ObjectInfo* info) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

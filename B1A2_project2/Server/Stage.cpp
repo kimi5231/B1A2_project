@@ -12,7 +12,6 @@ Stage::~Stage()
 
 }
 
-
 void Stage::LoadFieldMonster(std::filesystem::path dataPath, const std::wstring fileName)
 {
 	std::filesystem::path path = dataPath / fileName;

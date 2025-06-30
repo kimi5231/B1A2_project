@@ -2,14 +2,16 @@
 #include "GameRoom.h"
 #include "GameObject.h"
 #include "Player.h"
+#include "Monster.h"
 #include "GameSession.h"
 #include "ServerPacketHandler.h"
+#include "DataManager.h"
+#include "Stage.h"
 
 GameRoomRef GRoom = make_shared<GameRoom>();
 
 GameRoom::GameRoom()
 {
-
 }
 
 GameRoom::~GameRoom()
@@ -18,6 +20,15 @@ GameRoom::~GameRoom()
 
 void GameRoom::Init()
 {
+	// Monster
+	Stage* stage = GET_SINGLE(DataManager)->GetStage(1);
+	std::vector<FieldMonster>& fieldMonsters = stage->GetFieldMonsters();
+
+	for (const FieldMonster& fieldMonster : fieldMonsters)
+	{
+		MonsterRef monster = GameObject::CreateMonster(fieldMonster);
+		AddObject(monster);
+	}
 }
 
 void GameRoom::Update()

@@ -26,3 +26,4 @@ using GameRoomRef = std::shared_ptr<class GameRoom>;
 
 using GameObjectRef = std::shared_ptr<class GameObject>;
 using PlayerRef = std::shared_ptr<class Player>;
+using MonsterRef = std::shared_ptr<class Monster>;

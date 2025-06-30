@@ -40,3 +40,21 @@ message PlayerStat
 	float skillDuration = 13;	// M
 	int32 skillStepDistance = 14;	// N
 }
+
+message TiredOfficeWorkerStat
+{
+	int32 hp = 1;	// A
+	float healtemDropRate = 2;	// B
+	float speed = 3;	// B
+	float chaseSpeed = 4;	// D
+	int32 playerDetectionX = 5;	// E
+	int32 playerDetectionY = 6;	// F
+	int32 knockBackDistance = 7; // G
+	int32 attackRangeX = 8;	// H
+	int32 attackRangeY = 9;	// I
+	int32 attack = 10;	// J
+	float idleTime = 11;	// K
+	float movingDistance = 12;	// L
+	float movementLimitX = 13;	// M
+	float movementLimitY = 14;	// N
+}

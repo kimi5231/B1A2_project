@@ -81,6 +81,21 @@ struct S_AddPlayerDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 S_AddPlayerDefaultTypeInternal _S_AddPlayer_default_instance_;
+PROTOBUF_CONSTEXPR S_AddTiredOfficeWorker::S_AddTiredOfficeWorker(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.actors_)*/{}
+  , /*decltype(_impl_.objects_)*/{}
+  , /*decltype(_impl_.stats_)*/{}
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct S_AddTiredOfficeWorkerDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR S_AddTiredOfficeWorkerDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~S_AddTiredOfficeWorkerDefaultTypeInternal() {}
+  union {
+    S_AddTiredOfficeWorker _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 S_AddTiredOfficeWorkerDefaultTypeInternal _S_AddTiredOfficeWorker_default_instance_;
 PROTOBUF_CONSTEXPR S_RemoveObject::S_RemoveObject(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.ids_)*/{}
@@ -122,7 +137,7 @@ struct S_MoveDefaultTypeInternal {
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 S_MoveDefaultTypeInternal _S_Move_default_instance_;
 }  // namespace Protocol
-static ::_pb::Metadata file_level_metadata_Protocol_2eproto[7];
+static ::_pb::Metadata file_level_metadata_Protocol_2eproto[8];
 static constexpr ::_pb::EnumDescriptor const** file_level_enum_descriptors_Protocol_2eproto = nullptr;
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_Protocol_2eproto = nullptr;
 
@@ -164,6 +179,15 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   PROTOBUF_FIELD_OFFSET(::Protocol::S_AddPlayer, _impl_.objects_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_AddPlayer, _impl_.stats_),
   ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_AddTiredOfficeWorker, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_AddTiredOfficeWorker, _impl_.actors_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_AddTiredOfficeWorker, _impl_.objects_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_AddTiredOfficeWorker, _impl_.stats_),
+  ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_RemoveObject, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
@@ -190,9 +214,10 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 10, -1, -1, sizeof(::Protocol::S_EnterGame)},
   { 18, -1, -1, sizeof(::Protocol::S_MyPlayer)},
   { 27, -1, -1, sizeof(::Protocol::S_AddPlayer)},
-  { 36, -1, -1, sizeof(::Protocol::S_RemoveObject)},
-  { 43, -1, -1, sizeof(::Protocol::C_Move)},
-  { 50, -1, -1, sizeof(::Protocol::S_Move)},
+  { 36, -1, -1, sizeof(::Protocol::S_AddTiredOfficeWorker)},
+  { 45, -1, -1, sizeof(::Protocol::S_RemoveObject)},
+  { 52, -1, -1, sizeof(::Protocol::C_Move)},
+  { 59, -1, -1, sizeof(::Protocol::S_Move)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -200,6 +225,7 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::Protocol::_S_EnterGame_default_instance_._instance,
   &::Protocol::_S_MyPlayer_default_instance_._instance,
   &::Protocol::_S_AddPlayer_default_instance_._instance,
+  &::Protocol::_S_AddTiredOfficeWorker_default_instance_._instance,
   &::Protocol::_S_RemoveObject_default_instance_._instance,
   &::Protocol::_C_Move_default_instance_._instance,
   &::Protocol::_S_Move_default_instance_._instance,
@@ -217,10 +243,14 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "dPlayer\022#\n\006actors\030\001 \003(\0132\023.Protocol.Actor"
   "Info\022%\n\007objects\030\002 \003(\0132\024.Protocol.ObjectI"
   "nfo\022#\n\005stats\030\003 \003(\0132\024.Protocol.PlayerStat"
-  "\"\035\n\016S_RemoveObject\022\013\n\003ids\030\001 \003(\004\",\n\006C_Mov"
-  "e\022\"\n\004info\030\001 \001(\0132\024.Protocol.ObjectInfo\",\n"
-  "\006S_Move\022\"\n\004info\030\001 \001(\0132\024.Protocol.ObjectI"
-  "nfob\006proto3"
+  "\"\224\001\n\026S_AddTiredOfficeWorker\022#\n\006actors\030\001 "
+  "\003(\0132\023.Protocol.ActorInfo\022%\n\007objects\030\002 \003("
+  "\0132\024.Protocol.ObjectInfo\022.\n\005stats\030\003 \003(\0132\037"
+  ".Protocol.TiredOfficeWorkerStat\"\035\n\016S_Rem"
+  "oveObject\022\013\n\003ids\030\001 \003(\004\",\n\006C_Move\022\"\n\004info"
+  "\030\001 \001(\0132\024.Protocol.ObjectInfo\",\n\006S_Move\022\""
+  "\n\004info\030\001 \001(\0132\024.Protocol.ObjectInfob\006prot"
+  "o3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -228,9 +258,9 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 571, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 722, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
-    &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 7,
+    &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 8,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
     file_level_metadata_Protocol_2eproto, file_level_enum_descriptors_Protocol_2eproto,
     file_level_service_descriptors_Protocol_2eproto,
@@ -1288,6 +1318,268 @@ void S_AddPlayer::InternalSwap(S_AddPlayer* other) {
 
 // ===================================================================
 
+class S_AddTiredOfficeWorker::_Internal {
+ public:
+};
+
+void S_AddTiredOfficeWorker::clear_actors() {
+  _impl_.actors_.Clear();
+}
+void S_AddTiredOfficeWorker::clear_objects() {
+  _impl_.objects_.Clear();
+}
+void S_AddTiredOfficeWorker::clear_stats() {
+  _impl_.stats_.Clear();
+}
+S_AddTiredOfficeWorker::S_AddTiredOfficeWorker(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:Protocol.S_AddTiredOfficeWorker)
+}
+S_AddTiredOfficeWorker::S_AddTiredOfficeWorker(const S_AddTiredOfficeWorker& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  S_AddTiredOfficeWorker* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.actors_){from._impl_.actors_}
+    , decltype(_impl_.objects_){from._impl_.objects_}
+    , decltype(_impl_.stats_){from._impl_.stats_}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:Protocol.S_AddTiredOfficeWorker)
+}
+
+inline void S_AddTiredOfficeWorker::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.actors_){arena}
+    , decltype(_impl_.objects_){arena}
+    , decltype(_impl_.stats_){arena}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+}
+
+S_AddTiredOfficeWorker::~S_AddTiredOfficeWorker() {
+  // @@protoc_insertion_point(destructor:Protocol.S_AddTiredOfficeWorker)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void S_AddTiredOfficeWorker::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.actors_.~RepeatedPtrField();
+  _impl_.objects_.~RepeatedPtrField();
+  _impl_.stats_.~RepeatedPtrField();
+}
+
+void S_AddTiredOfficeWorker::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void S_AddTiredOfficeWorker::Clear() {
+// @@protoc_insertion_point(message_clear_start:Protocol.S_AddTiredOfficeWorker)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.actors_.Clear();
+  _impl_.objects_.Clear();
+  _impl_.stats_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* S_AddTiredOfficeWorker::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // repeated .Protocol.ActorInfo actors = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_actors(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<10>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated .Protocol.ObjectInfo objects = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_objects(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated .Protocol.TiredOfficeWorkerStat stats = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_stats(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<26>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* S_AddTiredOfficeWorker::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Protocol.S_AddTiredOfficeWorker)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated .Protocol.ActorInfo actors = 1;
+  for (unsigned i = 0,
+      n = static_cast<unsigned>(this->_internal_actors_size()); i < n; i++) {
+    const auto& repfield = this->_internal_actors(i);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+        InternalWriteMessage(1, repfield, repfield.GetCachedSize(), target, stream);
+  }
+
+  // repeated .Protocol.ObjectInfo objects = 2;
+  for (unsigned i = 0,
+      n = static_cast<unsigned>(this->_internal_objects_size()); i < n; i++) {
+    const auto& repfield = this->_internal_objects(i);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+        InternalWriteMessage(2, repfield, repfield.GetCachedSize(), target, stream);
+  }
+
+  // repeated .Protocol.TiredOfficeWorkerStat stats = 3;
+  for (unsigned i = 0,
+      n = static_cast<unsigned>(this->_internal_stats_size()); i < n; i++) {
+    const auto& repfield = this->_internal_stats(i);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+        InternalWriteMessage(3, repfield, repfield.GetCachedSize(), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Protocol.S_AddTiredOfficeWorker)
+  return target;
+}
+
+size_t S_AddTiredOfficeWorker::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Protocol.S_AddTiredOfficeWorker)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated .Protocol.ActorInfo actors = 1;
+  total_size += 1UL * this->_internal_actors_size();
+  for (const auto& msg : this->_impl_.actors_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // repeated .Protocol.ObjectInfo objects = 2;
+  total_size += 1UL * this->_internal_objects_size();
+  for (const auto& msg : this->_impl_.objects_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // repeated .Protocol.TiredOfficeWorkerStat stats = 3;
+  total_size += 1UL * this->_internal_stats_size();
+  for (const auto& msg : this->_impl_.stats_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData S_AddTiredOfficeWorker::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    S_AddTiredOfficeWorker::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*S_AddTiredOfficeWorker::GetClassData() const { return &_class_data_; }
+
+
+void S_AddTiredOfficeWorker::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<S_AddTiredOfficeWorker*>(&to_msg);
+  auto& from = static_cast<const S_AddTiredOfficeWorker&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:Protocol.S_AddTiredOfficeWorker)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  _this->_impl_.actors_.MergeFrom(from._impl_.actors_);
+  _this->_impl_.objects_.MergeFrom(from._impl_.objects_);
+  _this->_impl_.stats_.MergeFrom(from._impl_.stats_);
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void S_AddTiredOfficeWorker::CopyFrom(const S_AddTiredOfficeWorker& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.S_AddTiredOfficeWorker)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool S_AddTiredOfficeWorker::IsInitialized() const {
+  return true;
+}
+
+void S_AddTiredOfficeWorker::InternalSwap(S_AddTiredOfficeWorker* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _impl_.actors_.InternalSwap(&other->_impl_.actors_);
+  _impl_.objects_.InternalSwap(&other->_impl_.objects_);
+  _impl_.stats_.InternalSwap(&other->_impl_.stats_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata S_AddTiredOfficeWorker::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
+      file_level_metadata_Protocol_2eproto[4]);
+}
+
+// ===================================================================
+
 class S_RemoveObject::_Internal {
  public:
 };
@@ -1476,7 +1768,7 @@ void S_RemoveObject::InternalSwap(S_RemoveObject* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata S_RemoveObject::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[4]);
+      file_level_metadata_Protocol_2eproto[5]);
 }
 
 // ===================================================================
@@ -1675,7 +1967,7 @@ void C_Move::InternalSwap(C_Move* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata C_Move::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[5]);
+      file_level_metadata_Protocol_2eproto[6]);
 }
 
 // ===================================================================
@@ -1874,7 +2166,7 @@ void S_Move::InternalSwap(S_Move* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata S_Move::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[6]);
+      file_level_metadata_Protocol_2eproto[7]);
 }
 
 // @@protoc_insertion_point(namespace_scope)
@@ -1895,6 +2187,10 @@ Arena::CreateMaybeMessage< ::Protocol::S_MyPlayer >(Arena* arena) {
 template<> PROTOBUF_NOINLINE ::Protocol::S_AddPlayer*
 Arena::CreateMaybeMessage< ::Protocol::S_AddPlayer >(Arena* arena) {
   return Arena::CreateMessageInternal< ::Protocol::S_AddPlayer >(arena);
+}
+template<> PROTOBUF_NOINLINE ::Protocol::S_AddTiredOfficeWorker*
+Arena::CreateMaybeMessage< ::Protocol::S_AddTiredOfficeWorker >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::S_AddTiredOfficeWorker >(arena);
 }
 template<> PROTOBUF_NOINLINE ::Protocol::S_RemoveObject*
 Arena::CreateMaybeMessage< ::Protocol::S_RemoveObject >(Arena* arena) {

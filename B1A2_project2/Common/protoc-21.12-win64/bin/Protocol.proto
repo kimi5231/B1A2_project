@@ -32,6 +32,13 @@ message S_AddPlayer
 	repeated PlayerStat stats = 3;
 }
 
+message S_AddTiredOfficeWorker
+{
+	repeated ActorInfo actors = 1;
+	repeated ObjectInfo objects = 2;
+	repeated TiredOfficeWorkerStat stats = 3;
+}
+
 message S_RemoveObject
 {
 	repeated uint64 ids = 1;

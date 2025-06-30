@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "GameObject.h"
 #include "Player.h"
+#include "TiredOfficeWorker.h"
 #include "Stat.h"
+#include "Stage.h"
 #include "DataManager.h"
 
 atomic<uint64> GameObject::_idGenerator = 1;
@@ -39,4 +41,29 @@ PlayerRef GameObject::CreatePlayer()
 	player->SetPlayerStat(stat->GetPlayerStat());
 	
 	return player;
+}
+
+MonsterRef GameObject::CreateMonster(FieldMonster fieldMonster)
+{
+	MonsterRef monster = std::make_shared<Monster>();
+
+	// ActorInfo
+	monster->SetActorInfo(fieldMonster.id, fieldMonster.spawnPosX, fieldMonster.spawnPosY);
+
+	// ObjectInfo
+	monster->SetObjectInfo(Protocol::OBJECT_STATE_TYPE_IDLE, fieldMonster.dir);
+
+	if (20100 <= fieldMonster.id || fieldMonster.id <= 20199)
+	{
+		std::shared_ptr<TiredOfficeWorker> tow = std::dynamic_pointer_cast<TiredOfficeWorker>(monster);
+		
+		// TiredOfficeWorkerStat
+		Stat* stat = GET_SINGLE(DataManager)->GetStat();
+		tow->SetTiredOfficeWorkerStat(stat->GetTiredOfficeWorkerStat());
+		tow->SetMovingDistance(fieldMonster.movingDistance);
+		tow->SetMovementLimitX(fieldMonster.movementLimitX);
+		tow->SetMovementLimitY(fieldMonster.movementLimitY);
+	}
+
+	return monster;
 }

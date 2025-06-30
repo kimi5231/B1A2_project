@@ -58,12 +58,16 @@ extern ObjectInfoDefaultTypeInternal _ObjectInfo_default_instance_;
 class PlayerStat;
 struct PlayerStatDefaultTypeInternal;
 extern PlayerStatDefaultTypeInternal _PlayerStat_default_instance_;
+class TiredOfficeWorkerStat;
+struct TiredOfficeWorkerStatDefaultTypeInternal;
+extern TiredOfficeWorkerStatDefaultTypeInternal _TiredOfficeWorkerStat_default_instance_;
 }  // namespace Protocol
 PROTOBUF_NAMESPACE_OPEN
 template<> ::Protocol::ActorInfo* Arena::CreateMaybeMessage<::Protocol::ActorInfo>(Arena*);
 template<> ::Protocol::BuffData* Arena::CreateMaybeMessage<::Protocol::BuffData>(Arena*);
 template<> ::Protocol::ObjectInfo* Arena::CreateMaybeMessage<::Protocol::ObjectInfo>(Arena*);
 template<> ::Protocol::PlayerStat* Arena::CreateMaybeMessage<::Protocol::PlayerStat>(Arena*);
+template<> ::Protocol::TiredOfficeWorkerStat* Arena::CreateMaybeMessage<::Protocol::TiredOfficeWorkerStat>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace Protocol {
 
@@ -871,6 +875,297 @@ class PlayerStat final :
   union { Impl_ _impl_; };
   friend struct ::TableStruct_Struct_2eproto;
 };
+// -------------------------------------------------------------------
+
+class TiredOfficeWorkerStat final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.TiredOfficeWorkerStat) */ {
+ public:
+  inline TiredOfficeWorkerStat() : TiredOfficeWorkerStat(nullptr) {}
+  ~TiredOfficeWorkerStat() override;
+  explicit PROTOBUF_CONSTEXPR TiredOfficeWorkerStat(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  TiredOfficeWorkerStat(const TiredOfficeWorkerStat& from);
+  TiredOfficeWorkerStat(TiredOfficeWorkerStat&& from) noexcept
+    : TiredOfficeWorkerStat() {
+    *this = ::std::move(from);
+  }
+
+  inline TiredOfficeWorkerStat& operator=(const TiredOfficeWorkerStat& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline TiredOfficeWorkerStat& operator=(TiredOfficeWorkerStat&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const TiredOfficeWorkerStat& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const TiredOfficeWorkerStat* internal_default_instance() {
+    return reinterpret_cast<const TiredOfficeWorkerStat*>(
+               &_TiredOfficeWorkerStat_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    4;
+
+  friend void swap(TiredOfficeWorkerStat& a, TiredOfficeWorkerStat& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(TiredOfficeWorkerStat* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(TiredOfficeWorkerStat* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  TiredOfficeWorkerStat* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<TiredOfficeWorkerStat>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const TiredOfficeWorkerStat& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const TiredOfficeWorkerStat& from) {
+    TiredOfficeWorkerStat::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(TiredOfficeWorkerStat* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.TiredOfficeWorkerStat";
+  }
+  protected:
+  explicit TiredOfficeWorkerStat(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kHpFieldNumber = 1,
+    kHealtemDropRateFieldNumber = 2,
+    kSpeedFieldNumber = 3,
+    kChaseSpeedFieldNumber = 4,
+    kPlayerDetectionXFieldNumber = 5,
+    kPlayerDetectionYFieldNumber = 6,
+    kKnockBackDistanceFieldNumber = 7,
+    kAttackRangeXFieldNumber = 8,
+    kAttackRangeYFieldNumber = 9,
+    kAttackFieldNumber = 10,
+    kIdleTimeFieldNumber = 11,
+    kMovingDistanceFieldNumber = 12,
+    kMovementLimitXFieldNumber = 13,
+    kMovementLimitYFieldNumber = 14,
+  };
+  // int32 hp = 1;
+  void clear_hp();
+  int32_t hp() const;
+  void set_hp(int32_t value);
+  private:
+  int32_t _internal_hp() const;
+  void _internal_set_hp(int32_t value);
+  public:
+
+  // float healtemDropRate = 2;
+  void clear_healtemdroprate();
+  float healtemdroprate() const;
+  void set_healtemdroprate(float value);
+  private:
+  float _internal_healtemdroprate() const;
+  void _internal_set_healtemdroprate(float value);
+  public:
+
+  // float speed = 3;
+  void clear_speed();
+  float speed() const;
+  void set_speed(float value);
+  private:
+  float _internal_speed() const;
+  void _internal_set_speed(float value);
+  public:
+
+  // float chaseSpeed = 4;
+  void clear_chasespeed();
+  float chasespeed() const;
+  void set_chasespeed(float value);
+  private:
+  float _internal_chasespeed() const;
+  void _internal_set_chasespeed(float value);
+  public:
+
+  // int32 playerDetectionX = 5;
+  void clear_playerdetectionx();
+  int32_t playerdetectionx() const;
+  void set_playerdetectionx(int32_t value);
+  private:
+  int32_t _internal_playerdetectionx() const;
+  void _internal_set_playerdetectionx(int32_t value);
+  public:
+
+  // int32 playerDetectionY = 6;
+  void clear_playerdetectiony();
+  int32_t playerdetectiony() const;
+  void set_playerdetectiony(int32_t value);
+  private:
+  int32_t _internal_playerdetectiony() const;
+  void _internal_set_playerdetectiony(int32_t value);
+  public:
+
+  // int32 knockBackDistance = 7;
+  void clear_knockbackdistance();
+  int32_t knockbackdistance() const;
+  void set_knockbackdistance(int32_t value);
+  private:
+  int32_t _internal_knockbackdistance() const;
+  void _internal_set_knockbackdistance(int32_t value);
+  public:
+
+  // int32 attackRangeX = 8;
+  void clear_attackrangex();
+  int32_t attackrangex() const;
+  void set_attackrangex(int32_t value);
+  private:
+  int32_t _internal_attackrangex() const;
+  void _internal_set_attackrangex(int32_t value);
+  public:
+
+  // int32 attackRangeY = 9;
+  void clear_attackrangey();
+  int32_t attackrangey() const;
+  void set_attackrangey(int32_t value);
+  private:
+  int32_t _internal_attackrangey() const;
+  void _internal_set_attackrangey(int32_t value);
+  public:
+
+  // int32 attack = 10;
+  void clear_attack();
+  int32_t attack() const;
+  void set_attack(int32_t value);
+  private:
+  int32_t _internal_attack() const;
+  void _internal_set_attack(int32_t value);
+  public:
+
+  // float idleTime = 11;
+  void clear_idletime();
+  float idletime() const;
+  void set_idletime(float value);
+  private:
+  float _internal_idletime() const;
+  void _internal_set_idletime(float value);
+  public:
+
+  // float movingDistance = 12;
+  void clear_movingdistance();
+  float movingdistance() const;
+  void set_movingdistance(float value);
+  private:
+  float _internal_movingdistance() const;
+  void _internal_set_movingdistance(float value);
+  public:
+
+  // float movementLimitX = 13;
+  void clear_movementlimitx();
+  float movementlimitx() const;
+  void set_movementlimitx(float value);
+  private:
+  float _internal_movementlimitx() const;
+  void _internal_set_movementlimitx(float value);
+  public:
+
+  // float movementLimitY = 14;
+  void clear_movementlimity();
+  float movementlimity() const;
+  void set_movementlimity(float value);
+  private:
+  float _internal_movementlimity() const;
+  void _internal_set_movementlimity(float value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.TiredOfficeWorkerStat)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    int32_t hp_;
+    float healtemdroprate_;
+    float speed_;
+    float chasespeed_;
+    int32_t playerdetectionx_;
+    int32_t playerdetectiony_;
+    int32_t knockbackdistance_;
+    int32_t attackrangex_;
+    int32_t attackrangey_;
+    int32_t attack_;
+    float idletime_;
+    float movingdistance_;
+    float movementlimitx_;
+    float movementlimity_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Struct_2eproto;
+};
 // ===================================================================
 
 
@@ -1361,9 +1656,295 @@ inline void PlayerStat::set_skillstepdistance(int32_t value) {
   // @@protoc_insertion_point(field_set:Protocol.PlayerStat.skillStepDistance)
 }
 
+// -------------------------------------------------------------------
+
+// TiredOfficeWorkerStat
+
+// int32 hp = 1;
+inline void TiredOfficeWorkerStat::clear_hp() {
+  _impl_.hp_ = 0;
+}
+inline int32_t TiredOfficeWorkerStat::_internal_hp() const {
+  return _impl_.hp_;
+}
+inline int32_t TiredOfficeWorkerStat::hp() const {
+  // @@protoc_insertion_point(field_get:Protocol.TiredOfficeWorkerStat.hp)
+  return _internal_hp();
+}
+inline void TiredOfficeWorkerStat::_internal_set_hp(int32_t value) {
+  
+  _impl_.hp_ = value;
+}
+inline void TiredOfficeWorkerStat::set_hp(int32_t value) {
+  _internal_set_hp(value);
+  // @@protoc_insertion_point(field_set:Protocol.TiredOfficeWorkerStat.hp)
+}
+
+// float healtemDropRate = 2;
+inline void TiredOfficeWorkerStat::clear_healtemdroprate() {
+  _impl_.healtemdroprate_ = 0;
+}
+inline float TiredOfficeWorkerStat::_internal_healtemdroprate() const {
+  return _impl_.healtemdroprate_;
+}
+inline float TiredOfficeWorkerStat::healtemdroprate() const {
+  // @@protoc_insertion_point(field_get:Protocol.TiredOfficeWorkerStat.healtemDropRate)
+  return _internal_healtemdroprate();
+}
+inline void TiredOfficeWorkerStat::_internal_set_healtemdroprate(float value) {
+  
+  _impl_.healtemdroprate_ = value;
+}
+inline void TiredOfficeWorkerStat::set_healtemdroprate(float value) {
+  _internal_set_healtemdroprate(value);
+  // @@protoc_insertion_point(field_set:Protocol.TiredOfficeWorkerStat.healtemDropRate)
+}
+
+// float speed = 3;
+inline void TiredOfficeWorkerStat::clear_speed() {
+  _impl_.speed_ = 0;
+}
+inline float TiredOfficeWorkerStat::_internal_speed() const {
+  return _impl_.speed_;
+}
+inline float TiredOfficeWorkerStat::speed() const {
+  // @@protoc_insertion_point(field_get:Protocol.TiredOfficeWorkerStat.speed)
+  return _internal_speed();
+}
+inline void TiredOfficeWorkerStat::_internal_set_speed(float value) {
+  
+  _impl_.speed_ = value;
+}
+inline void TiredOfficeWorkerStat::set_speed(float value) {
+  _internal_set_speed(value);
+  // @@protoc_insertion_point(field_set:Protocol.TiredOfficeWorkerStat.speed)
+}
+
+// float chaseSpeed = 4;
+inline void TiredOfficeWorkerStat::clear_chasespeed() {
+  _impl_.chasespeed_ = 0;
+}
+inline float TiredOfficeWorkerStat::_internal_chasespeed() const {
+  return _impl_.chasespeed_;
+}
+inline float TiredOfficeWorkerStat::chasespeed() const {
+  // @@protoc_insertion_point(field_get:Protocol.TiredOfficeWorkerStat.chaseSpeed)
+  return _internal_chasespeed();
+}
+inline void TiredOfficeWorkerStat::_internal_set_chasespeed(float value) {
+  
+  _impl_.chasespeed_ = value;
+}
+inline void TiredOfficeWorkerStat::set_chasespeed(float value) {
+  _internal_set_chasespeed(value);
+  // @@protoc_insertion_point(field_set:Protocol.TiredOfficeWorkerStat.chaseSpeed)
+}
+
+// int32 playerDetectionX = 5;
+inline void TiredOfficeWorkerStat::clear_playerdetectionx() {
+  _impl_.playerdetectionx_ = 0;
+}
+inline int32_t TiredOfficeWorkerStat::_internal_playerdetectionx() const {
+  return _impl_.playerdetectionx_;
+}
+inline int32_t TiredOfficeWorkerStat::playerdetectionx() const {
+  // @@protoc_insertion_point(field_get:Protocol.TiredOfficeWorkerStat.playerDetectionX)
+  return _internal_playerdetectionx();
+}
+inline void TiredOfficeWorkerStat::_internal_set_playerdetectionx(int32_t value) {
+  
+  _impl_.playerdetectionx_ = value;
+}
+inline void TiredOfficeWorkerStat::set_playerdetectionx(int32_t value) {
+  _internal_set_playerdetectionx(value);
+  // @@protoc_insertion_point(field_set:Protocol.TiredOfficeWorkerStat.playerDetectionX)
+}
+
+// int32 playerDetectionY = 6;
+inline void TiredOfficeWorkerStat::clear_playerdetectiony() {
+  _impl_.playerdetectiony_ = 0;
+}
+inline int32_t TiredOfficeWorkerStat::_internal_playerdetectiony() const {
+  return _impl_.playerdetectiony_;
+}
+inline int32_t TiredOfficeWorkerStat::playerdetectiony() const {
+  // @@protoc_insertion_point(field_get:Protocol.TiredOfficeWorkerStat.playerDetectionY)
+  return _internal_playerdetectiony();
+}
+inline void TiredOfficeWorkerStat::_internal_set_playerdetectiony(int32_t value) {
+  
+  _impl_.playerdetectiony_ = value;
+}
+inline void TiredOfficeWorkerStat::set_playerdetectiony(int32_t value) {
+  _internal_set_playerdetectiony(value);
+  // @@protoc_insertion_point(field_set:Protocol.TiredOfficeWorkerStat.playerDetectionY)
+}
+
+// int32 knockBackDistance = 7;
+inline void TiredOfficeWorkerStat::clear_knockbackdistance() {
+  _impl_.knockbackdistance_ = 0;
+}
+inline int32_t TiredOfficeWorkerStat::_internal_knockbackdistance() const {
+  return _impl_.knockbackdistance_;
+}
+inline int32_t TiredOfficeWorkerStat::knockbackdistance() const {
+  // @@protoc_insertion_point(field_get:Protocol.TiredOfficeWorkerStat.knockBackDistance)
+  return _internal_knockbackdistance();
+}
+inline void TiredOfficeWorkerStat::_internal_set_knockbackdistance(int32_t value) {
+  
+  _impl_.knockbackdistance_ = value;
+}
+inline void TiredOfficeWorkerStat::set_knockbackdistance(int32_t value) {
+  _internal_set_knockbackdistance(value);
+  // @@protoc_insertion_point(field_set:Protocol.TiredOfficeWorkerStat.knockBackDistance)
+}
+
+// int32 attackRangeX = 8;
+inline void TiredOfficeWorkerStat::clear_attackrangex() {
+  _impl_.attackrangex_ = 0;
+}
+inline int32_t TiredOfficeWorkerStat::_internal_attackrangex() const {
+  return _impl_.attackrangex_;
+}
+inline int32_t TiredOfficeWorkerStat::attackrangex() const {
+  // @@protoc_insertion_point(field_get:Protocol.TiredOfficeWorkerStat.attackRangeX)
+  return _internal_attackrangex();
+}
+inline void TiredOfficeWorkerStat::_internal_set_attackrangex(int32_t value) {
+  
+  _impl_.attackrangex_ = value;
+}
+inline void TiredOfficeWorkerStat::set_attackrangex(int32_t value) {
+  _internal_set_attackrangex(value);
+  // @@protoc_insertion_point(field_set:Protocol.TiredOfficeWorkerStat.attackRangeX)
+}
+
+// int32 attackRangeY = 9;
+inline void TiredOfficeWorkerStat::clear_attackrangey() {
+  _impl_.attackrangey_ = 0;
+}
+inline int32_t TiredOfficeWorkerStat::_internal_attackrangey() const {
+  return _impl_.attackrangey_;
+}
+inline int32_t TiredOfficeWorkerStat::attackrangey() const {
+  // @@protoc_insertion_point(field_get:Protocol.TiredOfficeWorkerStat.attackRangeY)
+  return _internal_attackrangey();
+}
+inline void TiredOfficeWorkerStat::_internal_set_attackrangey(int32_t value) {
+  
+  _impl_.attackrangey_ = value;
+}
+inline void TiredOfficeWorkerStat::set_attackrangey(int32_t value) {
+  _internal_set_attackrangey(value);
+  // @@protoc_insertion_point(field_set:Protocol.TiredOfficeWorkerStat.attackRangeY)
+}
+
+// int32 attack = 10;
+inline void TiredOfficeWorkerStat::clear_attack() {
+  _impl_.attack_ = 0;
+}
+inline int32_t TiredOfficeWorkerStat::_internal_attack() const {
+  return _impl_.attack_;
+}
+inline int32_t TiredOfficeWorkerStat::attack() const {
+  // @@protoc_insertion_point(field_get:Protocol.TiredOfficeWorkerStat.attack)
+  return _internal_attack();
+}
+inline void TiredOfficeWorkerStat::_internal_set_attack(int32_t value) {
+  
+  _impl_.attack_ = value;
+}
+inline void TiredOfficeWorkerStat::set_attack(int32_t value) {
+  _internal_set_attack(value);
+  // @@protoc_insertion_point(field_set:Protocol.TiredOfficeWorkerStat.attack)
+}
+
+// float idleTime = 11;
+inline void TiredOfficeWorkerStat::clear_idletime() {
+  _impl_.idletime_ = 0;
+}
+inline float TiredOfficeWorkerStat::_internal_idletime() const {
+  return _impl_.idletime_;
+}
+inline float TiredOfficeWorkerStat::idletime() const {
+  // @@protoc_insertion_point(field_get:Protocol.TiredOfficeWorkerStat.idleTime)
+  return _internal_idletime();
+}
+inline void TiredOfficeWorkerStat::_internal_set_idletime(float value) {
+  
+  _impl_.idletime_ = value;
+}
+inline void TiredOfficeWorkerStat::set_idletime(float value) {
+  _internal_set_idletime(value);
+  // @@protoc_insertion_point(field_set:Protocol.TiredOfficeWorkerStat.idleTime)
+}
+
+// float movingDistance = 12;
+inline void TiredOfficeWorkerStat::clear_movingdistance() {
+  _impl_.movingdistance_ = 0;
+}
+inline float TiredOfficeWorkerStat::_internal_movingdistance() const {
+  return _impl_.movingdistance_;
+}
+inline float TiredOfficeWorkerStat::movingdistance() const {
+  // @@protoc_insertion_point(field_get:Protocol.TiredOfficeWorkerStat.movingDistance)
+  return _internal_movingdistance();
+}
+inline void TiredOfficeWorkerStat::_internal_set_movingdistance(float value) {
+  
+  _impl_.movingdistance_ = value;
+}
+inline void TiredOfficeWorkerStat::set_movingdistance(float value) {
+  _internal_set_movingdistance(value);
+  // @@protoc_insertion_point(field_set:Protocol.TiredOfficeWorkerStat.movingDistance)
+}
+
+// float movementLimitX = 13;
+inline void TiredOfficeWorkerStat::clear_movementlimitx() {
+  _impl_.movementlimitx_ = 0;
+}
+inline float TiredOfficeWorkerStat::_internal_movementlimitx() const {
+  return _impl_.movementlimitx_;
+}
+inline float TiredOfficeWorkerStat::movementlimitx() const {
+  // @@protoc_insertion_point(field_get:Protocol.TiredOfficeWorkerStat.movementLimitX)
+  return _internal_movementlimitx();
+}
+inline void TiredOfficeWorkerStat::_internal_set_movementlimitx(float value) {
+  
+  _impl_.movementlimitx_ = value;
+}
+inline void TiredOfficeWorkerStat::set_movementlimitx(float value) {
+  _internal_set_movementlimitx(value);
+  // @@protoc_insertion_point(field_set:Protocol.TiredOfficeWorkerStat.movementLimitX)
+}
+
+// float movementLimitY = 14;
+inline void TiredOfficeWorkerStat::clear_movementlimity() {
+  _impl_.movementlimity_ = 0;
+}
+inline float TiredOfficeWorkerStat::_internal_movementlimity() const {
+  return _impl_.movementlimity_;
+}
+inline float TiredOfficeWorkerStat::movementlimity() const {
+  // @@protoc_insertion_point(field_get:Protocol.TiredOfficeWorkerStat.movementLimitY)
+  return _internal_movementlimity();
+}
+inline void TiredOfficeWorkerStat::_internal_set_movementlimity(float value) {
+  
+  _impl_.movementlimity_ = value;
+}
+inline void TiredOfficeWorkerStat::set_movementlimity(float value) {
+  _internal_set_movementlimity(value);
+  // @@protoc_insertion_point(field_set:Protocol.TiredOfficeWorkerStat.movementLimitY)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
