@@ -2,8 +2,11 @@
 #include "GameRoom.h"
 #include "GameObject.h"
 #include "Player.h"
+#include "Monster.h"
 #include "GameSession.h"
 #include "ServerPacketHandler.h"
+#include "DataManager.h"
+#include "Stage.h"
 
 GameRoomRef GRoom = make_shared<GameRoom>();
 
@@ -17,6 +20,15 @@ GameRoom::~GameRoom()
 
 void GameRoom::Init()
 {
+	// Monster
+	Stage* stage = GET_SINGLE(DataManager)->GetStage(1);
+	std::vector<FieldMonster>& fieldMonsters = stage->GetFieldMonsters();
+
+	for (const FieldMonster& fieldMonster : fieldMonsters)
+	{
+		MonsterRef monster = GameObject::CreateMonster(fieldMonster);
+		AddObject(monster);
+	}
 }
 
 void GameRoom::Update()
@@ -44,11 +56,13 @@ void GameRoom::EnterRoom(GameSessionRef session)
 
 		for (auto& item : _players)
 		{
-			Protocol::ActorInfo* actorInfo = pkt.add_actor();
-			Protocol::ObjectInfo* objectInfo = pkt.add_object();
+			Protocol::ActorInfo* actorInfo = pkt.add_actors();
+			Protocol::ObjectInfo* objectInfo = pkt.add_objects();
+			Protocol::PlayerStat* playerStat = pkt.add_stats();
 
 			*actorInfo = item.second->GetActorInfo();
 			*objectInfo = item.second->GetObjectInfo();
+			*playerStat = item.second->GetPlayerStat();
 		}
 
 		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddPlayer(pkt);
@@ -85,12 +99,14 @@ void GameRoom::AddObject(GameObjectRef object)
 		{
 			Protocol::S_AddPlayer pkt;
 
-			Protocol::ActorInfo* actorInfo = pkt.add_actor();
-			Protocol::ObjectInfo* objectInfo = pkt.add_object();
+			Protocol::ActorInfo* actorInfo = pkt.add_actors();
+			Protocol::ObjectInfo* objectInfo = pkt.add_objects();
+			Protocol::PlayerStat* playerStat = pkt.add_stats();
 
 			// 값을 수정
 			*actorInfo = player->GetActorInfo();
 			*objectInfo = player->GetObjectInfo();
+			*playerStat = player->GetPlayerStat();
 
 			SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddPlayer(pkt);
 			Broadcast(sendBuffer);

@@ -29,6 +29,9 @@
     <Filter Include="소스 파일\Game\Data">
       <UniqueIdentifier>{8627e74d-a626-4812-b321-b9bca099c8a8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Game\Objects\Creature">
+      <UniqueIdentifier>{2788976c-7493-4b89-a737-3d73e7e5614e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameSessionManager.cpp">
@@ -61,9 +64,6 @@
     <ClCompile Include="GameObject.cpp">
       <Filter>소스 파일\Game\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>소스 파일\Game\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="DataManager.cpp">
       <Filter>소스 파일\Game\Managers</Filter>
     </ClCompile>
@@ -72,6 +72,18 @@
     </ClCompile>
     <ClCompile Include="Actor.cpp">
       <Filter>소스 파일\Game\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage.cpp">
+      <Filter>소스 파일\Game\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Monster.cpp">
+      <Filter>소스 파일\Game\Objects\Creature</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>소스 파일\Game\Objects\Creature</Filter>
+    </ClCompile>
+    <ClCompile Include="TiredOfficeWorker.cpp">
+      <Filter>소스 파일\Game\Objects\Creature</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -102,9 +114,6 @@
     <ClInclude Include="GameObject.h">
       <Filter>소스 파일\Game\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>소스 파일\Game\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="DataManager.h">
       <Filter>소스 파일\Game\Managers</Filter>
     </ClInclude>
@@ -116,6 +125,18 @@
     </ClInclude>
     <ClInclude Include="Actor.h">
       <Filter>소스 파일\Game\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage.h">
+      <Filter>소스 파일\Game\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Monster.h">
+      <Filter>소스 파일\Game\Objects\Creature</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>소스 파일\Game\Objects\Creature</Filter>
+    </ClInclude>
+    <ClInclude Include="TiredOfficeWorker.h">
+      <Filter>소스 파일\Game\Objects\Creature</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
