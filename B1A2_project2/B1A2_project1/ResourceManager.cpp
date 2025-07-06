@@ -207,17 +207,6 @@ StructureStage* ResourceManager::LoadStructureStage(const std::wstring& key, con
 	return structureStage;
 }
 
-PlayerStat* ResourceManager::LoadPlayerStat(const std::wstring& path)
-{
-	std::filesystem::path fullpath = _resourcePath / path;
-
-	PlayerStat* playerStat = new PlayerStat();
-	playerStat->LoadFile(fullpath);
-	_playerStat = playerStat;
-
-	return playerStat;
-}
-
 TiredOfficeWorkerStat* ResourceManager::LoadTiredOfficeWorkerStat(const std::wstring& path)
 {
 	std::filesystem::path fullpath = _resourcePath / path;
