@@ -5,36 +5,66 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="헤더 파일">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="리소스 파일">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="소스 파일\01. Engine">
+      <UniqueIdentifier>{45cf868e-64a8-46a9-ade6-73323f55516c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\00. Game">
+      <UniqueIdentifier>{130cc17a-f956-4958-bfcb-5851b964a632}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\99. Utils">
+      <UniqueIdentifier>{bd8b3346-de17-4860-b0e9-ccaea2b54c62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\99. Utils\Client">
+      <UniqueIdentifier>{06bd50ef-03f3-4c19-ad0b-5544bcdd7738}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\01. Engine\Engine">
+      <UniqueIdentifier>{b65b8a98-1ee1-4a4b-980f-a973bb9d3d70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\01. Engine\Resource">
+      <UniqueIdentifier>{570a2d1c-fccb-4115-88a4-8c9f896d6640}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\01. Engine\Utils">
+      <UniqueIdentifier>{89e1e6cf-1dad-4396-8942-9614aa9c91ad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="framework.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="Game.h">
+      <Filter>소스 파일\00. Game</Filter>
     </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="Client.h">
+      <Filter>소스 파일\99. Utils\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>소스 파일\99. Utils\Client</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>소스 파일\99. Utils\Client</Filter>
     </ClInclude>
-    <ClInclude Include="B1A2_project3.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="targetver.h">
+      <Filter>소스 파일\99. Utils\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>소스 파일\01. Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleMath.h">
+      <Filter>소스 파일\01. Engine\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="EnginePch.h">
+      <Filter>소스 파일\01. Engine\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dx12.h">
+      <Filter>소스 파일\01. Engine\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>소스 파일\99. Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="B1A2_project3.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="B1A2_project3.rc">
+    <ResourceCompile Include="Client.rc">
       <Filter>리소스 파일</Filter>
     </ResourceCompile>
   </ItemGroup>
@@ -42,8 +72,33 @@
     <Image Include="small.ico">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="B1A2_project3.ico">
+    <Image Include="Client.ico">
       <Filter>리소스 파일</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Game.cpp">
+      <Filter>소스 파일\00. Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Client.cpp">
+      <Filter>소스 파일\99. Utils\Client</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>소스 파일\01. Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleMath.cpp">
+      <Filter>소스 파일\01. Engine\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="EnginePch.cpp">
+      <Filter>소스 파일\01. Engine\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>소스 파일\99. Utils</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SimpleMath.inl">
+      <Filter>소스 파일\01. Engine\Utils</Filter>
+    </None>
   </ItemGroup>
 </Project>
