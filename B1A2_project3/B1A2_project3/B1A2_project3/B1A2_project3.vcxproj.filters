@@ -30,6 +30,12 @@
     <Filter Include="소스 파일\01. Engine\Utils">
       <UniqueIdentifier>{89e1e6cf-1dad-4396-8942-9614aa9c91ad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\01. Engine\Engine\Manager">
+      <UniqueIdentifier>{a05b8ffc-5a39-4cff-b572-e1c981addb9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\01. Engine\Engine\API">
+      <UniqueIdentifier>{b1bc4669-4354-4ffb-ae3b-1522b64b84af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -61,6 +67,12 @@
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>소스 파일\99. Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>소스 파일\01. Engine\Engine\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeManager.h">
+      <Filter>소스 파일\01. Engine\Engine\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -94,6 +106,12 @@
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>소스 파일\99. Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>소스 파일\01. Engine\Engine\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeManager.cpp">
+      <Filter>소스 파일\01. Engine\Engine\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -46,3 +46,26 @@ using Vec4 = XMFLOAT4;
 using Matrix = XMMATRIX;
 
 void HelloEngine();
+
+struct WindowInfo
+{
+	HWND hwnd;	// 출력 윈도우
+	int32 width;
+	int32 height;
+	bool windowed;	// 창 or 전체화면
+};
+
+#define DECLARE_SINGLE(type)		\
+private:							\
+	type() {}						\
+	~type() {}						\
+public:								\
+	static type* GetInstance()		\
+	{								\
+		static type instance;		\
+		return &instance;			\
+	}								\
+
+#define GET_SINGLE(type)	type::GetInstance()
+
+extern unique_ptr<class Engine> GEngine;
