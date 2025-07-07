@@ -24,9 +24,6 @@
     <Filter Include="소스 파일\01. Engine\Engine">
       <UniqueIdentifier>{b65b8a98-1ee1-4a4b-980f-a973bb9d3d70}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\01. Engine\Resource">
-      <UniqueIdentifier>{570a2d1c-fccb-4115-88a4-8c9f896d6640}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\01. Engine\Utils">
       <UniqueIdentifier>{89e1e6cf-1dad-4396-8942-9614aa9c91ad}</UniqueIdentifier>
     </Filter>
@@ -35,6 +32,30 @@
     </Filter>
     <Filter Include="소스 파일\01. Engine\Engine\API">
       <UniqueIdentifier>{b1bc4669-4354-4ffb-ae3b-1522b64b84af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\01. Engine\Object">
+      <UniqueIdentifier>{8da9c6c3-6283-4e9d-8ccb-2a663c91a3ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\01. Engine\Shader">
+      <UniqueIdentifier>{d291745b-a1b7-46dc-83dd-80c44e4f1198}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\01. Engine\Object\Component">
+      <UniqueIdentifier>{ac5bf4db-2f98-4490-9ef4-b9a30d86dd6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\01. Engine\Object\Component\Collider">
+      <UniqueIdentifier>{0c083e16-763e-41b0-96f0-6ded49ef3a78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\01. Engine\Object\Component\Camera">
+      <UniqueIdentifier>{372afc72-a1e9-42ba-b77e-4da4f2cf0ca8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\01. Engine\Object\Component\Light">
+      <UniqueIdentifier>{fcea0c4f-faf6-4399-8c28-5f68fe75511f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\01. Engine\Object\Resource">
+      <UniqueIdentifier>{570a2d1c-fccb-4115-88a4-8c9f896d6640}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\01. Engine\Object\Test">
+      <UniqueIdentifier>{913abf63-02d5-4a0d-91be-958345cc8135}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -47,32 +68,125 @@
     <ClInclude Include="framework.h">
       <Filter>소스 파일\99. Utils\Client</Filter>
     </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>소스 파일\99. Utils\Client</Filter>
-    </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>소스 파일\99. Utils\Client</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine.h">
-      <Filter>소스 파일\01. Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="SimpleMath.h">
-      <Filter>소스 파일\01. Engine\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="EnginePch.h">
-      <Filter>소스 파일\01. Engine\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="d3dx12.h">
-      <Filter>소스 파일\01. Engine\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="pch.h">
-      <Filter>소스 파일\99. Utils</Filter>
     </ClInclude>
     <ClInclude Include="InputManager.h">
       <Filter>소스 파일\01. Engine\Engine\Manager</Filter>
     </ClInclude>
     <ClInclude Include="TimeManager.h">
       <Filter>소스 파일\01. Engine\Engine\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandQueue.h">
+      <Filter>소스 파일\01. Engine\Engine\API</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantBuffer.h">
+      <Filter>소스 파일\01. Engine\Engine\API</Filter>
+    </ClInclude>
+    <ClInclude Include="Device.h">
+      <Filter>소스 파일\01. Engine\Engine\API</Filter>
+    </ClInclude>
+    <ClInclude Include="InstancingBuffer.h">
+      <Filter>소스 파일\01. Engine\Engine\API</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTargetGroup.h">
+      <Filter>소스 파일\01. Engine\Engine\API</Filter>
+    </ClInclude>
+    <ClInclude Include="RootSignature.h">
+      <Filter>소스 파일\01. Engine\Engine\API</Filter>
+    </ClInclude>
+    <ClInclude Include="StructuredBuffer.h">
+      <Filter>소스 파일\01. Engine\Engine\API</Filter>
+    </ClInclude>
+    <ClInclude Include="SwapChain.h">
+      <Filter>소스 파일\01. Engine\Engine\API</Filter>
+    </ClInclude>
+    <ClInclude Include="TableDescriptorHeap.h">
+      <Filter>소스 파일\01. Engine\Engine\API</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>소스 파일\01. Engine\Engine\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>소스 파일\99. Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="EnginePch.h">
+      <Filter>소스 파일\01. Engine\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="InstancingManager.h">
+      <Filter>소스 파일\01. Engine\Engine\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources.h">
+      <Filter>소스 파일\01. Engine\Engine\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>소스 파일\01. Engine\Engine\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseCollider.h">
+      <Filter>소스 파일\01. Engine\Object\Component\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereCollider.h">
+      <Filter>소스 파일\01. Engine\Object\Component\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>소스 파일\01. Engine\Object\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>소스 파일\01. Engine\Object\Component\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Frustum.h">
+      <Filter>소스 파일\01. Engine\Object\Component\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>소스 파일\01. Engine\Object\Component\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="MonoBehaviour.h">
+      <Filter>소스 파일\01. Engine\Object\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshRenderer.h">
+      <Filter>소스 파일\01. Engine\Object\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Terrain.h">
+      <Filter>소스 파일\01. Engine\Object\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>소스 파일\01. Engine\Object\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>소스 파일\01. Engine\Object\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>소스 파일\01. Engine\Object\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>소스 파일\01. Engine\Object\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>소스 파일\01. Engine\Object\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="TestCameraScript.h">
+      <Filter>소스 파일\01. Engine\Object\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>소스 파일\01. Engine\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>소스 파일\01. Engine\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dx12.h">
+      <Filter>소스 파일\01. Engine\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleMath.h">
+      <Filter>소스 파일\01. Engine\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>소스 파일\01. Engine\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>소스 파일\99. Utils\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>소스 파일\01. Engine\Engine\API</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -95,24 +209,152 @@
     <ClCompile Include="Client.cpp">
       <Filter>소스 파일\99. Utils\Client</Filter>
     </ClCompile>
-    <ClCompile Include="Engine.cpp">
-      <Filter>소스 파일\01. Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="SimpleMath.cpp">
-      <Filter>소스 파일\01. Engine\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="EnginePch.cpp">
-      <Filter>소스 파일\01. Engine\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="pch.cpp">
-      <Filter>소스 파일\99. Utils</Filter>
-    </ClCompile>
     <ClCompile Include="InputManager.cpp">
       <Filter>소스 파일\01. Engine\Engine\Manager</Filter>
     </ClCompile>
     <ClCompile Include="TimeManager.cpp">
       <Filter>소스 파일\01. Engine\Engine\Manager</Filter>
     </ClCompile>
+    <ClCompile Include="CommandQueue.cpp">
+      <Filter>소스 파일\01. Engine\Engine\API</Filter>
+    </ClCompile>
+    <ClCompile Include="ConstantBuffer.cpp">
+      <Filter>소스 파일\01. Engine\Engine\API</Filter>
+    </ClCompile>
+    <ClCompile Include="Device.cpp">
+      <Filter>소스 파일\01. Engine\Engine\API</Filter>
+    </ClCompile>
+    <ClCompile Include="InstancingBuffer.cpp">
+      <Filter>소스 파일\01. Engine\Engine\API</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTargetGroup.cpp">
+      <Filter>소스 파일\01. Engine\Engine\API</Filter>
+    </ClCompile>
+    <ClCompile Include="RootSignature.cpp">
+      <Filter>소스 파일\01. Engine\Engine\API</Filter>
+    </ClCompile>
+    <ClCompile Include="StructuredBuffer.cpp">
+      <Filter>소스 파일\01. Engine\Engine\API</Filter>
+    </ClCompile>
+    <ClCompile Include="SwapChain.cpp">
+      <Filter>소스 파일\01. Engine\Engine\API</Filter>
+    </ClCompile>
+    <ClCompile Include="TableDescriptorHeap.cpp">
+      <Filter>소스 파일\01. Engine\Engine\API</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>소스 파일\01. Engine\Engine\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>소스 파일\99. Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="EnginePch.cpp">
+      <Filter>소스 파일\01. Engine\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="InstancingManager.cpp">
+      <Filter>소스 파일\01. Engine\Engine\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources.cpp">
+      <Filter>소스 파일\01. Engine\Engine\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>소스 파일\01. Engine\Engine\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseCollider.cpp">
+      <Filter>소스 파일\01. Engine\Object\Component\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereCollider.cpp">
+      <Filter>소스 파일\01. Engine\Object\Component\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>소스 파일\01. Engine\Object\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>소스 파일\01. Engine\Object\Component\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Frustum.cpp">
+      <Filter>소스 파일\01. Engine\Object\Component\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>소스 파일\01. Engine\Object\Component\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="MonoBehaviour.cpp">
+      <Filter>소스 파일\01. Engine\Object\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshRenderer.cpp">
+      <Filter>소스 파일\01. Engine\Object\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>소스 파일\01. Engine\Object\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>소스 파일\01. Engine\Object\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>소스 파일\01. Engine\Object\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>소스 파일\01. Engine\Object\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>소스 파일\01. Engine\Object\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>소스 파일\01. Engine\Object\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCameraScript.cpp">
+      <Filter>소스 파일\01. Engine\Object\Test</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>소스 파일\01. Engine\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>소스 파일\01. Engine\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleMath.cpp">
+      <Filter>소스 파일\01. Engine\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>소스 파일\01. Engine\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSystem.cpp">
+      <Filter>소스 파일\01. Engine\Engine\API</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Resources\Shader\compute.fx">
+      <Filter>소스 파일\01. Engine\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\deferred.fx">
+      <Filter>소스 파일\01. Engine\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\forward.fx">
+      <Filter>소스 파일\01. Engine\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\lighting.fx">
+      <Filter>소스 파일\01. Engine\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\shadow.fx">
+      <Filter>소스 파일\01. Engine\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\skybox.fx">
+      <Filter>소스 파일\01. Engine\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\terrain.fx">
+      <Filter>소스 파일\01. Engine\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\tessellation.fx">
+      <Filter>소스 파일\01. Engine\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\utils.fx">
+      <Filter>소스 파일\01. Engine\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\params.fx">
+      <Filter>소스 파일\01. Engine\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\particle.fx">
+      <Filter>소스 파일\01. Engine\Shader</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
