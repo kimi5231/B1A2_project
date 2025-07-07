@@ -11,6 +11,7 @@ class Stage;
 class ItemStage;
 class StructureStage;
 struct StageInfo;
+class Stat;
 struct PlayerStat;
 struct TiredOfficeWorkerStat;
 struct BrokenCopyMachineStat;
@@ -62,11 +63,8 @@ public:
 	StructureStage* GetStructureStage(const std::wstring& key) { return _structureStages[key]; }
 	StructureStage* LoadStructureStage(const std::wstring& key, const std::wstring& path);
 
-	PlayerStat* GetPlayerStat() { return _playerStat; }
-	PlayerStat* LoadPlayerStat(const std::wstring& path);
-
-	TiredOfficeWorkerStat* GetTiredOfficeWorkerStat() { return _tiredOfficeWorkerStat; }
-	TiredOfficeWorkerStat* LoadTiredOfficeWorkerStat(const std::wstring& path);
+	Stat* GetStat() { return _stat; }
+	Stat* LoadStat();
 
 	BrokenCopyMachineStat* GetBrokenCopyMachineStat() { return _brokenCopyMachineStat; }
 	BrokenCopyMachineStat* LoadBrokenCopyMachineStat(const std::wstring& path);
@@ -92,8 +90,8 @@ private:
 	std::unordered_map<std::wstring, Stage*> _stages;
 	std::unordered_map<std::wstring, ItemStage*> _itemStages;
 	std::unordered_map<std::wstring, StructureStage*> _structureStages;
-	PlayerStat* _playerStat;
-	TiredOfficeWorkerStat* _tiredOfficeWorkerStat;
+	Stat* _stat;
+
 	BrokenCopyMachineStat* _brokenCopyMachineStat;
 	AmateurFencerStat* _amateurFencerStat;
 	FinalBossStat* _finalBossStat;

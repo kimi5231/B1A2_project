@@ -16,6 +16,7 @@
 #include "BrokenCopyMachine.h"
 #include "AmateurFencer.h"
 #include "FinalBoss.h"
+#include "Stat.h"
 
 ResourceManager::~ResourceManager()
 {
@@ -207,15 +208,17 @@ StructureStage* ResourceManager::LoadStructureStage(const std::wstring& key, con
 	return structureStage;
 }
 
-TiredOfficeWorkerStat* ResourceManager::LoadTiredOfficeWorkerStat(const std::wstring& path)
+Stat* ResourceManager::LoadStat()
 {
-	std::filesystem::path fullpath = _resourcePath / path;
+	Stat* stat = new Stat();
 
-	TiredOfficeWorkerStat* tiredOfficeWorkerStat = new TiredOfficeWorkerStat();
-	tiredOfficeWorkerStat->LoadFile(fullpath);
-	_tiredOfficeWorkerStat = tiredOfficeWorkerStat;
+	// 필요한 Stat 전부 Load
+	stat->LoadPlayerStatFile(_resourcePath);
+	stat->LoadTiredOfficeWorkerStatFile(_resourcePath);
 
-	return tiredOfficeWorkerStat;
+	_stat = stat;
+
+	return stat;
 }
 
 BrokenCopyMachineStat* ResourceManager::LoadBrokenCopyMachineStat(const std::wstring& path)

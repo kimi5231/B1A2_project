@@ -107,7 +107,7 @@ void ClientPacketHandler::Handle_S_AddPlayer(ServerSessionRef session, BYTE* buf
 			Player* player = Scene->SpawnObject<Player>(actorInfo.id(), Vec2{ actorInfo.posx(), actorInfo.posx() }, LAYER_PLAYER);
 			player->SetState(objectInfo.state());
 			player->SetDir(objectInfo.dir());
-			player->SetPlayerStat(playerStat);
+			//player->SetPlayerStat(playerStat);
 		}	
 	}
 }

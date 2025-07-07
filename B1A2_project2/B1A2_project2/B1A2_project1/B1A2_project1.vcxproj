@@ -115,7 +115,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)FMOD_API\core\inc;$(SolutionDir)FMOD_API\studio\inc;%(AdditionalIncludeDirectories);$(SolutionDir)ServerCore\;$(SolutionDir)Libraries\Include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)FMOD_API\core\inc;$(SolutionDir)FMOD_API\studio\inc;$(SolutionDir)ServerCore\;$(SolutionDir)Libraries\Include\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -222,6 +222,7 @@ xcopy /y /d "$(SolutionDir)FMOD_API\studio\lib\x64\*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteActor.h" />
     <ClInclude Include="Stage.h" />
+    <ClInclude Include="Stat.h" />
     <ClInclude Include="StaticUI.h" />
     <ClInclude Include="Struct.pb.h" />
     <ClInclude Include="Structure.h" />
@@ -322,6 +323,7 @@ xcopy /y /d "$(SolutionDir)FMOD_API\studio\lib\x64\*.dll" "$(OutDir)"</Command>
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteActor.cpp" />
     <ClCompile Include="Stage.cpp" />
+    <ClCompile Include="Stat.cpp" />
     <ClCompile Include="StaticUI.cpp" />
     <ClCompile Include="Struct.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>

@@ -13,10 +13,8 @@
 TiredOfficeWorker::TiredOfficeWorker()
 {
 	// Set Stat
-	TiredOfficeWorkerStat* tiredOfficeWorkerStat = new TiredOfficeWorkerStat();
-	tiredOfficeWorkerStat = GET_SINGLE(ResourceManager)->LoadTiredOfficeWorkerStat(L"DataBase\\tiredOfficeWorkerStat.csv");
-	_stat = tiredOfficeWorkerStat;
-
+	Stat* stat = GET_SINGLE(ResourceManager)->GetStat();
+	_stat = stat->GetTiredOfficeWorkerStat();
 	CalPixelPerSecond();
 
 	// Set Flipbook

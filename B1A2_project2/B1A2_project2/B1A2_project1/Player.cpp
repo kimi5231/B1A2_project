@@ -28,6 +28,11 @@
 
 Player::Player()
 {
+	// Set Stat
+	Stat* stat = GET_SINGLE(ResourceManager)->GetStat();
+	_playerStat = stat->GetPlayerStat();
+	CalPixelPerSecond();
+
 	// Flipbook Sprite
 	_flipbookPlayerIdle[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_PlayerIdleRight");
 	_flipbookPlayerIdle[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_PlayerIdleLeft");
