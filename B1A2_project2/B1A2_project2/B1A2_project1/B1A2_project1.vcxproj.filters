@@ -78,14 +78,14 @@
     <Filter Include="소스 파일\03. Objects\Game\Structure">
       <UniqueIdentifier>{b6653dba-cd29-4541-875c-5b98dd135069}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\04. Resources\DataBase">
-      <UniqueIdentifier>{c832530f-460e-42de-9bd7-f7383737c786}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Protocol">
       <UniqueIdentifier>{c1b0337b-3300-42ad-bce7-c436e31ab02f}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\07. Network">
       <UniqueIdentifier>{2ddf5bb6-ed0c-4c7d-94f7-1ba0a6ad0f27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04. Resources\Data">
+      <UniqueIdentifier>{c832530f-460e-42de-9bd7-f7383737c786}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -157,9 +157,6 @@
     </ClInclude>
     <ClInclude Include="Sprite.h">
       <Filter>소스 파일\04. Resources\paper2D</Filter>
-    </ClInclude>
-    <ClInclude Include="GameScene.h">
-      <Filter>소스 파일\02. Scene</Filter>
     </ClInclude>
     <ClInclude Include="SettingScene.h">
       <Filter>소스 파일\02. Scene\Game</Filter>
@@ -288,7 +285,7 @@
       <Filter>소스 파일\02. Scene\Game</Filter>
     </ClInclude>
     <ClInclude Include="Stage.h">
-      <Filter>소스 파일\04. Resources\DataBase</Filter>
+      <Filter>소스 파일\04. Resources\Data</Filter>
     </ClInclude>
     <ClInclude Include="LockedDoorAndKey.h">
       <Filter>소스 파일\03. Objects\Game\Structure</Filter>
@@ -351,13 +348,19 @@
       <Filter>소스 파일\03. Objects\Game\Creature</Filter>
     </ClInclude>
     <ClInclude Include="ItemStage.h">
-      <Filter>소스 파일\04. Resources\DataBase</Filter>
+      <Filter>소스 파일\04. Resources\Data</Filter>
     </ClInclude>
     <ClInclude Include="StructureStage.h">
-      <Filter>소스 파일\04. Resources\DataBase</Filter>
+      <Filter>소스 파일\04. Resources\Data</Filter>
     </ClInclude>
     <ClInclude Include="BossStagePanel.h">
       <Filter>소스 파일\06. UI\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Stat.h">
+      <Filter>소스 파일\04. Resources\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene.h">
+      <Filter>소스 파일\02. Scene\Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -408,9 +411,6 @@
     </ClCompile>
     <ClCompile Include="Sprite.cpp">
       <Filter>소스 파일\04. Resources\paper2D</Filter>
-    </ClCompile>
-    <ClCompile Include="GameScene.cpp">
-      <Filter>소스 파일\02. Scene</Filter>
     </ClCompile>
     <ClCompile Include="SettingScene.cpp">
       <Filter>소스 파일\02. Scene\Game</Filter>
@@ -542,7 +542,7 @@
       <Filter>소스 파일\02. Scene\Game</Filter>
     </ClCompile>
     <ClCompile Include="Stage.cpp">
-      <Filter>소스 파일\04. Resources\DataBase</Filter>
+      <Filter>소스 파일\04. Resources\Data</Filter>
     </ClCompile>
     <ClCompile Include="LockedDoorAndKey.cpp">
       <Filter>소스 파일\03. Objects\Game\Structure</Filter>
@@ -602,13 +602,19 @@
       <Filter>소스 파일\03. Objects\Game\Creature</Filter>
     </ClCompile>
     <ClCompile Include="ItemStage.cpp">
-      <Filter>소스 파일\04. Resources\DataBase</Filter>
+      <Filter>소스 파일\04. Resources\Data</Filter>
     </ClCompile>
     <ClCompile Include="StructureStage.cpp">
-      <Filter>소스 파일\04. Resources\DataBase</Filter>
+      <Filter>소스 파일\04. Resources\Data</Filter>
     </ClCompile>
     <ClCompile Include="BossStagePanel.cpp">
       <Filter>소스 파일\06. UI\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Stat.cpp">
+      <Filter>소스 파일\04. Resources\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene.cpp">
+      <Filter>소스 파일\02. Scene\Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

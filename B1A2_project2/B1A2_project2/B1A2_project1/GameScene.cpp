@@ -69,6 +69,8 @@ void GameScene::Init()
 	LoadUI();
 	//LoadSound();
 
+	GET_SINGLE(ResourceManager)->LoadStat();
+
 	// 스테이지 설정
 	if (GET_SINGLE(SceneManager)->GetIsContinue())
 	{
@@ -82,27 +84,27 @@ void GameScene::Init()
 	}
 
 	// Inventory
-	{
-		Inventory* inventory = new Inventory();
-		_player->AddComponent(inventory);
+	//{
+	//	Inventory* inventory = new Inventory();
+	//	_player->AddComponent(inventory);
 
-		inventory->SetOwner(_player);
+	//	inventory->SetOwner(_player);
 
-		// Update에서 inventory의 멤버 변수에 접근하기 위해
-		_inventory = inventory;
-	}
+	//	// Update에서 inventory의 멤버 변수에 접근하기 위해
+	//	_inventory = inventory;
+	//}
 
 	// InGame UI
 	InGamePanel* panel = new InGamePanel();
-	panel->SetPlayer(_player);
+	//panel->SetPlayer(_player);
 	AddPanel(panel);
 
 	// player의 체력 변경 시 UI 업데이트 등록
-	_player->SetHealthObserver([panel](int health) {  if (panel) panel->UpdateHealthPoint(health); });
-	_player->SetSkillPointObserver([panel](int skillPoint) {  if (panel) panel->UpdateSkillPoint(skillPoint); });
+	//_player->SetHealthObserver([panel](int health) {  if (panel) panel->UpdateHealthPoint(health); });
+	//_player->SetSkillPointObserver([panel](int skillPoint) {  if (panel) panel->UpdateSkillPoint(skillPoint); });
 
 	// 현재 Scene 정보 넣기 (세이브 포인트 정보 저장 위해)
-	_player->SetCurrentScene(this);
+	//_player->SetCurrentScene(this);
 
 	// Announcemet
 	//{
@@ -1614,13 +1616,13 @@ void GameScene::SetStage1()
 	// Player
 	{
 		// Player가 없다면 생성
-		if (!_player)
+		/*if (!_player)
 		{
 			MyPlayer* player = SpawnObject<MyPlayer>(1, { 200, 400 }, LAYER_PLAYER);
 			_player = player;
 		}
 
-		_player->SetCurStageNum(_curStageNum);
+		_player->SetCurStageNum(_curStageNum);*/
 	}
 
 	// Monster
@@ -1674,7 +1676,7 @@ void GameScene::SetStage1()
 	}
 
 	// Structure
-	SetStructureStageN(1);
+	//SetStructureStageN(1);
 
 	// LoadData 적용
 	if (GET_SINGLE(SceneManager)->GetIsContinue())
@@ -1999,14 +2001,14 @@ void GameScene::SetFinalBossStage()
 	// Player
 	{
 		// Player가 없다면 생성
-		if (!_player)
+		/*if (!_player)
 		{
 			MyPlayer* player = SpawnObject<MyPlayer>({ 200, 520 }, LAYER_PLAYER);
 			_player = player;
 		}
 
 		_player->SetPos({ 200, 520 });
-		_player->SetCurStageNum(_curStageNum);
+		_player->SetCurStageNum(_curStageNum);*/
 	}
 
 	// FinalBoss
