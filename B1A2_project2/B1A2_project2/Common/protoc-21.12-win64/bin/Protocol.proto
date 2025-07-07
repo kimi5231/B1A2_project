@@ -1,0 +1,55 @@
+syntax = "proto3";
+package Protocol;
+
+import "Enum.proto";
+import "Struct.proto";
+
+message S_TEST
+{
+	uint64 id = 1;
+	uint32 hp = 2;
+	uint32 attack = 3;
+	repeated BuffData buffs = 4;
+}
+
+message S_EnterGame
+{
+	bool success = 1;
+	uint64 accountId = 2;
+}
+
+message S_MyPlayer
+{
+	ActorInfo actor = 1;
+	ObjectInfo object = 2;
+	PlayerStat stat = 3;
+}
+
+message S_AddPlayer
+{
+	repeated ActorInfo actors = 1;
+	repeated ObjectInfo objects = 2;
+	repeated PlayerStat stats = 3;
+}
+
+message S_AddTiredOfficeWorker
+{
+	repeated ActorInfo actors = 1;
+	repeated ObjectInfo objects = 2;
+	repeated TiredOfficeWorkerStat stats = 3;
+}
+
+message S_RemoveObject
+{
+	repeated uint64 ids = 1;
+}
+
+message C_Move
+{
+	ObjectInfo info = 1;
+}
+
+message S_Move
+{
+	ObjectInfo info = 1;
+}

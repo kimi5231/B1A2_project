@@ -1,0 +1,60 @@
+syntax = "proto3";
+package Protocol;
+
+import "Enum.proto";
+
+message BuffData
+{
+	uint64 buffId = 1;
+	float remainTime = 2;
+	repeated uint64 victims = 3;
+}
+
+message ActorInfo
+{
+	int64 id = 1;
+	float posX = 2;
+	float posY = 3;
+}
+
+message ObjectInfo
+{
+	OBJECT_STATE_TYPE state = 1;
+	DIR_TYPE dir = 2;
+}
+
+message PlayerStat
+{
+	int32 hp = 1; // A
+	float runSpeed = 2;	// B
+	float crouchSpeed = 3;	// C
+	float jumpSpeed = 4;	// D
+	int32 skillPoint = 5;	// E
+	int32 nAtkRange = 6;	// F
+	int32 nLongAtkDistance = 7;	// G
+	int32 knockBackDistance = 8;	// H
+	float strongAtkMultiplier = 9;	// I
+	int32 nAtkDamage = 10;	// J
+	int32 skillDamage = 11;	// K
+	int32 skillRange = 12;	// L
+	float skillDuration = 13;	// M
+	int32 skillStepDistance = 14;	// N
+}
+
+message TiredOfficeWorkerStat
+{
+	int32 hp = 1;	// A
+	float healtemDropRate = 2;	// B
+	float speed = 3;	// B
+	float chaseSpeed = 4;	// D
+	int32 playerDetectionX = 5;	// E
+	int32 playerDetectionY = 6;	// F
+	int32 knockBackDistance = 7; // G
+	int32 attackRangeX = 8;	// H
+	int32 attackRangeY = 9;	// I
+	int32 attack = 10;	// J
+	float idleTime = 11;	// K
+	float movingDistance = 12;	// L
+	float movementLimitX = 13;	// M
+	float movementLimitY = 14;	// N
+}
