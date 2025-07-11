@@ -56,14 +56,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     // 기본 메시지 루프입니다:
     while (true)
     {
-        // 메세지가 있는지 없는지 계속 확인
         if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
         {
-            // 프로그램 종료
             if (msg.message == WM_QUIT)
                 break;
 
-            // 메세지 처리
             if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
             {
                 TranslateMessage(&msg);
@@ -71,8 +68,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             }
         }
 
+        // TODO
         game->Update();
     }
+
+    return (int)msg.wParam;
 }
 
 
@@ -128,7 +128,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
     ShowWindow(hWnd, nCmdShow);
     UpdateWindow(hWnd);
 
-    // GWindowInfo.hwnd = hWnd;
+    GWindowInfo.hwnd = hWnd;
 
     return TRUE;
 }
