@@ -58,11 +58,9 @@ void GameRoom::EnterRoom(GameSessionRef session)
 		{
 			Protocol::ActorInfo* actorInfo = pkt.add_actors();
 			Protocol::ObjectInfo* objectInfo = pkt.add_objects();
-			Protocol::PlayerStat* playerStat = pkt.add_stats();
 
 			*actorInfo = item.second->GetActorInfo();
 			*objectInfo = item.second->GetObjectInfo();
-			*playerStat = item.second->GetPlayerStat();
 		}
 
 		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddPlayer(pkt);
@@ -101,12 +99,10 @@ void GameRoom::AddObject(GameObjectRef object)
 
 			Protocol::ActorInfo* actorInfo = pkt.add_actors();
 			Protocol::ObjectInfo* objectInfo = pkt.add_objects();
-			Protocol::PlayerStat* playerStat = pkt.add_stats();
 
 			// 값을 수정
 			*actorInfo = player->GetActorInfo();
 			*objectInfo = player->GetObjectInfo();
-			*playerStat = player->GetPlayerStat();
 
 			SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddPlayer(pkt);
 			Broadcast(sendBuffer);

@@ -36,10 +36,6 @@ PlayerRef GameObject::CreatePlayer()
 	// ObjectInfo
 	player->SetObjectInfo(Protocol::OBJECT_STATE_TYPE_IDLE, Protocol::DIR_TYPE_RIGHT);
 
-	// PlayerStat
-	Stat* stat = GET_SINGLE(DataManager)->GetStat();
-	player->SetPlayerStat(stat->GetPlayerStat());
-	
 	return player;
 }
 
@@ -59,7 +55,7 @@ MonsterRef GameObject::CreateMonster(FieldMonster fieldMonster)
 		
 		// TiredOfficeWorkerStat
 		Stat* stat = GET_SINGLE(DataManager)->GetStat();
-		tow->SetTiredOfficeWorkerStat(stat->GetTiredOfficeWorkerStat());
+		//tow->SetTiredOfficeWorkerStat(stat->GetTiredOfficeWorkerStat());
 		tow->SetMovingDistance(fieldMonster.movingDistance);
 		tow->SetMovementLimitX(fieldMonster.movementLimitX);
 		tow->SetMovementLimitY(fieldMonster.movementLimitY);

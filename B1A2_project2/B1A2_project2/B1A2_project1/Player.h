@@ -74,8 +74,6 @@ public:
 	void AddSkillPoint(int32 skillPoint);
 	void SubtractSkillPoint(int32 skillPoint);
 
-	void SetPlayerStat(const Protocol::PlayerStat& stat);
-
 public:
 	void SetCurrentScene(GameScene* gameScene) { _gameScene = gameScene; }		// GameScene으로 수정 필요
 	void SetCurStageNum(int32 stage) { _curStageNum = stage; }

@@ -23,24 +23,6 @@ message ObjectInfo
 	DIR_TYPE dir = 2;
 }
 
-message PlayerStat
-{
-	int32 hp = 1; // A
-	float runSpeed = 2;	// B
-	float crouchSpeed = 3;	// C
-	float jumpSpeed = 4;	// D
-	int32 skillPoint = 5;	// E
-	int32 nAtkRange = 6;	// F
-	int32 nLongAtkDistance = 7;	// G
-	int32 knockBackDistance = 8;	// H
-	float strongAtkMultiplier = 9;	// I
-	int32 nAtkDamage = 10;	// J
-	int32 skillDamage = 11;	// K
-	int32 skillRange = 12;	// L
-	float skillDuration = 13;	// M
-	int32 skillStepDistance = 14;	// N
-}
-
 message TiredOfficeWorkerStat
 {
 	int32 hp = 1;	// A

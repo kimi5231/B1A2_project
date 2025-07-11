@@ -1086,29 +1086,6 @@ void Player::SubtractSkillPoint(int32 skillPoint)
 	_skillPointObserver(_playerStat->skillPoint);
 }
 
-void Player::SetPlayerStat(const Protocol::PlayerStat& stat)
-{
-	PlayerStat* playerStat = new PlayerStat();
-
-	playerStat->hp = stat.hp();
-	playerStat->runSpeed = stat.runspeed();
-	playerStat->crouchSpeed = stat.crouchspeed();
-	playerStat->jumpSpeed = stat.jumpspeed();
-	playerStat->skillPoint = stat.skillpoint();
-	playerStat->nLongAtkDistance = stat.nlongatkdistance();
-	playerStat->knockBackDistance = stat.knockbackdistance();
-	playerStat->strongAtkMultiplier = stat.strongatkmultiplier();
-	playerStat->nAtkDamage = stat.natkdamage();
-	playerStat->skillDamage = stat.skilldamage();
-	playerStat->skillRange = stat.skillrange();
-	playerStat->skillDuration = stat.skillduration();
-	playerStat->skillStepDistance = stat.skillstepdistance();
-
-	_playerStat = playerStat;
-
-	CalPixelPerSecond();
-}
-
 void Player::CalPixelPerSecond()
 {
 	float PIXEL_PER_METER = (10.0 / 0.2);

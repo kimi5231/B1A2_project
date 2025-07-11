@@ -55,7 +55,6 @@ PROTOBUF_CONSTEXPR S_MyPlayer::S_MyPlayer(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.actor_)*/nullptr
   , /*decltype(_impl_.object_)*/nullptr
-  , /*decltype(_impl_.stat_)*/nullptr
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct S_MyPlayerDefaultTypeInternal {
   PROTOBUF_CONSTEXPR S_MyPlayerDefaultTypeInternal()
@@ -70,7 +69,6 @@ PROTOBUF_CONSTEXPR S_AddPlayer::S_AddPlayer(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.actors_)*/{}
   , /*decltype(_impl_.objects_)*/{}
-  , /*decltype(_impl_.stats_)*/{}
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct S_AddPlayerDefaultTypeInternal {
   PROTOBUF_CONSTEXPR S_AddPlayerDefaultTypeInternal()
@@ -168,7 +166,6 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_MyPlayer, _impl_.actor_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_MyPlayer, _impl_.object_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::S_MyPlayer, _impl_.stat_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_AddPlayer, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -177,7 +174,6 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_AddPlayer, _impl_.actors_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_AddPlayer, _impl_.objects_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::S_AddPlayer, _impl_.stats_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_AddTiredOfficeWorker, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -213,11 +209,11 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 0, -1, -1, sizeof(::Protocol::S_TEST)},
   { 10, -1, -1, sizeof(::Protocol::S_EnterGame)},
   { 18, -1, -1, sizeof(::Protocol::S_MyPlayer)},
-  { 27, -1, -1, sizeof(::Protocol::S_AddPlayer)},
-  { 36, -1, -1, sizeof(::Protocol::S_AddTiredOfficeWorker)},
-  { 45, -1, -1, sizeof(::Protocol::S_RemoveObject)},
-  { 52, -1, -1, sizeof(::Protocol::C_Move)},
-  { 59, -1, -1, sizeof(::Protocol::S_Move)},
+  { 26, -1, -1, sizeof(::Protocol::S_AddPlayer)},
+  { 34, -1, -1, sizeof(::Protocol::S_AddTiredOfficeWorker)},
+  { 43, -1, -1, sizeof(::Protocol::S_RemoveObject)},
+  { 50, -1, -1, sizeof(::Protocol::C_Move)},
+  { 57, -1, -1, sizeof(::Protocol::S_Move)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -236,21 +232,19 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "Struct.proto\"S\n\006S_TEST\022\n\n\002id\030\001 \001(\004\022\n\n\002hp"
   "\030\002 \001(\r\022\016\n\006attack\030\003 \001(\r\022!\n\005buffs\030\004 \003(\0132\022."
   "Protocol.BuffData\"1\n\013S_EnterGame\022\017\n\007succ"
-  "ess\030\001 \001(\010\022\021\n\taccountId\030\002 \001(\004\"z\n\nS_MyPlay"
+  "ess\030\001 \001(\010\022\021\n\taccountId\030\002 \001(\004\"V\n\nS_MyPlay"
   "er\022\"\n\005actor\030\001 \001(\0132\023.Protocol.ActorInfo\022$"
-  "\n\006object\030\002 \001(\0132\024.Protocol.ObjectInfo\022\"\n\004"
-  "stat\030\003 \001(\0132\024.Protocol.PlayerStat\"~\n\013S_Ad"
-  "dPlayer\022#\n\006actors\030\001 \003(\0132\023.Protocol.Actor"
-  "Info\022%\n\007objects\030\002 \003(\0132\024.Protocol.ObjectI"
-  "nfo\022#\n\005stats\030\003 \003(\0132\024.Protocol.PlayerStat"
-  "\"\224\001\n\026S_AddTiredOfficeWorker\022#\n\006actors\030\001 "
-  "\003(\0132\023.Protocol.ActorInfo\022%\n\007objects\030\002 \003("
-  "\0132\024.Protocol.ObjectInfo\022.\n\005stats\030\003 \003(\0132\037"
-  ".Protocol.TiredOfficeWorkerStat\"\035\n\016S_Rem"
-  "oveObject\022\013\n\003ids\030\001 \003(\004\",\n\006C_Move\022\"\n\004info"
-  "\030\001 \001(\0132\024.Protocol.ObjectInfo\",\n\006S_Move\022\""
-  "\n\004info\030\001 \001(\0132\024.Protocol.ObjectInfob\006prot"
-  "o3"
+  "\n\006object\030\002 \001(\0132\024.Protocol.ObjectInfo\"Y\n\013"
+  "S_AddPlayer\022#\n\006actors\030\001 \003(\0132\023.Protocol.A"
+  "ctorInfo\022%\n\007objects\030\002 \003(\0132\024.Protocol.Obj"
+  "ectInfo\"\224\001\n\026S_AddTiredOfficeWorker\022#\n\006ac"
+  "tors\030\001 \003(\0132\023.Protocol.ActorInfo\022%\n\007objec"
+  "ts\030\002 \003(\0132\024.Protocol.ObjectInfo\022.\n\005stats\030"
+  "\003 \003(\0132\037.Protocol.TiredOfficeWorkerStat\"\035"
+  "\n\016S_RemoveObject\022\013\n\003ids\030\001 \003(\004\",\n\006C_Move\022"
+  "\"\n\004info\030\001 \001(\0132\024.Protocol.ObjectInfo\",\n\006S"
+  "_Move\022\"\n\004info\030\001 \001(\0132\024.Protocol.ObjectInf"
+  "ob\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -258,7 +252,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 722, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 649, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
     &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 8,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
@@ -762,7 +756,6 @@ class S_MyPlayer::_Internal {
  public:
   static const ::Protocol::ActorInfo& actor(const S_MyPlayer* msg);
   static const ::Protocol::ObjectInfo& object(const S_MyPlayer* msg);
-  static const ::Protocol::PlayerStat& stat(const S_MyPlayer* msg);
 };
 
 const ::Protocol::ActorInfo&
@@ -772,10 +765,6 @@ S_MyPlayer::_Internal::actor(const S_MyPlayer* msg) {
 const ::Protocol::ObjectInfo&
 S_MyPlayer::_Internal::object(const S_MyPlayer* msg) {
   return *msg->_impl_.object_;
-}
-const ::Protocol::PlayerStat&
-S_MyPlayer::_Internal::stat(const S_MyPlayer* msg) {
-  return *msg->_impl_.stat_;
 }
 void S_MyPlayer::clear_actor() {
   if (GetArenaForAllocation() == nullptr && _impl_.actor_ != nullptr) {
@@ -789,12 +778,6 @@ void S_MyPlayer::clear_object() {
   }
   _impl_.object_ = nullptr;
 }
-void S_MyPlayer::clear_stat() {
-  if (GetArenaForAllocation() == nullptr && _impl_.stat_ != nullptr) {
-    delete _impl_.stat_;
-  }
-  _impl_.stat_ = nullptr;
-}
 S_MyPlayer::S_MyPlayer(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
@@ -807,7 +790,6 @@ S_MyPlayer::S_MyPlayer(const S_MyPlayer& from)
   new (&_impl_) Impl_{
       decltype(_impl_.actor_){nullptr}
     , decltype(_impl_.object_){nullptr}
-    , decltype(_impl_.stat_){nullptr}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -816,9 +798,6 @@ S_MyPlayer::S_MyPlayer(const S_MyPlayer& from)
   }
   if (from._internal_has_object()) {
     _this->_impl_.object_ = new ::Protocol::ObjectInfo(*from._impl_.object_);
-  }
-  if (from._internal_has_stat()) {
-    _this->_impl_.stat_ = new ::Protocol::PlayerStat(*from._impl_.stat_);
   }
   // @@protoc_insertion_point(copy_constructor:Protocol.S_MyPlayer)
 }
@@ -830,7 +809,6 @@ inline void S_MyPlayer::SharedCtor(
   new (&_impl_) Impl_{
       decltype(_impl_.actor_){nullptr}
     , decltype(_impl_.object_){nullptr}
-    , decltype(_impl_.stat_){nullptr}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -848,7 +826,6 @@ inline void S_MyPlayer::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   if (this != internal_default_instance()) delete _impl_.actor_;
   if (this != internal_default_instance()) delete _impl_.object_;
-  if (this != internal_default_instance()) delete _impl_.stat_;
 }
 
 void S_MyPlayer::SetCachedSize(int size) const {
@@ -869,10 +846,6 @@ void S_MyPlayer::Clear() {
     delete _impl_.object_;
   }
   _impl_.object_ = nullptr;
-  if (GetArenaForAllocation() == nullptr && _impl_.stat_ != nullptr) {
-    delete _impl_.stat_;
-  }
-  _impl_.stat_ = nullptr;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -894,14 +867,6 @@ const char* S_MyPlayer::_InternalParse(const char* ptr, ::_pbi::ParseContext* ct
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
           ptr = ctx->ParseMessage(_internal_mutable_object(), ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // .Protocol.PlayerStat stat = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
-          ptr = ctx->ParseMessage(_internal_mutable_stat(), ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -949,13 +914,6 @@ uint8_t* S_MyPlayer::_InternalSerialize(
         _Internal::object(this).GetCachedSize(), target, stream);
   }
 
-  // .Protocol.PlayerStat stat = 3;
-  if (this->_internal_has_stat()) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(3, _Internal::stat(this),
-        _Internal::stat(this).GetCachedSize(), target, stream);
-  }
-
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -986,13 +944,6 @@ size_t S_MyPlayer::ByteSizeLong() const {
         *_impl_.object_);
   }
 
-  // .Protocol.PlayerStat stat = 3;
-  if (this->_internal_has_stat()) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-        *_impl_.stat_);
-  }
-
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -1019,10 +970,6 @@ void S_MyPlayer::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PRO
     _this->_internal_mutable_object()->::Protocol::ObjectInfo::MergeFrom(
         from._internal_object());
   }
-  if (from._internal_has_stat()) {
-    _this->_internal_mutable_stat()->::Protocol::PlayerStat::MergeFrom(
-        from._internal_stat());
-  }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -1041,8 +988,8 @@ void S_MyPlayer::InternalSwap(S_MyPlayer* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(S_MyPlayer, _impl_.stat_)
-      + sizeof(S_MyPlayer::_impl_.stat_)
+      PROTOBUF_FIELD_OFFSET(S_MyPlayer, _impl_.object_)
+      + sizeof(S_MyPlayer::_impl_.object_)
       - PROTOBUF_FIELD_OFFSET(S_MyPlayer, _impl_.actor_)>(
           reinterpret_cast<char*>(&_impl_.actor_),
           reinterpret_cast<char*>(&other->_impl_.actor_));
@@ -1066,9 +1013,6 @@ void S_AddPlayer::clear_actors() {
 void S_AddPlayer::clear_objects() {
   _impl_.objects_.Clear();
 }
-void S_AddPlayer::clear_stats() {
-  _impl_.stats_.Clear();
-}
 S_AddPlayer::S_AddPlayer(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
@@ -1081,7 +1025,6 @@ S_AddPlayer::S_AddPlayer(const S_AddPlayer& from)
   new (&_impl_) Impl_{
       decltype(_impl_.actors_){from._impl_.actors_}
     , decltype(_impl_.objects_){from._impl_.objects_}
-    , decltype(_impl_.stats_){from._impl_.stats_}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -1095,7 +1038,6 @@ inline void S_AddPlayer::SharedCtor(
   new (&_impl_) Impl_{
       decltype(_impl_.actors_){arena}
     , decltype(_impl_.objects_){arena}
-    , decltype(_impl_.stats_){arena}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -1113,7 +1055,6 @@ inline void S_AddPlayer::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   _impl_.actors_.~RepeatedPtrField();
   _impl_.objects_.~RepeatedPtrField();
-  _impl_.stats_.~RepeatedPtrField();
 }
 
 void S_AddPlayer::SetCachedSize(int size) const {
@@ -1128,7 +1069,6 @@ void S_AddPlayer::Clear() {
 
   _impl_.actors_.Clear();
   _impl_.objects_.Clear();
-  _impl_.stats_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -1161,19 +1101,6 @@ const char* S_AddPlayer::_InternalParse(const char* ptr, ::_pbi::ParseContext* c
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
           } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
-        } else
-          goto handle_unusual;
-        continue;
-      // repeated .Protocol.PlayerStat stats = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
-          ptr -= 1;
-          do {
-            ptr += 1;
-            ptr = ctx->ParseMessage(_internal_add_stats(), ptr);
-            CHK_(ptr);
-            if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<26>(ptr));
         } else
           goto handle_unusual;
         continue;
@@ -1222,14 +1149,6 @@ uint8_t* S_AddPlayer::_InternalSerialize(
         InternalWriteMessage(2, repfield, repfield.GetCachedSize(), target, stream);
   }
 
-  // repeated .Protocol.PlayerStat stats = 3;
-  for (unsigned i = 0,
-      n = static_cast<unsigned>(this->_internal_stats_size()); i < n; i++) {
-    const auto& repfield = this->_internal_stats(i);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-        InternalWriteMessage(3, repfield, repfield.GetCachedSize(), target, stream);
-  }
-
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -1260,13 +1179,6 @@ size_t S_AddPlayer::ByteSizeLong() const {
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
 
-  // repeated .Protocol.PlayerStat stats = 3;
-  total_size += 1UL * this->_internal_stats_size();
-  for (const auto& msg : this->_impl_.stats_) {
-    total_size +=
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
-  }
-
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -1287,7 +1199,6 @@ void S_AddPlayer::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PR
 
   _this->_impl_.actors_.MergeFrom(from._impl_.actors_);
   _this->_impl_.objects_.MergeFrom(from._impl_.objects_);
-  _this->_impl_.stats_.MergeFrom(from._impl_.stats_);
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -1307,7 +1218,6 @@ void S_AddPlayer::InternalSwap(S_AddPlayer* other) {
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   _impl_.actors_.InternalSwap(&other->_impl_.actors_);
   _impl_.objects_.InternalSwap(&other->_impl_.objects_);
-  _impl_.stats_.InternalSwap(&other->_impl_.stats_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata S_AddPlayer::GetMetadata() const {
