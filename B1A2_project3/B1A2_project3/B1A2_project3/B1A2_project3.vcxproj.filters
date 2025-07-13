@@ -27,9 +27,6 @@
     <Filter Include="소스 파일\01. Engine\Utils">
       <UniqueIdentifier>{89e1e6cf-1dad-4396-8942-9614aa9c91ad}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\01. Engine\Engine\Manager">
-      <UniqueIdentifier>{a05b8ffc-5a39-4cff-b572-e1c981addb9c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\01. Engine\Engine\API">
       <UniqueIdentifier>{b1bc4669-4354-4ffb-ae3b-1522b64b84af}</UniqueIdentifier>
     </Filter>
@@ -57,6 +54,12 @@
     <Filter Include="소스 파일\01. Engine\Object\Test">
       <UniqueIdentifier>{913abf63-02d5-4a0d-91be-958345cc8135}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\02. Managers">
+      <UniqueIdentifier>{a05b8ffc-5a39-4cff-b572-e1c981addb9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\03. Scene">
+      <UniqueIdentifier>{d69ca4dd-6454-4c4e-badf-6a0f93a633b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -72,10 +75,10 @@
       <Filter>소스 파일\99. Utils\Client</Filter>
     </ClInclude>
     <ClInclude Include="InputManager.h">
-      <Filter>소스 파일\01. Engine\Engine\Manager</Filter>
+      <Filter>소스 파일\02. Managers</Filter>
     </ClInclude>
     <ClInclude Include="TimeManager.h">
-      <Filter>소스 파일\01. Engine\Engine\Manager</Filter>
+      <Filter>소스 파일\02. Managers</Filter>
     </ClInclude>
     <ClInclude Include="CommandQueue.h">
       <Filter>소스 파일\01. Engine\Engine\API</Filter>
@@ -105,7 +108,7 @@
       <Filter>소스 파일\01. Engine\Engine\API</Filter>
     </ClInclude>
     <ClInclude Include="SceneManager.h">
-      <Filter>소스 파일\01. Engine\Engine\Manager</Filter>
+      <Filter>소스 파일\02. Managers</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>소스 파일\99. Utils</Filter>
@@ -114,13 +117,10 @@
       <Filter>소스 파일\01. Engine\Utils</Filter>
     </ClInclude>
     <ClInclude Include="InstancingManager.h">
-      <Filter>소스 파일\01. Engine\Engine\Manager</Filter>
+      <Filter>소스 파일\02. Managers</Filter>
     </ClInclude>
     <ClInclude Include="Resources.h">
-      <Filter>소스 파일\01. Engine\Engine\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>소스 파일\01. Engine\Engine\Manager</Filter>
+      <Filter>소스 파일\02. Managers</Filter>
     </ClInclude>
     <ClInclude Include="BaseCollider.h">
       <Filter>소스 파일\01. Engine\Object\Component\Collider</Filter>
@@ -188,6 +188,16 @@
     <ClInclude Include="ParticleSystem.h">
       <Filter>소스 파일\01. Engine\Engine\API</Filter>
     </ClInclude>
+    <ClInclude Include="TestScene.h">
+      <Filter>소스 파일\03. Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>소스 파일\03. Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Enums.h">
+      <Filter>소스 파일\99. Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -210,10 +220,10 @@
       <Filter>소스 파일\99. Utils\Client</Filter>
     </ClCompile>
     <ClCompile Include="InputManager.cpp">
-      <Filter>소스 파일\01. Engine\Engine\Manager</Filter>
+      <Filter>소스 파일\02. Managers</Filter>
     </ClCompile>
     <ClCompile Include="TimeManager.cpp">
-      <Filter>소스 파일\01. Engine\Engine\Manager</Filter>
+      <Filter>소스 파일\02. Managers</Filter>
     </ClCompile>
     <ClCompile Include="CommandQueue.cpp">
       <Filter>소스 파일\01. Engine\Engine\API</Filter>
@@ -243,7 +253,7 @@
       <Filter>소스 파일\01. Engine\Engine\API</Filter>
     </ClCompile>
     <ClCompile Include="SceneManager.cpp">
-      <Filter>소스 파일\01. Engine\Engine\Manager</Filter>
+      <Filter>소스 파일\02. Managers</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>소스 파일\99. Utils</Filter>
@@ -252,13 +262,10 @@
       <Filter>소스 파일\01. Engine\Utils</Filter>
     </ClCompile>
     <ClCompile Include="InstancingManager.cpp">
-      <Filter>소스 파일\01. Engine\Engine\Manager</Filter>
+      <Filter>소스 파일\02. Managers</Filter>
     </ClCompile>
     <ClCompile Include="Resources.cpp">
-      <Filter>소스 파일\01. Engine\Engine\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>소스 파일\01. Engine\Engine\Manager</Filter>
+      <Filter>소스 파일\02. Managers</Filter>
     </ClCompile>
     <ClCompile Include="BaseCollider.cpp">
       <Filter>소스 파일\01. Engine\Object\Component\Collider</Filter>
@@ -319,6 +326,15 @@
     </ClCompile>
     <ClCompile Include="ParticleSystem.cpp">
       <Filter>소스 파일\01. Engine\Engine\API</Filter>
+    </ClCompile>
+    <ClCompile Include="TestScene.cpp">
+      <Filter>소스 파일\03. Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>소스 파일\03. Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene.cpp">
+      <Filter>소스 파일\03. Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

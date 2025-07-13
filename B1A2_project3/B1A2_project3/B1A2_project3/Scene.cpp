@@ -8,6 +8,14 @@
 #include "Engine.h"
 #include "Resources.h"
 
+Scene::Scene()
+{
+}
+
+Scene::~Scene()
+{
+}
+
 void Scene::Awake()
 {
 	for (const shared_ptr<GameObject>& gameObject : _gameObjects)
@@ -46,6 +54,25 @@ void Scene::FinalUpdate()
 	{
 		gameObject->FinalUpdate();
 	}
+}
+
+void Scene::SetLayerName(uint8 index, const wstring& name)
+{
+	// 기존 데이터 삭제
+	const wstring& prevName = _layerNames[index];
+	_layerIndex.erase(prevName);
+
+	_layerNames[index] = name;
+	_layerIndex[name] = index;
+}
+
+uint8 Scene::LayerNameToIndex(const wstring& name)
+{
+	auto findIt = _layerIndex.find(name);
+	if (findIt == _layerIndex.end())
+		return 0;
+
+	return findIt->second;
 }
 
 shared_ptr<Camera> Scene::GetMainCamera()

@@ -7,7 +7,7 @@ void Game::Init(const WindowInfo& info)
 {
 	GEngine->Init(info);
 
-	GET_SINGLE(SceneManager)->LoadScene(L"TestScene");
+	GET_SINGLE(SceneManager)->ChangeScene(SceneType::TestScene);
 }
 
 void Game::Update()
