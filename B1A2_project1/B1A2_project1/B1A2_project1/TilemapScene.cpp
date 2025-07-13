@@ -20,14 +20,14 @@ TilemapScene::~TilemapScene()
 void TilemapScene::Init()
 {
 	// Texture
-	GET_SINGLE(ResourceManager)->LoadTexture(L"FinalBossStage", L"Sprite\\Map\\FinalBossStage.bmp");
+	GET_SINGLE(ResourceManager)->LoadTexture(L"Stage2", L"Sprite\\Map\\Stage2.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Tile", L"Sprite\\Map\\Tile.bmp", RGB(55, 255, 0));
 
 	// Sprite
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"FinalBossStage");
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Stage2");
 		Vec2Int mapSize = GET_SINGLE(ValueManager)->GetMapSize();
-		GET_SINGLE(ResourceManager)->CreateSprite(L"FinalBossStage", texture, 0, 0, mapSize.x, mapSize.y);
+		GET_SINGLE(ResourceManager)->CreateSprite(L"Stage2", texture, 0, 0, mapSize.x, mapSize.y);
 	}
 	{
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Tile");
@@ -45,7 +45,7 @@ void TilemapScene::Init()
 	
 	// Map
 	{
-		Sprite* sprite = GET_SINGLE(ResourceManager)->GetSprite(L"FinalBossStage");
+		Sprite* sprite = GET_SINGLE(ResourceManager)->GetSprite(L"Stage2");
 		SpriteActor* map = new SpriteActor();
 		const Vec2Int size = sprite->GetSize();
 		map->SetPos(Vec2(size.x / 2, size.y / 2));
@@ -58,7 +58,7 @@ void TilemapScene::Init()
 	// TilemapActor
 	{
 		Tilemap* tilemap = GET_SINGLE(ResourceManager)->GetTilemap(L"Tilemap");
-		tilemap->SetMapSize({ 32, 18 });
+		tilemap->SetMapSize({ 222, 43 });
 		TilemapActor* actor = new TilemapActor();
 		actor->SetPos({ 0, 0 });
 		actor->SetShowDebug(true);
@@ -87,7 +87,7 @@ void TilemapScene::Update()
 
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::Q))
 	{
-		GET_SINGLE(ResourceManager)->LoadTilemap(L"Tilemap", L"Tilemap\\FinalBossStage.txt");
+		GET_SINGLE(ResourceManager)->LoadTilemap(L"Tilemap", L"Tilemap\\Stage2.txt");
 	}
 
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::E))
