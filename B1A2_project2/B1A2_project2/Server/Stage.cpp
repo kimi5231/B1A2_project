@@ -35,11 +35,11 @@ void Stage::LoadFieldMonster(std::filesystem::path dataPath, const std::wstring 
 			{
 			case 0:fieldMonster.id = std::stoi(cell); break;	// A
 			case 1: fieldMonster.dir = static_cast<Protocol::DIR_TYPE>(std::stoi(cell)); break;	// B
-			case 2: fieldMonster.spawnPosX = std::stof(cell); break;	// C
-			case 3: fieldMonster.spawnPosY = std::stof(cell); break;	// D
+			case 2: fieldMonster.spawnPos.x = std::stof(cell); break;	// C
+			case 3: fieldMonster.spawnPos.y = std::stof(cell); break;	// D
 			case 4: fieldMonster.movingDistance = std::stof(cell); break;	// E
-			case 5: fieldMonster.movementLimitX = std::stof(cell); break;	// F
-			case 6: fieldMonster.movementLimitY = std::stof(cell); break;	// G
+			case 5: fieldMonster.movementLimit.x = std::stof(cell); break;	// F
+			case 6: fieldMonster.movementLimit.y = std::stof(cell); break;	// G
 			}
 			++column;
 		}

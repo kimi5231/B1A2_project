@@ -32,10 +32,15 @@ PlayerRef GameObject::CreatePlayer()
 
 	// 나중에 세이브 데이터에 맞춰 설정할 예정
 	// ActorInfo
-	player->SetActorInfo(_idGenerator++, 400, 200);
+	player->SetActorInfo(_idGenerator++, { 400, 200 });
 
 	// ObjectInfo
 	player->SetObjectInfo(Protocol::OBJECT_STATE_TYPE_IDLE, Protocol::DIR_TYPE_RIGHT);
+
+	// Client에서 보내는 stat과 비교하는 용도 (패킷 포함X)
+	// Stat
+	Stat* stat = GET_SINGLE(DataManager)->GetStat();
+	player->SetPlayerStat(stat->GetPlayerStat());
 
 	return player;
 }
@@ -45,7 +50,7 @@ MonsterRef GameObject::CreateMonster(FieldMonster fieldMonster)
 	MonsterRef monster = std::make_shared<Monster>();
 
 	// ActorInfo
-	monster->SetActorInfo(fieldMonster.id, fieldMonster.spawnPosX, fieldMonster.spawnPosY);
+	monster->SetActorInfo(fieldMonster.id, fieldMonster.spawnPos);
 
 	// ObjectInfo
 	monster->SetObjectInfo(Protocol::OBJECT_STATE_TYPE_IDLE, fieldMonster.dir);
@@ -58,8 +63,8 @@ MonsterRef GameObject::CreateMonster(FieldMonster fieldMonster)
 		Stat* stat = GET_SINGLE(DataManager)->GetStat();
 		//tow->SetTiredOfficeWorkerStat(stat->GetTiredOfficeWorkerStat());
 		tow->SetMovingDistance(fieldMonster.movingDistance);
-		tow->SetMovementLimitX(fieldMonster.movementLimitX);
-		tow->SetMovementLimitY(fieldMonster.movementLimitY);
+		tow->SetMovementLimitX(fieldMonster.movementLimit.x);
+		tow->SetMovementLimitY(fieldMonster.movementLimit.y);
 	}
 
 	return monster;

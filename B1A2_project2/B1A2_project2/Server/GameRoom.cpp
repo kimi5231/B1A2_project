@@ -44,7 +44,7 @@ void GameRoom::EnterRoom(GameSessionRef session)
 	session->player = player;
 	player->SetSession(session);
 
-	// 입장한 client에 myplayer 정보 보내기
+	// 입장한 client에 MyPlayer 정보 보내기
 	{
 		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_MyPlayer(player);
 		session->Send(sendBuffer);
@@ -75,7 +75,7 @@ void GameRoom::LeaveRoom(GameSessionRef session)
 	if (session == nullptr)
 		return;
 
-	// 살아있는지 확인
+	// Player가 존재하는 확인
 	if (session->player == nullptr)
 		return;
 

@@ -4,6 +4,10 @@
 class TiredOfficeWorker : public Monster
 {
 public:
+	TiredOfficeWorker();
+	virtual ~TiredOfficeWorker();
+
+public:
 	void SetTiredOfficeWorkerStat(Protocol::TiredOfficeWorkerStat& stat) { _stat = stat; }
 	void SetMovingDistance(float dis) { _stat.set_movingdistance(dis); }
 	void SetMovementLimitX(float limit) { _stat.set_movementlimitx(limit); }
