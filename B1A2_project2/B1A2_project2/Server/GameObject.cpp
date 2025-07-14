@@ -30,6 +30,7 @@ PlayerRef GameObject::CreatePlayer()
 {
 	PlayerRef player = std::make_shared<Player>();
 
+	// 나중에 세이브 데이터에 맞춰 설정할 예정
 	// ActorInfo
 	player->SetActorInfo(_idGenerator++, 400, 200);
 
