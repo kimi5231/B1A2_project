@@ -18,6 +18,19 @@ struct PlayerStat
 	int32 skillStepDistance = 0;	// N
 };
 
+struct TiredOfficeWorkerStat
+{
+	int32 hp;	// A
+	float healtemDropRate;	// B
+	float speed;	// B
+	float chaseSpeed;	// D
+	Vec2Int playerDetection;	// E, F
+	int32 knockBackDistance; // G
+	Vec2Int attackRange;	// H, I
+	int32 attack;	// J
+	float idleTime;	// K
+};
+
 class Stat
 {
 public:
@@ -26,13 +39,13 @@ public:
 
 public:
 	void LoadPlayerStatFile(std::filesystem::path dataPath);
-	//void LoadTiredOfficeWorkerStatFile(std::filesystem::path dataPath);
+	void LoadTiredOfficeWorkerStatFile(std::filesystem::path dataPath);
 
 public:
 	PlayerStat* GetPlayerStat() { return _playerStat; }
-	//TiredOfficeWorkerStat& GetTiredOfficeWorkerStat() { return _tiredOfficeWorkerStat; }
+	TiredOfficeWorkerStat* GetTiredOfficeWorkerStat() { return _tiredOfficeWorkerStat; }
 
 private:
 	PlayerStat* _playerStat;
-	//Protocol::TiredOfficeWorkerStat _tiredOfficeWorkerStat;
+	TiredOfficeWorkerStat* _tiredOfficeWorkerStat;
 };

@@ -2,12 +2,11 @@
 
 // 제일 위에 둬야 함
 #include "CorePch.h"
+#include "Defines.h"
 
 #include "Protocol.pb.h"
 #include "Enum.pb.h"
 #include "Struct.pb.h"
-
-#include "Defines.h"
 
 #include <filesystem>
 
@@ -27,3 +26,4 @@ using GameRoomRef = std::shared_ptr<class GameRoom>;
 using GameObjectRef = std::shared_ptr<class GameObject>;
 using PlayerRef = std::shared_ptr<class Player>;
 using MonsterRef = std::shared_ptr<class Monster>;
+using TiredOfficeWorkerRef = std::shared_ptr<class TiredOfficeWorker>;

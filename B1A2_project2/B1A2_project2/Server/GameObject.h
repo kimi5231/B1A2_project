@@ -1,5 +1,6 @@
 #pragma once
 #include "Actor.h"
+#include "Stat.h"
 
 class GameObject : public Actor, public enable_shared_from_this<GameObject>
 {
@@ -18,9 +19,9 @@ public:
 	static MonsterRef CreateMonster(class FieldMonster fieldMonster);
 
 public:
-	Protocol::ObjectInfo _info;
 	GameRoomRef _room;
 
 private:
+	Protocol::ObjectInfo _info;
 	static atomic<uint64> _idGenerator;
 };

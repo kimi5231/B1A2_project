@@ -24,17 +24,10 @@ message S_MyPlayer
 	ObjectInfo object = 2;
 }
 
-message S_AddPlayer
+message S_AddObject
 {
 	repeated ActorInfo actors = 1;
 	repeated ObjectInfo objects = 2;
-}
-
-message S_AddTiredOfficeWorker
-{
-	repeated ActorInfo actors = 1;
-	repeated ObjectInfo objects = 2;
-	repeated TiredOfficeWorkerStat stats = 3;
 }
 
 message S_RemoveObject

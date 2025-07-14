@@ -7,7 +7,7 @@ public:
 	virtual ~Actor();
 
 public:
-	void SetActorInfo(int64 id, float x, float y);
+	void SetActorInfo(int64 id, Vec2 pos);
 	Protocol::ActorInfo GetActorInfo() { return _info; }
 
 	int64 GetId() { return _info.id(); }

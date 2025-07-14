@@ -54,6 +54,8 @@ public:
 	void SetDir(Dir dir);
 	Dir GetDir() { return _info.dir(); }
 
+	void SetObjectInfo(Protocol::ObjectInfo info) { _info = info; }
+
 protected:
 	Protocol::ObjectInfo _info{};
 
