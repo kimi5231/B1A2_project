@@ -30,7 +30,7 @@ shared_ptr<Mesh> Resources::LoadPointMesh()
 shared_ptr<Mesh> Resources::LoadRectangleMesh()
 {
 	shared_ptr<Mesh> findMesh = Get<Mesh>(L"Rectangle");
-	if (findMesh)
+	if (findMesh) 
 		return findMesh;
 
 	float w2 = 0.5f;

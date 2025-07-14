@@ -56,7 +56,8 @@ void Light::Render()
 	_lightMaterial->SetInt(0, _lightIndex);
 	_lightMaterial->PushGraphicsData();
 
-	_volumeMesh->Render();
+	if (_volumeMesh)
+		_volumeMesh->Render();
 }
 
 void Light::RenderShadow()
