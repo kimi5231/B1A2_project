@@ -221,17 +221,6 @@ Stat* ResourceManager::LoadStat()
 	return stat;
 }
 
-BrokenCopyMachineStat* ResourceManager::LoadBrokenCopyMachineStat(const std::wstring& path)
-{
-	std::filesystem::path fullpath = _resourcePath / path;
-
-	BrokenCopyMachineStat* brokenCopyMachineStat = new BrokenCopyMachineStat();
-	brokenCopyMachineStat->LoadFile(fullpath);
-	_brokenCopyMachineStat = brokenCopyMachineStat;
-
-	return brokenCopyMachineStat;
-}
-
 AmateurFencerStat* ResourceManager::LoadAmateurFencerStat(const std::wstring& path)
 {
 	std::filesystem::path fullpath = _resourcePath / path;

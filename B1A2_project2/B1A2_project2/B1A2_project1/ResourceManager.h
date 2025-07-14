@@ -66,9 +66,6 @@ public:
 	Stat* GetStat() { return _stat; }
 	Stat* LoadStat();
 
-	BrokenCopyMachineStat* GetBrokenCopyMachineStat() { return _brokenCopyMachineStat; }
-	BrokenCopyMachineStat* LoadBrokenCopyMachineStat(const std::wstring& path);
-
 	AmateurFencerStat* GetAmateurFencerStat() { return _amateurFencerStat; }
 	AmateurFencerStat* LoadAmateurFencerStat(const std::wstring& path);
 
