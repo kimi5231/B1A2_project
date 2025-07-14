@@ -37,7 +37,7 @@ public:
 
 	void RenderForward();
 
-private:
+protected:
 	void PushLightData();
 
 public:
@@ -46,7 +46,7 @@ public:
 
 	const vector<shared_ptr<GameObject>>& GetGameObjects() { return _gameObjects; }
 
-private:
+protected:
 	vector<shared_ptr<GameObject>>		_gameObjects;
 	vector<shared_ptr<class Camera>>	_cameras;
 	vector<shared_ptr<class Light>>		_lights;

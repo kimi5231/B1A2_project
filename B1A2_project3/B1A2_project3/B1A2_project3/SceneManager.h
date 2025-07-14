@@ -13,7 +13,6 @@ public:
 
 public:
 	void ChangeScene(SceneType sceneType);
-	void LoadScene(wstring sceneName);
 
 	shared_ptr<class GameObject> Pick(int32 screenX, int32 screenY);
 

@@ -36,27 +36,27 @@ void TestScene::Awake()
 
 void TestScene::Start()
 {
-
+	Super::Start();
 }
 
 void TestScene::Update()
 {
-
+	Super::Update();
 }
 
 void TestScene::LateUpdate()
 {
-
+	Super::LateUpdate();
 }
 
 void TestScene::FinalUpdate()
 {
-
+	Super::FinalUpdate();
 }
 
 void TestScene::Render()
 {
-
+	Super::Render();
 }
 
 void TestScene::LoadTestScene()
@@ -86,8 +86,6 @@ void TestScene::LoadTestScene()
 	}
 #pragma endregion
 
-	shared_ptr<Scene> scene = make_shared<Scene>();
-
 #pragma region Camera
 	{
 		shared_ptr<GameObject> camera = make_shared<GameObject>();
@@ -99,7 +97,7 @@ void TestScene::LoadTestScene()
 		camera->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 0.f));
 		uint8 layerIndex = LayerNameToIndex(L"UI");
 		camera->GetCamera()->SetCullingMaskLayerOnOff(layerIndex, true); // UI´Â ¾È ÂïÀ½
-		scene->AddGameObject(camera);
+		AddGameObject(camera);
 	}
 #pragma endregion
 
@@ -114,7 +112,7 @@ void TestScene::LoadTestScene()
 		uint8 layerIndex = LayerNameToIndex(L"UI");
 		camera->GetCamera()->SetCullingMaskAll(); // ´Ù ²ô°í
 		camera->GetCamera()->SetCullingMaskLayerOnOff(layerIndex, false); // UI¸¸ ÂïÀ½
-		scene->AddGameObject(camera);
+		AddGameObject(camera);
 	}
 #pragma endregion
 
@@ -137,7 +135,7 @@ void TestScene::LoadTestScene()
 			meshRenderer->SetMaterial(material);
 		}
 		skybox->AddComponent(meshRenderer);
-		scene->AddGameObject(skybox);
+		AddGameObject(skybox);
 	}
 #pragma endregion
 
@@ -162,7 +160,7 @@ void TestScene::LoadTestScene()
 		dynamic_pointer_cast<SphereCollider>(obj->GetCollider())->SetRadius(0.5f);
 		dynamic_pointer_cast<SphereCollider>(obj->GetCollider())->SetCenter(Vec3(0.f, 0.f, 0.f));
 		obj->AddComponent(meshRenderer);
-		scene->AddGameObject(obj);
+		AddGameObject(obj);
 	}
 #pragma endregion
 
@@ -179,7 +177,7 @@ void TestScene::LoadTestScene()
 		obj->GetTerrain()->Init(64, 64);
 		obj->SetCheckFrustum(false);
 
-		scene->AddGameObject(obj);
+		AddGameObject(obj);
 	}
 #pragma endregion
 
@@ -213,7 +211,7 @@ void TestScene::LoadTestScene()
 			meshRenderer->SetMaterial(material);
 		}
 		obj->AddComponent(meshRenderer);
-		scene->AddGameObject(obj);
+		AddGameObject(obj);
 	}
 #pragma endregion
 
@@ -229,7 +227,7 @@ void TestScene::LoadTestScene()
 		light->GetLight()->SetAmbient(Vec3(0.1f, 0.1f, 0.1f));
 		light->GetLight()->SetSpecular(Vec3(0.1f, 0.1f, 0.1f));
 
-		scene->AddGameObject(light);
+		AddGameObject(light);
 	}
 #pragma endregion
 }
