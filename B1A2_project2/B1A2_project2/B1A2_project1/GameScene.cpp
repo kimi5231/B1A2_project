@@ -1626,42 +1626,42 @@ void GameScene::SetStage1()
 	}
 
 	// Monster
-	{
-		Stage* stage = GET_SINGLE(ResourceManager)->GetStage(L"Stage1_FieldMonster");
-		const std::vector<StageInfo>& infos = stage->GetInfos();
+	//{
+	//	Stage* stage = GET_SINGLE(ResourceManager)->GetStage(L"Stage1_FieldMonster");
+	//	const std::vector<StageInfo>& infos = stage->GetInfos();
 
-		for (const StageInfo& info : infos)
-		{
-			// TOW
-			if (info.id > 20100 && info.id <= 20199)
-			{
-				if (std::find(_deadMonsterIds.begin(), _deadMonsterIds.end(), info.id) != _deadMonsterIds.end())
-					continue;
+	//	for (const StageInfo& info : infos)
+	//	{
+	//		// TOW
+	//		if (info.id > 20100 && info.id <= 20199)
+	//		{
+	//			if (std::find(_deadMonsterIds.begin(), _deadMonsterIds.end(), info.id) != _deadMonsterIds.end())
+	//				continue;
 
-				TiredOfficeWorker* TOW = SpawnObject<TiredOfficeWorker>(info.id, info.spawnPos, LAYER_MONSTER);
-				TOW->SetMonsterId(info.id);
-				TOW->SetSpawnDir(info.dir);
-				TOW->SetSpawnPos(info.spawnPos);
-				TOW->SetMoveDistance(info.movingDistance);
-				TOW->SetMovementLimit(info.movementLimit);
-				_monsters[info.id] = TOW;
-				continue;
-			}
+	//			TiredOfficeWorker* TOW = SpawnObject<TiredOfficeWorker>(info.id, info.spawnPos, LAYER_MONSTER);
+	//			TOW->SetMonsterId(info.id);
+	//			TOW->SetSpawnDir(info.dir);
+	//			TOW->SetSpawnPos(info.spawnPos);
+	//			TOW->SetMoveDistance(info.movingDistance);
+	//			TOW->SetMovementLimit(info.movementLimit);
+	//			_monsters[info.id] = TOW;
+	//			continue;
+	//		}
 
-			// BCM
-			if (info.id > 20200 && info.id <= 20299)
-			{
-				if (std::find(_deadMonsterIds.begin(), _deadMonsterIds.end(), info.id) != _deadMonsterIds.end())
-					continue;
+	//		// BCM
+	//		if (info.id > 20200 && info.id <= 20299)
+	//		{
+	//			if (std::find(_deadMonsterIds.begin(), _deadMonsterIds.end(), info.id) != _deadMonsterIds.end())
+	//				continue;
 
-				BrokenCopyMachine* BCM = SpawnObject<BrokenCopyMachine>(info.id, info.spawnPos, LAYER_MONSTER);
-				BCM->SetMonsterId(info.id);
-				BCM->SetDir(info.dir);
-				_monsters[info.id] = BCM;
-				continue;
-			}
-		}
-	}
+	//			BrokenCopyMachine* BCM = SpawnObject<BrokenCopyMachine>(info.id, info.spawnPos, LAYER_MONSTER);
+	//			BCM->SetMonsterId(info.id);
+	//			BCM->SetDir(info.dir);
+	//			_monsters[info.id] = BCM;
+	//			continue;
+	//		}
+	//	}
+	//}
 
 	// Item
 	{

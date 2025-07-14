@@ -1,5 +1,6 @@
 #pragma once
 #include "Actor.h"
+#include "Stat.h"
 
 class GameObject : public Actor, public enable_shared_from_this<GameObject>
 {

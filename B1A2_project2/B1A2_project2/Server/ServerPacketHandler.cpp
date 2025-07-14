@@ -56,9 +56,9 @@ SendBufferRef ServerPacketHandler::Make_S_EnterGame()
 	return MakeSendBuffer(pkt, S_EnterGame);
 }
 
-SendBufferRef ServerPacketHandler::Make_S_AddPlayer(const Protocol::S_AddPlayer& pkt)
+SendBufferRef ServerPacketHandler::Make_S_AddObject(const Protocol::S_AddObject& pkt)
 {
-	return MakeSendBuffer(pkt, S_AddPlayer);
+	return MakeSendBuffer(pkt, S_AddObject);
 }
 
 SendBufferRef ServerPacketHandler::Make_S_RemoveObject(const Protocol::S_RemoveObject& pkt)

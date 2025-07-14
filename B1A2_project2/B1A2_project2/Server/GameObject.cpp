@@ -47,25 +47,23 @@ PlayerRef GameObject::CreatePlayer()
 
 MonsterRef GameObject::CreateMonster(FieldMonster fieldMonster)
 {
-	MonsterRef monster = std::make_shared<Monster>();
-
-	// ActorInfo
-	monster->SetActorInfo(fieldMonster.id, fieldMonster.spawnPos);
-
-	// ObjectInfo
-	monster->SetObjectInfo(Protocol::OBJECT_STATE_TYPE_IDLE, fieldMonster.dir);
-
-	if (20100 <= fieldMonster.id || fieldMonster.id <= 20199)
+	// ID에 따라 몬스터 종류 구별
+	if (20100 <= fieldMonster.id || fieldMonster.id <= 20199) // TOW
 	{
-		std::shared_ptr<TiredOfficeWorker> tow = std::dynamic_pointer_cast<TiredOfficeWorker>(monster);
+		TiredOfficeWorkerRef tow = std::make_shared<TiredOfficeWorker>();
 		
-		// TiredOfficeWorkerStat
-		Stat* stat = GET_SINGLE(DataManager)->GetStat();
-		//tow->SetTiredOfficeWorkerStat(stat->GetTiredOfficeWorkerStat());
-		tow->SetMovingDistance(fieldMonster.movingDistance);
-		tow->SetMovementLimitX(fieldMonster.movementLimit.x);
-		tow->SetMovementLimitY(fieldMonster.movementLimit.y);
-	}
+		// ActorInfo
+		tow->SetActorInfo(fieldMonster.id, fieldMonster.spawnPos);
 
-	return monster;
+		// ObjectInfo
+		tow->SetObjectInfo(Protocol::OBJECT_STATE_TYPE_IDLE, fieldMonster.dir);
+
+		// Client에서 보내는 정보와 비교하는 용도 (패킷 포함X)
+		Stat* stat = GET_SINGLE(DataManager)->GetStat();
+		tow->SetTiredOfficeWorkerStat(stat->GetTiredOfficeWorkerStat());
+		tow->SetMovingDistance(fieldMonster.movingDistance);
+		tow->SetMovementLimit(fieldMonster.movementLimit);
+		
+		return tow;
+	}
 }

@@ -5,6 +5,7 @@
 #include "Scene.h"
 #include "GameScene.h"
 #include "MyPlayer.h"
+#include "TiredOfficeWorker.h"
 
 void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, int32 len)
 {
@@ -18,8 +19,8 @@ void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, i
 	case S_TEST:
 		Handle_S_TEST(buffer, len);
 		break;
-	case S_AddPlayer:
-		Handle_S_AddPlayer(session, buffer, len);
+	case S_AddObject:
+		Handle_S_AddObject(session, buffer, len);
 		break;
 	case S_RemoveObject:
 		Handle_S_RemoveObject(session, buffer, len);
@@ -52,37 +53,12 @@ void ClientPacketHandler::Handle_S_TEST(BYTE* buffer, int32 len)
 	}
 }
 
-void ClientPacketHandler::Handle_S_MyPlayer(ServerSessionRef session, BYTE* buffer, int32 len)
+void ClientPacketHandler::Handle_S_AddObject(ServerSessionRef session, BYTE* buffer, int32 len)
 {
 	PacketHeader* header = (PacketHeader*)buffer;
 	uint16 size = header->size;
 
-	Protocol::S_MyPlayer pkt;
-	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
-
-	const Protocol::ActorInfo& actorInfo = pkt.actor();
-	const Protocol::ObjectInfo& objectInfo = pkt.object();
-
-	Scene* scene = GET_SINGLE(SceneManager)->GetCurrentScene();
-
-	// 추후 GameScene으로 변정 예정
-	if (dynamic_cast<GameScene*>(scene))
-	{
-		GameScene* Scene = dynamic_cast<GameScene*>(scene);
-
-		MyPlayer* player = Scene->SpawnObject<MyPlayer>(actorInfo.id(), Vec2{ actorInfo.posx(), actorInfo.posx() }, LAYER_PLAYER);
-		player->SetState(objectInfo.state());
-		player->SetDir(objectInfo.dir());
-		Scene->SetPlayer(player);
-	}
-}
-
-void ClientPacketHandler::Handle_S_AddPlayer(ServerSessionRef session, BYTE* buffer, int32 len)
-{
-	PacketHeader* header = (PacketHeader*)buffer;
-	uint16 size = header->size;
-
-	Protocol::S_AddPlayer pkt;
+	Protocol::S_AddObject pkt;
 	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
 
 	Scene* scene = GET_SINGLE(SceneManager)->GetCurrentScene();
@@ -97,13 +73,23 @@ void ClientPacketHandler::Handle_S_AddPlayer(ServerSessionRef session, BYTE* buf
 			const Protocol::ActorInfo& actorInfo = pkt.actors(i);
 			const Protocol::ObjectInfo& objectInfo = pkt.objects(i);
 
-			// 자기 자신은 제외
-			if (actorInfo.id() == Scene->GetMyPlayer()->GetID())
-				continue;
+			int32 id = actorInfo.id();
 
-			Player* player = Scene->SpawnObject<Player>(actorInfo.id(), Vec2{ actorInfo.posx(), actorInfo.posx() }, LAYER_PLAYER);
-			player->SetState(objectInfo.state());
-			player->SetDir(objectInfo.dir());
+			// id를 이용해 객체 타입 구분
+			if (1 <= id && id <= 100)	// Player
+			{
+				// 자기 자신은 제외
+				if (id == Scene->GetMyPlayer()->GetID())
+					continue;
+
+				Player* player = Scene->SpawnObject<Player>(actorInfo.id(), Vec2{ actorInfo.posx(), actorInfo.posy() }, LAYER_PLAYER);
+				player->SetObjectInfo(objectInfo);
+			}
+			else if(20100 <= id && id <= 20199)	// TOW
+			{
+				TiredOfficeWorker* tow = Scene->SpawnObject<TiredOfficeWorker>(actorInfo.id(), Vec2{ actorInfo.posx(), actorInfo.posy() }, LAYER_MONSTER);
+				tow->SetObjectInfo(objectInfo);
+			}
 		}	
 	}
 }
@@ -127,5 +113,29 @@ void ClientPacketHandler::Handle_S_RemoveObject(ServerSessionRef session, BYTE* 
 			Actor* actor = scene->GetActor(id);
 			scene->RemoveActor(actor);
 		}
+	}
+}
+
+void ClientPacketHandler::Handle_S_MyPlayer(ServerSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	uint16 size = header->size;
+
+	Protocol::S_MyPlayer pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	const Protocol::ActorInfo& actorInfo = pkt.actor();
+	const Protocol::ObjectInfo& objectInfo = pkt.object();
+
+	Scene* scene = GET_SINGLE(SceneManager)->GetCurrentScene();
+
+	if (dynamic_cast<GameScene*>(scene))
+	{
+		GameScene* Scene = dynamic_cast<GameScene*>(scene);
+
+		MyPlayer* player = Scene->SpawnObject<MyPlayer>(actorInfo.id(), Vec2{ actorInfo.posx(), actorInfo.posx() }, LAYER_PLAYER);
+		player->SetState(objectInfo.state());
+		player->SetDir(objectInfo.dir());
+		Scene->SetPlayer(player);
 	}
 }

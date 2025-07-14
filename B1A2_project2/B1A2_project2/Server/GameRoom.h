@@ -25,4 +25,5 @@ public:
 
 private:
 	std::map<uint64, PlayerRef> _players;
+	std::map<uint64, MonsterRef> _monsters;
 };

@@ -52,7 +52,7 @@ void GameRoom::EnterRoom(GameSessionRef session)
 
 	// Room에 있는 모든 Object 정보를 입장한 client에 전송
 	{
-		Protocol::S_AddPlayer pkt;
+		Protocol::S_AddObject pkt;
 
 		for (auto& item : _players)
 		{
@@ -63,7 +63,7 @@ void GameRoom::EnterRoom(GameSessionRef session)
 			*objectInfo = item.second->GetObjectInfo();
 		}
 
-		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddPlayer(pkt);
+		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
 		session->Send(sendBuffer);
 	}
 
@@ -87,26 +87,32 @@ void GameRoom::AddObject(GameObjectRef object)
 	int64 id = object->GetId();
 
 	// id를 이용해 객체 타입 구분
-	if (1 <= id || id >= 100)	// Player
+	if (1 <= id && id <= 100)	// Player
 	{
 		// 신규 Player 추가
-		PlayerRef player = static_pointer_cast<Player>(object);
+		PlayerRef player = std::static_pointer_cast<Player>(object);
 		_players[id] = player;
-		
-		// 신규 Player 정보를 기존 Player들에게 전송
-		{
-			Protocol::S_AddPlayer pkt;
+	}
+	else // Monster
+	{
+		// 신규 몬스터 추가
+		MonsterRef monster = std::static_pointer_cast<Monster>(object);
+		_monsters[id] = monster;
+	}
 
-			Protocol::ActorInfo* actorInfo = pkt.add_actors();
-			Protocol::ObjectInfo* objectInfo = pkt.add_objects();
+	// 신규 Object 정보를 기존 Player들에게 전송
+	{
+		Protocol::S_AddObject pkt;
 
-			// 값을 수정
-			*actorInfo = player->GetActorInfo();
-			*objectInfo = player->GetObjectInfo();
+		Protocol::ActorInfo* actorInfo = pkt.add_actors();
+		Protocol::ObjectInfo* objectInfo = pkt.add_objects();
 
-			SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddPlayer(pkt);
-			Broadcast(sendBuffer);
-		}
+		// 값을 수정
+		*actorInfo = object->GetActorInfo();
+		*objectInfo = object->GetObjectInfo();
+
+		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
+		Broadcast(sendBuffer);
 	}
 	
 	// 신규 Object가 현재 존재하는 Room 기록

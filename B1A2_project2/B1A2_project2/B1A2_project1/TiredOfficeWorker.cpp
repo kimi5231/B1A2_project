@@ -89,6 +89,8 @@ void TiredOfficeWorker::Tick()
 {
 	Super::Tick();
 
+	SetPos({ 100, 100 });
+
 	TickGravity();
 }
 
