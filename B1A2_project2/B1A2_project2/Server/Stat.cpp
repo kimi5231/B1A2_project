@@ -96,3 +96,41 @@ void Stat::LoadTiredOfficeWorkerStatFile(std::filesystem::path dataPath)
 
 	ifs.close();
 }
+
+void Stat::LoadBrokenCopyMachineStatFile(std::filesystem::path dataPath)
+{
+	std::filesystem::path path = dataPath / L"brokenCopyMachineStat.csv";
+
+	std::ifstream ifs;
+	ifs.open(path);
+
+	std::string line;
+
+	BrokenCopyMachineStat* stat = new BrokenCopyMachineStat();
+
+	if (std::getline(ifs, line))
+	{
+		std::istringstream lineStream(line);
+		std::string cell;
+		int column = 0;
+
+		while (std::getline(lineStream, cell, ','))
+		{
+			switch (column)
+			{
+			case 0: stat->hp = std::stoi(cell); break;	// A
+			case 1: stat->healtemDropRate = std::stof(cell); break;	// B
+			case 2: stat->attackRange = std::stoi(cell); break;	// C
+			case 3: stat->projectileSpeed = std::stof(cell); break;	// D
+			case 4: stat->projectileAttack = std::stoi(cell); break;	// E
+			case 5: stat->projectileCount = std::stoi(cell); break;	// F
+			case 6: stat->attackCoolTime = std::stof(cell); break;	// G
+			}
+			++column;
+		}
+	}
+
+	_brokenCopyMachineStat = stat;
+
+	ifs.close();
+}

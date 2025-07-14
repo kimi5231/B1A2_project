@@ -85,6 +85,9 @@
     <ClCompile Include="TiredOfficeWorker.cpp">
       <Filter>소스 파일\Game\Objects\Creature</Filter>
     </ClCompile>
+    <ClCompile Include="BrokenCopyMachine.cpp">
+      <Filter>소스 파일\Game\Objects\Creature</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameSession.h">
@@ -136,6 +139,9 @@
       <Filter>소스 파일\Game\Objects\Creature</Filter>
     </ClInclude>
     <ClInclude Include="TiredOfficeWorker.h">
+      <Filter>소스 파일\Game\Objects\Creature</Filter>
+    </ClInclude>
+    <ClInclude Include="BrokenCopyMachine.h">
       <Filter>소스 파일\Game\Objects\Creature</Filter>
     </ClInclude>
   </ItemGroup>

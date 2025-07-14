@@ -6,6 +6,7 @@
 #include "GameScene.h"
 #include "MyPlayer.h"
 #include "TiredOfficeWorker.h"
+#include "BrokenCopyMachine.h"
 
 void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, int32 len)
 {
@@ -89,6 +90,11 @@ void ClientPacketHandler::Handle_S_AddObject(ServerSessionRef session, BYTE* buf
 			{
 				TiredOfficeWorker* tow = Scene->SpawnObject<TiredOfficeWorker>(actorInfo.id(), Vec2{ actorInfo.posx(), actorInfo.posy() }, LAYER_MONSTER);
 				tow->SetObjectInfo(objectInfo);
+			}
+			else if (20200 <= id && id <= 20299)	// BCM
+			{
+				BrokenCopyMachine* bcm = Scene->SpawnObject<BrokenCopyMachine>(actorInfo.id(), Vec2{ actorInfo.posx(), actorInfo.posy() }, LAYER_MONSTER);
+				bcm->SetObjectInfo(objectInfo);
 			}
 		}	
 	}

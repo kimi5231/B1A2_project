@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Player.h"
 #include "TiredOfficeWorker.h"
+#include "BrokenCopyMachine.h"
 #include "Stat.h"
 #include "Stage.h"
 #include "DataManager.h"
@@ -48,7 +49,7 @@ PlayerRef GameObject::CreatePlayer()
 MonsterRef GameObject::CreateMonster(FieldMonster fieldMonster)
 {
 	// ID에 따라 몬스터 종류 구별
-	if (20100 <= fieldMonster.id || fieldMonster.id <= 20199) // TOW
+	if (20100 <= fieldMonster.id && fieldMonster.id <= 20199) // TOW
 	{
 		TiredOfficeWorkerRef tow = std::make_shared<TiredOfficeWorker>();
 		
@@ -65,5 +66,21 @@ MonsterRef GameObject::CreateMonster(FieldMonster fieldMonster)
 		tow->SetMovementLimit(fieldMonster.movementLimit);
 		
 		return tow;
+	}
+	else if (20200 <= fieldMonster.id && fieldMonster.id <= 20299) // BCM
+	{
+		BrokenCopyMachineRef bcm = std::make_shared<BrokenCopyMachine>();
+
+		// ActorInfo
+		bcm->SetActorInfo(fieldMonster.id, fieldMonster.spawnPos);
+
+		// ObjectInfo
+		bcm->SetObjectInfo(Protocol::OBJECT_STATE_TYPE_IDLE, fieldMonster.dir);
+
+		// Client에서 보내는 정보와 비교하는 용도 (패킷 포함X)
+		Stat* stat = GET_SINGLE(DataManager)->GetStat();
+		bcm->SetBrokenCopyMachineStat(stat->GetBrokenCopyMachineStat());
+
+		return bcm;
 	}
 }

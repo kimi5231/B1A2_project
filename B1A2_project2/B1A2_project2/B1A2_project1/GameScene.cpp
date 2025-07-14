@@ -7,7 +7,6 @@
 #include "Sprite.h"
 #include "SpriteActor.h"
 #include "Actor.h"
-#include "Player.h"
 #include "SoundManager.h"
 #include "Sound.h"
 #include "Tilemap.h"

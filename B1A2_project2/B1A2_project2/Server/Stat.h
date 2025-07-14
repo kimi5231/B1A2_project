@@ -31,6 +31,17 @@ struct TiredOfficeWorkerStat
 	float idleTime;	// K
 };
 
+struct BrokenCopyMachineStat
+{
+	int32 hp;	// A
+	float healtemDropRate;	// B
+	int32 attackRange;	// C
+	float projectileSpeed;	// D
+	int32 projectileAttack;	// E
+	int32 projectileCount;	// F
+	float attackCoolTime;	// G
+};
+
 class Stat
 {
 public:
@@ -40,12 +51,15 @@ public:
 public:
 	void LoadPlayerStatFile(std::filesystem::path dataPath);
 	void LoadTiredOfficeWorkerStatFile(std::filesystem::path dataPath);
+	void LoadBrokenCopyMachineStatFile(std::filesystem::path dataPath);
 
 public:
 	PlayerStat* GetPlayerStat() { return _playerStat; }
 	TiredOfficeWorkerStat* GetTiredOfficeWorkerStat() { return _tiredOfficeWorkerStat; }
+	BrokenCopyMachineStat* GetBrokenCopyMachineStat() { return _brokenCopyMachineStat; }
 
 private:
 	PlayerStat* _playerStat;
 	TiredOfficeWorkerStat* _tiredOfficeWorkerStat;
+	BrokenCopyMachineStat* _brokenCopyMachineStat;
 };
