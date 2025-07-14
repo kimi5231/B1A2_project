@@ -93,7 +93,7 @@ void GameObject::Tick()
 		TickReturn();
 		break;
 	case RETURN_IDLE:
-		TickRETURN_IDLE();
+		TickReturnIdle();
 		break;
 	case ON:
 		TickOn();

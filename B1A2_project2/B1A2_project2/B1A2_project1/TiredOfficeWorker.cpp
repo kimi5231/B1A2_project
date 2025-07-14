@@ -89,8 +89,6 @@ void TiredOfficeWorker::Tick()
 {
 	Super::Tick();
 
-	SetPos({ 100, 100 });
-
 	TickGravity();
 }
 
@@ -286,7 +284,7 @@ void TiredOfficeWorker::TickReturn()
 	}
 }
 
-void TiredOfficeWorker::TickRETURN_IDLE()
+void TiredOfficeWorker::TickReturnIdle()
 {
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 	_sumTime += deltaTime;

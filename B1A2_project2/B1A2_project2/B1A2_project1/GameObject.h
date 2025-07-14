@@ -34,7 +34,7 @@ protected:
 	virtual void TickRoaming() {};
 	virtual void TickDash() {};
 	virtual void TickReturn() {};
-	virtual void TickRETURN_IDLE() {};
+	virtual void TickReturnIdle() {};
 	virtual void TickOn() {};
 	virtual void TickOn2() {};
 	virtual void TickReady() {};

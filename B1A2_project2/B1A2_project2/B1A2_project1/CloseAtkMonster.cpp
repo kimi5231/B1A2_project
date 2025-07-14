@@ -279,7 +279,7 @@ void CloseAtkMonster::TickReturn()
 	}
 }
 
-void CloseAtkMonster::TickRETURN_IDLE()
+void CloseAtkMonster::TickReturnIdle()
 {
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 	_sumTime += deltaTime;

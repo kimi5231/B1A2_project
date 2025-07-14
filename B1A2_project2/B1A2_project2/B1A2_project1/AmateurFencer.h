@@ -90,7 +90,7 @@ protected:
 	virtual void TickChase() override {};
 	virtual void TickRoaming() override {};
 	virtual void TickReturn() override {};
-	virtual void TickRETURN_IDLE() override {};
+	virtual void TickReturnIdle() override {};
 
 public:
 	virtual int32 GetAttack() override;
