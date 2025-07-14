@@ -215,6 +215,7 @@ Stat* ResourceManager::LoadStat()
 	// 필요한 Stat 전부 Load
 	stat->LoadPlayerStatFile(_resourcePath);
 	stat->LoadTiredOfficeWorkerStatFile(_resourcePath);
+	stat->LoadBrokenCopyMachineStatFile(_resourcePath);
 
 	_stat = stat;
 
