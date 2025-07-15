@@ -10,7 +10,7 @@ void Frustum::FinalUpdate()
 	Matrix matInv = matProjectionInv * matViewInv;
 
 	// World º¯È¯
-	vector<Vec3> worldPos =
+	std::vector<Vec3> worldPos =
 	{
 		::XMVector3TransformCoord(Vec3(-1.f, 1.f, 0.f), matInv),
 		::XMVector3TransformCoord(Vec3(1.f, 1.f, 0.f), matInv),

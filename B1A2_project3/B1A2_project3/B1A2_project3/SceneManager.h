@@ -14,13 +14,13 @@ public:
 public:
 	void ChangeScene(SceneType sceneType);
 
-	shared_ptr<class GameObject> Pick(int32 screenX, int32 screenY);
+	std::shared_ptr<class GameObject> Pick(int32 screenX, int32 screenY);
 
 public:
-	shared_ptr<Scene> GetActiveScene() { return _activeScene; }
+	std::shared_ptr<Scene> GetActiveScene() { return _activeScene; }
 
 private:
-	shared_ptr<Scene> _activeScene;
+	std::shared_ptr<Scene> _activeScene;
 	SceneType _sceneType = SceneType::None;
 	SceneType _prevSceneType = SceneType::None;
 };

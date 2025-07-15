@@ -23,7 +23,7 @@ void MeshRenderer::Render()
 	_mesh->Render();
 }
 
-void MeshRenderer::Render(shared_ptr<InstancingBuffer>& buffer)
+void MeshRenderer::Render(std::shared_ptr<InstancingBuffer>& buffer)
 {
 	buffer->PushData();
 	_material->PushGraphicsData();

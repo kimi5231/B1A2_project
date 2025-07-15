@@ -21,19 +21,19 @@ public:
 	MeshRenderer();
 	virtual ~MeshRenderer();
 
-	shared_ptr<Material> GetMaterial() { return _material; }
+	std::shared_ptr<Material> GetMaterial() { return _material; }
 
-	void SetMesh(shared_ptr<Mesh> mesh) { _mesh = mesh; }
-	void SetMaterial(shared_ptr<Material> material) { _material = material; }
+	void SetMesh(std::shared_ptr<Mesh> mesh) { _mesh = mesh; }
+	void SetMaterial(std::shared_ptr<Material> material) { _material = material; }
 
 	void Render();
-	void Render(shared_ptr<class InstancingBuffer>& buffer);
+	void Render(std::shared_ptr<class InstancingBuffer>& buffer);
 	void RenderShadow();
 
 	uint64 GetInstanceID();
 
 private:
-	shared_ptr<Mesh> _mesh;
-	shared_ptr<Material> _material;
+	std::shared_ptr<Mesh> _mesh;
+	std::shared_ptr<Material> _material;
 };
 

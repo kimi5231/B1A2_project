@@ -9,13 +9,13 @@ public:
 	Mesh();
 	virtual ~Mesh();
 
-	void Init(const vector<Vertex>& vertexBuffer, const vector<uint32>& indexbuffer);
+	void Init(const std::vector<Vertex>& vertexBuffer, const std::vector<uint32>& indexbuffer);
 	void Render(uint32 instanceCount = 1);
-	void Render(shared_ptr<class InstancingBuffer>& buffer);
+	void Render(std::shared_ptr<class InstancingBuffer>& buffer);
 
 private:
-	void CreateVertexBuffer(const vector<Vertex>& buffer);
-	void CreateIndexBuffer(const vector<uint32>& buffer);
+	void CreateVertexBuffer(const std::vector<Vertex>& buffer);
+	void CreateIndexBuffer(const std::vector<uint32>& buffer);
 
 private:
 	ComPtr<ID3D12Resource>		_vertexBuffer;

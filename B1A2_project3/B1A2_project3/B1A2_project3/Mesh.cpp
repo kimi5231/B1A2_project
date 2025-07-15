@@ -14,7 +14,7 @@ Mesh::~Mesh()
 
 }
 
-void Mesh::Init(const vector<Vertex>& vertexBuffer, const vector<uint32>& indexBuffer)
+void Mesh::Init(const std::vector<Vertex>& vertexBuffer, const std::vector<uint32>& indexBuffer)
 {
 	CreateVertexBuffer(vertexBuffer);
 	CreateIndexBuffer(indexBuffer);
@@ -30,7 +30,7 @@ void Mesh::Render(uint32 instanceCount)
 	GRAPHICS_CMD_LIST->DrawIndexedInstanced(_indexCount, instanceCount, 0, 0, 0);
 }
 
-void Mesh::Render(shared_ptr<InstancingBuffer>& buffer)
+void Mesh::Render(std::shared_ptr<InstancingBuffer>& buffer)
 {
 	D3D12_VERTEX_BUFFER_VIEW bufferViews[] = { _vertexBufferView, buffer->GetBufferView() };
 	GRAPHICS_CMD_LIST->IASetVertexBuffers(0, 2, bufferViews);
@@ -41,7 +41,7 @@ void Mesh::Render(shared_ptr<InstancingBuffer>& buffer)
 	GRAPHICS_CMD_LIST->DrawIndexedInstanced(_indexCount, buffer->GetCount(), 0, 0, 0);
 }
 
-void Mesh::CreateVertexBuffer(const vector<Vertex>& buffer)
+void Mesh::CreateVertexBuffer(const std::vector<Vertex>& buffer)
 {
 	_vertexCount = static_cast<uint32>(buffer.size());
 	uint32 bufferSize = _vertexCount * sizeof(Vertex);
@@ -70,7 +70,7 @@ void Mesh::CreateVertexBuffer(const vector<Vertex>& buffer)
 	_vertexBufferView.SizeInBytes = bufferSize; // 버퍼의 크기	
 }
 
-void Mesh::CreateIndexBuffer(const vector<uint32>& buffer)
+void Mesh::CreateIndexBuffer(const std::vector<uint32>& buffer)
 {
 	_indexCount = static_cast<uint32>(buffer.size());
 	uint32 bufferSize = _indexCount * sizeof(uint32);

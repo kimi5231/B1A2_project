@@ -20,11 +20,11 @@ public:
 	virtual void LateUpdate();
 	virtual void FinalUpdate();
 
-	void SetLayerName(uint8 index, const wstring& name);
-	const wstring& IndexToLayerName(uint8 index) { return _layerNames[index]; }
-	uint8 LayerNameToIndex(const wstring& name);
+	void SetLayerName(uint8 index, const std::wstring& name);
+	const std::wstring& IndexToLayerName(uint8 index) { return _layerNames[index]; }
+	uint8 LayerNameToIndex(const std::wstring& name);
 
-	shared_ptr<class Camera> GetMainCamera();
+	std::shared_ptr<class Camera> GetMainCamera();
 
 	virtual void Render();
 
@@ -41,16 +41,16 @@ protected:
 	void PushLightData();
 
 public:
-	void AddGameObject(shared_ptr<GameObject> gameObject);
-	void RemoveGameObject(shared_ptr<GameObject> gameObject);
+	void AddGameObject(std::shared_ptr<GameObject> gameObject);
+	void RemoveGameObject(std::shared_ptr<GameObject> gameObject);
 
-	const vector<shared_ptr<GameObject>>& GetGameObjects() { return _gameObjects; }
+	const std::vector<std::shared_ptr<GameObject>>& GetGameObjects() { return _gameObjects; }
 
 protected:
-	vector<shared_ptr<GameObject>>		_gameObjects;
-	vector<shared_ptr<class Camera>>	_cameras;
-	vector<shared_ptr<class Light>>		_lights;
+	std::vector<std::shared_ptr<GameObject>>		_gameObjects;
+	std::vector<std::shared_ptr<class Camera>>	_cameras;
+	std::vector<std::shared_ptr<class Light>>		_lights;
 
-	array<wstring, MAX_LAYER> _layerNames;
-	map<wstring, uint8> _layerIndex;
+	std::array<std::wstring, MAX_LAYER> _layerNames;
+	std::map<std::wstring, uint8> _layerIndex;
 };

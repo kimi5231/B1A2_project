@@ -12,7 +12,6 @@
 #include <array>
 #include <list>
 #include <map>
-using namespace std;
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -166,4 +165,4 @@ struct TransformParams
 	Matrix matViewInv;
 };
 
-extern unique_ptr<class Engine> GEngine;
+extern std::unique_ptr<class Engine> GEngine;

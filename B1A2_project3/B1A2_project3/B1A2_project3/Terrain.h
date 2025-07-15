@@ -16,5 +16,5 @@ private:
 	int32 _sizeZ = 15;
 	float _maxTesselation = 4.f;
 
-	shared_ptr<class Material> _material;
+	std::shared_ptr<class Material> _material;
 };

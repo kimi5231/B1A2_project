@@ -18,7 +18,7 @@ Scene::~Scene()
 
 void Scene::Awake()
 {
-	for (const shared_ptr<GameObject>& gameObject : _gameObjects)
+	for (const std::shared_ptr<GameObject>& gameObject : _gameObjects)
 	{
 		gameObject->Awake();
 	}
@@ -26,7 +26,7 @@ void Scene::Awake()
 
 void Scene::Start()
 {
-	for (const shared_ptr<GameObject>& gameObject : _gameObjects)
+	for (const std::shared_ptr<GameObject>& gameObject : _gameObjects)
 	{
 		gameObject->Start();
 	}
@@ -34,7 +34,7 @@ void Scene::Start()
 
 void Scene::Update()
 {
-	for (const shared_ptr<GameObject>& gameObject : _gameObjects)
+	for (const std::shared_ptr<GameObject>& gameObject : _gameObjects)
 	{
 		gameObject->Update();
 	}
@@ -42,7 +42,7 @@ void Scene::Update()
 
 void Scene::LateUpdate()
 {
-	for (const shared_ptr<GameObject>& gameObject : _gameObjects)
+	for (const std::shared_ptr<GameObject>& gameObject : _gameObjects)
 	{
 		gameObject->LateUpdate();
 	}
@@ -50,23 +50,23 @@ void Scene::LateUpdate()
 
 void Scene::FinalUpdate()
 {
-	for (const shared_ptr<GameObject>& gameObject : _gameObjects)
+	for (const std::shared_ptr<GameObject>& gameObject : _gameObjects)
 	{
 		gameObject->FinalUpdate();
 	}
 }
 
-void Scene::SetLayerName(uint8 index, const wstring& name)
+void Scene::SetLayerName(uint8 index, const std::wstring& name)
 {
 	// 기존 데이터 삭제
-	const wstring& prevName = _layerNames[index];
+	const std::wstring& prevName = _layerNames[index];
 	_layerIndex.erase(prevName);
 
 	_layerNames[index] = name;
 	_layerIndex[name] = index;
 }
 
-uint8 Scene::LayerNameToIndex(const wstring& name)
+uint8 Scene::LayerNameToIndex(const std::wstring& name)
 {
 	auto findIt = _layerIndex.find(name);
 	if (findIt == _layerIndex.end())
@@ -75,7 +75,7 @@ uint8 Scene::LayerNameToIndex(const wstring& name)
 	return findIt->second;
 }
 
-shared_ptr<Camera> Scene::GetMainCamera()
+std::shared_ptr<Camera> Scene::GetMainCamera()
 {
 	if (_cameras.empty())
 		return nullptr;
@@ -133,7 +133,7 @@ void Scene::RenderDeferred()
 	// Deferred OMSet
 	GEngine->GetRTGroup(RENDER_TARGET_GROUP_TYPE::G_BUFFER)->OMSetRenderTargets();
 
-	shared_ptr<Camera> mainCamera = _cameras[0];
+	std::shared_ptr<Camera> mainCamera = _cameras[0];
 	mainCamera->SortGameObject();
 	mainCamera->Render_Deferred();
 
@@ -142,7 +142,7 @@ void Scene::RenderDeferred()
 
 void Scene::RenderLights()
 {
-	shared_ptr<Camera> mainCamera = _cameras[0];
+	std::shared_ptr<Camera> mainCamera = _cameras[0];
 	Camera::S_MatView = mainCamera->GetViewMatrix();
 	Camera::S_MatProjection = mainCamera->GetProjectionMatrix();
 
@@ -169,7 +169,7 @@ void Scene::RenderFinal()
 
 void Scene::RenderForward()
 {
-	shared_ptr<Camera> mainCamera = _cameras[0];
+	std::shared_ptr<Camera> mainCamera = _cameras[0];
 	mainCamera->Render_Forward();
 
 	for (auto& camera : _cameras)
@@ -199,7 +199,7 @@ void Scene::PushLightData()
 	CONST_BUFFER(CONSTANT_BUFFER_TYPE::GLOBAL)->SetGraphicsGlobalData(&lightParams, sizeof(lightParams));
 }
 
-void Scene::AddGameObject(shared_ptr<GameObject> gameObject)
+void Scene::AddGameObject(std::shared_ptr<GameObject> gameObject)
 {
 	if (gameObject->GetCamera() != nullptr)
 	{
@@ -213,7 +213,7 @@ void Scene::AddGameObject(shared_ptr<GameObject> gameObject)
 	_gameObjects.push_back(gameObject);
 }
 
-void Scene::RemoveGameObject(shared_ptr<GameObject> gameObject)
+void Scene::RemoveGameObject(std::shared_ptr<GameObject> gameObject)
 {
 	if (gameObject->GetCamera())
 	{

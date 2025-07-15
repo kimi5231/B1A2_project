@@ -45,15 +45,15 @@ void SceneManager::ChangeScene(SceneType sceneType)
 	if (_sceneType == sceneType)
 		return;
 
-	shared_ptr<Scene> newScene = nullptr;
+	std::shared_ptr<Scene> newScene = nullptr;
 
 	switch (sceneType)
 	{
 	case SceneType::TestScene:
-		newScene = make_shared<TestScene>();
+		newScene = std::make_shared<TestScene>();
 		break;
 	case SceneType::GameScene:
-		newScene = make_shared<GameScene>();
+		newScene = std::make_shared<GameScene>();
 		break;
 	}
 
@@ -69,9 +69,9 @@ void SceneManager::ChangeScene(SceneType sceneType)
 	_activeScene->Start();
 }
 
-shared_ptr<GameObject> SceneManager::Pick(int32 screenX, int32 screenY)
+std::shared_ptr<GameObject> SceneManager::Pick(int32 screenX, int32 screenY)
 {
-	shared_ptr<Camera> camera = GetActiveScene()->GetMainCamera();
+	std::shared_ptr<Camera> camera = GetActiveScene()->GetMainCamera();
 
 	float width = static_cast<float>(GEngine->GetWindow().width);
 	float height = static_cast<float>(GEngine->GetWindow().height);
@@ -88,7 +88,7 @@ shared_ptr<GameObject> SceneManager::Pick(int32 screenX, int32 screenY)
 	auto& gameObjects = GET_SINGLE(SceneManager)->GetActiveScene()->GetGameObjects();
 
 	float minDistance = FLT_MAX;
-	shared_ptr<GameObject> picked;
+	std::shared_ptr<GameObject> picked;
 
 	for (auto& gameObject : gameObjects)
 	{
