@@ -374,13 +374,13 @@ class ActorInfo final :
     kPosXFieldNumber = 2,
     kPosYFieldNumber = 3,
   };
-  // int64 id = 1;
+  // int32 id = 1;
   void clear_id();
-  int64_t id() const;
-  void set_id(int64_t value);
+  int32_t id() const;
+  void set_id(int32_t value);
   private:
-  int64_t _internal_id() const;
-  void _internal_set_id(int64_t value);
+  int32_t _internal_id() const;
+  void _internal_set_id(int32_t value);
   public:
 
   // float posX = 2;
@@ -409,7 +409,7 @@ class ActorInfo final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    int64_t id_;
+    int32_t id_;
     float posx_;
     float posy_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -678,22 +678,22 @@ BuffData::mutable_victims() {
 
 // ActorInfo
 
-// int64 id = 1;
+// int32 id = 1;
 inline void ActorInfo::clear_id() {
-  _impl_.id_ = int64_t{0};
+  _impl_.id_ = 0;
 }
-inline int64_t ActorInfo::_internal_id() const {
+inline int32_t ActorInfo::_internal_id() const {
   return _impl_.id_;
 }
-inline int64_t ActorInfo::id() const {
+inline int32_t ActorInfo::id() const {
   // @@protoc_insertion_point(field_get:Protocol.ActorInfo.id)
   return _internal_id();
 }
-inline void ActorInfo::_internal_set_id(int64_t value) {
+inline void ActorInfo::_internal_set_id(int32_t value) {
   
   _impl_.id_ = value;
 }
-inline void ActorInfo::set_id(int64_t value) {
+inline void ActorInfo::set_id(int32_t value) {
   _internal_set_id(value);
   // @@protoc_insertion_point(field_set:Protocol.ActorInfo.id)
 }

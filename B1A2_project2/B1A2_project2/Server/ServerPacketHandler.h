@@ -9,6 +9,9 @@ enum
 	S_RemoveObject = 4,
 
 	S_MyPlayer = 5,
+
+	C_Move = 6,
+	S_Move = 7,
 };
 
 struct BuffData
@@ -20,9 +23,10 @@ struct BuffData
 class ServerPacketHandler
 {
 public:
-	static void HandlePacket(BYTE* buffer, int32 len);
+	static void HandlePacket(GameSessionRef session, BYTE* buffer, int32 len);
 
 	// 받기
+	static void Handle_C_Move(GameSessionRef session, BYTE* buffer, int32 len);
 
 	// 보내기
 	static SendBufferRef Make_S_TEST(uint64 id, uint32 hp, uint16 attack, vector<BuffData> buffs);
@@ -30,7 +34,9 @@ public:
 	static SendBufferRef Make_S_AddObject(const Protocol::S_AddObject& pkt);
 	static SendBufferRef Make_S_RemoveObject(const Protocol::S_RemoveObject& pkt);
 	static SendBufferRef Make_S_MyPlayer(const PlayerRef& player);
+	static SendBufferRef Make_S_Move(const Protocol::ActorInfo& actor, const Protocol::ObjectInfo& object);
 
+public:
 	template<typename T>
 	static SendBufferRef MakeSendBuffer(T& pkt, uint16 pktId)
 	{

@@ -14,11 +14,16 @@ public:
 	virtual void Tick();	// Update
 	virtual void Render(HDC hdc);
 
+public:
 	void SetPos(Vec2 pos) { _pos = pos; }
 	Vec2 GetPos() { return _pos; }
 
 	void SetID(int32 id) { _id = id; }
 	int32 GetID() { return _id; }
+
+	// 임시 함수. 추후 통합할 예정
+	void SetActorInfo(Protocol::ActorInfo info);
+	Protocol::ActorInfo GetActorInfo();
 
 	// 그리는 순서 Layer
 	void SetLayer(LAYER_TYPE layer) { _layer = layer; }
@@ -46,4 +51,3 @@ protected:
 	LAYER_TYPE _layer = {};
 	std::vector<Component*> _components;
 };
-

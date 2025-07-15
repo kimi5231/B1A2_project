@@ -39,7 +39,7 @@ struct BuffDataDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 BuffDataDefaultTypeInternal _BuffData_default_instance_;
 PROTOBUF_CONSTEXPR ActorInfo::ActorInfo(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.id_)*/int64_t{0}
+    /*decltype(_impl_.id_)*/0
   , /*decltype(_impl_.posx_)*/0
   , /*decltype(_impl_.posy_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
@@ -115,7 +115,7 @@ const char descriptor_table_protodef_Struct_2eproto[] PROTOBUF_SECTION_VARIABLE(
   "\n\014Struct.proto\022\010Protocol\032\nEnum.proto\"\?\n\010"
   "BuffData\022\016\n\006buffId\030\001 \001(\004\022\022\n\nremainTime\030\002"
   " \001(\002\022\017\n\007victims\030\003 \003(\004\"3\n\tActorInfo\022\n\n\002id"
-  "\030\001 \001(\003\022\014\n\004posX\030\002 \001(\002\022\014\n\004posY\030\003 \001(\002\"Y\n\nOb"
+  "\030\001 \001(\005\022\014\n\004posX\030\002 \001(\002\022\014\n\004posY\030\003 \001(\002\"Y\n\nOb"
   "jectInfo\022*\n\005state\030\001 \001(\0162\033.Protocol.OBJEC"
   "T_STATE_TYPE\022\037\n\003dir\030\002 \001(\0162\022.Protocol.DIR"
   "_TYPEb\006proto3"
@@ -438,7 +438,7 @@ inline void ActorInfo::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.id_){int64_t{0}}
+      decltype(_impl_.id_){0}
     , decltype(_impl_.posx_){0}
     , decltype(_impl_.posy_){0}
     , /*decltype(_impl_._cached_size_)*/{}
@@ -480,10 +480,10 @@ const char* ActorInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // int64 id = 1;
+      // int32 id = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
-          _impl_.id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          _impl_.id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -533,10 +533,10 @@ uint8_t* ActorInfo::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // int64 id = 1;
+  // int32 id = 1;
   if (this->_internal_id() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt64ToArray(1, this->_internal_id(), target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_id(), target);
   }
 
   // float posX = 2;
@@ -575,9 +575,9 @@ size_t ActorInfo::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // int64 id = 1;
+  // int32 id = 1;
   if (this->_internal_id() != 0) {
-    total_size += ::_pbi::WireFormatLite::Int64SizePlusOne(this->_internal_id());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_id());
   }
 
   // float posX = 2;

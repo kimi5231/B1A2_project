@@ -46,6 +46,24 @@ void Actor::Render(HDC hdc)
 	}
 }
 
+void Actor::SetActorInfo(Protocol::ActorInfo info)
+{
+	_id = info.id();
+	_pos.x = info.posx();
+	_pos.y = info.posy();
+}
+
+Protocol::ActorInfo Actor::GetActorInfo()
+{
+	Protocol::ActorInfo info;
+
+	info.set_id(_id);
+	info.set_posx(_pos.x);
+	info.set_posy(_pos.y);
+
+	return info;
+}
+
 void Actor::AddComponent(Component* component)
 {
 	if (!component)

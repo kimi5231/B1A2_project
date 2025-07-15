@@ -28,6 +28,9 @@ private:
 	virtual void TickHit() override;
 	virtual void TickDead() override;
 
+public:
+	void SyncToServer();
+
 private:
 	bool _keyPressed = false;
 };

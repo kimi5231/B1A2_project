@@ -37,10 +37,12 @@ message S_RemoveObject
 
 message C_Move
 {
-	ObjectInfo info = 1;
+	ActorInfo actor = 1;
+	ObjectInfo object = 2;
 }
 
 message S_Move
 {
-	ObjectInfo info = 1;
+	ActorInfo actor = 1;
+	ObjectInfo object = 2;
 }

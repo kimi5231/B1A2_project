@@ -150,3 +150,37 @@ void GameRoom::Broadcast(SendBufferRef& sendBuffer)
 		item.second->GetSession()->Send(sendBuffer);
 	}
 }
+
+GameObjectRef GameRoom::FindObject(int32 id)
+{
+	if (1 <= id && id <= 100)
+	{
+		if (_players[id])
+			return _players[id];
+	}
+
+	return nullptr;
+}
+
+void GameRoom::Handle_C_Move(Protocol::C_Move& pkt)
+{
+	const Protocol::ActorInfo& actorInfo = pkt.actor();
+	const Protocol::ObjectInfo& objectInfo = pkt.object();
+
+	// object가 존재하는지 확인
+	uint32 id = actorInfo.id();
+	GameObjectRef object = FindObject(id);
+	if (!object)
+		return;
+
+	// 제대로 된 정보인지 판단하는 코드 필요
+
+	// 제대로 된 정보라면 기록
+	object->SetActorInfo(actorInfo);
+	object->SetObjectInfo(objectInfo);
+	
+	{
+		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Move(actorInfo, objectInfo);
+		Broadcast(sendBuffer);
+	}
+}

@@ -14,14 +14,13 @@ GameObject::~GameObject()
 void GameObject::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// 처음 상태 지정
-	SetState(DEAD);
-	SetState(IDLE);
 }
 
 void GameObject::Tick()
 {
+	//
+	_dirtyFlag = false;
+
 	Super::Tick();
 
 	if (GET_SINGLE(DialogueManager)->GetIsDialouge())
@@ -138,10 +137,16 @@ void GameObject::SetState(ObjectState state)
 
 	_info.set_state(state);
 	UpdateAnimation();
+
+	// 상태가 변경되었으므로 업데이트 필요
+	_dirtyFlag = true;
 }
 
 void GameObject::SetDir(Dir dir)
 {
 	_info.set_dir(dir);
 	UpdateAnimation();
+
+	// 방향이 변경되었으므로 업데이트 필요
+	_dirtyFlag = true;
 }

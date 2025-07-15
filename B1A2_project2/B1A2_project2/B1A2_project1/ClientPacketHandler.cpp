@@ -29,6 +29,9 @@ void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, i
 	case S_MyPlayer:
 		Handle_S_MyPlayer(session, buffer, len);
 		break;
+	case S_Move:
+		Handle_S_Move(session, buffer, len);
+		break;
 	}
 }
 
@@ -76,7 +79,7 @@ void ClientPacketHandler::Handle_S_AddObject(ServerSessionRef session, BYTE* buf
 
 			int32 id = actorInfo.id();
 
-			// id를 이용해 객체 타입 구분
+			// id를 이용해 객체 타입 구분ㅇㅁㅇ
 			if (1 <= id && id <= 100)	// Player
 			{
 				// 자기 자신은 제외
@@ -144,4 +147,50 @@ void ClientPacketHandler::Handle_S_MyPlayer(ServerSessionRef session, BYTE* buff
 		player->SetDir(objectInfo.dir());
 		Scene->SetPlayer(player);
 	}
+}
+
+void ClientPacketHandler::Handle_S_Move(ServerSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	uint16 size = header->size;
+
+	Protocol::S_Move pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	const Protocol::ActorInfo& actorInfo = pkt.actor();
+	const Protocol::ObjectInfo& objectInfo = pkt.object();
+
+	Scene* scene = GET_SINGLE(SceneManager)->GetCurrentScene();
+
+	if (dynamic_cast<GameScene*>(scene))
+	{
+		GameScene* gameScene = dynamic_cast<GameScene*>(scene);
+
+		// 자기 자신 제외
+		int32 id = gameScene->GetMyPlayer()->GetID();
+		if (id == actorInfo.id())
+			return;
+
+		Actor* actor = gameScene->GetActor(id);
+		if (dynamic_cast<GameObject*>(actor))
+		{
+			GameObject* object = dynamic_cast<GameObject*>(actor);
+
+			object->SetActorInfo(actorInfo);
+			object->SetObjectInfo(objectInfo);
+		}
+	}
+}
+
+SendBufferRef ClientPacketHandler::Make_C_Move()
+{
+	Protocol::C_Move pkt;
+
+	GameScene* scene = dynamic_cast<GameScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+	MyPlayer* myPlayer = scene->GetMyPlayer();
+
+	*pkt.mutable_actor() = myPlayer->GetActorInfo();
+	*pkt.mutable_object() = myPlayer->GetObjectInfo();
+
+	return MakeSendBuffer(pkt, C_Move);
 }

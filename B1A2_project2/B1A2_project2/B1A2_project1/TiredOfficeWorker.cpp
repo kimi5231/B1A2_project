@@ -328,7 +328,7 @@ void TiredOfficeWorker::UpdateAnimation()
 		_collider->SetSize({ 50, 81 });
 		break;
 	case RETURN_IDLE:
-		SetFlipbook(_flipbookRETURN_IDLE[_info.dir()]);
+		SetFlipbook(_flipbookReturnIdle[_info.dir()]);
 		_collider->SetSize({ 34, 80 });
 		break;
 	}

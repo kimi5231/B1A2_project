@@ -203,8 +203,8 @@ void Player::Render(HDC hdc)
 
 void Player::TickIdle()
 {
-	if (GetDialogue()->GetState() == DialogueState::Running || GetDialogue()->GetState() == DialogueState::Wait)
-		return;
+	/*if (GetDialogue()->GetState() == DialogueState::Running || GetDialogue()->GetState() == DialogueState::Wait)
+		return;*/
 
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 	static float sumTime = 0.0f;
@@ -271,8 +271,8 @@ void Player::TickIdle()
 }
 void Player::TickMove()
 {
-	if (GetDialogue()->GetState() == DialogueState::Running || GetDialogue()->GetState() == DialogueState::Wait)
-		return;
+	/*if (GetDialogue()->GetState() == DialogueState::Running || GetDialogue()->GetState() == DialogueState::Wait)
+		return;*/
 
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 	static float sumTime = 0.0f;

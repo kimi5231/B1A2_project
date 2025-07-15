@@ -10,6 +10,7 @@ public:
 
 public:
 	void SetObjectInfo(Protocol::OBJECT_STATE_TYPE stat, Protocol::DIR_TYPE dir);
+	void SetObjectInfo(Protocol::ObjectInfo info) { _info = info; }
 	Protocol::ObjectInfo GetObjectInfo() { return _info; }
 
 	void SetRoom(GameRoomRef room) { _room = room; }

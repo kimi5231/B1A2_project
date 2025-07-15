@@ -44,13 +44,14 @@ public:
 public:
 	// Set Stage
 	void SetStage(int32 stage);
+
 private:
 	void SetStage1();
 	void SetStage2();
 	void SetStage3();
 	void SetFinalBossStage();
-
 	void SetStructureStageN(int32 stageNum);
+
 public:
 	// Save
 	void SaveCurData();

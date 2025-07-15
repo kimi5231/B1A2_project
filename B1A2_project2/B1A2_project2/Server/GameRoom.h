@@ -20,6 +20,12 @@ public:
 	void RemoveObject(GameObjectRef object);
 	void Broadcast(SendBufferRef& sendBuffer);
 
+public: 
+	GameObjectRef FindObject(int32 id);
+
+public:
+	void Handle_C_Move(Protocol::C_Move& pkt);
+
 public:
 	GameRoomRef GetRoomRef() {return static_pointer_cast<GameRoom>(shared_from_this());}
 
