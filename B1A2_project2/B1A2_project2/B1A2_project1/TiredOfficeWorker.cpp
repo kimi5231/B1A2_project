@@ -14,7 +14,8 @@ TiredOfficeWorker::TiredOfficeWorker()
 {
 	// Set Stat
 	Stat* stat = GET_SINGLE(ResourceManager)->GetStat();
-	_stat = stat->GetTiredOfficeWorkerStat();
+	_stat = new TiredOfficeWorkerStat();
+	*_stat = stat->GetTiredOfficeWorkerStat();
 	CalPixelPerSecond();
 
 	// Set Flipbook

@@ -124,7 +124,7 @@ private:
 protected:
 	bool _keyPressed = false;
 
-	PlayerStat* _playerStat = {};
+	PlayerStat* _playerStat{};
 
 	std::function<void(int)> _healthObserver;	// 체력 변화 알림 받을 함수 포인터
 	std::function<void(int)> _skillPointObserver;

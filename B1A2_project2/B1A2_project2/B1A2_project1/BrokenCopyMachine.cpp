@@ -14,7 +14,8 @@ BrokenCopyMachine::BrokenCopyMachine()
 {
 	// Set Stat
 	Stat* stat = GET_SINGLE(ResourceManager)->GetStat();
-	_stat = stat->GetBrokenCopyMachineStat();
+	_stat = new BrokenCopyMachineStat();
+	*_stat = stat->GetBrokenCopyMachineStat();
 	CalPixelPerSecond();
 
 	// Set Flipbook

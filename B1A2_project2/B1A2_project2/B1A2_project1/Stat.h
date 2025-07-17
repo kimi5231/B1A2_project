@@ -54,9 +54,9 @@ public:
 	void LoadBrokenCopyMachineStatFile(std::filesystem::path resourcePath);
 
 public:
-	PlayerStat* GetPlayerStat() { return _playerStat; }
-	TiredOfficeWorkerStat* GetTiredOfficeWorkerStat() { return _tiredOfficeWorkerStat; }
-	BrokenCopyMachineStat* GetBrokenCopyMachineStat() { return _brokenCopyMachineStat; }
+	PlayerStat& GetPlayerStat() { return *_playerStat; }
+	TiredOfficeWorkerStat& GetTiredOfficeWorkerStat() { return *_tiredOfficeWorkerStat; }
+	BrokenCopyMachineStat& GetBrokenCopyMachineStat() { return *_brokenCopyMachineStat; }
 
 private:
 	PlayerStat* _playerStat;

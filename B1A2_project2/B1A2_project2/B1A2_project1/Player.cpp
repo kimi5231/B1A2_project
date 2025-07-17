@@ -30,7 +30,8 @@ Player::Player()
 {
 	// Set Stat
 	Stat* stat = GET_SINGLE(ResourceManager)->GetStat();
-	_playerStat = stat->GetPlayerStat();
+	_playerStat = new PlayerStat();
+	*_playerStat = stat->GetPlayerStat();
 	CalPixelPerSecond();
 
 	// Flipbook Sprite
@@ -116,7 +117,6 @@ void Player::Tick()
 		return;
 	/*if (GetDialogue()->GetState() == DialogueState::Running || GetDialogue()->GetState() == DialogueState::Wait)
 		return;*/
-
 
 	TickCollideItem();
 
@@ -205,6 +205,7 @@ void Player::TickIdle()
 {
 	
 }
+
 void Player::TickMove()
 {
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
@@ -743,7 +744,6 @@ void Player::TickFootHold()
 	}
 }
 
-
 int32 Player::GetAttack()
 {
 	// damage 수정 예정
@@ -913,7 +913,6 @@ void Player::CalPixelPerSecond()
 
 		_playerStat->jumpSpeed = JUMP_SPEED_PPS;
 	}
-
 }
 
 void Player::RemoveItem(int32 id, int32 count)

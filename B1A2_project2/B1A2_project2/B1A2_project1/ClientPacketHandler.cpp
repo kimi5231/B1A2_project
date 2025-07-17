@@ -99,7 +99,7 @@ void ClientPacketHandler::Handle_S_AddObject(ServerSessionRef session, BYTE* buf
 				BrokenCopyMachine* bcm = Scene->SpawnObject<BrokenCopyMachine>(actorInfo.id(), Vec2{ actorInfo.posx(), actorInfo.posy() }, LAYER_MONSTER);
 				bcm->SetObjectInfo(objectInfo);
 			}
-		}	
+		}
 	}
 }
 
@@ -143,8 +143,7 @@ void ClientPacketHandler::Handle_S_MyPlayer(ServerSessionRef session, BYTE* buff
 		GameScene* Scene = dynamic_cast<GameScene*>(scene);
 
 		MyPlayer* player = Scene->SpawnObject<MyPlayer>(actorInfo.id(), Vec2{ actorInfo.posx(), actorInfo.posx() }, LAYER_PLAYER);
-		player->SetState(objectInfo.state());
-		player->SetDir(objectInfo.dir());
+		player->SetObjectInfo(objectInfo);
 		Scene->SetPlayer(player);
 	}
 }
