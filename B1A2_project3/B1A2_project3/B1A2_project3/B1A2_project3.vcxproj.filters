@@ -197,7 +197,21 @@
     <ClInclude Include="Enums.h">
       <Filter>소스 파일\99. Utils</Filter>
     </ClInclude>
-    <ClInclude Include="GameScene.h" />
+    <ClInclude Include="GameScene.h">
+      <Filter>소스 파일\03. Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="ValueManager.h">
+      <Filter>소스 파일\02. Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Values.h">
+      <Filter>소스 파일\99. Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Types.h">
+      <Filter>소스 파일\99. Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Defines.h">
+      <Filter>소스 파일\99. Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -335,6 +349,9 @@
     </ClCompile>
     <ClCompile Include="GameScene.cpp">
       <Filter>소스 파일\03. Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="ValueManager.cpp">
+      <Filter>소스 파일\02. Managers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

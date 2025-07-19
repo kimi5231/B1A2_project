@@ -5,6 +5,7 @@
 #include "framework.h"
 #include "Client.h"
 #include "Game.h"
+#include "ValueManager.h"
 
 #define MAX_LOADSTRING 100
 
@@ -45,10 +46,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CLIENT));
 
     MSG msg;
-
-    GWindowInfo.width = 800;
-    GWindowInfo.height = 600;
-    GWindowInfo.windowed = true;
 
     std::unique_ptr<Game> game = std::make_unique<Game>();
     game->Init(GWindowInfo);
@@ -116,6 +113,13 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
     hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
+
+    // 윈도우 창 사이즈 얻어오기.
+    Vec2Int size = GET_SINGLE(ValueManager)->GetWinSize();
+
+    GWindowInfo.width = size.x;
+    GWindowInfo.height = size.y;
+    GWindowInfo.windowed = true;
 
     HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
