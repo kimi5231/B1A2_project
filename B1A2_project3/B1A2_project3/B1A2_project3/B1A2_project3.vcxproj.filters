@@ -60,6 +60,9 @@
     <Filter Include="소스 파일\03. Scene">
       <UniqueIdentifier>{d69ca4dd-6454-4c4e-badf-6a0f93a633b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\04. Object">
+      <UniqueIdentifier>{adb12d22-5541-44ab-8185-40609b468398}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -164,7 +167,7 @@
     <ClInclude Include="Texture.h">
       <Filter>소스 파일\01. Engine\Object\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="TestCameraScript.h">
+    <ClInclude Include="CameraScript.h">
       <Filter>소스 파일\01. Engine\Object\Test</Filter>
     </ClInclude>
     <ClInclude Include="Object.h">
@@ -211,6 +214,15 @@
     </ClInclude>
     <ClInclude Include="Defines.h">
       <Filter>소스 파일\99. Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Actor.h">
+      <Filter>소스 파일\04. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>소스 파일\04. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerScript.h">
+      <Filter>소스 파일\01. Engine\Object\Test</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -323,7 +335,7 @@
     <ClCompile Include="Texture.cpp">
       <Filter>소스 파일\01. Engine\Object\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="TestCameraScript.cpp">
+    <ClCompile Include="CameraScript.cpp">
       <Filter>소스 파일\01. Engine\Object\Test</Filter>
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
@@ -352,6 +364,15 @@
     </ClCompile>
     <ClCompile Include="ValueManager.cpp">
       <Filter>소스 파일\02. Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Actor.cpp">
+      <Filter>소스 파일\04. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>소스 파일\04. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerScript.cpp">
+      <Filter>소스 파일\01. Engine\Object\Test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

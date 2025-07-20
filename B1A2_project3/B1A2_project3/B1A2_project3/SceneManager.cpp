@@ -12,7 +12,7 @@
 #include "Camera.h"
 #include "Light.h"
 
-#include "TestCameraScript.h"
+#include "CameraScript.h"
 #include "Resources.h"
 #include "ParticleSystem.h"
 #include "Terrain.h"

@@ -13,7 +13,8 @@
 #include "Camera.h"
 #include "Light.h"
 
-#include "TestCameraScript.h"
+#include "CameraScript.h"
+#include "PlayerScript.h"
 #include "Resources.h"
 #include "ParticleSystem.h"
 #include "Terrain.h"
@@ -86,13 +87,25 @@ void TestScene::LoadTestScene()
 	}
 #pragma endregion
 
-#pragma region Camera
+#pragma region Player & Camera
 	{
+		// Player
+		std::shared_ptr<GameObject> player = std::make_shared<GameObject>();
+		player->SetName(L"Player");
+		player->AddComponent(std::make_shared<Transform>());
+		player->AddComponent(std::make_shared<PlayerScript>());
+		AddGameObject(player);
+
+		// Camera
 		std::shared_ptr<GameObject> camera = std::make_shared<GameObject>();
 		camera->SetName(L"Main_Camera");
 		camera->AddComponent(std::make_shared<Transform>());
 		camera->AddComponent(std::make_shared<Camera>()); // Near=1, Far=1000, FOV=45µµ
-		camera->AddComponent(std::make_shared<TestCameraScript>());
+		
+		std::shared_ptr<CameraScript> cameraScript = std::make_shared<CameraScript>();
+		cameraScript->SetPlayer(player);
+		camera->AddComponent(cameraScript);
+
 		camera->GetCamera()->SetFar(10000.f);
 		camera->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 0.f));
 		uint8 layerIndex = LayerNameToIndex(L"UI");

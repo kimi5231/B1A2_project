@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "TestCameraScript.h"
+#include "PlayerScript.h"
 #include "Transform.h"
 #include "Camera.h"
 #include "GameObject.h"
@@ -7,15 +7,15 @@
 #include "TimeManager.h"
 #include "SceneManager.h"
 
-TestCameraScript::TestCameraScript()
+PlayerScript::PlayerScript()
 {
 }
 
-TestCameraScript::~TestCameraScript()
+PlayerScript::~PlayerScript()
 {
 }
 
-void TestCameraScript::LateUpdate()
+void PlayerScript::LateUpdate()
 {
 	Vec3 pos = GetTransform()->GetLocalPosition();
 
@@ -48,14 +48,14 @@ void TestCameraScript::LateUpdate()
 	if (INPUT->GetButton(KEY_TYPE::Z))
 	{
 		Vec3 rotation = GetTransform()->GetLocalRotation();
-		rotation.y += DELTA_TIME * 0.5f;
+		rotation.y -= DELTA_TIME * 0.5f;
 		GetTransform()->SetLocalRotation(rotation);
 	}
 
 	if (INPUT->GetButton(KEY_TYPE::C))
 	{
 		Vec3 rotation = GetTransform()->GetLocalRotation();
-		rotation.y -= DELTA_TIME * 0.5f;
+		rotation.y += DELTA_TIME * 0.5f;
 		GetTransform()->SetLocalRotation(rotation);
 	}
 
