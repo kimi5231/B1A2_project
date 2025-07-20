@@ -128,6 +128,9 @@ void GameObject::TickGravity()
 
 	_ySpeed += _gravity * deltaTime;
 	_pos.y += _ySpeed * deltaTime;
+
+	// 위치가 변경되었으므로 업데이트 필요
+	//_dirtyFlag = true;
 }
 
 void GameObject::SetState(ObjectState state)

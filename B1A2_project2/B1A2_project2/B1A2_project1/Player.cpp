@@ -203,7 +203,6 @@ void Player::Render(HDC hdc)
 
 void Player::TickIdle()
 {
-	
 }
 
 void Player::TickMove()
@@ -223,7 +222,6 @@ void Player::TickMove()
 
 void Player::TickDuckDown()
 {
-
 }
 
 void Player::TickDuckDownMove()
@@ -243,6 +241,8 @@ void Player::TickDuckDownMove()
 
 void Player::TickJump()
 {
+	// TickJumpMove ³ª´©±â
+
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 
 	switch (_info.dir())

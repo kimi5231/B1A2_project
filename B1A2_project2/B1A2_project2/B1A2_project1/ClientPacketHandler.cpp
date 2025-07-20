@@ -88,6 +88,8 @@ void ClientPacketHandler::Handle_S_AddObject(ServerSessionRef session, BYTE* buf
 
 				Player* player = Scene->SpawnObject<Player>(actorInfo.id(), Vec2{ actorInfo.posx(), actorInfo.posy() }, LAYER_PLAYER);
 				player->SetObjectInfo(objectInfo);
+				player->SetState(DEAD);
+				player->SetState(IDLE);
 			}
 			else if(20100 <= id && id <= 20199)	// TOW
 			{
@@ -170,7 +172,7 @@ void ClientPacketHandler::Handle_S_Move(ServerSessionRef session, BYTE* buffer, 
 		if (id == actorInfo.id())
 			return;
 
-		Actor* actor = gameScene->GetActor(id);
+		Actor* actor = gameScene->GetActor(actorInfo.id());
 		if (dynamic_cast<GameObject*>(actor))
 		{
 			GameObject* object = dynamic_cast<GameObject*>(actor);
