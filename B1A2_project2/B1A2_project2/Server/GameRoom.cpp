@@ -33,6 +33,10 @@ void GameRoom::Init()
 
 void GameRoom::Update()
 {
+	for (auto& item : _monsters)
+	{
+		item.second->Update();
+	}
 }
 
 void GameRoom::EnterRoom(GameSessionRef session)
@@ -55,6 +59,15 @@ void GameRoom::EnterRoom(GameSessionRef session)
 		Protocol::S_AddObject pkt;
 
 		for (auto& item : _players)
+		{
+			Protocol::ActorInfo* actorInfo = pkt.add_actors();
+			Protocol::ObjectInfo* objectInfo = pkt.add_objects();
+
+			*actorInfo = item.second->GetActorInfo();
+			*objectInfo = item.second->GetObjectInfo();
+		}
+
+		for (auto& item : _monsters)
 		{
 			Protocol::ActorInfo* actorInfo = pkt.add_actors();
 			Protocol::ObjectInfo* objectInfo = pkt.add_objects();

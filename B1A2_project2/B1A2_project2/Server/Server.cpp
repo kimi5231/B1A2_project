@@ -9,6 +9,8 @@
 #include "GameSessionManager.h"
 #include "ServerPacketHandler.h"
 #include "DataManager.h"
+#include "TimeManager.h"
+#include "GameRoom.h"
 
 int main()
 {
@@ -18,6 +20,9 @@ int main()
 	// DataBase 파일 경로 설정
 	resourcePath = std::filesystem::current_path().parent_path().parent_path().parent_path() / "Data";
 	GET_SINGLE(DataManager)->Init(resourcePath);
+	GET_SINGLE(TimeManager)->Init();
+
+	GRoom->Init();
 
 	SocketUtils::Init();
 
@@ -32,6 +37,8 @@ int main()
 	while (true)
 	{
 		service->GetIocpCore()->Dispatch();
+		GET_SINGLE(TimeManager)->Update();
+		GRoom->Update();
 	}
 
 	GThreadManager->Join();

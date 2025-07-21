@@ -130,7 +130,7 @@ void TiredOfficeWorker::TickCloseAttack()
 		GET_SINGLE(CollisionManager)->AddCollider(collider);
 		AddComponent(collider);
 	}
-	
+
 	// 마지막 공격 모션일 때
 	if (GetIdx() == 4)
 	{

@@ -65,7 +65,7 @@ void BrokenCopyMachine::Tick()
 {
 	Super::Tick();
 
-	TickGravity();
+	//TickGravity();
 }
 
 void BrokenCopyMachine::Render(HDC hdc)
@@ -75,34 +75,34 @@ void BrokenCopyMachine::Render(HDC hdc)
 
 void BrokenCopyMachine::TickIdle()
 {
-	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+	/*float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 	_sumTime += deltaTime;
 
 	if (_sumTime >= _stat->attackCoolTime)
 	{
 		_sumTime = 0.f;
 		SetState(LONG_ATTACK);
-	}
+	}*/
 }
 
 void BrokenCopyMachine::TickLongAttack()
 {
-	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
-	_sumTime += deltaTime;
+	//float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+	//_sumTime += deltaTime;
 
-	// 투사체 생성
-	if (_sumTime >= 0.3f)
-	{
-		_sumTime = 0.f;
-		CreateProjectile();
-	}
+	//// 투사체 생성
+	//if (_sumTime >= 0.3f)
+	//{
+	//	_sumTime = 0.f;
+	//	CreateProjectile();
+	//}
 
-	if (_currentProjectileCount == _stat->projectileCount)
-	{
-		_sumTime = 0.f;
-		SetState(IDLE);
-		_currentProjectileCount = 0;
-	}
+	//if (_currentProjectileCount == _stat->projectileCount)
+	//{
+	//	_sumTime = 0.f;
+	//	SetState(IDLE);
+	//	_currentProjectileCount = 0;
+	//}
 }
 
 void BrokenCopyMachine::TickHit()

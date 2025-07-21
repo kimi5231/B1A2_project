@@ -87,19 +87,20 @@ void ClientPacketHandler::Handle_S_AddObject(ServerSessionRef session, BYTE* buf
 					continue;
 
 				Player* player = Scene->SpawnObject<Player>(actorInfo.id(), Vec2{ actorInfo.posx(), actorInfo.posy() }, LAYER_PLAYER);
-				player->SetObjectInfo(objectInfo);
-				player->SetState(DEAD);
-				player->SetState(IDLE);
+				player->SetState(objectInfo.state());
+				player->SetDir(objectInfo.dir());
 			}
 			else if(20100 <= id && id <= 20199)	// TOW
 			{
 				TiredOfficeWorker* tow = Scene->SpawnObject<TiredOfficeWorker>(actorInfo.id(), Vec2{ actorInfo.posx(), actorInfo.posy() }, LAYER_MONSTER);
-				tow->SetObjectInfo(objectInfo);
+				tow->SetState(objectInfo.state());
+				tow->SetDir(objectInfo.dir());
 			}
 			else if (20200 <= id && id <= 20299)	// BCM
 			{
 				BrokenCopyMachine* bcm = Scene->SpawnObject<BrokenCopyMachine>(actorInfo.id(), Vec2{ actorInfo.posx(), actorInfo.posy() }, LAYER_MONSTER);
-				bcm->SetObjectInfo(objectInfo);
+				bcm->SetState(objectInfo.state());
+				bcm->SetDir(objectInfo.dir());
 			}
 		}
 	}
@@ -178,7 +179,8 @@ void ClientPacketHandler::Handle_S_Move(ServerSessionRef session, BYTE* buffer, 
 			GameObject* object = dynamic_cast<GameObject*>(actor);
 
 			object->SetActorInfo(actorInfo);
-			object->SetObjectInfo(objectInfo);
+			object->SetState(objectInfo.state());
+			object->SetDir(objectInfo.dir());
 		}
 	}
 }

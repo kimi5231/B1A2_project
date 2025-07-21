@@ -12,12 +12,6 @@ TiredOfficeWorker::~TiredOfficeWorker()
 
 void TiredOfficeWorker::Update()
 {
-	switch (GetState())
-	{
-	case IDLE:
-		UpdateIdle();
-		break;
-	}
 }
 
 void TiredOfficeWorker::UpdateIdle()

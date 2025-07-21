@@ -12,7 +12,6 @@ void GameSession::OnConnected()
 
 	// 게임 입장
 	GRoom->EnterRoom(GetSessionRef());
-	GRoom->Init();
 }
 
 void GameSession::OnDisconnected()

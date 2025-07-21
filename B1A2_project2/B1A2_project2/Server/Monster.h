@@ -7,9 +7,12 @@ public:
 	Monster();
 	virtual ~Monster();
 
+	virtual void Update();
+
 public:
 	virtual void UpdateIdle() {};
 	virtual void UpdateCloseAttack() {};
+	virtual void UpdateLongAttack() {};
 	virtual void UpdateHit() {};
 	virtual void UpdateDead() {};
 	virtual void UpdateChase() {};

@@ -92,7 +92,6 @@ MonsterRef GameObject::CreateMonster(FieldMonster fieldMonster)
 		// Client에서 보내는 정보와 비교하는 용도 (패킷 포함X)
 		Stat* stat = GET_SINGLE(DataManager)->GetStat();
 		bcm->SetBrokenCopyMachineStat(stat->GetBrokenCopyMachineStat());
-
 		return bcm;
 	}
 }
