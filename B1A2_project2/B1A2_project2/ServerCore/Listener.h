@@ -27,6 +27,6 @@ private:
 
 protected:
 	SOCKET _socket = INVALID_SOCKET;
-	vector<IocpEvent*> _acceptEvents;
+	std::vector<IocpEvent*> _acceptEvents;
 	ServerServiceRef _service;
 };

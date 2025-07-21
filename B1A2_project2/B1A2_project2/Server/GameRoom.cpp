@@ -8,7 +8,7 @@
 #include "DataManager.h"
 #include "Stage.h"
 
-GameRoomRef GRoom = make_shared<GameRoom>();
+GameRoomRef GRoom = std::make_shared<GameRoom>();
 
 GameRoom::GameRoom()
 {

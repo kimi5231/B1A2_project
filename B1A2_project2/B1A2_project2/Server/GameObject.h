@@ -2,7 +2,7 @@
 #include "Actor.h"
 #include "Stat.h"
 
-class GameObject : public Actor, public enable_shared_from_this<GameObject>
+class GameObject : public Actor, public std::enable_shared_from_this<GameObject>
 {
 public:
 	GameObject();
@@ -32,5 +32,5 @@ public:
 
 protected:
 	Protocol::ObjectInfo _objectInfo;
-	static atomic<uint64> _idGenerator;
+	static std::atomic<uint64> _idGenerator;
 };

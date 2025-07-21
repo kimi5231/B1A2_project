@@ -5,12 +5,12 @@ class ServerSession : public PacketSession
 public:
 	~ServerSession()
 	{
-		cout << "~ServerSession" << endl;
+		std::cout << "~ServerSession" << std::endl;
 	}
 
 	virtual void OnConnected() override
 	{
-		cout << "Connected To Server" << endl;
+		std::cout << "Connected To Server" << std::endl;
 	}
 
 	virtual void OnRecvPacket(BYTE* buffer, int32 len) override

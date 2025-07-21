@@ -2,7 +2,7 @@
 
 extern GameRoomRef GRoom;
 
-class GameRoom : public enable_shared_from_this<GameRoom>
+class GameRoom : public std::enable_shared_from_this<GameRoom>
 {
 public:
 	GameRoom();
@@ -27,7 +27,7 @@ public:
 	void Handle_C_Move(Protocol::C_Move& pkt);
 
 public:
-	GameRoomRef GetRoomRef() {return static_pointer_cast<GameRoom>(shared_from_this());}
+	GameRoomRef GetRoomRef() {return std::static_pointer_cast<GameRoom>(shared_from_this());}
 
 private:
 	std::map<uint64, PlayerRef> _players;

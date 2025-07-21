@@ -25,11 +25,11 @@ void GameSession::OnDisconnected()
 void GameSession::OnRecvPacket(BYTE* buffer, int32 len)
 {
 	PacketHeader header = *((PacketHeader*)buffer);
-	cout << "Packet ID : " << header.id << "Size : " << header.size << endl;
+	std::cout << "Packet ID : " << header.id << "Size : " << header.size << std::endl;
 	ServerPacketHandler::HandlePacket(static_pointer_cast<GameSession>(shared_from_this()), buffer, len);
 }
 
 void GameSession::OnSend(int32 len)
 {
-	cout << "OnSend Len = " << len << endl;
+	std::cout << "OnSend Len = " << len << std::endl;
 }

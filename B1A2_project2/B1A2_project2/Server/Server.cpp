@@ -26,10 +26,10 @@ int main()
 
 	GRoom->Init();
 
-	ServerServiceRef service = make_shared<ServerService>(
+	ServerServiceRef service = std::make_shared<ServerService>(
 		NetAddress(L"127.0.0.1", 7777),
-		make_shared<IocpCore>(),
-		[]() { return make_shared<GameSession>(); },
+		std::make_shared<IocpCore>(),
+		[]() { return std::make_shared<GameSession>(); },
 		100);
 
 	assert(service->Start());

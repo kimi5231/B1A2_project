@@ -48,12 +48,12 @@ void ClientPacketHandler::Handle_S_TEST(BYTE* buffer, int32 len)
 	uint32 hp = pkt.hp();
 	uint16 attack = pkt.attack();
 
-	std::cout << "ID: " << id << " HP : " << hp << " ATT : " << attack << endl;
+	std::cout << "ID: " << id << " HP : " << hp << " ATT : " << attack << std::endl;
 
 	for (int32 i = 0; i < pkt.buffs_size(); i++)
 	{
 		const Protocol::BuffData& data = pkt.buffs(i);
-		std::cout << "BuffInfo : " << data.buffid() << " " << data.remaintime() << endl;
+		std::cout << "BuffInfo : " << data.buffid() << " " << data.remaintime() << std::endl;
 	}
 }
 

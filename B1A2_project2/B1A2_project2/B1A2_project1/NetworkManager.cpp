@@ -7,9 +7,9 @@ void NetworkManager::Init()
 {
 	SocketUtils::Init();
 
-	_service = make_shared<ClientService>(
+	_service = std::make_shared<ClientService>(
 		NetAddress(L"127.0.0.1", 7777),
-		make_shared<IocpCore>(),
+		std::make_shared<IocpCore>(),
 		[=]() { return CreateSession(); },
 		1);
 
@@ -23,7 +23,7 @@ void NetworkManager::Update()
 
 ServerSessionRef NetworkManager::CreateSession()
 {
-	return _session = make_shared<ServerSession>();
+	return _session = std::make_shared<ServerSession>();
 }
 
 void NetworkManager::SendPacket(SendBufferRef sendBuffer)

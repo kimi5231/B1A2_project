@@ -1,11 +1,6 @@
 #include "pch.h"
 #include "ThreadManager.h"
 #include "CoreTLS.h"
-#include "CoreGlobal.h"
-
-/*------------------
-	ThreadManager
--------------------*/
 
 ThreadManager::ThreadManager()
 {
@@ -20,7 +15,7 @@ ThreadManager::~ThreadManager()
 
 void ThreadManager::Launch(std::function<void(void)> callback)
 {
-	std::lock_guard<std::mutex> guard(_lock);
+	LockGuard guard(_lock);
 
 	_threads.push_back(std::thread([=]()
 		{

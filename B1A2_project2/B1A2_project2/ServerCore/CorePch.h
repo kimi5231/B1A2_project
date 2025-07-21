@@ -11,11 +11,12 @@
 #include <unordered_set>
 #include <assert.h>
 
+// Socket
 #include <winsock2.h>
 #include <mswsock.h>
 #include <ws2tcpip.h>
 
-using namespace std;
+#pragma comment(lib, "ws2_32.lib")
 
 #include "Types.h"
 #include "CoreMacro.h"
@@ -25,5 +26,3 @@ using namespace std;
 #include "SocketUtils.h"
 #include "SendBuffer.h"
 #include "Session.h"
-
-#pragma comment(lib, "ws2_32.lib")

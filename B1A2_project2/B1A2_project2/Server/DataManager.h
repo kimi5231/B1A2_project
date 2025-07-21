@@ -1,4 +1,5 @@
 #pragma once
+#include <filesystem>
 
 class Stat;
 class Stage;

@@ -6,7 +6,7 @@ class GameSession : public PacketSession
 public:
 	~GameSession()
 	{
-		cout << "~GameSession" << endl;
+		std::cout << "~GameSession" << std::endl;
 	}
 
 public:
@@ -19,6 +19,6 @@ public:
 	GameSessionRef GetSessionRef() { return static_pointer_cast<GameSession>(shared_from_this()); }
 
 public:
-	weak_ptr<GameRoom> gameRoom;
+	std::weak_ptr<GameRoom> gameRoom;
 	PlayerRef player;
 };

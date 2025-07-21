@@ -34,7 +34,7 @@ private:
 
 	float _currentMoveDistance;
 
-	weak_ptr<Player> _target;
+	std::weak_ptr<Player> _target;
 
 	float _sumTime = 0.f;
 };

@@ -1,11 +1,6 @@
 #pragma once
-
 #include <thread>
 #include <functional>
-
-/*------------------
-	ThreadManager
--------------------*/
 
 class ThreadManager
 {
@@ -13,16 +8,17 @@ public:
 	ThreadManager();
 	~ThreadManager();
 
-	void	Launch(std::function<void(void)> callback);
-	void	Join();
+	// 쓰레드 생성 및 저장
+	void Launch(std::function<void(void)> callback);
+	// 가지고 있는 모든 쓰레드를 join
+	void Join();
 
 private:
+	// Local Space
 	static void InitTLS();
 	static void DestroyTLS();
 
 private:
-	std::mutex			_lock;
-	std::vector<std::thread>	_threads;
+	Mutex _lock;
+	std::vector<std::thread> _threads;
 };
-
-

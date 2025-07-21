@@ -110,7 +110,7 @@ void Listener::ProcessAccept(IocpEvent* acceptEvent)
 		return;
 	}
 
-	cout << "Client Connected!" << endl;
+	std::cout << "Client Connected!" << std::endl;
 
 	session->SetNetAddress(NetAddress(sockAddress));
 	session->ProcessConnect();

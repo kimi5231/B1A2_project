@@ -9,7 +9,7 @@
 #include "ServerPacketHandler.h"
 #include "DataManager.h"
 
-atomic<uint64> GameObject::_idGenerator = 1;
+std::atomic<uint64> GameObject::_idGenerator = 1;
 
 GameObject::GameObject()
 {
