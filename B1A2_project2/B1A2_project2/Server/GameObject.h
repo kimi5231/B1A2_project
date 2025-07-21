@@ -9,9 +9,14 @@ public:
 	virtual ~GameObject();
 
 public:
-	void SetObjectInfo(Protocol::OBJECT_STATE_TYPE stat, Protocol::DIR_TYPE dir);
-	void SetObjectInfo(Protocol::ObjectInfo info) { _info = info; }
-	Protocol::ObjectInfo GetObjectInfo() { return _info; }
+	void SetState(ObjectState state);
+	ObjectState GetState() { return _objectInfo.state(); }
+
+	void SetDir(Dir dir);
+	Dir GetDir() { return _objectInfo.dir(); }
+
+	void SetObjectInfo(Protocol::ObjectInfo info) { _objectInfo = info; }
+	Protocol::ObjectInfo GetObjectInfo() { return _objectInfo; }
 
 	void SetRoom(GameRoomRef room) { _room = room; }
 
@@ -20,9 +25,12 @@ public:
 	static MonsterRef CreateMonster(class FieldMonster fieldMonster);
 
 public:
+	void BroadcastMove();
+
+public:
 	GameRoomRef _room;
 
-private:
-	Protocol::ObjectInfo _info;
+protected:
+	Protocol::ObjectInfo _objectInfo;
 	static atomic<uint64> _idGenerator;
 };

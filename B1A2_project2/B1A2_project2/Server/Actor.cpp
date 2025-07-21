@@ -19,5 +19,5 @@ void Actor::SetActorInfo(int64 id, Vec2 pos)
 	info.set_posx(pos.x);
 	info.set_posy(pos.y);
 
-	_info = info;
+	_actorInfo = info;
 }

@@ -3,7 +3,7 @@
 struct FieldMonster
 {
 	int32 id;	// A
-	Protocol::DIR_TYPE dir;	// B
+	Dir dir;	// B
 	Vec2 spawnPos;		// C, D
 	float movingDistance;	// E
 	Vec2 movementLimit;	// F, G

@@ -61,7 +61,7 @@ enum COLLISION_LAYER_TYPE : uint8
 	CLT_NONE,
 };
 
-// Player Direction
+// Direction
 using Dir = Protocol::DIR_TYPE;
 
 #define DIR_LEFT	Dir::DIR_TYPE_LEFT

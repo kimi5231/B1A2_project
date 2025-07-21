@@ -88,6 +88,9 @@
     <ClCompile Include="BrokenCopyMachine.cpp">
       <Filter>소스 파일\Game\Objects\Creature</Filter>
     </ClCompile>
+    <ClCompile Include="TimeManager.cpp">
+      <Filter>소스 파일\Game\Managers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameSession.h">
@@ -143,6 +146,9 @@
     </ClInclude>
     <ClInclude Include="BrokenCopyMachine.h">
       <Filter>소스 파일\Game\Objects\Creature</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeManager.h">
+      <Filter>소스 파일\Game\Managers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
