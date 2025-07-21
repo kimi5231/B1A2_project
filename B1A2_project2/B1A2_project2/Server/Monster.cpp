@@ -18,5 +18,8 @@ void Monster::Update()
 	case IDLE:
 		UpdateIdle();
 		break;
+	case LONG_ATTACK:
+		UpdateLongAttack();
+		break;
 	}
 }

@@ -14,6 +14,8 @@
 
 int main()
 {
+	SocketUtils::Init();
+
 	// 상대 경로 알아오기
 	std::filesystem::path resourcePath = std::filesystem::current_path().relative_path();
 	
@@ -23,8 +25,6 @@ int main()
 	GET_SINGLE(TimeManager)->Init();
 
 	GRoom->Init();
-
-	SocketUtils::Init();
 
 	ServerServiceRef service = make_shared<ServerService>(
 		NetAddress(L"127.0.0.1", 7777),

@@ -21,9 +21,14 @@ public:
 	void SetBrokenCopyMachineStat(BrokenCopyMachineStat* stat) { _stat = stat; }
 
 private:
+	//void CalPixelPerSecond();
+
+private:
+	void CreateProjectile();
+
+private:
 	BrokenCopyMachineStat* _stat;
 
 	int32 _currentProjectileCount = 0;
-
 	float _sumTime = 0.f;
 };
