@@ -49,6 +49,11 @@ public:
 	void SetMidPos(Vec2 pos) { _midPos = pos; }
 	Vec2 GetMidPos() { return _midPos; }
 
+	void SetInitialBeginPos(Vec2 pos) { _initialBeginPos = pos; }
+	Vec2 GetInitialBeginPos() { return _initialBeginPos; }
+	void SetInitialEndPos(Vec2 pos) { _initialEndPos = pos; }
+	Vec2 GetInitialEndPos() { return _initialEndPos; }
+
 	BoxCollider* GetPlayerDetectCollider() { return _playerDetectCollider; }
 
 	void SetPlayer(Player* player) { _player = player; }
@@ -71,6 +76,10 @@ private:
 	Vec2 _beginPos;
 	Vec2 _endPos;
 	Vec2 _midPos = {};
+
+	// 짚라인 위치 초기화를 위한 변수
+	Vec2 _initialBeginPos = {};
+	Vec2 _initialEndPos = {};
 };
 
 class ZipLineButtonAndDisplay : public Structure

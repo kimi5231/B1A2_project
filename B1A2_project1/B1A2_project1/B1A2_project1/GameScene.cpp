@@ -76,7 +76,7 @@ void GameScene::Init()
 	}
 	else
 	{
-		_curStageNum = 1;
+		_curStageNum = 2;
 		SetStage(_curStageNum);
 	}
 
@@ -1615,7 +1615,7 @@ void GameScene::SetStage1()
 		// Player가 없다면 생성
 		if (!_player)
 		{
-			Player* player = SpawnObject<Player>(1, { 6000, 400 }, LAYER_PLAYER);
+			Player* player = SpawnObject<Player>(1, { 200, 200 }, LAYER_PLAYER);
 			_player = player;
 		}
 		
@@ -2067,6 +2067,8 @@ void GameScene::SetStructureStageN(int32 stageNum)
 			ZipLine* zipLine = SpawnObject<ZipLine>({ info.spawnPos }, LAYER_STRUCTURE);
 
 			// 시작 - 끝 위치
+			zipLine->SetInitialBeginPos({ info.zipLineStartPos });
+			zipLine->SetInitialEndPos({ info.zipLineEndPos });
 			zipLine->SetBeginPos({ info.zipLineStartPos });
 			zipLine->SetEndPos({ info.zipLineEndPos });
 
@@ -2091,6 +2093,7 @@ void GameScene::SetStructureStageN(int32 stageNum)
 				zipLine->SetZipLineRenderType(ZipLineRenderType::Line);
 
 			zipLine->SetPlayer(_player);
+			_zipLines.push_back(zipLine);
 		}
 		else if (info.name == L"DestructibleObject")
 		{
@@ -2258,6 +2261,19 @@ void GameScene::LoadGameData()
 	}
 
 	file.close();
+}
+
+void GameScene::ResetStructureWhenPlayerDead()
+{
+	for (ZipLine* zipLine : _zipLines)
+	{
+		if (!zipLine)
+			continue;
+
+		zipLine->SetBeginPos(zipLine->GetInitialBeginPos());
+		zipLine->SetEndPos(zipLine->GetInitialEndPos());
+		zipLine->SetMidPos({ 0, 0 });
+	}
 }
 
 void GameScene::SetSceneState()

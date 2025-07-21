@@ -49,7 +49,7 @@ void Game::Init(HWND hwnd)
 	GET_SINGLE(CollisionManager)->Init();
 	GET_SINGLE(DialogueManager)->Init();
 
-	GET_SINGLE(SceneManager)->ChangeScene(SceneType::TilemapScene);
+	GET_SINGLE(SceneManager)->ChangeScene(SceneType::TitleScene);
 }
 
 void Game::Update()
