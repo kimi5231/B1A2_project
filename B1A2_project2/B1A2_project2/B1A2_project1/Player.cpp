@@ -540,6 +540,7 @@ void Player::TickDead()
 			SubtractSkillPoint(5);
 		}
 
+		scene->ResetStructureWhenPlayerDead();	// 짚라인 위치 리셋
 		SetState(IDLE);
 	}
 }
