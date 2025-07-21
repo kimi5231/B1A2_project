@@ -8,11 +8,11 @@ public:
 
 public:
 	void SetActorInfo(int64 id, Vec2 pos);
-	void SetActorInfo(Protocol::ActorInfo info) { _info = info; }
-	Protocol::ActorInfo GetActorInfo() { return _info; }
+	void SetActorInfo(Protocol::ActorInfo info) { _actorInfo = info; }
+	Protocol::ActorInfo GetActorInfo() { return _actorInfo; }
 
-	int32 GetId() { return _info.id(); }
+	int32 GetId() { return _actorInfo.id(); }
 
-private:
-	Protocol::ActorInfo _info;
+protected:
+	Protocol::ActorInfo _actorInfo;
 };

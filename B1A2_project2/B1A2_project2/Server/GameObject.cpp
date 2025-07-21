@@ -5,6 +5,8 @@
 #include "BrokenCopyMachine.h"
 #include "Stat.h"
 #include "Stage.h"
+#include "GameRoom.h"
+#include "ServerPacketHandler.h"
 #include "DataManager.h"
 
 atomic<uint64> GameObject::_idGenerator = 1;
@@ -17,14 +19,21 @@ GameObject::~GameObject()
 {
 }
 
-void GameObject::SetObjectInfo(Protocol::OBJECT_STATE_TYPE stat, Protocol::DIR_TYPE dir)
+void GameObject::SetState(ObjectState state)
 {
-	Protocol::ObjectInfo info;
+	if (_objectInfo.state() == state)
+		return;
 
-	info.set_dir(dir);
-	info.set_state(stat);
+	_objectInfo.set_state(state);
 
-	_info = info;
+	BroadcastMove();
+}
+
+void GameObject::SetDir(Dir dir)
+{
+	_objectInfo.set_dir(dir);
+
+	BroadcastMove();
 }
 
 PlayerRef GameObject::CreatePlayer()
@@ -36,7 +45,8 @@ PlayerRef GameObject::CreatePlayer()
 	player->SetActorInfo(_idGenerator++, { 400, 200 });
 
 	// ObjectInfo
-	player->SetObjectInfo(Protocol::OBJECT_STATE_TYPE_IDLE, Protocol::DIR_TYPE_RIGHT);
+	player->SetState(IDLE);
+	player->SetDir(DIR_RIGHT);
 
 	// Client에서 보내는 stat과 비교하는 용도 (패킷 포함X)
 	// Stat
@@ -57,7 +67,8 @@ MonsterRef GameObject::CreateMonster(FieldMonster fieldMonster)
 		tow->SetActorInfo(fieldMonster.id, fieldMonster.spawnPos);
 
 		// ObjectInfo
-		tow->SetObjectInfo(Protocol::OBJECT_STATE_TYPE_IDLE, fieldMonster.dir);
+		tow->SetState(IDLE);
+		tow->SetDir(fieldMonster.dir);
 
 		// Client에서 보내는 정보와 비교하는 용도 (패킷 포함X)
 		Stat* stat = GET_SINGLE(DataManager)->GetStat();
@@ -75,12 +86,22 @@ MonsterRef GameObject::CreateMonster(FieldMonster fieldMonster)
 		bcm->SetActorInfo(fieldMonster.id, fieldMonster.spawnPos);
 
 		// ObjectInfo
-		bcm->SetObjectInfo(Protocol::OBJECT_STATE_TYPE_IDLE, fieldMonster.dir);
+		bcm->SetState(IDLE);
+		bcm->SetDir(fieldMonster.dir);
 
 		// Client에서 보내는 정보와 비교하는 용도 (패킷 포함X)
 		Stat* stat = GET_SINGLE(DataManager)->GetStat();
 		bcm->SetBrokenCopyMachineStat(stat->GetBrokenCopyMachineStat());
 
 		return bcm;
+	}
+}
+
+void GameObject::BroadcastMove()
+{
+	if (_room)
+	{
+		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Move(_actorInfo, _objectInfo);
+		_room->Broadcast(sendBuffer);
 	}
 }

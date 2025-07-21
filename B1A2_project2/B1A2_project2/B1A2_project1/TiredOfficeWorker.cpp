@@ -88,9 +88,11 @@ void TiredOfficeWorker::BeginPlay()
 
 void TiredOfficeWorker::Tick()
 {
+	return;
+
 	Super::Tick();
 
-	TickGravity();
+	//TickGravity();
 }
 
 void TiredOfficeWorker::Render(HDC hdc)
