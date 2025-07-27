@@ -57,6 +57,7 @@ public:
 protected:
 	Dir _dir = DIR_RIGHT;
 	ObjectState _state = ObjectState::Idle;
+	ObjectState _prevState = ObjectState::Idle;
 
 	int32 _gravity = 1000;
 	float _ySpeed{};

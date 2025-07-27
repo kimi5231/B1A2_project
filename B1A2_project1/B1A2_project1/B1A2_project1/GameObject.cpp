@@ -117,7 +117,7 @@ void GameObject::Render(HDC hdc)
 void GameObject::TickGravity()
 {
 	// 땅에 닿아있으면 중력 적용 X
-	if (_isGround)
+	if (_isGround && !_isAir)
 		return;
 
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
@@ -136,7 +136,9 @@ void GameObject::SetState(ObjectState state)
 	if (_state == state)
 		return;
 
+	_prevState = _state;
 	_state = state;
+
 	UpdateAnimation();
 }
 

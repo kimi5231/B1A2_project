@@ -76,7 +76,7 @@ void GameScene::Init()
 	}
 	else
 	{
-		_curStageNum = 2;
+		_curStageNum = 3;
 		SetStage(_curStageNum);
 	}
 
