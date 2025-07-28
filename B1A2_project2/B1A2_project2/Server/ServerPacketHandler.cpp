@@ -11,8 +11,10 @@ void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int
 	BufferReader br(buffer, len);
 
 	PacketHeader header;
+	// 패킷 헤더 읽어오기
 	br.Peek(&header);
 
+	// 헤더 id에 따라 처리
 	switch (header.id)
 	{
 	case C_Move:

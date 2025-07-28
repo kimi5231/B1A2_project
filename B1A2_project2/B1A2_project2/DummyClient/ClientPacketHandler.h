@@ -1,5 +1,5 @@
 #pragma once
-
+// Protocol 종류
 enum
 {
 	S_TEST = 1
@@ -10,10 +10,10 @@ class ClientPacketHandler
 public:
 	static void HandlePacket(BYTE* buffer, int32 len);
 
-	// 받기
+	// 수신
 	static void Handle_S_TEST(BYTE* buffer, int32 len);
 
-	// 보내기
+	// 송신
 	template<typename T>
 	static SendBufferRef MakeSendBuffer(T& pkt, uint16 pktId)
 	{

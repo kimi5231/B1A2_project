@@ -22,18 +22,13 @@ using LockGuard = std::lock_guard<std::mutex>;
 // shared_ptr
 using IocpCoreRef = std::shared_ptr<class IocpCore>;
 using IocpObjectRef = std::shared_ptr<class IocpObject>;
+using ListenerRef = std::shared_ptr<class Listener>;
 using SessionRef = std::shared_ptr<class Session>;
 using ServerSessionRef = std::shared_ptr<class ServerSession>;
 using PacketSessionRef = std::shared_ptr<class PacketSession>;
-using ListenerRef = std::shared_ptr<class Listener>;
 using ServerServiceRef = std::shared_ptr<class ServerService>;
 using ClientServiceRef = std::shared_ptr<class ClientService>;
 using SendBufferRef = std::shared_ptr<class SendBuffer>;
-
-#define size16(val)		static_cast<int16>(sizeof(val))
-#define size32(val)		static_cast<int32>(sizeof(val))
-#define len16(arr)		static_cast<int16>(sizeof(arr)/sizeof(arr[0]))
-#define len32(arr)		static_cast<int32>(sizeof(arr)/sizeof(arr[0]))
 
 // 2Â÷¿ø º¤ÅÍ
 struct Vec2

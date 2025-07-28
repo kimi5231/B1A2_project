@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "GameSession.h"
 #include "GameRoom.h"
-#include "GameSessionManager.h"
 #include "ServerPacketHandler.h"
+#include "GameSessionManager.h"
 
 void GameSession::OnConnected()
 {

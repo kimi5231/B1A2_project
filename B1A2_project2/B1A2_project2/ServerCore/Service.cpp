@@ -6,7 +6,6 @@
 Service::Service(ServiceType type, NetAddress address, IocpCoreRef core, SessionFactory factory, int32 maxSessionCount)
 	: _type(type), _netAddress(address), _iocpCore(core), _sessionFactory(factory), _maxSessionCount(maxSessionCount)
 {
-
 }
 
 Service::~Service()
@@ -15,14 +14,15 @@ Service::~Service()
 
 void Service::CloseService()
 {
-
 }
 
 SessionRef Service::CreateSession()
 {
+	// session 생성 후, service와 연결
 	SessionRef session = _sessionFactory();
 	session->SetService(shared_from_this());
 
+	// session을 CP에 등록
 	if (_iocpCore->Register(session) == false)
 		return nullptr;
 
@@ -42,6 +42,8 @@ void Service::ReleaseSession(SessionRef session)
 	assert(_sessions.erase(session) != 0);
 	_sessionCount--;
 }
+
+//-----------------------------------------------------------------
 
 ClientService::ClientService(NetAddress targetAddress, IocpCoreRef core, SessionFactory factory, int32 maxSessionCount)
 	: Service(ServiceType::Client, targetAddress, core, factory, maxSessionCount)
@@ -64,6 +66,8 @@ bool ClientService::Start()
 	return true;
 }
 
+//-----------------------------------------------------------------
+
 ServerService::ServerService(NetAddress address, IocpCoreRef core, SessionFactory factory, int32 maxSessionCount)
 	: Service(ServiceType::Server, address, core, factory, maxSessionCount)
 {
@@ -78,6 +82,7 @@ bool ServerService::Start()
 	if (_listener == nullptr)
 		return false;
 
+	// listen socket 접속 요청 대기 시작
 	ServerServiceRef service = std::static_pointer_cast<ServerService>(shared_from_this());
 	if (_listener->StartAccept(service) == false)
 		return false;

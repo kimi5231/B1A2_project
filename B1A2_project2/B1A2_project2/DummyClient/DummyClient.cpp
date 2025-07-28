@@ -1,9 +1,7 @@
 ﻿#include "pch.h"
-#include <iostream>
-#include "ThreadManager.h"
 #include "Service.h"
-#include "Session.h"
 #include "ClientPacketHandler.h"
+#include "ThreadManager.h"
 #include <chrono>
 
 char sendData[] = "Hello World";
@@ -13,12 +11,12 @@ class ServerSession : public PacketSession
 public:
 	~ServerSession()
 	{
-		cout << "~ServerSession" << endl;
+		std::cout << "~ServerSession" << std::endl;
 	}
 
 	virtual void OnConnected() override
 	{
-		cout << "Connected To Server" << endl;
+		std::cout << "Connected To Server" << std::endl;
 	}
 
 	virtual void OnRecvPacket(BYTE* buffer, int32 len) override
@@ -39,14 +37,14 @@ public:
 
 int main()
 {
-	this_thread::sleep_for(1s);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 
 	SocketUtils::Init();
 
-	ClientServiceRef service = make_shared<ClientService>(
+	ClientServiceRef service = std::make_shared<ClientService>(
 		NetAddress(L"61.255.49.141", 7777),
-		make_shared<IocpCore>(),
-		[]() { return make_shared<ServerSession>(); }, // TODO : SessionManager 등
+		std::make_shared<IocpCore>(),
+		[]() { return std::make_shared<ServerSession>(); },
 		5);
 
 	assert(service->Start());
@@ -63,5 +61,6 @@ int main()
 	}
 
 	GThreadManager->Join();
+
 	SocketUtils::Clear();
 }

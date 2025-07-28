@@ -1,5 +1,5 @@
 #pragma once
-
+// Protocol 종류
 enum
 {
 	S_TEST = 1,
@@ -25,11 +25,10 @@ class ServerPacketHandler
 public:
 	static void HandlePacket(GameSessionRef session, BYTE* buffer, int32 len);
 
-	// 받기
+	// 수신
 	static void Handle_C_Move(GameSessionRef session, BYTE* buffer, int32 len);
 
-	// 보내기
-	static SendBufferRef Make_S_TEST(uint64 id, uint32 hp, uint16 attack, std::vector<BuffData> buffs);
+	// 송신
 	static SendBufferRef Make_S_EnterGame();
 	static SendBufferRef Make_S_AddObject(const Protocol::S_AddObject& pkt);
 	static SendBufferRef Make_S_RemoveObject(const Protocol::S_RemoveObject& pkt);

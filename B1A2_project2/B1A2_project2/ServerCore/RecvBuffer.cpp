@@ -33,6 +33,7 @@ void RecvBuffer::Clean()
 
 bool RecvBuffer::OnRead(int32 numOfBytes)
 {
+	// 남은 데이터의 크기가 한 번에 읽는 데이터의 크기보다 적으면 리턴
 	if (numOfBytes > DataSize())
 		return false;
 
@@ -42,6 +43,7 @@ bool RecvBuffer::OnRead(int32 numOfBytes)
 
 bool RecvBuffer::OnWrite(int32 numOfBytes)
 {
+	// 남은 공간이 한 번에 쓰는 데이터의 크기보다 적으면 리턴
 	if (numOfBytes > FreeSize())
 		return false;
 

@@ -1,5 +1,4 @@
 #pragma once
-
 class RecvBuffer
 {
 	enum { BUFFER_COUNT = 10 };
@@ -18,10 +17,11 @@ public:
 	int32 FreeSize() { return _capacity - _writePos; }
 
 private:
+	// 전체 버퍼 크기
 	int32 _capacity = 0;
+	// 버퍼 하나의 크기
 	int32 _bufferSize = 0;
 	int32 _readPos = 0;
 	int32 _writePos = 0;
 	std::vector<BYTE> _buffer;
 };
-

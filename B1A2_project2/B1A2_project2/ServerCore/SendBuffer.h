@@ -1,5 +1,4 @@
 #pragma once
-
 class SendBuffer : std::enable_shared_from_this<SendBuffer>
 {
 public:
@@ -14,6 +13,6 @@ public:
 	void Close(uint32 writeSize);
 
 private:
-	std::vector<BYTE>	_buffer;
-	int32			_writeSize = 0;
+	std::vector<BYTE> _buffer;
+	int32 _writeSize = 0;
 };
