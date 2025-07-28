@@ -145,7 +145,7 @@ public:
 
 	void AdjustCollisionPos(BoxCollider* b1, BoxCollider* b2);	// Æ¨±â±â
 	void AdjustCollisionPosGround(BoxCollider* b1, BoxCollider* b2);
-
+	void AdjustPlayerPosWhenStateChange(float diffY);
 public:
 	// Item
 	void RemoveItem(int32 id, int32 count);
@@ -159,6 +159,9 @@ public:
 	void SetIsCloseAtk(bool isCloseAtk) { _isCloseAtk = isCloseAtk; }
 
 	bool isSkillActive() const { return _state == ObjectState::SkillReady || _state == ObjectState::SkillWaiting || _state == ObjectState::SkillEnd; }
+
+	void SetIsGroundAndIsAir(bool isGround, bool isAir) { _isGround = isGround, _isAir = isAir; }
+
 private:
 	// Flipbook
 	Flipbook* _flipbookPlayerIdle[2] = {};

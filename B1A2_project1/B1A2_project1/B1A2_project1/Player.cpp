@@ -141,69 +141,6 @@ void Player::Tick()
 	// 플레이어가 화면 밖으로 넘어가지 않도록
 	Vec2Int mapSize = GET_SINGLE(ValueManager)->GetMapSize();
 	_pos.x = std::clamp(_pos.x, (float)(67 / 2), (float)mapSize.x);
-
-	// Ground or Air 판단 코드(추후 코드 정리 필요)
-	{
-		Scene* scene = GET_SINGLE(SceneManager)->GetCurrentScene();
-
-		TilemapActor* actor = dynamic_cast<TilemapActor*>(scene->GetActor(-2));
-
-		const std::vector<Component*>& components = actor->GetComponents();
-
-		for (Component* component : components)
-		{
-			if (dynamic_cast<BoxCollider*>(component))
-			{
-				BoxCollider* collider = dynamic_cast<BoxCollider*>(component);
-
-				if (collider->GetCollisionLayer() == CLT_GROUND || collider->GetCollisionLayer() == CLT_STAIR || collider->GetCollisionLayer() == CLT_GAME_OVER)
-				{
-					Vec2 pos = _playerCollider->GetPos();
-					float posX1 = pos.x - _playerCollider->GetSize().x / 2;
-					float posX2 = pos.x + _playerCollider->GetSize().x / 2;
-					float posY = pos.y +  _playerCollider->GetSize().y / 2;
-					
-					if (collider->GetPos().x - 20 < posX1 && posX1 < collider->GetPos().x + 20)
-					{
-						if (collider->GetPos().y - 20 < posY && posY < collider->GetPos().y + 20)
-						{
-							_isAir = false;
-							_isGround = true;
-
-							if (collider->GetCollisionLayer() == CLT_STAIR)
-								_isOnStair = true;
-							else
-								_isOnStair = false;
-
-							return;
-						}
-					}
-
-					if (collider->GetPos().x - 20 < posX2 && posX2 < collider->GetPos().x + 20)
-					{
-						if (collider->GetPos().y - 20 < posY && posY < collider->GetPos().y + 20)
-						{
-							_isAir = false;
-							_isGround = true;
-
-							if (collider->GetCollisionLayer() == CLT_STAIR)
-								_isOnStair = true;
-							else
-								_isOnStair = false;
-
-							return;
-						}
-					}
-				}
-			}
-		}
-
-		if (_state != ObjectState::Hang)
-		{
-			_isAir = true;
-			_isGround = false;
-		}
-	}
 }
 
 void Player::Render(HDC hdc)
@@ -239,8 +176,7 @@ void Player::TickIdle()
 		if (!_isGround && _isAir)
 			return;
 
-		_isGround = false;
-		_isAir = true;
+		SetIsGroundAndIsAir(false, true);
 
 		SetState(ObjectState::Jump);
 
@@ -311,8 +247,7 @@ void Player::TickMove()
 		if (!_isGround && _isAir)
 			return;
 
-		_isGround = false;
-		_isAir = true;
+		SetIsGroundAndIsAir(false, true);
 
 		SetState(ObjectState::Jump);
 
@@ -614,8 +549,7 @@ void Player::TickHang()
 		_pos.x = beginPos.x;
 		_pos.y = beginPos.y + 50;	// 위치 보정
 
-		_isGround = true;
-		_isAir = false;
+		SetIsGroundAndIsAir(true, false);
 
 		sumTime += GET_SINGLE(TimeManager)->GetDeltaTime();
 
@@ -643,8 +577,7 @@ void Player::TickHang()
 
 			_pos.y -= 50;	// 위치 보정
 
-			_isGround = false;
-			_isAir = true;
+			SetIsGroundAndIsAir(false, true);
 
 			_currentZipLine->SetMidPos(_pos);
 
@@ -660,8 +593,7 @@ void Player::TickHang()
 			isMoving = false;
 			sumTime = 0.0f;
 
-			_isGround = false;
-			_isAir = true;
+			SetIsGroundAndIsAir(false, true);
 
 			_currentZipLine->SetMidPos({ 0, 0 });	// 중간 하차 X
 
@@ -764,7 +696,8 @@ void Player::TickDead()
 void Player::UpdateAnimation()
 {
 	Vec2 colliderSize = _playerCollider->GetSize();
-
+	float prevBottom = _playerCollider->GetRect().bottom;
+	
 	switch (_state)
 	{
 	case ObjectState::Idle:
@@ -832,11 +765,18 @@ void Player::UpdateAnimation()
 		break;
 	}
 
-	if (colliderSize.y > _playerCollider->GetSize().y)
-	{
-		_isGround = false;
-		_isAir = true;
-	}
+	float newBottom = _playerCollider->GetRect().bottom;
+	float diffY = prevBottom - newBottom;
+
+	if (_isGround && !_isAir)	// 땅에 닿았을 때만 보정
+		AdjustPlayerPosWhenStateChange(diffY);
+
+	// ???
+	//if (colliderSize.y > _playerCollider->GetSize().y)
+	//{
+	//	_isGround = false;
+	//	_isAir = true;
+	//}
 }
 
 void Player::TickColliderCreationAndRemove()
@@ -1349,14 +1289,19 @@ void Player::OnComponentBeginOverlap(Collider* collider, Collider* other)
 		return;
 	}
 
+	// 땅
+	if (b1->GetCollisionLayer() == CLT_PLAYER && b2->GetCollisionLayer() == CLT_GROUND)
+	{
+		SetIsGroundAndIsAir(true, false);
+	}
+
 	// 계단
 	if (b2->GetCollisionLayer() == CLT_STAIR)
 	{
 		// Jump State일때만 충돌
 		if (_state == ObjectState::Jump)
 		{
-			_isGround = true;
-			_isAir = false;
+			SetIsGroundAndIsAir(true, false);
 			//_isOnStair = true;
 		}
 	}
@@ -1469,11 +1414,6 @@ void Player::OnComponentOverlapping(Collider* collider, Collider* other)
 		return;
 	}
 
-	if (b2->GetCollisionLayer() == CLT_GAME_OVER)
-	{
-		AdjustCollisionPos(b1, b2);
-		return;
-	}
 
 	if (b2->GetCollisionLayer() == CLT_STRUCTURE_COLLISION)
 	{
@@ -1560,6 +1500,19 @@ void Player::AdjustCollisionPosGround(BoxCollider* b1, BoxCollider* b2)
 		pos.y -= h;	
 		colliderPos.y -= h;
 	}
+
+	SetPos(pos);
+	_playerCollider->SetPos(colliderPos);
+}
+
+void Player::AdjustPlayerPosWhenStateChange(float diffY)
+{
+	Vec2 pos = GetPos();
+	Vec2 colliderPos = _playerCollider->GetPos();
+
+	// 공중에 뜬 차이만큼 아래로 보정
+	pos.y += diffY;
+	colliderPos.y += diffY;
 
 	SetPos(pos);
 	_playerCollider->SetPos(colliderPos);
