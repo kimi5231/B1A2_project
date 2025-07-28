@@ -2026,6 +2026,8 @@ void GameScene::SetFinalBossStage()
 		AddPanel(panel);
 
 		_finalBoss->SetHealthObserver([panel](int health) {  if (panel) panel->UpdateHealthPoint(health); });
+
+		_finalBoss->SetHealthPoint(1500);	// 수정 소환 테스트를 위해 초기 Hp 줄임
 	}
 
 	Super::Init();
