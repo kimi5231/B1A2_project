@@ -1115,7 +1115,7 @@ void Player::OnComponentBeginOverlap(Collider* collider, Collider* other)
 		return;
 
 	// Item과 충돌하면 F key 활성화(밀어내기 X)
-	if (b2->GetCollisionLayer() == CLT_ITEM)
+	if (b1->GetCollisionLayer() == CLT_PLAYER && b2->GetCollisionLayer() == CLT_ITEM)
 	{
 		ItemActor* item = reinterpret_cast<ItemActor*>(b2->GetOwner());
 
@@ -1133,7 +1133,7 @@ void Player::OnComponentBeginOverlap(Collider* collider, Collider* other)
 	}
 	
 	// Structure Detect
-	if (b2->GetCollisionLayer() == CLT_STRUCTURE_DETECT)
+	if (b1->GetCollisionLayer() == CLT_PLAYER && b2->GetCollisionLayer() == CLT_STRUCTURE_DETECT)
 	{
 		Structure* structure = dynamic_cast<Structure*>(b2->GetOwner());
 		if (!structure)
@@ -1177,7 +1177,7 @@ void Player::OnComponentBeginOverlap(Collider* collider, Collider* other)
 	}
 
 	// Structure
-	if (b2->GetCollisionLayer() == CLT_STRUCTURE)
+	if (b1->GetCollisionLayer() == CLT_PLAYER && b2->GetCollisionLayer() == CLT_STRUCTURE)
 	{
 		Structure* structure = dynamic_cast<Structure*>(b2->GetOwner());
 		if (!structure)
@@ -1217,7 +1217,7 @@ void Player::OnComponentBeginOverlap(Collider* collider, Collider* other)
 		}
 	}
 	// Structure Collision
-	if (b2->GetCollisionLayer() == CLT_STRUCTURE_COLLISION)
+	if (b1->GetCollisionLayer() == CLT_PLAYER && b2->GetCollisionLayer() == CLT_STRUCTURE_COLLISION)
 	{
 		Structure* structure = dynamic_cast<Structure*>(b2->GetOwner());
 		if (!structure)
@@ -1243,7 +1243,7 @@ void Player::OnComponentBeginOverlap(Collider* collider, Collider* other)
 	}
 
 	// Projectile
-	if (b2->GetCollisionLayer() == CLT_PROJECTILE)
+	if (b1->GetCollisionLayer() == CLT_PLAYER && b2->GetCollisionLayer() == CLT_PROJECTILE)
 	{
 		// 스킬 중엔 Projectile 안 맞도록
 		if (_state == ObjectState::SkillReady || _state == ObjectState::SkillEnd || _state == ObjectState::SkillWaiting)
@@ -1257,14 +1257,14 @@ void Player::OnComponentBeginOverlap(Collider* collider, Collider* other)
 	}
 
 	// 낙사
-	if (b2->GetCollisionLayer() == CLT_GAME_OVER)
+	if (b1->GetCollisionLayer() == CLT_PLAYER && b2->GetCollisionLayer() == CLT_GAME_OVER)
 	{
 		SetState(ObjectState::Dead);
 		return;
 	}
 	
 	// Save Point에 충돌하면 저장하기(밀어내기 X)
-	if (b2->GetCollisionLayer() == CLT_SAVE_POINT)
+	if (b1->GetCollisionLayer() == CLT_PLAYER && b2->GetCollisionLayer() == CLT_SAVE_POINT)
 	{
 		_gameScene->SaveCurData();
 
@@ -1272,7 +1272,7 @@ void Player::OnComponentBeginOverlap(Collider* collider, Collider* other)
 	}
 
 	// Next - 다음 스테이지로
-	if (b2->GetCollisionLayer() == CLT_NEXT)
+	if (b1->GetCollisionLayer() == CLT_PLAYER && b2->GetCollisionLayer() == CLT_NEXT)
 	{
 		GameScene* scene = dynamic_cast<GameScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
 		
@@ -1296,7 +1296,7 @@ void Player::OnComponentBeginOverlap(Collider* collider, Collider* other)
 	}
 
 	// 계단
-	if (b2->GetCollisionLayer() == CLT_STAIR)
+	if (b1->GetCollisionLayer() == CLT_PLAYER && b2->GetCollisionLayer() == CLT_STAIR)
 	{
 		// Jump State일때만 충돌
 		if (_state == ObjectState::Jump)
@@ -1342,7 +1342,7 @@ void Player::OnComponentEndOverlap(Collider* collider, Collider* other)
 	}
 
 	// ZipLine
-	if (b2->GetCollisionLayer() == CLT_STRUCTURE_DETECT)
+	if (b1->GetCollisionLayer() == CLT_PLAYER && b2->GetCollisionLayer() == CLT_STRUCTURE_DETECT)
 	{
 		_nearZipLine = nullptr;
 
@@ -1350,7 +1350,7 @@ void Player::OnComponentEndOverlap(Collider* collider, Collider* other)
 	}
 
 	// Structure
-	if (b2->GetCollisionLayer() == CLT_STRUCTURE)
+	if (b1->GetCollisionLayer() == CLT_PLAYER && b2->GetCollisionLayer() == CLT_STRUCTURE)
 	{
 		Structure* structure = dynamic_cast<Structure*>(b2->GetOwner());
 	
@@ -1396,26 +1396,26 @@ void Player::OnComponentOverlapping(Collider* collider, Collider* other)
 	if (b1 == nullptr || b2 == nullptr)
 		return;
 
-	if (b2->GetCollisionLayer() == CLT_WALL)
+	if (b1->GetCollisionLayer() == CLT_PLAYER && b2->GetCollisionLayer() == CLT_WALL)
 	{
 		AdjustCollisionPos(b1, b2);
 		return;
 	}
 
-	if (b2->GetCollisionLayer() == CLT_GROUND)
+	if (b1->GetCollisionLayer() == CLT_PLAYER && b2->GetCollisionLayer() == CLT_GROUND)
 	{
 		AdjustCollisionPosGround(b1, b2);
 		return;
 	}
 
-	if (b2->GetCollisionLayer() == CLT_STAIR && _isOnStair)
+	if (b1->GetCollisionLayer() == CLT_PLAYER && b2->GetCollisionLayer() == CLT_STAIR && _isOnStair)
 	{
 		AdjustCollisionPosGround(b1, b2);
 		return;
 	}
 
 
-	if (b2->GetCollisionLayer() == CLT_STRUCTURE_COLLISION)
+	if (b1->GetCollisionLayer() == CLT_PLAYER && b2->GetCollisionLayer() == CLT_STRUCTURE_COLLISION)
 	{
 		Structure* structure = dynamic_cast<Structure*>(b2->GetOwner());
 
