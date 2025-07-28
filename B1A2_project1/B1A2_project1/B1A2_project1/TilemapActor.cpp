@@ -43,9 +43,10 @@ void TilemapActor::BeginPlay()
 			{
 			case 1:
 				collider->SetCollisionLayer(CLT_GAME_OVER); break;
-				break;
 			case 2:
-				collider->SetCollisionLayer(CLT_GROUND); break;
+				collider->SetCollisionLayer(CLT_GROUND); 
+				collider->AddCollisionFlagLayer(CLT_GROUND_DETECT);
+				break;
 			case 3:
 				collider->SetCollisionLayer(CLT_WALL); break;
 			case 4:

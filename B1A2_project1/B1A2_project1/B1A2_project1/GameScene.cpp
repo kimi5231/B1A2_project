@@ -76,7 +76,7 @@ void GameScene::Init()
 	}
 	else
 	{
-		_curStageNum = 3;
+		_curStageNum = 1;
 		SetStage(_curStageNum);
 	}
 
@@ -1615,11 +1615,13 @@ void GameScene::SetStage1()
 		// Player가 없다면 생성
 		if (!_player)
 		{
-			Player* player = SpawnObject<Player>(1, { 200, 200 }, LAYER_PLAYER);
+			Player* player = SpawnObject<Player>({ 72, 293 }, LAYER_PLAYER);
 			_player = player;
 		}
 		
+		_player->SetPos({ 72, 293 });
 		_player->SetCurStageNum(_curStageNum);
+		_player->SetIsGroundAndIsAir(true, false);	// 생성시 바닥에 닿아 있음(TickGravity 적용 X)
 	}
 
 	// Monster
@@ -1731,12 +1733,13 @@ void GameScene::SetStage2()
 		// Player가 없다면 생성
 		if (!_player)
 		{
-			Player* player = SpawnObject<Player>({ 370, 200 }, LAYER_PLAYER);
+			Player* player = SpawnObject<Player>({ 72, 293 }, LAYER_PLAYER);
 			_player = player;
 		}
-
-		_player->SetPos({ 370, 200 });
+		_player->SetPos({ 72, 293 });
+		
 		_player->SetCurStageNum(_curStageNum);
+		_player->SetIsGroundAndIsAir(true, false);	// 생성시 바닥에 닿아 있음(TickGravity 적용 X)
 	}
 
 	// Monster
@@ -1840,7 +1843,6 @@ void GameScene::SetStage3()
 	for (Actor* actor : toRemove)
 		RemoveActor(actor);
 
-
 	// Map
 	{
 		Sprite* sprite = GET_SINGLE(ResourceManager)->GetSprite(L"Stage3");
@@ -1866,12 +1868,13 @@ void GameScene::SetStage3()
 		// Player가 없다면 생성
 		if (!_player)
 		{
-			Player* player = SpawnObject<Player>({ 400, 200 }, LAYER_PLAYER);
+			Player* player = SpawnObject<Player>({ 172, 293 }, LAYER_PLAYER);
 			_player = player;
 		}
 
-		_player->SetPos({ 400, 200 });
+		_player->SetPos({ 172, 293 });
 		_player->SetCurStageNum(_curStageNum);
+		_player->SetIsGroundAndIsAir(true, false);	// 생성시 바닥에 닿아 있음(TickGravity 적용 X)
 	}
 
 	// Monster
@@ -2007,6 +2010,7 @@ void GameScene::SetFinalBossStage()
 
 		_player->SetPos({ 200, 520 });
 		_player->SetCurStageNum(_curStageNum);
+		_player->SetIsGroundAndIsAir(true, false);	// 생성시 바닥에 닿아 있음(TickGravity 적용 X)
 	}
 
 	// FinalBoss

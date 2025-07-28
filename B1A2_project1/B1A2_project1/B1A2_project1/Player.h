@@ -204,6 +204,7 @@ private:
 	Collider* _attackCollider = nullptr;
 	Collider* _detectCollider = nullptr;	// 근거리, 원거리 공격 결정 
 	Collider* _skillCollider = nullptr;
+	BoxCollider* _playerGroundDetectCollider = nullptr;		// 플레이어 아래에 Ground가 있는지 체크
 
 	bool _isCloseAtk = false;
 	bool _isKeyAcquire = false;

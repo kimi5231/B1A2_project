@@ -29,6 +29,13 @@ void BoxCollider::BeginPlay()
 	if (!dynamic_cast<TilemapActor*>(GetOwner()))
 		_pos = GetOwner()->GetPos();
 	
+	if (GetCollisionLayer() == CLT_GROUND_DETECT && dynamic_cast<Player*>(GetOwner()))
+	{
+		Player* owner = dynamic_cast<Player*>(GetOwner());
+
+		_pos.y = owner->GetPos().y + 50;
+	}
+
 	if (GetCollisionLayer() == CLT_DETECT && dynamic_cast<Monster*>(GetOwner()))
 	{
 		Monster* owner = dynamic_cast<Monster*>(GetOwner());
@@ -114,6 +121,13 @@ void BoxCollider::TickComponent()
 
 	if (!dynamic_cast<TilemapActor*>(GetOwner()))
 		_pos = GetOwner()->GetPos();
+
+	if (GetCollisionLayer() == CLT_GROUND_DETECT && dynamic_cast<Player*>(GetOwner()))
+	{
+		Player* owner = dynamic_cast<Player*>(GetOwner());
+
+		_pos.y = owner->GetPos().y + 50;
+	}
 
 	if (GetCollisionLayer() == CLT_DETECT && dynamic_cast<Monster*>(GetOwner()))
 	{

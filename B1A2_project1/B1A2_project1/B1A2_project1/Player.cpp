@@ -104,7 +104,28 @@ Player::Player()
 			AddComponent(collider);
 			SetPlayerCollider(collider);
 		}
+
+		// Player Ground Detect Collider
+		{
+			BoxCollider* collider = new BoxCollider();
+			// 리셋 안 하면 모두 충돌함
+			collider->ResetCollisionFlag();
+
+			// 나 자신을 설정
+			collider->SetCollisionLayer(CLT_GROUND_DETECT);
+
+			// 충돌하고 싶은 객체 설정
+			collider->AddCollisionFlagLayer(CLT_GROUND);
+
+			collider->SetSize({ 40, 60 });
+
+			GET_SINGLE(CollisionManager)->AddCollider(collider);
+			AddComponent(collider);
+			_playerGroundDetectCollider = collider;
+		}
 	}
+
+	SetIsGroundAndIsAir(true, false);	// 시작할 때는 땅 위에 있음
 }
 
 Player::~Player()
@@ -135,6 +156,24 @@ void Player::Tick()
 	TickWindow();
 
 	TickFootHold();
+
+	// 움직일 때 땅과 떨어지면 _isGround = false, _isAir = true
+	if (_state == ObjectState::Move || _state == ObjectState::DuckDownMove)
+	{
+		bool isContactGround = false;
+		if (!_playerGroundDetectCollider)
+			return;
+		for (Collider* other : _playerGroundDetectCollider->_collisionMap)
+		{
+			if (other->GetCollisionLayer() == CLT_GROUND)
+			{
+				isContactGround = true;
+				break;
+			}
+		}
+		if (!isContactGround)
+			SetIsGroundAndIsAir(false, true);
+	}
 
 	TickGravity();
 
@@ -683,7 +722,16 @@ void Player::TickDead()
 		}
 		else
 		{
-			SetPos({ 400, 200 });
+			switch (_curStageNum)
+			{
+			case 1:
+				SetPos({ 72, 293 });  break;	// 수정 필요
+			case 2:
+				SetPos({ 72, 293 }); break;	// 수정 필요
+			case 3:
+				SetPos({ 172, 293 }); break;
+			}
+
 			AddHealthPoint(100);
 			SubtractSkillPoint(5);
 		}
@@ -1405,6 +1453,7 @@ void Player::OnComponentOverlapping(Collider* collider, Collider* other)
 	if (b1->GetCollisionLayer() == CLT_PLAYER && b2->GetCollisionLayer() == CLT_GROUND)
 	{
 		AdjustCollisionPosGround(b1, b2);
+		SetIsGroundAndIsAir(true, false);
 		return;
 	}
 
