@@ -1,5 +1,6 @@
 #pragma once
 #include "Timer.h"
+#include "Scene.h"
 
 class CGameFramework
 {
@@ -41,6 +42,8 @@ public:
 
 	// 전체 화면 
 	void ChangeSwapChainState();
+
+	void MoveToNextFrame();
 private:
 	HINSTANCE m_hInstance;
 	HWND m_hWnd;
@@ -89,5 +92,11 @@ private:
 	// 타이머
 	CGameTimer m_GameTimer;
 	_TCHAR m_pszFrameRate[50];	// 출력 위한 문자열
+
+	// 후면 버퍼마다 현재 펜스 값 관리
+	UINT64 m_nFenceValues[m_nSwapChainBuffers];
+	
+	// 씬
+	CScene* m_pScene;
 };
 
