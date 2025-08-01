@@ -28,6 +28,9 @@ CGameFramework::CGameFramework()
 
 	m_nWndClientWidth = FRAME_BUFFER_WIDTH;
 	m_nWndClientHeight = FRAME_BUFFER_HEIGHT;
+
+	// 타이머
+	_tcscpy_s(m_pszFrameRate, _T("LapProject ("));
 }
 
 CGameFramework::~CGameFramework()
@@ -308,6 +311,9 @@ void CGameFramework::AnimateObjects()
 
 void CGameFramework::FrameAdvance()
 {
+	//타이머의 시간이 갱신되도록 하고 프레임 레이트를 계산
+	m_GameTimer.Tick(0.0f);
+
 	ProcessInput();
 
 	AnimateObjects();
@@ -379,6 +385,10 @@ void CGameFramework::FrameAdvance()
 	m_pdxgiSwapChain->Present1(1, 0, &dxgiPresentParameters);
 
 	m_nSwapChainBufferIndex = m_pdxgiSwapChain->GetCurrentBackBufferIndex();
+
+	// 윈도우 타이틀에 FPS 출력 
+	m_GameTimer.GetFrameRate(m_pszFrameRate + 12, 37);
+	::SetWindowText(m_hWnd, m_pszFrameRate);
 }
 
 void CGameFramework::WaitForGpuComplete()

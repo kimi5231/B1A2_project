@@ -18,6 +18,10 @@
 #include <wrl.h>
 #include <shellapi.h>
 
+// 타이머
+#include <mmsystem.h>
+#pragma comment(lib, "winmm.lib")
+
 // Direct3D 라이브러리 헤더
 #include <d3d12.h>
 #include <dxgi1_4.h>
