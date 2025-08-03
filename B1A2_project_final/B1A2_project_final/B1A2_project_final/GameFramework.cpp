@@ -294,11 +294,25 @@ void CGameFramework::CreateDepthStencilView()
 
 void CGameFramework::BuildObjects()
 {
+	m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
+
+	//씬 객체를 생성하고 씬에 포함될 게임 객체들을 생성
 	m_pScene = new CScene();
+	m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList);
 
-	if (m_pScene) 
-		m_pScene->BuildObjects(m_pd3dDevice);
+	//씬 객체를 생성하기 위하여 필요한 그래픽 명령 리스트들을 명령 큐에 추가
+	m_pd3dCommandList->Close();
+	ID3D12CommandList* ppd3dCommandLists[] = { m_pd3dCommandList };
+	m_pd3dCommandQueue->ExecuteCommandLists(1, ppd3dCommandLists);
 
+	//그래픽 명령 리스트들이 모두 실행될 때까지 기다린다.
+	WaitForGpuComplete();
+
+	//그래픽 리소스들을 생성하는 과정에 생성된 업로드 버퍼들을 소멸시킴
+	if (m_pScene)
+		m_pScene->ReleaseUploadBuffers();
+
+	// 타이머
 	m_GameTimer.Reset();
 }
 
