@@ -131,7 +131,7 @@ namespace Vector3
 		return(xmf3Result);
 	}
 
-	inline XMFLOAT3 Normalize(XMFLOAT3& xmf3Vector)
+	inline XMFLOAT3 Normalize(const XMFLOAT3& xmf3Vector)	// rvalue도 받을 수 있도록 const
 	{
 		XMFLOAT3 m_xmf3Normal;
 		XMStoreFloat3(&m_xmf3Normal, XMVector3Normalize(XMLoadFloat3(&xmf3Vector)));

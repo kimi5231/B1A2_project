@@ -1,9 +1,9 @@
 #pragma once
 #include "Timer.h"
 #include "GameObject.h"
+#include "Shader.h"
 
 class CCamera;
-class CShader;
 
 class CScene
 {
@@ -30,9 +30,9 @@ public:
 	ID3D12RootSignature* GetGraphicsRootSignature();
 
 protected:
-	//씬은 셰이더들의 집합, 게임 객체는 쉐이더를 포함함.
-	CGameObject** m_ppObjects = NULL;
-	int m_nObjects = 0;
+	// Batch(배치) 처리를 하기 위해 Scene을 쉐이더들의 리스트로 표현
+	CObjectsShader* m_pShaders = NULL;
+	int m_nShaders = 0;
 
 	ID3D12RootSignature* m_pd3dGraphicsRootSignature = NULL;
 };

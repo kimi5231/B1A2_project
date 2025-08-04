@@ -52,11 +52,11 @@ protected:
 	int m_nPipelineStates = 0;
 };
 
-class CDiffusedShader : public CShader
+class CPlayerShader : public CShader
 {
 public:
-	CDiffusedShader();
-	virtual ~CDiffusedShader();
+	CPlayerShader();
+	virtual ~CPlayerShader();
 
 	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout();
 	
@@ -66,3 +66,28 @@ public:
 	virtual void CreateShader(ID3D12Device* pd3dDevice, ID3D12RootSignature * pd3dGraphicsRootSignature);
 };
 
+// °ÔÀÓ °´Ã¼µéÀ» Æ÷ÇÔÇÏ´Â ½¦ÀÌ´õ °´Ã¼
+class CObjectsShader : public CShader
+{
+public:
+	CObjectsShader();
+	virtual ~CObjectsShader();
+
+	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
+	virtual void AnimateObjects(float fTimeElapsed);
+	virtual void ReleaseObjects();
+	
+	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout();
+	virtual D3D12_SHADER_BYTECODE CreateVertexShader(ID3DBlob** ppd3dShaderBlob);
+	virtual D3D12_SHADER_BYTECODE CreatePixelShader(ID3DBlob** ppd3dShaderBlob);
+	
+	virtual void CreateShader(ID3D12Device* pd3dDevice, ID3D12RootSignature* pd3dGraphicsRootSignature);
+	
+	virtual void ReleaseUploadBuffers();
+	
+	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
+
+protected:
+	CGameObject** m_ppObjects = NULL;
+	int m_nObjects = 0;
+};
