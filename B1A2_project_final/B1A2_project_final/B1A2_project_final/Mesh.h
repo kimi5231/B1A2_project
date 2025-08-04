@@ -54,6 +54,20 @@ private:
 protected:
 	ID3D12Resource* m_pd3dVertexBuffer = NULL;
 	ID3D12Resource* m_pd3dVertexUploadBuffer = NULL;
+
+	// 인덱스 버퍼와 인덱스 버퍼를 위한 업로드 버퍼에 대한 인터페이스 포인터
+	// 인덱스 버퍼는 정점 버퍼에 대한 인덱스를 가짐
+	ID3D12Resource* m_pd3dIndexBuffer = NULL;
+	ID3D12Resource* m_pd3dIndexUploadBuffer = NULL;
+	D3D12_INDEX_BUFFER_VIEW m_d3dIndexBufferView;
+
+	// 인덱스 버퍼에 포함되는 인덱스의 개수
+	UINT m_nIndices = 0;
+	// 인덱스 버퍼에서 메쉬를 그리기 위해 사용되는 시작 인덱스
+	UINT m_nStartIndex = 0;
+	// 인덱스 버퍼의 인덱스에 더해질 인덱스
+	int m_nBaseVertex = 0;
+
 	D3D12_VERTEX_BUFFER_VIEW m_d3dVertexBufferView;
 	D3D12_PRIMITIVE_TOPOLOGY m_d3dPrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	UINT m_nSlot = 0;
