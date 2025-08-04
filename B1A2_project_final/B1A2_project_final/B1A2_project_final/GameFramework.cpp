@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GameFramework.h"
+#include "Camera.h"
 
 CGameFramework::CGameFramework()
 {
@@ -31,9 +32,6 @@ CGameFramework::CGameFramework()
 
 	for (int i = 0; i < m_nSwapChainBuffers; i++) m_nFenceValues[i] = 0;
 	m_pScene = NULL;
-
-	m_d3dViewport = { 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f };
-	m_d3dScissorRect = { 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT };
 
 	// 타이머
 	_tcscpy_s(m_pszFrameRate, _T("LapProject ("));
@@ -211,17 +209,6 @@ void CGameFramework::CreateDirect3DDevice()
 	// 이벤트가 실행되면(Signal) 이벤트 값을 자동적으로 FALSE가 되도록 생성
 	m_hFenceEvent = ::CreateEvent(NULL, FALSE, FALSE, NULL);
 
-	// 뷰포트를 주 윈도우의 클라이언트 영역 전체로 설정
-	m_d3dViewport.TopLeftX = 0;
-	m_d3dViewport.TopLeftY = 0;
-	m_d3dViewport.Width = static_cast<float>(m_nWndClientWidth);
-	m_d3dViewport.Height = static_cast<float>(m_nWndClientHeight);
-	m_d3dViewport.MinDepth = 0.0f;
-	m_d3dViewport.MaxDepth = 1.0f;
-
-	// 씨저 사각형을 주 윈도우의 클라이언트 영역 전체로 설정
-	m_d3dScissorRect = { 0, 0, m_nWndClientWidth, m_nWndClientHeight };
-
 	if (pd3dAdapter) pd3dAdapter->Release();
 }
 
@@ -296,6 +283,13 @@ void CGameFramework::BuildObjects()
 {
 	m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
 
+	//카메라 객체를 생성하여 뷰포트, 씨저 사각형, 투영 변환 행렬, 카메라 변환 행렬을 생성하고 설정한다.
+	m_pCamera = new CCamera();
+	m_pCamera->SetViewport(0, 0, m_nWndClientWidth, m_nWndClientHeight, 0.0f, 1.0f);
+	m_pCamera->SetScissorRect(0, 0, m_nWndClientWidth, m_nWndClientHeight);
+	m_pCamera->GenerateProjectionMatrix(1.0f, 500.0f, float(m_nWndClientWidth) / float(m_nWndClientHeight), 90.0f);
+	m_pCamera->GenerateViewMatrix(XMFLOAT3(0.0f, 0.0f, -70.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
+
 	//씬 객체를 생성하고 씬에 포함될 게임 객체들을 생성
 	m_pScene = new CScene();
 	m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList);
@@ -348,10 +342,6 @@ void CGameFramework::FrameAdvance()
 	HRESULT hResult = m_pd3dCommandAllocator->Reset();
 	hResult = m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
 
-	// 뷰포트와 씨저 사각형 설정
-	m_pd3dCommandList->RSSetViewports(1, &m_d3dViewport);
-	m_pd3dCommandList->RSSetScissorRects(1, &m_d3dScissorRect);
-
 	// 현재 렌더 카겟에 대한 프리젠트가 끝나기를 기다림
 	// 프리젠트가 끝나면 렌더 타겟 버퍼의 상태는 프리젠트 상태에서 렌더 타겟 상태로 바뀔 것
 	D3D12_RESOURCE_BARRIER d3dResourceBarrier;
@@ -382,7 +372,7 @@ void CGameFramework::FrameAdvance()
 	m_pd3dCommandList->OMSetRenderTargets(1, &d3dRtvCPUDescriptorHandle, TRUE, &d3dDsvCPUDescriptorHandle);
 
 	// 렌더링 코드는 여기에 추가될 것
-	if (m_pScene) m_pScene->Render(m_pd3dCommandList);
+	if (m_pScene) m_pScene->Render(m_pd3dCommandList, m_pCamera);
 
 	// 현재 렌더 타겟에 대한 렌더링이 끝나기를 기다림
 	// GPU가 렌더 타겟(버퍼)을 더이상 사용하지 않으면 렌더 타겟의 상태는 프리젠트 상태로 바뀔 것

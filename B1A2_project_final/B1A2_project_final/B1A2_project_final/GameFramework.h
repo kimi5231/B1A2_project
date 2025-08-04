@@ -2,6 +2,8 @@
 #include "Timer.h"
 #include "Scene.h"
 
+class CCamera;
+
 class CGameFramework
 {
 public:
@@ -85,10 +87,6 @@ private:
 	UINT64 m_nFenceValue;	// 펜스 값
 	HANDLE m_hFenceEvent;	// 이벤트 핸들
 
-	// 뷰포트, 씨저 사각형
-	D3D12_VIEWPORT m_d3dViewport;	
-	D3D12_RECT m_d3dScissorRect;	
-
 	// 타이머
 	CGameTimer m_GameTimer;
 	_TCHAR m_pszFrameRate[50];	// 출력 위한 문자열
@@ -98,5 +96,8 @@ private:
 	
 	// 씬
 	CScene* m_pScene;
+
+	// 카메라
+	CCamera* m_pCamera = NULL;
 };
 

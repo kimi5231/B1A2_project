@@ -133,6 +133,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="B1A2_project_final.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="GameFramework.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Mesh.h" />
@@ -145,6 +146,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="B1A2_project_final.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="GameFramework.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Mesh.cpp" />

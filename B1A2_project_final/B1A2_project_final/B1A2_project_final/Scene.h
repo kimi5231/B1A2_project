@@ -1,6 +1,8 @@
 #pragma once
 #include "Timer.h"
+#include "GameObject.h"
 
+class CCamera;
 class CShader;
 
 class CScene
@@ -19,7 +21,7 @@ public:
 	bool ProcessInput(UCHAR* pKeysBuffer);
 	void AnimateObjects(float fTimeElapsed);
 
-	void Render(ID3D12GraphicsCommandList* pd3dCommandList);
+	void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
 
 	void ReleaseUploadBuffers();
 
@@ -28,9 +30,10 @@ public:
 	ID3D12RootSignature* GetGraphicsRootSignature();
 
 protected:
-	//씬은 셰이더들의 집합, 쉐이더들은 게임 객체들의 집합이다.
-	CShader** m_ppShaders = NULL;
-	int m_nShaders = 0;
+	//씬은 셰이더들의 집합, 게임 객체는 쉐이더를 포함함.
+	CGameObject** m_ppObjects = NULL;
+	int m_nObjects = 0;
+
 	ID3D12RootSignature* m_pd3dGraphicsRootSignature = NULL;
 };
 

@@ -2,6 +2,7 @@
 #include "Mesh.h"
 
 class CShader;
+class CCamera;
 
 class CGameObject
 {
@@ -19,7 +20,10 @@ public:
 	virtual void SetShader(CShader* pShader);
 	virtual void Animate(float fTimeElapsed);
 	virtual void OnPrepareRender();
-	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList);
+	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera *pCamera);
+
+	void Rotate(XMFLOAT3* pxmf3Axis, float fAngle);
+
 private:
 	int m_nReferences = 0;
 
@@ -29,3 +33,18 @@ protected:
 	CShader* m_pShader = NULL;
 };
 
+class CRotatingObject : public CGameObject
+{
+public:
+	CRotatingObject();
+	virtual ~CRotatingObject();
+
+public:
+	void SetRotationSpeed(float fRotationSpeed) { m_fRotationSpeed = fRotationSpeed; }
+	void SetRotationAxis(XMFLOAT3 xmf3RotationAxis) { m_xmf3RotationAxis = xmf3RotationAxis; }
+	virtual void Animate(float fTimeElapsed);
+
+private:
+	XMFLOAT3 m_xmf3RotationAxis;
+	float m_fRotationSpeed;
+};
