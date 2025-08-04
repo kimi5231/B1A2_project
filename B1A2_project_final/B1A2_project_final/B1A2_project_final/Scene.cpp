@@ -65,21 +65,41 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	//그래픽 루트 시그너쳐를 생성
 	m_pd3dGraphicsRootSignature = CreateGraphicsRootSignature(pd3dDevice);
 
-	CTriangleMesh* pMesh = new CTriangleMesh(pd3dDevice, pd3dCommandList);
+#pragma region Triangle
+		/*CTriangleMesh* pMesh = new CTriangleMesh(pd3dDevice, pd3dCommandList);
+
+		m_nObjects = 1;
+		m_ppObjects = new CGameObject * [m_nObjects];
+
+		CRotatingObject* pRotatingObject = new CRotatingObject();
+		pRotatingObject->SetMesh(pMesh);
+
+		CDiffusedShader* pShader = new CDiffusedShader();
+		pShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+		pShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+		pRotatingObject->SetShader(pShader);
+
+		m_ppObjects[0] = pRotatingObject;*/
+#pragma endregion
+
+#pragma region Cube
+	//가로x세로x깊이가 12x12x12인 정육면체 메쉬를 생성
+	CCubeMeshDiffused* pCubeMesh = new CCubeMeshDiffused(pd3dDevice, pd3dCommandList, 2.0f, 2.0f, 2.0f);
 
 	m_nObjects = 1;
 	m_ppObjects = new CGameObject * [m_nObjects];
 
 	CRotatingObject* pRotatingObject = new CRotatingObject();
-	pRotatingObject->SetMesh(pMesh);
-
+	pRotatingObject->SetMesh(pCubeMesh);
 	CDiffusedShader* pShader = new CDiffusedShader();
+
 	pShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
-	
 	pRotatingObject->SetShader(pShader);
-	
+
 	m_ppObjects[0] = pRotatingObject;
+#pragma endregion
 }
 
 void CScene::ReleaseObjects()

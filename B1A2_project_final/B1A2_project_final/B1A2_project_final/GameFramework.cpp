@@ -288,8 +288,8 @@ void CGameFramework::BuildObjects()
 	m_pCamera->SetViewport(0, 0, m_nWndClientWidth, m_nWndClientHeight, 0.0f, 1.0f);
 	m_pCamera->SetScissorRect(0, 0, m_nWndClientWidth, m_nWndClientHeight);
 	m_pCamera->GenerateProjectionMatrix(1.0f, 500.0f, float(m_nWndClientWidth) / float(m_nWndClientHeight), 90.0f);
-	m_pCamera->GenerateViewMatrix(XMFLOAT3(0.0f, 0.0f, -70.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
-
+	m_pCamera->GenerateViewMatrix(XMFLOAT3(0.0f, 15.0f, -100.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
+	
 	//¾À °´Ã¼¸¦ »ý¼ºÇÏ°í ¾À¿¡ Æ÷ÇÔµÉ °ÔÀÓ °´Ã¼µéÀ» »ý¼º
 	m_pScene = new CScene();
 	m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList);
