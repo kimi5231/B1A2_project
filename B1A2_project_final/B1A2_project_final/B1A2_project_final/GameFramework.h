@@ -1,6 +1,7 @@
 #pragma once
 #include "Timer.h"
 #include "Scene.h"
+#include "Player.h"
 
 class CCamera;
 
@@ -99,5 +100,12 @@ private:
 
 	// 카메라
 	CCamera* m_pCamera = NULL;
+
+public:
+	// 플레이어 객체
+	CPlayer* m_pPlayer = NULL;
+
+	//마지막으로 마우스 버튼을 클릭할 때의 마우스 커서의 위치
+	POINT m_ptOldCursorPos;
 };
 
