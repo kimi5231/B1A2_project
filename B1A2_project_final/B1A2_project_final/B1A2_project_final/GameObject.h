@@ -21,6 +21,8 @@ public:
 	virtual void Animate(float fTimeElapsed);
 	virtual void OnPrepareRender();
 	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera *pCamera);
+	// 인스턴싱 정점 버퍼 뷰를 사용하여 메쉬를 렌더링
+	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera, UINT nInstances, D3D12_VERTEX_BUFFER_VIEW d3dInstancingBufferView);
 
 	void Rotate(XMFLOAT3* pxmf3Axis, float fAngle);
 
@@ -47,6 +49,8 @@ public:
 
 	//게임 객체를 회전(x-축, y-축, z-축)
 	void Rotate(float fPitch = 10.0f, float fYaw = 10.0f, float fRoll = 10.0f);
+
+	const XMFLOAT4X4& Get4x4World() const { return m_xmf4x4World; }
 
 private:
 	int m_nReferences = 0;
