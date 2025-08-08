@@ -286,9 +286,9 @@ void CGameFramework::BuildObjects()
 	//씬 객체를 생성하고 씬에 포함될 게임 객체들을 생성
 	m_pScene = new CScene();
 	m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList);
-	
-	CCubePlayer* pCubePlayer = new CCubePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature());
-	m_pPlayer = pCubePlayer;
+
+	CAirplanePlayer* pAirplanePlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature());
+	m_pPlayer = pAirplanePlayer;
 	m_pCamera = m_pPlayer->GetCamera();
 
 	//씬 객체를 생성하기 위하여 필요한 그래픽 명령 리스트들을 명령 큐에 추가

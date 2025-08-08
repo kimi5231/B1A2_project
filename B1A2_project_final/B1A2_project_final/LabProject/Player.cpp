@@ -346,10 +346,11 @@ void CAirplanePlayer::OnPrepareRender()
 {
 	CPlayer::OnPrepareRender();
 	//비행기 모델을 그리기 전에 x-축으로 90도 회전한다.
-	XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(90.0f), 0.0f, 0.0f);
+	XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(90.0f), 0.0f,
+		0.0f);
 	m_xmf4x4World = Matrix4x4::Multiply(mtxRotate, m_xmf4x4World);
 }
-// 3인칭 카메라일 때 플레이어 메쉬를 로컬 x-축을 중심으로 +90도 회전하고 렌더링한다. 
+//3인칭 카메라일 때 플레이어 메쉬를 로컬 x-축을 중심으로 +90도 회전하고 렌더링한다. 
 // 왜냐하면 비행기 모델 메쉬는 다음 그림과 같이 y-축 방향이 비행기의 앞쪽이 되도록 모델링이 되었기 때문이다. 
 // 그리고 이 메쉬를 카메라의 z-축 방향으로 향하도록 그릴 것이기 때문이다.
 
@@ -411,100 +412,6 @@ CCamera* CAirplanePlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 
 	// 카메라 지연 효과
 	//m_pCamera->SetTimeLag(0.0f);
-
-	return(m_pCamera);
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-CCubePlayer::CCubePlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
-{
-	// 큐브 메쉬 생성
-	CMesh* pCubeMesh = new CCubeMeshDiffused(pd3dDevice, pd3dCommandList, 1.0f, 1.0f, 1.0f);
-	SetMesh(pCubeMesh);
-
-	// 플레이어의 카메라를 3인칭 카메라로 생성
-	m_pCamera = ChangeCamera(THIRD_PERSON_CAMERA, 0.0f);
-
-	// 플레이어를 위한 쉐이더 변수 생성
-	CreateShaderVariables(pd3dDevice, pd3dCommandList);
-
-	// 플레이어의 위치 설정
-	SetPosition(XMFLOAT3(0.0f, 0.0f, 70.0f));
-
-	// 플레이어 메쉬를 렌더링할 때 사용할 쉐이더를 생성
-	CPlayerShader* pShader = new CPlayerShader();
-	pShader->CreateShader(pd3dDevice, pd3dGraphicsRootSignature);
-	SetShader(pShader);
-}
-
-CCubePlayer::~CCubePlayer()
-{
-}
-
-void CCubePlayer::OnPrepareRender()
-{
-	CPlayer::OnPrepareRender();
-
-	// 모델을 그리기 전에 x-축으로 90도 회전한다.
-	XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(90.0f), 0.0f, 0.0f);
-	m_xmf4x4World = Matrix4x4::Multiply(mtxRotate, m_xmf4x4World);
-}
-
-CCamera* CCubePlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
-{
-	DWORD nCurrentCameraMode = (m_pCamera) ? m_pCamera->GetMode() : 0x00;
-	if (nCurrentCameraMode == nNewCameraMode) return(m_pCamera);
-	switch (nNewCameraMode)
-	{
-	case FIRST_PERSON_CAMERA:
-		//플레이어의 특성을 1인칭 카메라 모드에 맞게 변경한다. 중력은 적용하지 않는다.
-		SetFriction(200.0f);
-		SetGravity(XMFLOAT3(0.0f, 0.0f, 0.0f));
-		SetMaxVelocityXZ(125.0f);
-		SetMaxVelocityY(400.0f);
-		m_pCamera = OnChangeCamera(FIRST_PERSON_CAMERA, nCurrentCameraMode);
-		m_pCamera->SetTimeLag(0.0f);
-		m_pCamera->SetOffset(XMFLOAT3(0.0f, 20.0f, 0.0f));
-		m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
-		m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f,
-			1.0f);
-		m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
-		break;
-	case SPACESHIP_CAMERA:
-		//플레이어의 특성을 스페이스-쉽 카메라 모드에 맞게 변경한다. 중력은 적용하지 않는다.
-		SetFriction(125.0f);
-		SetGravity(XMFLOAT3(0.0f, 0.0f, 0.0f));
-		SetMaxVelocityXZ(400.0f);
-		SetMaxVelocityY(400.0f);
-		m_pCamera = OnChangeCamera(SPACESHIP_CAMERA, nCurrentCameraMode);
-		m_pCamera->SetTimeLag(0.0f);
-		m_pCamera->SetOffset(XMFLOAT3(0.0f, 0.0f, 0.0f));
-		m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
-		m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
-		m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
-		break;
-	case THIRD_PERSON_CAMERA:
-		//플레이어의 특성을 3인칭 카메라 모드에 맞게 변경한다. 지연 효과와 카메라 오프셋을 설정한다.
-		SetFriction(250.0f);
-		SetGravity(XMFLOAT3(0.0f, 0.0f, 0.0f));
-		SetMaxVelocityXZ(125.0f);
-		SetMaxVelocityY(400.0f);
-		m_pCamera = OnChangeCamera(THIRD_PERSON_CAMERA, nCurrentCameraMode);
-		//3인칭 카메라의 지연 효과를 설정한다. 값을 0.25f 대신에 0.0f와 1.0f로 설정한 결과를 비교하기 바란다.
-		m_pCamera->SetTimeLag(0.25f);
-		m_pCamera->SetOffset(XMFLOAT3(0.0f, 50.0f, -200.0f));
-		m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
-		m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
-		m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
-		break;
-	default:
-		break;
-	}
-	m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, m_pCamera->GetOffset()));
-
-	//플레이어를 시간의 경과에 따라 갱신(위치와 방향을 변경: 속도, 마찰력, 중력 등을 처리)한다.
-	Update(fTimeElapsed);
 
 	return(m_pCamera);
 }
