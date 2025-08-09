@@ -290,6 +290,7 @@ void CGameFramework::BuildObjects()
 	CCubePlayer* pCubePlayer = new CCubePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature());
 	m_pPlayer = pCubePlayer;
 	m_pCamera = m_pPlayer->GetCamera();
+	m_pPlayer->Rotate(0.f, 90.f, 0.f); // 임의로 수정함
 
 	//씬 객체를 생성하기 위하여 필요한 그래픽 명령 리스트들을 명령 큐에 추가
 	m_pd3dCommandList->Close();

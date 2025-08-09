@@ -21,8 +21,6 @@ public:
 	virtual void Animate(float fTimeElapsed);
 	virtual void OnPrepareRender();
 	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera *pCamera);
-	// 인스턴싱 정점 버퍼 뷰를 사용하여 메쉬를 렌더링
-	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera, UINT nInstances, D3D12_VERTEX_BUFFER_VIEW d3dInstancingBufferView);
 
 	void Rotate(XMFLOAT3* pxmf3Axis, float fAngle);
 

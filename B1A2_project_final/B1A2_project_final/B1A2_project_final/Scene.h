@@ -31,7 +31,7 @@ public:
 
 protected:
 	// Batch(배치) 처리를 하기 위해 Scene을 쉐이더들의 리스트로 표현
-	CInstancingShader* m_pShaders = NULL;
+	CObjectsShader* m_pShaders = NULL;	// 인스턴싱 객체일 때는 CInstancingShader* m_pShaders = NULL;
 	int m_nShaders = 0;
 
 	ID3D12RootSignature* m_pd3dGraphicsRootSignature = NULL;

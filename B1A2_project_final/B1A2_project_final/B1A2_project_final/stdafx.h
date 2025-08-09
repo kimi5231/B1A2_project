@@ -18,6 +18,9 @@
 #include <wrl.h>
 #include <shellapi.h>
 
+// 자료구조
+#include <vector>
+
 // 타이머
 #include <mmsystem.h>
 #pragma comment(lib, "winmm.lib")
