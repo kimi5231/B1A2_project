@@ -60,11 +60,6 @@ int main()
 
 			std::cout << "Recv Data: " << recvBuffer << std::endl;
 			std::cout << "Recv Data Len: " << recvLen << std::endl;
-
-			// 송신
-			int resultCode = ::send(clientSocket, recvBuffer, recvLen, 0);
-			if (resultCode == SOCKET_ERROR)
-				return 0;
 		}
 	}
 

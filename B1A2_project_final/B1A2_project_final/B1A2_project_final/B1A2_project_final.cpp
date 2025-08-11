@@ -1,7 +1,4 @@
-﻿// B1A2_project_final.cpp : 애플리케이션에 대한 진입점을 정의합니다.
-//
-
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "B1A2_project_final.h"
 #include "GameFramework.h"
 
@@ -47,6 +44,26 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     MSG msg;
 
+    WSAData wsaData;
+    if (::WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
+        return 0;
+
+    // server에 접속할 client socket 생성
+    SOCKET clientSocket = ::socket(AF_INET, SOCK_STREAM, 0);
+    if (clientSocket == INVALID_SOCKET)
+        return 0;
+
+    SOCKADDR_IN serverAddr;
+    ::memset(&serverAddr, 0, sizeof(serverAddr));
+    serverAddr.sin_family = AF_INET;
+    // IP 주소 설정
+    ::inet_pton(AF_INET, "127.0.0.1", &serverAddr.sin_addr);
+    serverAddr.sin_port = ::htons(7777);
+
+    // 소켓에 주소/포트 정보 설정 후, server와 연결 시도
+    if (::connect(clientSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR)
+        return 0;
+    
     // 3. 기본 메시지 루프
     while (1)
     {
@@ -65,9 +82,19 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         else
         {
             gGameFramework.FrameAdvance();
+
+            {
+                // server send
+                char sendBuffer[100] = "Client";
+                int resultCode = ::send(clientSocket, sendBuffer, sizeof(sendBuffer), 0);
+                if (resultCode == SOCKET_ERROR)
+                    return 0;
+            }
         }
     }
     gGameFramework.OnDestroy();
+    ::closesocket(clientSocket);
+    ::WSACleanup();
 
     return (int) msg.wParam;
 }

@@ -43,6 +43,12 @@ using namespace DirectX::PackedVector;
 
 using Microsoft::WRL::ComPtr;
 
+// 소켓 프로그래밍
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <windows.h>
+#pragma comment(lib, "ws2_32.lib")
+
 // Impotr 라이브러리
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "d3d12.lib")
