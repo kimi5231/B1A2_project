@@ -363,10 +363,10 @@ void CGameFramework::ProcessInput()
 		{
 			/*cxDelta는 y-축의 회전을 나타내고 cyDelta는 x-축의 회전을 나타낸다. 오른쪽 마우스 버튼이 눌려진 경우
 			cxDelta는 z-축의 회전을 나타낸다.*/
-			if (pKeyBuffer[VK_RBUTTON] & 0xF0)
-				m_pPlayer->Rotate(cyDelta, 0.0f, -cxDelta);
-			else
+			if (pKeyBuffer[VK_LBUTTON] & 0xF0)
+			{
 				m_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
+			}
 		}
 		
 		/*플레이어를 dwDirection 방향으로 이동한다(실제로는 속도 벡터를 변경한다). 이동 거리는 시간에 비례하도록 한다.

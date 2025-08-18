@@ -74,7 +74,7 @@ CTriangleMesh::CTriangleMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList
 
 ///////////////////////////////////////////////////////////////////////////
 
-CCubeMeshDiffused::CCubeMeshDiffused(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, float fWidth, float fHeight, float fDepth)
+CCubeMeshDiffused::CCubeMeshDiffused(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, float fWidth, float fHeight, float fDepth, MeshColor color)
 : CMesh(pd3dDevice, pd3dCommandList)
 {
 	//직육면체는 꼭지점(정점)이 8개
@@ -86,14 +86,29 @@ CCubeMeshDiffused::CCubeMeshDiffused(ID3D12Device* pd3dDevice, ID3D12GraphicsCom
 	
 	//정점 버퍼는 직육면체의 꼭지점 8개에 대한 정점 데이터를 가진다.
 	CDiffusedVertex pVertices[8];
-	pVertices[0] = CDiffusedVertex(XMFLOAT3(-fx, +fy, -fz), RANDOM_COLOR);
-	pVertices[1] = CDiffusedVertex(XMFLOAT3(+fx, +fy, -fz), RANDOM_COLOR);
-	pVertices[2] = CDiffusedVertex(XMFLOAT3(+fx, +fy, +fz), RANDOM_COLOR);
-	pVertices[3] = CDiffusedVertex(XMFLOAT3(-fx, +fy, +fz), RANDOM_COLOR);
-	pVertices[4] = CDiffusedVertex(XMFLOAT3(-fx, -fy, -fz), RANDOM_COLOR);
-	pVertices[5] = CDiffusedVertex(XMFLOAT3(+fx, -fy, -fz), RANDOM_COLOR);
-	pVertices[6] = CDiffusedVertex(XMFLOAT3(+fx, -fy, +fz), RANDOM_COLOR);
-	pVertices[7] = CDiffusedVertex(XMFLOAT3(-fx, -fy, +fz), RANDOM_COLOR);
+
+	XMFLOAT4 meshColor;
+
+	switch (color)
+	{
+	case RandomColor:
+		meshColor = RANDOM_COLOR; break;
+	case BottomColor:
+		meshColor = XMFLOAT4(1.f, 0.f, 0.f, 0.f); break;	// Red
+	case WallColor:
+		meshColor = XMFLOAT4(0.f, 0.f, 1.f, 0.f); break;	// Blue
+	case PlayerColor:
+		meshColor = XMFLOAT4(0.f, 1.f, 0.f, 0.f); break;	// Green
+	}
+
+	pVertices[0] = CDiffusedVertex(XMFLOAT3(-fx, +fy, -fz), meshColor);
+	pVertices[1] = CDiffusedVertex(XMFLOAT3(+fx, +fy, -fz), XMFLOAT4(meshColor.x + 0.5f, meshColor.y + 0.5f, meshColor.z + 0.5f, meshColor.w));
+	pVertices[2] = CDiffusedVertex(XMFLOAT3(+fx, +fy, +fz), XMFLOAT4(meshColor.x + 0.5f, meshColor.y + 0.5f, meshColor.z + 0.5f, meshColor.w));
+	pVertices[3] = CDiffusedVertex(XMFLOAT3(-fx, +fy, +fz), XMFLOAT4(meshColor.x + 0.5f, meshColor.y + 0.5f, meshColor.z + 0.5f, meshColor.w));
+	pVertices[4] = CDiffusedVertex(XMFLOAT3(-fx, -fy, -fz), XMFLOAT4(meshColor.x + 0.5f, meshColor.y + 0.5f, meshColor.z + 0.5f, meshColor.w));
+	pVertices[5] = CDiffusedVertex(XMFLOAT3(+fx, -fy, -fz), XMFLOAT4(meshColor.x + 0.5f, meshColor.y + 0.5f, meshColor.z + 0.5f, meshColor.w));
+	pVertices[6] = CDiffusedVertex(XMFLOAT3(+fx, -fy, +fz), XMFLOAT4(meshColor.x + 0.5f, meshColor.y + 0.5f, meshColor.z + 0.5f, meshColor.w));
+	pVertices[7] = CDiffusedVertex(XMFLOAT3(-fx, -fy, +fz), XMFLOAT4(meshColor.x + 0.5f, meshColor.y + 0.5f, meshColor.z + 0.5f, meshColor.w));
 	
 	m_pd3dVertexBuffer = ::CreateBufferResource(pd3dDevice, pd3dCommandList, pVertices, m_nStride * m_nVertices, D3D12_HEAP_TYPE_DEFAULT, 
 		D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &m_pd3dVertexUploadBuffer);

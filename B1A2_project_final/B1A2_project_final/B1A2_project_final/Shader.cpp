@@ -281,9 +281,9 @@ void CObjectsShader::CreateShader(ID3D12Device* pd3dDevice, ID3D12RootSignature*
 void CObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
 {
 	// 바닥, 벽 
-	CCubeMeshDiffused* BottomMesh = new CCubeMeshDiffused(pd3dDevice, pd3dCommandList, 50.0f, 0.5f, 50.f);
-	CCubeMeshDiffused* WallMesh1 = new CCubeMeshDiffused(pd3dDevice, pd3dCommandList, 3.0f, 1.f, 0.1f);	// 앞으로 바라보는 벽, 옆의 벽은 회전 필요
-	CCubeMeshDiffused* WallMesh2 = new CCubeMeshDiffused(pd3dDevice, pd3dCommandList, 1.0f, 1.f, 0.1f);	// 앞으로 바라보는 벽, 옆의 벽은 회전 필요
+	CCubeMeshDiffused* BottomMesh = new CCubeMeshDiffused(pd3dDevice, pd3dCommandList, 50.0f, 0.5f, 50.f, BottomColor);
+	CCubeMeshDiffused* WallMesh1 = new CCubeMeshDiffused(pd3dDevice, pd3dCommandList, 3.0f, 1.f, 0.1f, WallColor);	// 앞으로 바라보는 벽, 옆의 벽은 회전 필요
+	CCubeMeshDiffused* WallMesh2 = new CCubeMeshDiffused(pd3dDevice, pd3dCommandList, 1.0f, 1.f, 0.1f, WallColor);	// 앞으로 바라보는 벽, 옆의 벽은 회전 필요
 
 	m_nObjects = 15;
 	m_ppObjects = new CGameObject * [m_nObjects];

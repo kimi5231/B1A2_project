@@ -75,6 +75,14 @@ D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, ID3D12Resource** ppd3dUploadBuf
 // 정점의 색상 랜덤 설정
 #define RANDOM_COLOR XMFLOAT4(rand() / float(RAND_MAX), rand() / float(RAND_MAX), rand() / float(RAND_MAX), rand() / float(RAND_MAX))
 
+enum MeshColor
+{
+	RandomColor,
+	BottomColor,
+	WallColor,
+	PlayerColor,
+};
+
 //3차원 벡터의 연산
 namespace Vector3
 {

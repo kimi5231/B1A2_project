@@ -128,10 +128,16 @@ void CPlayer::Rotate(float x, float y, float z)
 		// 기본적으로 Up 벡터를 기준으로 회전하는 것은 플레이어가 똑바로 서있는 것을 가정한다는 의미이다.
 		if (y != 0.0f)
 		{
-			XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Up),
-				XMConvertToRadians(y));
+			XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Up), XMConvertToRadians(y));
 			m_xmf3Look = Vector3::TransformNormal(m_xmf3Look, xmmtxRotate);
 			m_xmf3Right = Vector3::TransformNormal(m_xmf3Right, xmmtxRotate);
+		}
+		// x축 기준 회전 추가 - 예제와는 다르게 추가함!
+		if (x != 0.0f)
+		{
+			XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Right), XMConvertToRadians(x));
+			m_xmf3Look = Vector3::TransformNormal(m_xmf3Look, xmmtxRotate);
+			m_xmf3Up = Vector3::TransformNormal(m_xmf3Up, xmmtxRotate);
 		}
 	}
 	else if (nCameraMode == SPACESHIP_CAMERA)
@@ -141,22 +147,19 @@ void CPlayer::Rotate(float x, float y, float z)
 		m_pCamera->Rotate(x, y, z);
 		if (x != 0.0f)
 		{
-			XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Right),
-				XMConvertToRadians(x));
+			XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Right), XMConvertToRadians(x));
 			m_xmf3Look = Vector3::TransformNormal(m_xmf3Look, xmmtxRotate);
 			m_xmf3Up = Vector3::TransformNormal(m_xmf3Up, xmmtxRotate);
 		}
 		if (y != 0.0f)
 		{
-			XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Up),
-				XMConvertToRadians(y));
+			XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Up), XMConvertToRadians(y));
 			m_xmf3Look = Vector3::TransformNormal(m_xmf3Look, xmmtxRotate);
 			m_xmf3Right = Vector3::TransformNormal(m_xmf3Right, xmmtxRotate);
 		}
 		if (z != 0.0f)
 		{
-			XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Look),
-				XMConvertToRadians(z));
+			XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Look), XMConvertToRadians(z));
 			m_xmf3Up = Vector3::TransformNormal(m_xmf3Up, xmmtxRotate);
 			m_xmf3Right = Vector3::TransformNormal(m_xmf3Right, xmmtxRotate);
 		}
@@ -420,7 +423,7 @@ CCamera* CAirplanePlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 CCubePlayer::CCubePlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
 {
 	// 큐브 메쉬 생성
-	CMesh* pCubeMesh = new CCubeMeshDiffused(pd3dDevice, pd3dCommandList, 0.2f, 0.2f, 0.2f);
+	CMesh* pCubeMesh = new CCubeMeshDiffused(pd3dDevice, pd3dCommandList, 0.2f, 0.2f, 0.2f, PlayerColor);
 	SetMesh(pCubeMesh);
 
 	// 플레이어의 카메라를 3인칭 카메라로 생성

@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "새 프로필",
+    "Projects": [
+      {
+        "Path": "B1A2_project_final\\B1A2_project_final.vcxproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "Server\\Server.vcxproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]
