@@ -53,6 +53,11 @@ public:
 	// 게임 객체가 카메라에 보이는가를 검사
 	bool IsVisible(CCamera* pCamera = NULL);
 
+	//모델 좌표계의 픽킹 광선을 생성
+	void GenerateRayForPicking(XMFLOAT3& xmf3PickPosition, XMFLOAT4X4& xmf4x4View, XMFLOAT3* pxmf3PickRayOrigin, XMFLOAT3* pxmf3PickRayDirection);
+	//카메라 좌표계의 한 점에 대한 모델 좌표계의 픽킹 광선을 생성하고 객체와의 교차를 검사
+	int PickObjectByRayIntersection(XMFLOAT3& xmf3PickPosition, XMFLOAT4X4& xmf4x4View,	float* pfHitDistance);
+
 private:
 	int m_nReferences = 0;
 

@@ -47,6 +47,9 @@ public:
 	void ChangeSwapChainState();
 
 	void MoveToNextFrame();
+
+	void ProcessSelectedObject(DWORD dwDirection, float cxDelta, float cyDelta);
+
 private:
 	HINSTANCE m_hInstance;
 	HWND m_hWnd;
@@ -100,6 +103,8 @@ private:
 
 	// 카메라
 	CCamera* m_pCamera = NULL;
+
+	CGameObject* m_pSelectedObject = NULL;
 
 public:
 	// 플레이어 객체

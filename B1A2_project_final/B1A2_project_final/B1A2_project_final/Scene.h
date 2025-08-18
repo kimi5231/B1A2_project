@@ -29,6 +29,9 @@ public:
 	ID3D12RootSignature* CreateGraphicsRootSignature(ID3D12Device* pd3dDevice);
 	ID3D12RootSignature* GetGraphicsRootSignature();
 
+	//씬의 모든 게임 객체들에 대한 마우스 픽킹을 수행
+	CGameObject* PickObjectPointedByCursor(int xClient, int yClient, CCamera* pCamera);
+
 protected:
 	// Batch(배치) 처리를 하기 위해 Scene을 쉐이더들의 리스트로 표현
 	CObjectsShader* m_pShaders = NULL;	// 인스턴싱 객체일 때는 CInstancingShader* m_pShaders = NULL;

@@ -16,15 +16,9 @@ protected:
 class CDiffusedVertex : public CVertex
 {
 public:
-	CDiffusedVertex() {
-		m_xmf3Position = XMFLOAT3(0.0f, 0.0f, 0.0f); m_xmf4Diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	}
-	CDiffusedVertex(float x, float y, float z, XMFLOAT4 xmf4Diffuse) {
-		m_xmf3Position = XMFLOAT3(x, y, z); m_xmf4Diffuse = xmf4Diffuse;
-	}
-	CDiffusedVertex(XMFLOAT3 xmf3Position, XMFLOAT4 xmf4Diffuse) {
-		m_xmf3Position = xmf3Position; m_xmf4Diffuse = xmf4Diffuse;
-	}
+	CDiffusedVertex() { m_xmf3Position = XMFLOAT3(0.0f, 0.0f, 0.0f); m_xmf4Diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f); }
+	CDiffusedVertex(float x, float y, float z, XMFLOAT4 xmf4Diffuse) { m_xmf3Position = XMFLOAT3(x, y, z); m_xmf4Diffuse = xmf4Diffuse; }
+	CDiffusedVertex(XMFLOAT3 xmf3Position, XMFLOAT4 xmf4Diffuse) { m_xmf3Position = xmf3Position; m_xmf4Diffuse = xmf4Diffuse; }
 	~CDiffusedVertex() {}
 
 protected:
@@ -46,6 +40,9 @@ public:
 	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList);
 
 	BoundingOrientedBox GetBoundingBox() { return m_xmBoundingBox; }
+
+	//광선과 메쉬의 교차를 검사하고 교차하는 횟수와 거리를 반환
+	int CheckRayIntersection(XMFLOAT3& xmRayPosition, XMFLOAT3& xmRayDirection, float* pfNearHitDistance);
 
 private:
 	int m_nReferences = 0;
@@ -75,6 +72,11 @@ protected:
 	UINT m_nOffset = 0;
 
 	BoundingOrientedBox m_xmBoundingBox;
+
+	//정점을 픽킹을 위하여 저장(정점 버퍼를 Map()하여 읽지 않아도 되도록)
+	CDiffusedVertex* m_pVertices = NULL;
+	// 메쉬의 인덱스를 저장(인덱스 버퍼를 Map()하여 읽지 않아도 되도록)
+	UINT* m_pnIndices = NULL;
 };
 
 // 삼각형
@@ -103,4 +105,11 @@ class CAirplaneMeshDiffused : public CMesh
 public:
 	CAirplaneMeshDiffused(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, float fWidth = 20.0f, float fHeight = 20.0f, float fDepth = 4.0f, XMFLOAT4 xmf4Color = XMFLOAT4(1.0f, 1.0f, 0.0f, 0.0f));
 	virtual ~CAirplaneMeshDiffused();
+};
+
+class CSphereMeshDiffused : public CMesh
+{
+public:
+	CSphereMeshDiffused(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, float fRadius = 2.0f, int nSlices = 20, int nStacks = 20);
+	virtual ~CSphereMeshDiffused();
 };

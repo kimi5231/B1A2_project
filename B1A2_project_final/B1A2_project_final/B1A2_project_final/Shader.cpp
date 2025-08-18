@@ -285,11 +285,24 @@ void CObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsComman
 	CCubeMeshDiffused* WallMesh1 = new CCubeMeshDiffused(pd3dDevice, pd3dCommandList, 3.0f, 1.f, 0.1f, WallColor);	// 앞으로 바라보는 벽, 옆의 벽은 회전 필요
 	CCubeMeshDiffused* WallMesh2 = new CCubeMeshDiffused(pd3dDevice, pd3dCommandList, 1.0f, 1.f, 0.1f, WallColor);	// 앞으로 바라보는 벽, 옆의 벽은 회전 필요
 
-	m_nObjects = 15;
+
+	m_nObjects = 16;
 	m_ppObjects = new CGameObject * [m_nObjects];
 	int i = 0;
 
 	CGameObject* pCubeObject = NULL;
+
+#pragma region Sphere
+	//구 메쉬를 생성한다.
+	CSphereMeshDiffused* pSphereMesh = new CSphereMeshDiffused(pd3dDevice, pd3dCommandList, 0.3f, 20, 20);
+
+	// 구
+	{
+		pCubeObject = new CGameObject();
+		pCubeObject->SetMesh(pSphereMesh);
+		pCubeObject->SetPosition(0.f, 2.f, 3.f);
+		m_ppObjects[i++] = pCubeObject;
+	}
 
 	// 바닥
 	{
@@ -298,7 +311,8 @@ void CObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsComman
 		pCubeObject->SetPosition(0.f, 0.f, 0.f);
 		m_ppObjects[i++] = pCubeObject;
 	}
-	
+#pragma endregion
+
 	// 벽
 	{
 		{
@@ -439,6 +453,29 @@ void CObjectsShader::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera*
 			m_ppObjects[j]->Render(pd3dCommandList, pCamera);
 		}
 	}
+}
+
+CGameObject* CObjectsShader::PickObjectByRayIntersection(XMFLOAT3& xmf3PickPosition, XMFLOAT4X4& xmf4x4View, float* pfNearHitDistance)
+{
+	int nIntersected = 0;
+
+	*pfNearHitDistance = FLT_MAX;
+	float fHitDistance = FLT_MAX;
+	
+	CGameObject* pSelectedObject = NULL;
+	
+	for (int j = 0; j < m_nObjects; j++)
+	{
+		nIntersected = m_ppObjects[j]->PickObjectByRayIntersection(xmf3PickPosition,
+			xmf4x4View, &fHitDistance);
+		if ((nIntersected > 0) && (fHitDistance < *pfNearHitDistance))
+		{
+			*pfNearHitDistance = fHitDistance;
+			pSelectedObject = m_ppObjects[j];
+		}
+	}
+	
+	return(pSelectedObject);
 }
 
 //CInstancingShader::CInstancingShader()
