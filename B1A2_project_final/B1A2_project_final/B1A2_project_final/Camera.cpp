@@ -137,8 +137,8 @@ void CCamera::ReleaseShaderVariables()
 
 void CCamera::SetViewportsAndScissorRects(ID3D12GraphicsCommandList* pd3dCommandList)
 {
-	pd3dCommandList->RSSetViewports(1, &m_d3dViewport);
-	pd3dCommandList->RSSetScissorRects(1, &m_d3dScissorRect);
+	pd3dCommandList->RSSetViewports(1, &m_d3dViewport);		// 뷰포트위 개수, 뷰포트들의 배열
+	pd3dCommandList->RSSetScissorRects(1, &m_d3dScissorRect);	// 시저 사각형의 개수, 시저 사각형들의 배열
 }
 
 CSpaceShipCamera::CSpaceShipCamera(CCamera* pCamera) : CCamera(pCamera)

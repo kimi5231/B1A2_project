@@ -33,12 +33,14 @@ void CMesh::Render(ID3D12GraphicsCommandList* pd3dCommandList)
 	pd3dCommandList->IASetVertexBuffers(m_nSlot, 1, &m_d3dVertexBufferView);
 
 	//메쉬의 정점 버퍼 뷰를 렌더링(파이프라인(입력 조립기)을 작동하게 함)
+	// 정점 버퍼 + 인덱스 버퍼: 인덱스를 통해 정점 재활용
 	if (m_pd3dIndexBuffer)
 	{
 		//인덱스 버퍼가 있으면 인덱스 버퍼를 파이프라인(IA: 입력 조립기)에 연결하고 인덱스를 사용하여 렌더링
 		pd3dCommandList->IASetIndexBuffer(&m_d3dIndexBufferView);
 		pd3dCommandList->DrawIndexedInstanced(m_nIndices, 1, 0, 0, 0);
 	}
+	// 정점 버퍼만: 모든 정점을 순서대로 그려야 함
 	else
 	{
 		pd3dCommandList->DrawInstanced(m_nVertices, 1, m_nOffset, 0);

@@ -1,78 +1,101 @@
 #pragma once
 
+#include "Mesh.h"
 class CMesh;
-class CShader;
 class CCamera;
+class CShader;
+class CPlayer;
 
-class CGameObject
-{
-public: 
-	CGameObject();
+class CGameObject {
+
+public:
+	CGameObject(int nMeshes = 1);
 	virtual ~CGameObject();
-
-	// Reference
-	void AddRef() { m_nReferences++; }
-	void Release() { if (--m_nReferences <= 0) delete this; }
-
-	// Mesh, Shader..
-	void ReleaseUploadBuffers();
-	virtual void SetMesh(CMesh* pMesh);
-	virtual void SetShader(CShader* pShader);
-	virtual void Animate(float fTimeElapsed);
-	virtual void OnPrepareRender();
-	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera *pCamera);
-	// 인스턴싱 정점 버퍼 뷰를 사용하여 메쉬를 렌더링
-	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera, UINT nInstances, D3D12_VERTEX_BUFFER_VIEW d3dInstancingBufferView);
-
-	void Rotate(XMFLOAT3* pxmf3Axis, float fAngle);
-
-	//상수 버퍼를 생성
-	virtual void CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
-	//상수 버퍼의 내용을 갱신
-	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList);
-	virtual void ReleaseShaderVariables();
-
-	// 게임 객체의 월드 변환 행렬에서 위치 벡터와 방향(x-축, y-축, z-축) 벡터를 반환
-	XMFLOAT3 GetPosition();
-	XMFLOAT3 GetLook();	//게임 객체의 로컬 z-축 벡터를 반환
-	XMFLOAT3 GetUp(); //게임 객체의 로컬 y-축 벡터를 반환
-	XMFLOAT3 GetRight(); //게임 객체의 로컬 x-축 벡터를 반환
-
-	//게임 객체의 위치를 설정
-	void SetPosition(float x, float y, float z);
-	void SetPosition(XMFLOAT3 xmf3Position);
-	
-	//게임 객체를 로컬 x-축, y-축, z-축 방향으로 이동
-	void MoveStrafe(float fDistance = 1.0f); // 로컬 x - 축 방향으로 이동
-	void MoveUp(float fDistance = 1.0f); // 로컬 y - 축 방향으로 이동
-	void MoveForward(float fDistance = 1.0f); // 로컬 z-축 방향으로 이동
-
-	//게임 객체를 회전(x-축, y-축, z-축)
-	void Rotate(float fPitch = 10.0f, float fYaw = 10.0f, float fRoll = 10.0f);
-
-	const XMFLOAT4X4& Get4x4World() const { return m_xmf4x4World; }
 
 private:
 	int m_nReferences = 0;
 
+public:
+	void AddRef() { m_nReferences++; }
+	void Release() { if (--m_nReferences <= 0) delete this; }
+	void Rotate(XMFLOAT3* pxmf3Axis, float fAngle);
+
 protected:
 	XMFLOAT4X4 m_xmf4x4World;
-	CMesh* m_pMesh = NULL;
 	CShader* m_pShader = NULL;
+	CMesh** m_ppMeshes = NULL;
+	int m_nMeshes = 0;
+
+public:
+	void ReleaseUploadBuffers();
+	virtual void SetShader(CShader* pShader);
+	virtual void SetMesh(int nIndex, CMesh* pMesh);
+	virtual void Animate(float fTimeElapsed);
+	virtual void OnPrepareRender();
+	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
+
+public:
+	virtual void CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList);
+	virtual void ReleaseShaderVariables();
+
+	XMFLOAT3 GetPosition();
+	XMFLOAT3 GetLook();
+	XMFLOAT3 GetUp();
+	XMFLOAT3 GetRight();
+
+	void SetPosition(float x, float y, float z);
+	void SetPosition(const XMFLOAT3 xmf3Position);
+	void MoveStrafe(float fDistance = 1.0f);
+	void MoveUp(float fDistance = 1.0f);
+	void MoveForward(float fDistance = 1.0f);
+	void Rotate(float fPitch = 10.0f, float fYaw = 10.0f, float fRoll = 10.0f);
+
+	BoundingOrientedBox m_xmPBoundingBox = BoundingOrientedBox();
+	BoundingBox						m_xmBoundingBox = BoundingBox();
+	CGameObject* m_pObjectCollided = NULL;
 };
 
-class CRotatingObject : public CGameObject
-{
-public:
-	CRotatingObject();
-	virtual ~CRotatingObject();
+class CRotatingObject : public CGameObject {
 
 public:
-	void SetRotationSpeed(float fRotationSpeed) { m_fRotationSpeed = fRotationSpeed; }
-	void SetRotationAxis(XMFLOAT3 xmf3RotationAxis) { m_xmf3RotationAxis = xmf3RotationAxis; }
-	virtual void Animate(float fTimeElapsed);
+	CRotatingObject(int nMeshes = 1);
+	virtual ~CRotatingObject();
 
 private:
 	XMFLOAT3 m_xmf3RotationAxis;
 	float m_fRotationSpeed;
+
+public:
+	void SetRotationSpeed(float fRotationSpeed) { m_fRotationSpeed = fRotationSpeed; }
+	void SetRotationAxis(XMFLOAT3 xmf3RotationAxis) { m_xmf3RotationAxis = xmf3RotationAxis; }
+
+	virtual void Animate(float fTimeElapsed);
+};
+
+class CHeightMapTerrain : public CGameObject {
+
+public:
+	CHeightMapTerrain(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, LPCTSTR pFileName, int nWidth, int nLength, int nBlockWidth, int nBlockLength, XMFLOAT3 xmf3Scale, XMFLOAT4 xmf4Color); virtual ~CHeightMapTerrain();
+
+private:
+	CHeightMapImage* m_pHeightMapImage;
+
+	int m_nWidth;
+	int m_nLength;
+
+	XMFLOAT3 m_xmf3Scale;
+
+public:
+	float GetHeight(float x, float z) { return(m_pHeightMapImage->GetHeight(x / m_xmf3Scale.x, z / m_xmf3Scale.z) * m_xmf3Scale.y); }
+
+	XMFLOAT3 GetNormal(float x, float z) { return(m_pHeightMapImage->GetHeightMapNormal(int(x / m_xmf3Scale.x), int(z / m_xmf3Scale.z))); }
+
+	int GetHeightMapWidth() { return(m_pHeightMapImage->GetHeightMapWidth()); }
+	int GetHeightMapLength() { return(m_pHeightMapImage->GetHeightMapLength()); }
+
+	XMFLOAT3 GetScale() { return(m_xmf3Scale); }
+
+	float GetWidth() { return(m_nWidth * m_xmf3Scale.x); }
+	float GetLength() { return(m_nLength * m_xmf3Scale.z); }
 };
