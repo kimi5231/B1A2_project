@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Mesh.h"
 #include "Shader.h"
+#include "Camera.h"
 
 CGameObject::CGameObject()
 {
@@ -50,7 +51,9 @@ void CGameObject::OnPrepareRender()
 
 void CGameObject::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
-	OnPrepareRender();
+	// 게임 객체가 카메라에 보이면 렌더링
+	if (!IsVisible(pCamera))
+		return;
 
 	//객체의 정보를 셰이더 변수(상수 버퍼)로 복사
 	UpdateShaderVariables(pd3dCommandList);
@@ -145,6 +148,22 @@ void CGameObject::Rotate(float fPitch, float fYaw, float fRoll)
 {
 	XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(fPitch), XMConvertToRadians(fYaw), XMConvertToRadians(fRoll));
 	m_xmf4x4World = Matrix4x4::Multiply(mtxRotate, m_xmf4x4World);
+}
+
+bool CGameObject::IsVisible(CCamera* pCamera)
+{
+	OnPrepareRender();
+
+	bool bIsVisible = false;
+	BoundingOrientedBox xmBoundingBox = m_pMesh->GetBoundingBox();
+	
+	//모델 좌표계의 바운딩 박스를 월드 좌표계로 변환
+	xmBoundingBox.Transform(xmBoundingBox, XMLoadFloat4x4(&m_xmf4x4World));
+	
+	if (pCamera) 
+		bIsVisible = pCamera->IsInFrustum(xmBoundingBox);
+		
+	return(bIsVisible);
 }
 
 //////////////////////////////////////////////////////////////////

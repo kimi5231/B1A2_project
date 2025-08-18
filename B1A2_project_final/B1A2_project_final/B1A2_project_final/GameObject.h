@@ -50,6 +50,9 @@ public:
 
 	const XMFLOAT4X4& Get4x4World() const { return m_xmf4x4World; }
 
+	// 게임 객체가 카메라에 보이는가를 검사
+	bool IsVisible(CCamera* pCamera = NULL);
+
 private:
 	int m_nReferences = 0;
 

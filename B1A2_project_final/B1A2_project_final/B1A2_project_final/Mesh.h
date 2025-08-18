@@ -45,6 +45,8 @@ public:
 public:
 	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList);
 
+	BoundingOrientedBox GetBoundingBox() { return m_xmBoundingBox; }
+
 private:
 	int m_nReferences = 0;
 
@@ -71,6 +73,8 @@ protected:
 	UINT m_nVertices = 0;
 	UINT m_nStride = 0;
 	UINT m_nOffset = 0;
+
+	BoundingOrientedBox m_xmBoundingBox;
 };
 
 // »ï°¢Çü
