@@ -107,12 +107,12 @@ void CPlayer::Rotate(float x, float y, float z)
 			m_xmf3Right = Vector3::TransformNormal(m_xmf3Right, xmmtxRotate);
 		}
 		// x축 기준 회전 추가 - 예제와는 다르게 추가함!
-	/*	if (x != 0.0f)
+		if (x != 0.0f)
 		{
 			XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Right), XMConvertToRadians(x));
 			m_xmf3Look = Vector3::TransformNormal(m_xmf3Look, xmmtxRotate);
 			m_xmf3Up = Vector3::TransformNormal(m_xmf3Up, xmmtxRotate);
-		}*/
+		}
 	}
 	else if (nCurrentCameraMode == SPACESHIP_CAMERA)
 	{
@@ -297,7 +297,7 @@ CCamera* CAirplanePlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 		SetMaxVelocityY(400.0f);
 		m_pCamera = OnChangeCamera(THIRD_PERSON_CAMERA, nCurrentCameraMode);
 		m_pCamera->SetTimeLag(0.25f);
-		m_pCamera->SetOffset(XMFLOAT3(0.0f, 20.0f, -50.0f));
+		m_pCamera->SetOffset(XMFLOAT3(0.0f, 30.0f, -50.0f));
 		m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 		m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 		m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
@@ -315,7 +315,7 @@ CCamera* CAirplanePlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 CCubePlayer::CCubePlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
 {
 	// 큐브 메쉬 생성
-	CMesh* pCubeMesh = new CCubeMeshDiffused(pd3dDevice, pd3dCommandList, 0.2f, 0.2f, 0.2f);
+	CMesh* pCubeMesh = new CCubeMeshDiffused(pd3dDevice, pd3dCommandList, 0.2f, 0.2f, 0.2f, PlayerColor);
 	SetMesh(pCubeMesh);
 
 	// 플레이어의 카메라를 3인칭 카메라로 생성

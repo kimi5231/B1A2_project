@@ -103,4 +103,5 @@ public:
 
 private:
 	XMFLOAT3					m_xmf3RotationAxis;
-	float						m_fRotationSpeed;};
+	float						m_fRotationSpeed;
+};

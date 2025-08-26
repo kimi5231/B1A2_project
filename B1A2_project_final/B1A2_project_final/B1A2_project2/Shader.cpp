@@ -383,11 +383,9 @@ void CObjectsShader::ReleaseShaderVariables()
 
 void CObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
 {
-
-	CCubeMeshIlluminated* pCubeMesh = new CCubeMeshIlluminated(pd3dDevice, pd3dCommandList, 12.0f, 12.0f, 12.0f);
-	CCubeMeshIlluminated* BottomMesh = new CCubeMeshIlluminated(pd3dDevice, pd3dCommandList, 50.0f, 0.5f, 50.f);
-	CCubeMeshIlluminated* WallMesh1 = new CCubeMeshIlluminated(pd3dDevice, pd3dCommandList, 3.0f, 1.f, 0.1f);
-	CCubeMeshIlluminated* WallMesh2 = new CCubeMeshIlluminated(pd3dDevice, pd3dCommandList, 1.0f, 1.f, 0.1f);
+	CCubeMeshIlluminated* BottomMesh = new CCubeMeshIlluminated(pd3dDevice, pd3dCommandList, 50.0f, 0.5f, 50.f, BottomColor);
+	CCubeMeshIlluminated* WallMesh1 = new CCubeMeshIlluminated(pd3dDevice, pd3dCommandList, 3.0f, 1.f, 0.1f, WallColor);
+	CCubeMeshIlluminated* WallMesh2 = new CCubeMeshIlluminated(pd3dDevice, pd3dCommandList, 1.0f, 1.f, 0.1f, WallColor);
 
 	m_nObjects = 15;
 
@@ -402,7 +400,7 @@ void CObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsComman
 		pCubeObject = new CGameObject();
 		pCubeObject->SetMaterial(i % MAX_MATERIALS);
 		pCubeObject->SetMesh(BottomMesh);
-		pCubeObject->SetPosition(0.f, 0.f, 0.f);
+		pCubeObject->SetPosition(0.f, 1.5f, 0.f);
 		m_ppObjects[i++] = pCubeObject;
 	}
 

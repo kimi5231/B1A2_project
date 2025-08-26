@@ -12,8 +12,6 @@
 
 class CPlayer : public CGameObject
 {
-
-
 public:
 	CPlayer();
 	virtual ~CPlayer();
