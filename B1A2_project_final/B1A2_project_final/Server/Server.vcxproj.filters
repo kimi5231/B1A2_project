@@ -13,10 +13,56 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="소스 파일\Protobuf">
+      <UniqueIdentifier>{edc79879-5f81-470c-a5da-d7606d41a54b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Protobuf\Proto">
+      <UniqueIdentifier>{db8cc057-4aa2-4821-8b82-e2f440a5eb80}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Protocol.pb.cc">
+      <Filter>소스 파일\Protobuf</Filter>
+    </ClCompile>
+    <ClCompile Include="Struct.pb.cc">
+      <Filter>소스 파일\Protobuf</Filter>
+    </ClCompile>
+    <ClCompile Include="Enum.pb.cc">
+      <Filter>소스 파일\Protobuf</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Libraries\Libs\Protobuf\GenPackets.bat">
+      <Filter>소스 파일\Protobuf</Filter>
+    </None>
+    <None Include="..\Libraries\Libs\Protobuf\Enum.proto">
+      <Filter>소스 파일\Protobuf\Proto</Filter>
+    </None>
+    <None Include="..\Libraries\Libs\Protobuf\Protocol.proto">
+      <Filter>소스 파일\Protobuf\Proto</Filter>
+    </None>
+    <None Include="..\Libraries\Libs\Protobuf\Struct.proto">
+      <Filter>소스 파일\Protobuf\Proto</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Enum.pb.h">
+      <Filter>소스 파일\Protobuf</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol.pb.h">
+      <Filter>소스 파일\Protobuf</Filter>
+    </ClInclude>
+    <ClInclude Include="Struct.pb.h">
+      <Filter>소스 파일\Protobuf</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
