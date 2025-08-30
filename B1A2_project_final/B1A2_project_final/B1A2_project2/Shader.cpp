@@ -383,9 +383,9 @@ void CObjectsShader::ReleaseShaderVariables()
 
 void CObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
 {
-	CCubeMeshIlluminated* BottomMesh = new CCubeMeshIlluminated(pd3dDevice, pd3dCommandList, 50.0f, 0.5f, 50.f, BottomColor);
-	CCubeMeshIlluminated* WallMesh1 = new CCubeMeshIlluminated(pd3dDevice, pd3dCommandList, 3.0f, 1.f, 0.1f, WallColor);
-	CCubeMeshIlluminated* WallMesh2 = new CCubeMeshIlluminated(pd3dDevice, pd3dCommandList, 1.0f, 1.f, 0.1f, WallColor);
+	CCubeMeshIlluminated* BottomMesh = new CCubeMeshIlluminated(pd3dDevice, pd3dCommandList, 50.0f, 0.5f, 50.f);
+	CCubeMeshIlluminated* WallMesh1 = new CCubeMeshIlluminated(pd3dDevice, pd3dCommandList, 3.0f, 1.f, 0.1f);
+	CCubeMeshIlluminated* WallMesh2 = new CCubeMeshIlluminated(pd3dDevice, pd3dCommandList, 1.0f, 1.f, 0.1f);
 
 	m_nObjects = 15;
 

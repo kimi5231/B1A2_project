@@ -351,7 +351,7 @@ void CMeshIlluminated::CalculateVertexNormals(XMFLOAT3* pxmf3Normals, XMFLOAT3* 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-CCubeMeshIlluminated::CCubeMeshIlluminated(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, float fWidth, float fHeight, float fDepth, MeshColor color) 
+CCubeMeshIlluminated::CCubeMeshIlluminated(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, float fWidth, float fHeight, float fDepth) 
 	: CMeshIlluminated(pd3dDevice, pd3dCommandList)
 {
 	m_nVertices = 8;
@@ -386,19 +386,6 @@ CCubeMeshIlluminated::CCubeMeshIlluminated(ID3D12Device* pd3dDevice, ID3D12Graph
 	XMFLOAT3 pxmf3Positions[8];
 
 	float fx = fWidth * 0.5f, fy = fHeight * 0.5f, fz = fDepth * 0.5f;
-	
-	XMFLOAT4 meshColor;
-	switch (color)
-	{
-	case RandomColor:
-		meshColor = RANDOM_COLOR; break;
-	case BottomColor:
-		meshColor = XMFLOAT4(1.f, 0.f, 0.f, 0.f); break;	// Red
-	case WallColor:
-		meshColor = XMFLOAT4(0.f, 0.f, 1.f, 0.f); break;	// Blue
-	case PlayerColor:
-		meshColor = XMFLOAT4(0.f, 1.f, 0.f, 0.f); break;	// Green
-	}
 
 	pxmf3Positions[0] = XMFLOAT3(-fx, +fy, -fz);
 	pxmf3Positions[1] = XMFLOAT3(+fx, +fy, -fz);
@@ -415,7 +402,7 @@ CCubeMeshIlluminated::CCubeMeshIlluminated(ID3D12Device* pd3dDevice, ID3D12Graph
 	CalculateVertexNormals(pxmf3Normals, pxmf3Positions, m_nVertices, pnIndices, m_nIndices);
 
 	CIlluminatedVertex m_pVertices[8];
-	for (int i = 0; i < 8; i++) m_pVertices[i] = CIlluminatedVertex(pxmf3Positions[i], pxmf3Normals[i], meshColor);
+	for (int i = 0; i < 8; i++) m_pVertices[i] = CIlluminatedVertex(pxmf3Positions[i], pxmf3Normals[i]);
 
 	m_pd3dVertexBuffer = CreateBufferResource(pd3dDevice, pd3dCommandList, m_pVertices, m_nStride * m_nVertices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &m_pd3dVertexUploadBuffer);
 
@@ -432,22 +419,9 @@ CCubeMeshIlluminated::~CCubeMeshIlluminated()
 
 #define _WITH_INDEX_BUFFER
 
-CSphereMeshIlluminated::CSphereMeshIlluminated(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, float fRadius, UINT nSlices, UINT nStacks, MeshColor color) 
+CSphereMeshIlluminated::CSphereMeshIlluminated(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, float fRadius, UINT nSlices, UINT nStacks) 
 	: CMeshIlluminated(pd3dDevice, pd3dCommandList)
 {
-	XMFLOAT4 meshColor;
-	switch (color)
-	{
-	case RandomColor:
-		meshColor = RANDOM_COLOR; break;
-	case BottomColor:
-		meshColor = XMFLOAT4(1.f, 0.f, 0.f, 0.f); break;	// Red
-	case WallColor:
-		meshColor = XMFLOAT4(0.f, 0.f, 1.f, 0.f); break;	// Blue
-	case PlayerColor:
-		meshColor = XMFLOAT4(0.f, 1.f, 0.f, 0.f); break;	// Green
-	}
-
 	m_nStride = sizeof(CIlluminatedVertex);
 	m_d3dPrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
@@ -476,7 +450,7 @@ CSphereMeshIlluminated::CSphereMeshIlluminated(ID3D12Device* pd3dDevice, ID3D12G
 	pxmf3Normals[k] = Vector3::Normalize(pxmf3Positions[k]); k++;
 
 	CIlluminatedVertex* pVertices = new CIlluminatedVertex[m_nVertices];
-	for (UINT i = 0; i < m_nVertices; i++) pVertices[i] = CIlluminatedVertex(pxmf3Positions[i], pxmf3Normals[i], meshColor);
+	for (UINT i = 0; i < m_nVertices; i++) pVertices[i] = CIlluminatedVertex(pxmf3Positions[i], pxmf3Normals[i]);
 	m_pd3dVertexBuffer = CreateBufferResource(pd3dDevice, pd3dCommandList, pVertices, m_nStride * m_nVertices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &m_pd3dVertexUploadBuffer);
 
 	m_d3dVertexBufferView.BufferLocation = m_pd3dVertexBuffer->GetGPUVirtualAddress();
