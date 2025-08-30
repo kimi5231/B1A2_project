@@ -5,31 +5,33 @@
 
 struct LIGHT
 {
-	XMFLOAT4				m_xmf4Ambient;
-	XMFLOAT4				m_xmf4Diffuse;
-	XMFLOAT4				m_xmf4Specular;
-	XMFLOAT3				m_xmf3Position;
-	float 					m_fFalloff;
-	XMFLOAT3				m_xmf3Direction;
-	float 					m_fTheta; //cos(m_fTheta)
-	XMFLOAT3				m_xmf3Attenuation;
-	float					m_fPhi; //cos(m_fPhi)
-	bool					m_bEnable;
-	int						m_nType;
-	float					m_fRange;
-	float					padding;
+	XMFLOAT4 m_xmf4Ambient;
+	XMFLOAT4 m_xmf4Diffuse;
+	XMFLOAT4 m_xmf4Specular;
+	XMFLOAT3 m_xmf3Position;
+	float m_fFalloff;
+	XMFLOAT3 m_xmf3Direction;
+	float m_fTheta; //cos(m_fTheta)
+	XMFLOAT3 m_xmf3Attenuation;
+	float m_fPhi; //cos(m_fPhi)
+	bool m_bEnable;
+	int m_nType;
+	float m_fRange;
+	float padding;
 };
 
 struct LIGHTS
 {
-	LIGHT					m_pLights[MAX_LIGHTS];
-	XMFLOAT4				m_xmf4GlobalAmbient;
+	LIGHT m_pLights[MAX_LIGHTS];
+	XMFLOAT4 m_xmf4GlobalAmbient;
 };
 
 struct MATERIALS
 {
-	MATERIAL				m_pReflections[MAX_MATERIALS];
+	MATERIAL m_pReflections[MAX_MATERIALS];
 };
+
+///////////////////////////////////////////////////////////////////////////////////////////////
 
 class CScene
 {
@@ -37,6 +39,7 @@ public:
 	CScene();
 	~CScene();
 
+	// Scene에서 마우스와 키보드 메시지 처리
 	bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 
@@ -48,6 +51,7 @@ public:
 	void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
 	void ReleaseObjects();
 
+	// 그래픽스 루트 시그니처 생성
 	ID3D12RootSignature* CreateGraphicsRootSignature(ID3D12Device* pd3dDevice);
 	ID3D12RootSignature* GetGraphicsRootSignature() { return(m_pd3dGraphicsRootSignature); }
 
@@ -57,13 +61,12 @@ public:
 
 	void ReleaseUploadBuffers();
 
-
-
 protected:
 	ID3D12RootSignature* m_pd3dGraphicsRootSignature = NULL;
 
+	// Batch(배치) 처리를 위해 Scene을 쉐이더의 리스트로 표현
 	CObjectsShader* m_pShaders = NULL;
-	int							m_nShaders = 0;
+	int m_nShaders = 0;
 
 	LIGHTS* m_pLights = NULL;
 

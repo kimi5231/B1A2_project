@@ -19,8 +19,6 @@ cbuffer cbGameObjectInfo : register(b2)
 
 #include "Light.hlsl"
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 struct VS_DIFFUSED_INPUT
 {
 	float3 position : POSITION;
@@ -49,6 +47,7 @@ float4 PSGameObject(VS_DIFFUSED_OUTPUT input) : SV_TARGET
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 VS_DIFFUSED_OUTPUT VSPlayer(VS_DIFFUSED_INPUT input)
 {
 	VS_DIFFUSED_OUTPUT output;
@@ -109,5 +108,3 @@ float4 PSLighting(VS_LIGHTING_OUTPUT input) : SV_TARGET
 	return(color);
 #endif
 }
-
-

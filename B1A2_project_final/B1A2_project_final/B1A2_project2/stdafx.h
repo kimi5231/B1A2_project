@@ -15,24 +15,42 @@
 #include <wrl.h>
 #include <shellapi.h>
 
+// 타이머
+#include <Mmsystem.h>
+#pragma comment(lib, "winmm.lib")
+
+// Direct3D 라이브러리 헤더
 #include <d3d12.h>
 #include <dxgi1_4.h>
 #include <D3Dcompiler.h>
 #include <DirectXMath.h>
-#include <DirectXPackedVector.h>
-#include <DirectXColors.h>
+#include <DirectXPackedVector.h>
+#include <DirectXColors.h>
 #include <DirectXCollision.h>
-
-#include <Mmsystem.h>
+#include <dxgidebug.h>
 
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 
 using Microsoft::WRL::ComPtr;
 
+// 소켓 프로그래밍
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <windows.h>
+#pragma comment(lib, "ws2_32.lib")
+
+// Impotr 라이브러리
+#pragma comment(lib, "d3dcompiler.lib")
+#pragma comment(lib, "d3d12.lib")
+#pragma comment(lib, "dxgi.lib")
+#pragma comment(lib, "dxguid.lib")
+
+// 윈도우 크기
 #define FRAME_BUFFER_WIDTH	800
 #define FRAME_BUFFER_HEIGHT	600
 
+// 조명
 #define MAX_LIGHTS				8 
 #define MAX_MATERIALS			8
 
@@ -41,10 +59,6 @@ using Microsoft::WRL::ComPtr;
 #define DIRECTIONAL_LIGHT		3
 
 #define _WITH_CB_WORLD_MATRIX_DESCRIPTOR_TABLE
-
-#pragma comment(lib, "d3dcompiler.lib")
-#pragma comment(lib, "d3d12.lib")
-#pragma comment(lib, "dxgi.lib")
 
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
 

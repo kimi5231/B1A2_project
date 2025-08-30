@@ -36,16 +36,22 @@ public:
 	CCamera* GetCamera() { return(m_pCamera); }
 	void SetCamera(CCamera* pCamera) { m_pCamera = pCamera; }
 
+	// 이동
 	void Move(ULONG nDirection, float fDistance, bool bVelocity = false);
 	void Move(const XMFLOAT3& xmf3Shift, bool bVelocity = false);
 	void Move(float fxOffset = 0.0f, float fyOffset = 0.0f, float fzOffset = 0.0f);
-	void Rotate(float x, float y, float z);
 
+	// 회전
+	void Rotate(float x, float y, float z);
+	 
+	// 플레이어의 위치와 회전 정보를 경과 시간에 따라 갱신
 	void Update(float fTimeElapsed);
 
+	//플레이어의 위치가 바뀔 때마다 호출되는 함수와 그 함수에서 사용하는 정보를 설정하는 함수
 	virtual void OnPlayerUpdateCallback(float fTimeElapsed) {}
 	void SetPlayerUpdatedContext(LPVOID pContext) { m_pPlayerUpdatedContext = pContext; }
 
+	// 플레이어의 위치가 바뀔 때마다 호출되는 함수와 그 함수에서 사용하는 정보를 설정
 	virtual void OnCameraUpdateCallback(float fTimeElapsed) {}
 	void SetCameraUpdatedContext(LPVOID pContext) { m_pCameraUpdatedContext = pContext; }
 
@@ -53,31 +59,46 @@ public:
 	virtual void ReleaseShaderVariables();
 	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList);
 
+	// 카메라 변경
 	CCamera* OnChangeCamera(DWORD nNewCameraMode, DWORD nCurrentCameraMode);
-
 	virtual CCamera* ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed) { return(NULL); }
+
+	// 플레이어의 위치와 회전축으로부터 월드 변환 행렬을 생성
 	virtual void OnPrepareRender();
+
+	// 플레이어의 카메라가 3인칭 카메라일 때 플레이어(메쉬)를 렌더링
 	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera = NULL);
 
 protected:
-	XMFLOAT3					m_xmf3Position;
-	XMFLOAT3					m_xmf3Right;
-	XMFLOAT3					m_xmf3Up;
-	XMFLOAT3					m_xmf3Look;
+	//플레이어의 위치 벡터, x-축(Right), y-축(Up), z-축(Look) 벡터
+	XMFLOAT3 m_xmf3Position;
+	XMFLOAT3 m_xmf3Right;
+	XMFLOAT3 m_xmf3Up;
+	XMFLOAT3 m_xmf3Look;
+			 
+	//플레이어가 로컬 x-축(Right), y-축(Up), z-축(Look)으로 얼마만큼 회전했는가
+	float m_fPitch;
+	float m_fYaw;
+	float m_fRoll;
 
-	float           			m_fPitch;
-	float           			m_fYaw;
-	float           			m_fRoll;
+	// 속도, 중력
+	XMFLOAT3 m_xmf3Velocity;
+	XMFLOAT3 m_xmf3Gravity;
 
-	XMFLOAT3					m_xmf3Velocity;
-	XMFLOAT3     				m_xmf3Gravity;
-	float           			m_fMaxVelocityXZ;
-	float           			m_fMaxVelocityY;
-	float           			m_fFriction;
+	//xz-평면에서 (한 프레임 동안) 플레이어의 이동 속력의 최대값
+	float m_fMaxVelocityXZ;
+	//y-축 방향으로 (한 프레임 동안) 플레이어의 이동 속력의 최대값
+	float m_fMaxVelocityY;
 
-	LPVOID						m_pPlayerUpdatedContext;
-	LPVOID						m_pCameraUpdatedContext;
+	// 마찰력
+	float m_fFriction;
 
+	//플레이어의 위치가 바뀔 때마다 호출되는 OnPlayerUpdateCallback() 함수에서 사용하는 데이터
+	LPVOID m_pPlayerUpdatedContext;
+	//카메라의 위치가 바뀔 때마다 호출되는 OnCameraUpdateCallback() 함수에서 사용하는 데이터
+	LPVOID m_pCameraUpdatedContext;
+
+	// 플레이어에 현재 설정된 카메라
 	CCamera* m_pCamera = NULL;
 };
 

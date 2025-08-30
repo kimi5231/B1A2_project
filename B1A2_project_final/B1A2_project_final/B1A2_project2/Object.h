@@ -5,13 +5,6 @@
 
 class CShader;
 
-#define DIR_FORWARD				0x01
-#define DIR_BACKWARD			0x02
-#define DIR_LEFT				0x04
-#define DIR_RIGHT				0x08
-#define DIR_UP					0x10
-#define DIR_DOWN				0x20
-
 struct MATERIAL
 {
 	XMFLOAT4						m_xmf4Ambient;
@@ -30,9 +23,9 @@ public:
 	void AddRef() { m_nReferences++; }
 	void Release() { if (--m_nReferences <= 0) delete this; }
 
-	XMFLOAT4						m_xmf4Albedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	XMFLOAT4 m_xmf4Albedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
-	UINT							m_nReflection = 0;
+	UINT m_nReflection = 0;
 	CShader* m_pShader = NULL;
 
 	void SetAlbedo(XMFLOAT4& xmf4Albedo) { m_xmf4Albedo = xmf4Albedo; }
@@ -40,7 +33,7 @@ public:
 	void SetShader(CShader* pShader);
 
 private:
-	int								m_nReferences = 0;
+	int	m_nReferences = 0;
 };
 
 class CGameObject
@@ -64,18 +57,22 @@ public:
 
 	virtual void ReleaseUploadBuffers();
 
+	// 게임 객체의 월드 변환 행렬에서 위치 벡터와 방향(x-축, y-축, z-축) 벡터를 반환
 	XMFLOAT3 GetPosition();
 	XMFLOAT3 GetLook();
 	XMFLOAT3 GetUp();
 	XMFLOAT3 GetRight();
 
+	//게임 객체의 위치를 설정
 	void SetPosition(float x, float y, float z);
 	void SetPosition(XMFLOAT3 xmf3Position);
 
+	//게임 객체를 로컬 x-축, y-축, z-축 방향으로 이동
 	void MoveStrafe(float fDistance = 1.0f);
 	void MoveUp(float fDistance = 1.0f);
 	void MoveForward(float fDistance = 1.0f);
 
+	//게임 객체를 회전(x-축, y-축, z-축)
 	void Rotate(float fPitch = 10.0f, float fYaw = 10.0f, float fRoll = 10.0f);
 	void Rotate(XMFLOAT3* pxmf3Axis, float fAngle);
 	
@@ -85,7 +82,6 @@ public:
 
 	CShader* m_pShader = NULL;
 	CMaterial* m_pMaterial = NULL;
-
 };
 
 class CRotatingObject : public CGameObject
@@ -102,6 +98,6 @@ public:
 	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera = NULL);
 
 private:
-	XMFLOAT3					m_xmf3RotationAxis;
-	float						m_fRotationSpeed;
+	XMFLOAT3 m_xmf3RotationAxis;
+	float m_fRotationSpeed;
 };
