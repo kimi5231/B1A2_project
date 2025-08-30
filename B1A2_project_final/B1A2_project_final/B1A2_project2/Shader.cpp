@@ -395,10 +395,15 @@ void CObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsComman
 
 	CGameObject* pCubeObject = NULL;
 
+	// »ö»ó
+	XMFLOAT4 redColor = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f); 
+	XMFLOAT4 blueColor = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f); 
+
 	// ¹Ù´Ú
 	{
+		UINT m = i % MAX_MATERIALS;
 		pCubeObject = new CGameObject();
-		pCubeObject->SetMaterial(i % MAX_MATERIALS);
+		pCubeObject->SetMaterial(m);
 		pCubeObject->SetMesh(BottomMesh);
 		pCubeObject->SetPosition(0.f, 1.5f, 0.f);
 		m_ppObjects[i++] = pCubeObject;
@@ -406,23 +411,24 @@ void CObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsComman
 
 	// º®
 	{
+		UINT m = i % MAX_MATERIALS;
 		{
 			pCubeObject = new CGameObject();
-			pCubeObject->SetMaterial(i % MAX_MATERIALS);
+			pCubeObject->SetMaterial(m);
 			pCubeObject->SetMesh(WallMesh1);
 			pCubeObject->SetPosition(1.5f, 2.f, 3.f);
 			m_ppObjects[i++] = pCubeObject;
 		}
 		{
 			pCubeObject = new CGameObject();
-			pCubeObject->SetMaterial(i % MAX_MATERIALS);
+			pCubeObject->SetMaterial(m);
 			pCubeObject->SetMesh(WallMesh1);
 			pCubeObject->SetPosition(4.5f, 2.f, 3.f);
 			m_ppObjects[i++] = pCubeObject;
 		}
 		{
 			pCubeObject = new CGameObject();
-			pCubeObject->SetMaterial(i % MAX_MATERIALS);
+			pCubeObject->SetMaterial(m);
 			pCubeObject->SetMesh(WallMesh1);
 			pCubeObject->SetPosition(6.f, 2.f, 4.5f);
 			pCubeObject->Rotate(0.f, 90.f, 0.f);
@@ -430,7 +436,7 @@ void CObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsComman
 		}
 		{
 			pCubeObject = new CGameObject();
-			pCubeObject->SetMaterial(i % MAX_MATERIALS);
+			pCubeObject->SetMaterial(m);
 			pCubeObject->SetMesh(WallMesh1);
 			pCubeObject->SetPosition(6.f, 2.f, 7.5f);
 			pCubeObject->Rotate(0.f, 90.f, 0.f);
@@ -438,28 +444,28 @@ void CObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsComman
 		}
 		{
 			pCubeObject = new CGameObject();
-			pCubeObject->SetMaterial(i % MAX_MATERIALS);
+			pCubeObject->SetMaterial(m);
 			pCubeObject->SetMesh(WallMesh1);
 			pCubeObject->SetPosition(1.5f, 2.f, 0.f);
 			m_ppObjects[i++] = pCubeObject;
 		}
 		{
 			pCubeObject = new CGameObject();
-			pCubeObject->SetMaterial(i % MAX_MATERIALS);
+			pCubeObject->SetMaterial(m);
 			pCubeObject->SetMesh(WallMesh1);
 			pCubeObject->SetPosition(4.5f, 2.f, 0.f);
 			m_ppObjects[i++] = pCubeObject;
 		}
 		{
 			pCubeObject = new CGameObject();
-			pCubeObject->SetMaterial(i % MAX_MATERIALS);
+			pCubeObject->SetMaterial(m);
 			pCubeObject->SetMesh(WallMesh1);
 			pCubeObject->SetPosition(7.5f, 2.f, 0.f);
 			m_ppObjects[i++] = pCubeObject;
 		}
 		{
 			pCubeObject = new CGameObject();
-			pCubeObject->SetMaterial(i % MAX_MATERIALS);
+			pCubeObject->SetMaterial(m);
 			pCubeObject->SetMesh(WallMesh1);
 			pCubeObject->SetPosition(9.f, 2.f, 1.5f);
 			pCubeObject->Rotate(0.f, 90.f, 0.f);
@@ -467,7 +473,7 @@ void CObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsComman
 		}
 		{
 			pCubeObject = new CGameObject();
-			pCubeObject->SetMaterial(i % MAX_MATERIALS);
+			pCubeObject->SetMaterial(m);
 			pCubeObject->SetMesh(WallMesh1);
 			pCubeObject->SetPosition(9.f, 2.f, 4.5f);
 			pCubeObject->Rotate(0.f, 90.f, 0.f);
@@ -475,7 +481,7 @@ void CObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsComman
 		}
 		{
 			pCubeObject = new CGameObject();
-			pCubeObject->SetMaterial(i % MAX_MATERIALS);
+			pCubeObject->SetMaterial(m);
 			pCubeObject->SetMesh(WallMesh1);
 			pCubeObject->SetPosition(9.f, 2.f, 7.5f);
 			pCubeObject->Rotate(0.f, 90.f, 0.f);
@@ -485,7 +491,7 @@ void CObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsComman
 		// 1Ä­
 		{
 			pCubeObject = new CGameObject();
-			pCubeObject->SetMaterial(i% MAX_MATERIALS);
+			pCubeObject->SetMaterial(m);
 			pCubeObject->SetMesh(WallMesh2);
 			pCubeObject->SetPosition(0.f, 2.f, 0.5f);
 			pCubeObject->Rotate(0.f, 90.f, 0.f);
@@ -493,7 +499,7 @@ void CObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsComman
 		}
 		{
 			pCubeObject = new CGameObject();
-			pCubeObject->SetMaterial(i% MAX_MATERIALS);
+			pCubeObject->SetMaterial(m);
 			pCubeObject->SetMesh(WallMesh2);
 			pCubeObject->SetPosition(0.f, 2.f, 2.5f);
 			pCubeObject->Rotate(0.f, 90.f, 0.f);
@@ -502,14 +508,14 @@ void CObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsComman
 
 		{
 			pCubeObject = new CGameObject();
-			pCubeObject->SetMaterial(i% MAX_MATERIALS);
+			pCubeObject->SetMaterial(m);
 			pCubeObject->SetMesh(WallMesh2);
 			pCubeObject->SetPosition(6.5f, 2.f, 9.f);
 			m_ppObjects[i++] = pCubeObject;
 		}
 		{
 			pCubeObject = new CGameObject();
-			pCubeObject->SetMaterial(i% MAX_MATERIALS);
+			pCubeObject->SetMaterial(m);
 			pCubeObject->SetMesh(WallMesh2);
 			pCubeObject->SetPosition(8.5f, 2.f, 9.f);
 			m_ppObjects[i++] = pCubeObject;
