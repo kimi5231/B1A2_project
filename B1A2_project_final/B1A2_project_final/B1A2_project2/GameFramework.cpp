@@ -30,7 +30,7 @@ CGameFramework::CGameFramework()
 	m_pScene = NULL;
 	m_pPlayer = NULL;
 
-	_tcscpy_s(m_pszFrameRate, _T("B1A2_project2 ("));
+	_tcscpy_s(m_pszFrameRate, _T("B1A2_project_final ("));
 }
 
 CGameFramework::~CGameFramework()

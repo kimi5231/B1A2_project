@@ -24,6 +24,7 @@
     <ProjectGuid>{2d7157fa-e684-4ad9-a976-80364d520926}</ProjectGuid>
     <RootNamespace>B1A2project2</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>B1A2_project_final</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -123,7 +124,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="B1A2_project2.h" />
+    <ClInclude Include="B1A2_project_final.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="GameFramework.h" />
     <ClInclude Include="GameNet.h" />
@@ -138,7 +139,7 @@
     <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="B1A2_project2.cpp" />
+    <ClCompile Include="B1A2_project_final.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="GameFramework.cpp" />
     <ClCompile Include="GameNet.cpp" />
@@ -154,7 +155,7 @@
     <ResourceCompile Include="B1A2_project2.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="B1A2_project2.ico" />
+    <Image Include="B1A2_project_final.ico" />
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>

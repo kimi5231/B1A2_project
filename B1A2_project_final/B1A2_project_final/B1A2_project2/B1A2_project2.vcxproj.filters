@@ -21,7 +21,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="B1A2_project2.h">
+    <ClInclude Include="B1A2_project_final.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
@@ -62,7 +62,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="B1A2_project2.cpp">
+    <ClCompile Include="B1A2_project_final.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
@@ -105,7 +105,7 @@
     <Image Include="small.ico">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="B1A2_project2.ico">
+    <Image Include="B1A2_project_final.ico">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>

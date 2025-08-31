@@ -1,5 +1,5 @@
 ﻿#include "stdafx.h"
-#include "B1A2_project2.h"
+#include "B1A2_project_final.h"
 #include "GameFramework.h"
 #include "GameNet.h";
 
@@ -26,12 +26,12 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 	HACCEL hAccelTable;
 
 	::LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-	::LoadString(hInstance, IDC_B1A2PROJECT2, szWindowClass, MAX_LOADSTRING);
+	::LoadString(hInstance, IDC_B1A2PROJECTFINAL, szWindowClass, MAX_LOADSTRING);
 	MyRegisterClass(hInstance);
 
 	if (!InitInstance(hInstance, nCmdShow)) return(FALSE);
 
-	hAccelTable = ::LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_B1A2PROJECT2));
+	hAccelTable = ::LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_B1A2PROJECTFINAL));
 
 	gameNet.Init();
 
@@ -68,7 +68,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	wcex.cbClsExtra = 0;
 	wcex.cbWndExtra = 0;
 	wcex.hInstance = hInstance;
-	wcex.hIcon = ::LoadIcon(hInstance, MAKEINTRESOURCE(IDI_B1A2PROJECT2));
+	wcex.hIcon = ::LoadIcon(hInstance, MAKEINTRESOURCE(IDI_B1A2PROJECTFINAL));
 	wcex.hCursor = ::LoadCursor(NULL, IDC_ARROW);
 	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	wcex.lpszMenuName = NULL;
