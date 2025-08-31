@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "B1A2_project2.h"
 #include "GameFramework.h"
+#include "GameNet.h";
 
 #define MAX_LOADSTRING 100
 
@@ -9,6 +10,7 @@ TCHAR							szTitle[MAX_LOADSTRING];
 TCHAR							szWindowClass[MAX_LOADSTRING];
 
 CGameFramework					gGameFramework;
+GameNet gameNet;
 
 ATOM MyRegisterClass(HINSTANCE hInstance);
 BOOL InitInstance(HINSTANCE, int);
@@ -31,6 +33,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
 	hAccelTable = ::LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_B1A2PROJECT2));
 
+	gameNet.Init();
+
 	while (1)
 	{
 		if (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -44,6 +48,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 		}
 		else
 		{
+			gameNet.Update();
 			gGameFramework.FrameAdvance();
 		}
 	}

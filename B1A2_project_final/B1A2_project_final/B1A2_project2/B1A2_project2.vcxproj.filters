@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="소스 파일\Protobuf">
+      <UniqueIdentifier>{caebf0de-4f8a-4637-a529-5942ca1e656d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameNet">
+      <UniqueIdentifier>{7720d00f-6b00-4449-b5ba-ad54d2ad5610}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="B1A2_project2.h">
@@ -51,6 +57,9 @@
     <ClInclude Include="targetver.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="GameNet.h">
+      <Filter>소스 파일\GameNet</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="B1A2_project2.cpp">
@@ -82,6 +91,9 @@
     </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GameNet.cpp">
+      <Filter>소스 파일\GameNet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

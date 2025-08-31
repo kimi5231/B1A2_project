@@ -126,6 +126,7 @@
     <ClInclude Include="B1A2_project2.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="GameFramework.h" />
+    <ClInclude Include="GameNet.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Player.h" />
@@ -140,6 +141,7 @@
     <ClCompile Include="B1A2_project2.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="GameFramework.cpp" />
+    <ClCompile Include="GameNet.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Player.cpp" />

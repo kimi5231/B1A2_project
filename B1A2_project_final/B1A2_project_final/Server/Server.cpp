@@ -9,7 +9,7 @@ int main()
 	if (::WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
 		return 0;
 
-	// client의 접속을 감지할 listen socket을 비동기로 생성
+	// client의 접속을 감지할 listenSocket을 비동기로 생성
 	// AF_INET: IPv4
 	// SOCK_STREAM: TCP
 	SOCKET listenSocket = ::WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
@@ -23,7 +23,7 @@ int main()
 	SOCKADDR_IN serverAddr;
 	// 주소/포트 정보를 담을 구조체 초기화
 	::memset(&serverAddr, 0, sizeof(serverAddr));
-	// Ipv4
+	// IPv4
 	serverAddr.sin_family = AF_INET;
 	// 아무 IP로 접근해도 수락
 	serverAddr.sin_addr.s_addr = ::htonl(INADDR_ANY);
@@ -34,7 +34,7 @@ int main()
 	if (::bind(listenSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR)
 		return 0;
 
-	// listen socket을 수신 대기 상태로 설정
+	// listenSocket을 수신 대기 상태로 설정
 	if (::listen(listenSocket, SOMAXCONN) == SOCKET_ERROR)
 		return 0;
 
@@ -53,7 +53,7 @@ int main()
 		for (SOCKET client : clients)
 		{
 			WSAPOLLFD pollfd;
-			pollfd.events = POLLRDNORM;
+			pollfd.events = POLLRDNORM | POLLWRNORM;
 			pollfd.fd = client;
 			pollfd.revents = 0;
 			pollfds.push_back(pollfd);
@@ -66,6 +66,7 @@ int main()
 		pollfd.revents = 0;
 		pollfds.push_back(pollfd);
 
+		// 이벤트 발생 관찰
 		::WSAPoll(pollfds.data(), pollfds.size(), 100);
 
 		for (WSAPOLLFD pollfd : pollfds)
@@ -80,7 +81,7 @@ int main()
 					::memset(&clientAddr, 0, sizeof(clientAddr));
 					int addrLen = sizeof(clientAddr);
 
-					// client 접속 시 통신하기 위한 client socket 생성
+					// client 접속 시 통신하기 위한 clientSocket 생성
 					SOCKET clientSocket = ::accept(listenSocket, (SOCKADDR*)&clientAddr, &addrLen);
 					if (clientSocket == INVALID_SOCKET)
 						return 0;
@@ -93,21 +94,24 @@ int main()
 
 					std::cout << "Connected" << std::endl;
 				}
-				else
+				else // clientSocket
 				{
 					char recvBuffer[100];
+					SOCKET clientSocket = pollfd.fd;
 					// 수신
-					int recvLen = ::recv(pollfd.fd, recvBuffer, sizeof(recvBuffer), 0);
-					if (recvLen <= 0)
+					int recvLen = ::recv(clientSocket, recvBuffer, sizeof(recvBuffer), 0);
+					if (recvLen > 0)
 					{
-						closesocket(pollfd.fd);
-						clients.erase(std::remove(clients.begin(), clients.end(), pollfd.fd), clients.end());
+						std::cout << "Recv Data: " << recvBuffer << std::endl;
+						std::cout << "Recv Data Len: " << recvLen << std::endl;
+					}
+					else if (recvLen == 0)
+					{
+						closesocket(clientSocket);
+						clients.erase(std::remove(clients.begin(), clients.end(), clientSocket), clients.end());
 						std::cout << "DisConnected" << std::endl;
 						break;
 					}
-
-					std::cout << "Recv Data: " << recvBuffer << std::endl;
-					std::cout << "Recv Data Len: " << recvLen << std::endl;
 				}
 			}
 		}
