@@ -5,5 +5,5 @@ import "Enum.proto";
 
 message TestData
 {
-	TestData test;
+	uint64 num = 1;
 }

@@ -152,7 +152,7 @@
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="B1A2_project2.rc" />
+    <ResourceCompile Include="B1A2_project_final.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="B1A2_project_final.ico" />

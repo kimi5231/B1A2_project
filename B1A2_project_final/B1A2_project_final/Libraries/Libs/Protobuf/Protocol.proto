@@ -6,5 +6,5 @@ import "Struct.proto";
 
 message S_TEST
 {
-	int num;
+	TestData test = 1;
 }

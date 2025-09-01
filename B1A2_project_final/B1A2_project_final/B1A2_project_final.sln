@@ -7,7 +7,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LabProject_Terrain", "LabPr
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Server", "Server\Server.vcxproj", "{F89426F9-4BE8-4BD1-A99F-1EFEA0849A04}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "B1A2_project_final", "B1A2_project2\B1A2_project2.vcxproj", "{2D7157FA-E684-4AD9-A976-80364D520926}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "B1A2_project_final", "B1A2_project_final\B1A2_project_final.vcxproj", "{2D7157FA-E684-4AD9-A976-80364D520926}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
