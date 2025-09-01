@@ -46,6 +46,17 @@ using Microsoft::WRL::ComPtr;
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "dxguid.lib")
 
+// Protobuf
+#include "Protocol.pb.h"
+#include "Enum.pb.h"
+#include "Struct.pb.h"
+
+#ifdef _DEBUG
+#pragma comment(lib, "Protobuf\\Debug\\libprotobufd.lib")
+#else
+#pragma comment(lib, "Protobuf\\Release\\libprotobuf.lib")
+#endif
+
 // 윈도우 크기
 #define FRAME_BUFFER_WIDTH	800
 #define FRAME_BUFFER_HEIGHT	600
