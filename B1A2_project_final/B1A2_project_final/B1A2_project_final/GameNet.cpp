@@ -57,12 +57,22 @@ void GameNet::Update()
     // 이벤트가 발생했을 경우
     if (_pollfd.revents != 0)
     {
-        char sendBuffer[100] = "Client";
+        
         // 송신
-        int resultCode = ::send(_clientSocket, sendBuffer, sizeof(sendBuffer), 0);
+        Protocol::TEST msg;
+        msg.mutable_test()->set_num(100);
+
+        int size = msg.ByteSizeLong();
+        std::vector<char> sendBuffer(size);
+        // Protobuf 객체를 Byte 배열(sendBuffer)로 변환
+        msg.SerializeToArray(sendBuffer.data(), size);
+
+        int resultCode = ::send(_clientSocket, sendBuffer.data(), size, 0);
         if (resultCode == SOCKET_ERROR)
         {
             // 연결 끊김 처리
         }
+
+        ::Sleep(1000);
     }
 }

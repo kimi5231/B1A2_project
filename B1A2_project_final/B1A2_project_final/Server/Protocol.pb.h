@@ -47,35 +47,35 @@ struct TableStruct_Protocol_2eproto {
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_Protocol_2eproto;
 namespace Protocol {
-class S_TEST;
-struct S_TESTDefaultTypeInternal;
-extern S_TESTDefaultTypeInternal _S_TEST_default_instance_;
+class TEST;
+struct TESTDefaultTypeInternal;
+extern TESTDefaultTypeInternal _TEST_default_instance_;
 }  // namespace Protocol
 PROTOBUF_NAMESPACE_OPEN
-template<> ::Protocol::S_TEST* Arena::CreateMaybeMessage<::Protocol::S_TEST>(Arena*);
+template<> ::Protocol::TEST* Arena::CreateMaybeMessage<::Protocol::TEST>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace Protocol {
 
 // ===================================================================
 
-class S_TEST final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S_TEST) */ {
+class TEST final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.TEST) */ {
  public:
-  inline S_TEST() : S_TEST(nullptr) {}
-  ~S_TEST() override;
-  explicit PROTOBUF_CONSTEXPR S_TEST(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline TEST() : TEST(nullptr) {}
+  ~TEST() override;
+  explicit PROTOBUF_CONSTEXPR TEST(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  S_TEST(const S_TEST& from);
-  S_TEST(S_TEST&& from) noexcept
-    : S_TEST() {
+  TEST(const TEST& from);
+  TEST(TEST&& from) noexcept
+    : TEST() {
     *this = ::std::move(from);
   }
 
-  inline S_TEST& operator=(const S_TEST& from) {
+  inline TEST& operator=(const TEST& from) {
     CopyFrom(from);
     return *this;
   }
-  inline S_TEST& operator=(S_TEST&& from) noexcept {
+  inline TEST& operator=(TEST&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -98,20 +98,20 @@ class S_TEST final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const S_TEST& default_instance() {
+  static const TEST& default_instance() {
     return *internal_default_instance();
   }
-  static inline const S_TEST* internal_default_instance() {
-    return reinterpret_cast<const S_TEST*>(
-               &_S_TEST_default_instance_);
+  static inline const TEST* internal_default_instance() {
+    return reinterpret_cast<const TEST*>(
+               &_TEST_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     0;
 
-  friend void swap(S_TEST& a, S_TEST& b) {
+  friend void swap(TEST& a, TEST& b) {
     a.Swap(&b);
   }
-  inline void Swap(S_TEST* other) {
+  inline void Swap(TEST* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -124,7 +124,7 @@ class S_TEST final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(S_TEST* other) {
+  void UnsafeArenaSwap(TEST* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -132,14 +132,14 @@ class S_TEST final :
 
   // implements Message ----------------------------------------------
 
-  S_TEST* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<S_TEST>(arena);
+  TEST* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<TEST>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const S_TEST& from);
+  void CopyFrom(const TEST& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const S_TEST& from) {
-    S_TEST::MergeImpl(*this, from);
+  void MergeFrom( const TEST& from) {
+    TEST::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -157,15 +157,15 @@ class S_TEST final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(S_TEST* other);
+  void InternalSwap(TEST* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "Protocol.S_TEST";
+    return "Protocol.TEST";
   }
   protected:
-  explicit S_TEST(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit TEST(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -199,7 +199,7 @@ class S_TEST final :
       ::Protocol::TestData* test);
   ::Protocol::TestData* unsafe_arena_release_test();
 
-  // @@protoc_insertion_point(class_scope:Protocol.S_TEST)
+  // @@protoc_insertion_point(class_scope:Protocol.TEST)
  private:
   class _Internal;
 
@@ -222,25 +222,25 @@ class S_TEST final :
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif  // __GNUC__
-// S_TEST
+// TEST
 
 // .Protocol.TestData test = 1;
-inline bool S_TEST::_internal_has_test() const {
+inline bool TEST::_internal_has_test() const {
   return this != internal_default_instance() && _impl_.test_ != nullptr;
 }
-inline bool S_TEST::has_test() const {
+inline bool TEST::has_test() const {
   return _internal_has_test();
 }
-inline const ::Protocol::TestData& S_TEST::_internal_test() const {
+inline const ::Protocol::TestData& TEST::_internal_test() const {
   const ::Protocol::TestData* p = _impl_.test_;
   return p != nullptr ? *p : reinterpret_cast<const ::Protocol::TestData&>(
       ::Protocol::_TestData_default_instance_);
 }
-inline const ::Protocol::TestData& S_TEST::test() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_TEST.test)
+inline const ::Protocol::TestData& TEST::test() const {
+  // @@protoc_insertion_point(field_get:Protocol.TEST.test)
   return _internal_test();
 }
-inline void S_TEST::unsafe_arena_set_allocated_test(
+inline void TEST::unsafe_arena_set_allocated_test(
     ::Protocol::TestData* test) {
   if (GetArenaForAllocation() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.test_);
@@ -251,9 +251,9 @@ inline void S_TEST::unsafe_arena_set_allocated_test(
   } else {
     
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.S_TEST.test)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.TEST.test)
 }
-inline ::Protocol::TestData* S_TEST::release_test() {
+inline ::Protocol::TestData* TEST::release_test() {
   
   ::Protocol::TestData* temp = _impl_.test_;
   _impl_.test_ = nullptr;
@@ -268,14 +268,14 @@ inline ::Protocol::TestData* S_TEST::release_test() {
 #endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
   return temp;
 }
-inline ::Protocol::TestData* S_TEST::unsafe_arena_release_test() {
-  // @@protoc_insertion_point(field_release:Protocol.S_TEST.test)
+inline ::Protocol::TestData* TEST::unsafe_arena_release_test() {
+  // @@protoc_insertion_point(field_release:Protocol.TEST.test)
   
   ::Protocol::TestData* temp = _impl_.test_;
   _impl_.test_ = nullptr;
   return temp;
 }
-inline ::Protocol::TestData* S_TEST::_internal_mutable_test() {
+inline ::Protocol::TestData* TEST::_internal_mutable_test() {
   
   if (_impl_.test_ == nullptr) {
     auto* p = CreateMaybeMessage<::Protocol::TestData>(GetArenaForAllocation());
@@ -283,12 +283,12 @@ inline ::Protocol::TestData* S_TEST::_internal_mutable_test() {
   }
   return _impl_.test_;
 }
-inline ::Protocol::TestData* S_TEST::mutable_test() {
+inline ::Protocol::TestData* TEST::mutable_test() {
   ::Protocol::TestData* _msg = _internal_mutable_test();
-  // @@protoc_insertion_point(field_mutable:Protocol.S_TEST.test)
+  // @@protoc_insertion_point(field_mutable:Protocol.TEST.test)
   return _msg;
 }
-inline void S_TEST::set_allocated_test(::Protocol::TestData* test) {
+inline void TEST::set_allocated_test(::Protocol::TestData* test) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
     delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.test_);
@@ -306,7 +306,7 @@ inline void S_TEST::set_allocated_test(::Protocol::TestData* test) {
     
   }
   _impl_.test_ = test;
-  // @@protoc_insertion_point(field_set_allocated:Protocol.S_TEST.test)
+  // @@protoc_insertion_point(field_set_allocated:Protocol.TEST.test)
 }
 
 #ifdef __GNUC__

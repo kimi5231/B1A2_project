@@ -102,8 +102,17 @@ int main()
 					int recvLen = ::recv(clientSocket, recvBuffer, sizeof(recvBuffer), 0);
 					if (recvLen > 0)
 					{
-						std::cout << "Recv Data: " << recvBuffer << std::endl;
-						std::cout << "Recv Data Len: " << recvLen << std::endl;
+						Protocol::TEST msg;
+						// Byte 배열(recvBuffer)을 Protobuf 객체로 변환
+						if (msg.ParseFromArray(recvBuffer, recvLen))
+						{
+							std::cout << "Recv Data: " << msg.test().num() << std::endl;
+							std::cout << "Recv Data Len: " << recvLen << std::endl;
+						}
+						else
+						{
+							// 변환 실패 처리
+						}
 					}
 					else if (recvLen == 0)
 					{

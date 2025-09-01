@@ -4,7 +4,7 @@ package Protocol;
 import "Enum.proto";
 import "Struct.proto";
 
-message S_TEST
+message TEST
 {
 	TestData test = 1;
 }
