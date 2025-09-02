@@ -44,6 +44,9 @@ int main()
 
 	std::vector<WSAPOLLFD> pollfds;
 	std::vector<SOCKET> clients;
+	//
+	std::vector<char> recvBuffer;
+	int header = 0;
 
 	while (true)
 	{
@@ -96,23 +99,14 @@ int main()
 				}
 				else // clientSocket
 				{
-					char recvBuffer[100];
+					char temp[100];
 					SOCKET clientSocket = pollfd.fd;
 					// 수신
-					int recvLen = ::recv(clientSocket, recvBuffer, sizeof(recvBuffer), 0);
-					if (recvLen > 0)
+					int recvLen = ::recv(clientSocket, temp, sizeof(temp), 0);
+
+					if (recvLen < 0)
 					{
-						Protocol::TEST msg;
-						// Byte 배열(recvBuffer)을 Protobuf 객체로 변환
-						if (msg.ParseFromArray(recvBuffer, recvLen))
-						{
-							std::cout << "Recv Data: " << msg.test().num() << std::endl;
-							std::cout << "Recv Data Len: " << recvLen << std::endl;
-						}
-						else
-						{
-							// 변환 실패 처리
-						}
+						// recv 실패 처리
 					}
 					else if (recvLen == 0)
 					{
@@ -120,6 +114,37 @@ int main()
 						clients.erase(std::remove(clients.begin(), clients.end(), clientSocket), clients.end());
 						std::cout << "DisConnected" << std::endl;
 						break;
+					}
+					else
+					{
+						// 수신된 데이터 누적
+						recvBuffer.insert(recvBuffer.end(), temp, temp + recvLen);
+
+						// 헤더 추출
+						if (recvLen > sizeof(int) && !header)
+						{
+							std::memcpy(&header, recvBuffer.data(), sizeof(int));
+							header = ::ntohl(header);
+							std::cout << "Header: " << header << std::endl;
+							recvBuffer.erase(recvBuffer.begin(), recvBuffer.begin() + sizeof(int));
+						}
+						else if (recvLen > header) // 본문 추출
+						{
+							Protocol::TEST pkt;
+
+							// Byte 배열(recvBuffer)을 Protobuf 객체로 변환
+							if (pkt.ParseFromArray(recvBuffer.data(), header))
+							{
+								std::cout << "Recv Data: " << pkt.test().num() << std::endl;
+								std::cout << "Recv Data Len: " << header << std::endl;
+								recvBuffer.erase(recvBuffer.begin(), recvBuffer.begin() + sizeof(header));
+								header = 0;
+							}
+							else
+							{
+								// 변환 실패 처리
+							}
+						}
 					}
 				}
 			}

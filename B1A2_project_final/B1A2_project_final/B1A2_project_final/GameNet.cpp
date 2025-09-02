@@ -57,17 +57,26 @@ void GameNet::Update()
     // 이벤트가 발생했을 경우
     if (_pollfd.revents != 0)
     {
-        
         // 송신
-        Protocol::TEST msg;
-        msg.mutable_test()->set_num(100);
+        // 패킷 본문 작성
+        Protocol::TEST pkt;
+        pkt.mutable_test()->set_num(100);
 
-        int size = msg.ByteSizeLong();
-        std::vector<char> sendBuffer(size);
+        // 패킷 헤더 작성 
+        int pktSize = pkt.ByteSizeLong();
+        // 헤더 빅엔디안으로 변환
+        int header = ::htonl(pktSize);
+
+        // sendBuffer 생성
+        std::vector<char> sendBuffer(sizeof(header) + pktSize);
+        // sendBuffer에 패킷 헤더 추가
+        std::memcpy(sendBuffer.data(), &header, sizeof(header));
+        // sendBuffer에 패킷 본문 추가
         // Protobuf 객체를 Byte 배열(sendBuffer)로 변환
-        msg.SerializeToArray(sendBuffer.data(), size);
+        // 이 과정에서 숫자형 필드도 빅엔디안으로 변환
+        pkt.SerializeToArray(sendBuffer.data() + sizeof(header), pktSize);
 
-        int resultCode = ::send(_clientSocket, sendBuffer.data(), size, 0);
+        int resultCode = ::send(_clientSocket, sendBuffer.data(), sendBuffer.size(), 0);
         if (resultCode == SOCKET_ERROR)
         {
             // 연결 끊김 처리
