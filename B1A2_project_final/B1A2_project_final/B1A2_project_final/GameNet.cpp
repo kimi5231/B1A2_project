@@ -82,6 +82,6 @@ void GameNet::Update()
             // ¿¬°á ²÷±è Ã³¸®
         }
 
-        ::Sleep(1000);
+        //::Sleep(1000);
     }
 }
