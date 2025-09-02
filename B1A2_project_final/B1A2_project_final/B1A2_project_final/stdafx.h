@@ -1,7 +1,7 @@
 #pragma once
 
 #define WIN32_LEAN_AND_MEAN             // 거의 사용되지 않는 내용은 Windows 헤더에서 제외합니다.
-// Windows 헤더 파일:
+
 #include <windows.h>
 
 // C의 런타임 헤더 파일입니다.
@@ -37,7 +37,6 @@ using Microsoft::WRL::ComPtr;
 // 소켓 프로그래밍
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#include <windows.h>
 #pragma comment(lib, "ws2_32.lib")
 
 // Impotr 라이브러리
