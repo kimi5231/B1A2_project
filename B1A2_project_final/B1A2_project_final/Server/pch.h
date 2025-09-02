@@ -4,6 +4,8 @@
 #include <ws2tcpip.h>
 #include <windows.h>
 
+#include <DirectXMath.h>
+
 #include "Protocol.pb.h"
 #include "Enum.pb.h"
 #include "Struct.pb.h"

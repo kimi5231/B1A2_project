@@ -69,6 +69,9 @@
     <ClInclude Include="Struct.pb.h">
       <Filter>소스 파일\Protobuf</Filter>
     </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="B1A2_project_final.cpp">
@@ -112,6 +115,9 @@
     </ClCompile>
     <ClCompile Include="Struct.pb.cc">
       <Filter>소스 파일\Protobuf</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,9 +1,10 @@
 ﻿#include "pch.h"
-
-// Socket 클래스 추가? (Socket, RecvBuffer, SendBuffer 포함)
+#include "Room.h"
 
 int main()
 {
+	Room room;
+
 	//소켓 프로그래밍을 위한 WinSock 라이브러리 초기화 
 	WSADATA wsaData;
 	if (::WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
@@ -94,6 +95,8 @@ int main()
 					ioctlsocket(clientSocket, FIONBIO, &mode);
 
 					clients.push_back(clientSocket);
+
+					room.AddPlayer();
 
 					std::cout << "Connected" << std::endl;
 				}
