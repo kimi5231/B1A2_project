@@ -133,9 +133,9 @@
     <ClInclude Include="B1A2_project_final.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Enum.pb.h" />
-    <ClInclude Include="Game.h" />
     <ClInclude Include="GameFramework.h" />
     <ClInclude Include="GameNet.h" />
+    <ClInclude Include="Global.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Player.h" />
@@ -152,9 +152,9 @@
     <ClCompile Include="B1A2_project_final.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Enum.pb.cc" />
-    <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameFramework.cpp" />
     <ClCompile Include="GameNet.cpp" />
+    <ClCompile Include="Global.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Player.cpp" />

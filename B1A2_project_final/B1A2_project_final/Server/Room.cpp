@@ -15,9 +15,7 @@ void Room::Update()
 
 }
 
-void Room::AddPlayer()
+void Room::AddPlayer(std::shared_ptr<Player> player)
 {
-	std::shared_ptr<Player> player = std::make_shared<Player>();
-	
 	_players[1] = player;
 }

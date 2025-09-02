@@ -11,7 +11,7 @@ public:
 	void Update();
 
 public:
-	void AddPlayer();
+	void AddPlayer(std::shared_ptr<Player> player);
 
 private:
 	std::unordered_map<int, std::shared_ptr<Player>> _players;

@@ -9,6 +9,9 @@ public:
 	void Update();
 
 private:
+	bool SendAddPlayerPacket();
+
+private:
 	SOCKET _clientSocket{};
 	WSAPOLLFD _pollfd{};
 };

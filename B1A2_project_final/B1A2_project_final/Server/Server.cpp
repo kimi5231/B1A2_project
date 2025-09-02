@@ -96,7 +96,7 @@ int main()
 
 					clients.push_back(clientSocket);
 
-					room.AddPlayer();
+					//room.AddPlayer();
 
 					std::cout << "Connected" << std::endl;
 				}
