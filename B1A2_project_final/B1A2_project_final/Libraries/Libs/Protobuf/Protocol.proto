@@ -9,8 +9,14 @@ message TEST
 	TestData test = 1;
 }
 
+message EnterRoom
+{
+	bool success = 1;
+}
+
 // 추후 AddObject로 수정할 것
 message AddPlayer
 {
-	DirectX::XMFLOAT3 pos = 1;
+	int32 id = 1;
+	Pos pos = 2;
 }

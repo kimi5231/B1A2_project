@@ -40,14 +40,18 @@ void GameNet::Init()
     serverAddr.sin_port = ::htons(7777);
 
     // 소켓에 주소/포트 정보 설정 후, server와 연결 시도
+   
     if (::connect(_clientSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR)
-        return;
-
+    {
+        SendEnterRoomPacket();
+    }
+    
     // clientSocket 관찰 대상 등록
     _pollfd.events = POLLRDNORM | POLLWRNORM;
     _pollfd.fd = _clientSocket;
     _pollfd.revents = 0;
 }
+
 
 void GameNet::Update()
 {
@@ -55,17 +59,121 @@ void GameNet::Update()
     ::WSAPoll(&_pollfd, 1, 100);
 
     // 이벤트가 발생했을 경우
-    if (_pollfd.revents != 0)
+    // 송신 
+    if (_pollfd.revents & POLLWRNORM)
     {
-        // 송신
         // 패킷 본문 작성
         Protocol::TEST pkt;
         pkt.mutable_test()->set_num(100);
 
-        // 패킷 헤더 작성 
-        int pktSize = pkt.ByteSizeLong();
-        // 헤더 빅엔디안으로 변환
-        int header = ::htonl(pktSize);
+        uint32_t pktSize = pkt.ByteSizeLong();
+        uint32_t pktID = TEST;
+
+        // 패킷 헤더 작성 및 빅엔디안으로 변환
+        std::array<uint32_t, 2> header;
+        // 빅엔디안으로 변환
+        header[0] = ::htonl(pktSize);
+        header[1] = ::htonl(pktID);
+
+        // sendBuffer 생성
+        std::vector<char> sendBuffer(sizeof(header) + pktSize);
+        // sendBuffer에 패킷 헤더 추가
+        std::memcpy(sendBuffer.data(), &header[0], sizeof(uint32_t));
+        std::memcpy(sendBuffer.data() + sizeof(uint32_t), &header[1], sizeof(uint32_t));
+        // sendBuffer에 패킷 본문 추가
+        // Protobuf 객체를 Byte 배열(sendBuffer)로 변환
+        // 이 과정에서 숫자형 필드도 빅엔디안으로 변환
+        pkt.SerializeToArray(sendBuffer.data() + sizeof(uint32_t) * 2, pktSize);
+
+        int resultCode = ::send(_clientSocket, sendBuffer.data(), sendBuffer.size(), 0);
+        if (resultCode == SOCKET_ERROR)
+        {
+            // 연결 끊김 처리
+        }
+
+        ::Sleep(1000);
+    }
+
+    // 수신
+    if (_pollfd.revents & POLLRDNORM)
+    {
+        char temp[100];
+
+        int recvLen = ::recv(_clientSocket, temp, sizeof(temp), 0);
+
+        if (recvLen < 0)
+        {
+            // recv 실패 처리
+        }
+        else
+        {
+            // 수신된 데이터 누적
+            _recvBuffer.insert(_recvBuffer.end(), temp, temp + recvLen);
+
+            // 헤더 추출
+            if (recvLen > sizeof(_header) && !_header[0] && !_header[1])
+            {
+                // 패킷 size
+                std::memcpy(&_header[0], _recvBuffer.data(), sizeof(uint32_t));
+                _header[0] = ::ntohl(_header[0]);
+                _recvBuffer.erase(_recvBuffer.begin(), _recvBuffer.begin() + sizeof(uint32_t));
+
+                // 패킷 ID
+                std::memcpy(&_header[1], _recvBuffer.data(), sizeof(uint32_t));
+                _header[1] = ::ntohl(_header[1]);
+                _recvBuffer.erase(_recvBuffer.begin(), _recvBuffer.begin() + sizeof(uint32_t));
+            }
+            /*else if (recvLen > _header[0])*/ // 본문 추출
+            {
+                switch (_header[1])
+                {
+                case AddPlayer:
+                {
+                    Protocol::AddPlayer pkt;
+
+                    // Byte 배열(recvBuffer)을 Protobuf 객체로 변환
+                    if (pkt.ParseFromArray(_recvBuffer.data(), _header[0]))
+                    {
+                        // 플레이어 추가
+
+
+                        _recvBuffer.erase(_recvBuffer.begin(), _recvBuffer.begin() + _header[0]);
+                        _header[0] = 0;
+                        _header[1] = 0;
+                    }
+                    else
+                    {
+                        // 변환 실패 처리
+                    }
+                }
+                break;
+                }
+            }
+        }
+    }
+}
+
+
+bool GameNet::SendEnterRoomPacket()
+{
+    // 이벤트 발생 관찰
+    ::WSAPoll(&_pollfd, 1, 100);
+
+    // 이벤트가 발생했을 경우
+    if (_pollfd.revents != 0)
+    {
+        // 패킷 본문 작성
+        Protocol::EnterRoom pkt;
+        pkt.set_success(true);
+
+        uint32_t pktSize = pkt.ByteSizeLong();
+        uint32_t pktID = EnterRoom;
+
+        // 패킷 헤더 작성 및 빅엔디안으로 변환
+        std::array<uint32_t, 2> header;
+        // 빅엔디안으로 변환
+        header[0] = ::htonl(pktSize);
+        header[1] = ::htonl(pktID);
 
         // sendBuffer 생성
         std::vector<char> sendBuffer(sizeof(header) + pktSize);
@@ -82,6 +190,8 @@ void GameNet::Update()
             // 연결 끊김 처리
         }
 
-        //::Sleep(1000);
+        return true;
     }
+
+    return false;
 }

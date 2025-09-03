@@ -44,17 +44,16 @@ int main()
 	int clientNum = 0;
 
 	std::vector<WSAPOLLFD> pollfds;
-	std::vector<SOCKET> clients;
-	//
+
 	std::vector<char> recvBuffer;
-	int header = 0;
+	std::array<uint32_t, 2> header{};
 
 	while (true)
 	{
 		pollfds.clear();
 
 		// clientSocket 관찰 대상 등록
-		for (SOCKET client : clients)
+		for (SOCKET client : room._clients)
 		{
 			WSAPOLLFD pollfd;
 			pollfd.events = POLLRDNORM | POLLWRNORM;
@@ -94,9 +93,7 @@ int main()
 					u_long mode = 1;
 					ioctlsocket(clientSocket, FIONBIO, &mode);
 
-					clients.push_back(clientSocket);
-
-					//room.AddPlayer();
+					room._clients.push_back(clientSocket);
 
 					std::cout << "Connected" << std::endl;
 				}
@@ -114,7 +111,7 @@ int main()
 					else if (recvLen == 0)
 					{
 						closesocket(clientSocket);
-						clients.erase(std::remove(clients.begin(), clients.end(), clientSocket), clients.end());
+						room._clients.erase(std::remove(room._clients.begin(), room._clients.end(), clientSocket), room._clients.end());
 						std::cout << "DisConnected" << std::endl;
 						break;
 					}
@@ -124,28 +121,59 @@ int main()
 						recvBuffer.insert(recvBuffer.end(), temp, temp + recvLen);
 
 						// 헤더 추출
-						if (recvLen > sizeof(int) && !header)
+						if (recvLen > sizeof(header) && !header[0] && !header[1])
 						{
-							std::memcpy(&header, recvBuffer.data(), sizeof(int));
-							header = ::ntohl(header);
-							std::cout << "Header: " << header << std::endl;
-							recvBuffer.erase(recvBuffer.begin(), recvBuffer.begin() + sizeof(int));
-						}
-						else if (recvLen > header) // 본문 추출
-						{
-							Protocol::TEST pkt;
+							// 패킷 size
+							std::memcpy(&header[0], recvBuffer.data(), sizeof(uint32_t));
+							header[0] = ::ntohl(header[0]);
+							recvBuffer.erase(recvBuffer.begin(), recvBuffer.begin() + sizeof(uint32_t));
 
-							// Byte 배열(recvBuffer)을 Protobuf 객체로 변환
-							if (pkt.ParseFromArray(recvBuffer.data(), header))
+							// 패킷 ID
+							std::memcpy(&header[1], recvBuffer.data(), sizeof(uint32_t));
+							header[1] = ::ntohl(header[1]);
+							recvBuffer.erase(recvBuffer.begin(), recvBuffer.begin() + sizeof(uint32_t));
+							
+							std::cout << "pkt size: " << header[0] << std::endl;
+							std::cout << "pkt ID: " << header[1] << std::endl;
+						}
+						else if (recvLen > header[0]) // 본문 추출
+						{
+							switch (header[1])
 							{
-								std::cout << "Recv Data: " << pkt.test().num() << std::endl;
-								std::cout << "Recv Data Len: " << header << std::endl;
-								recvBuffer.erase(recvBuffer.begin(), recvBuffer.begin() + sizeof(header));
-								header = 0;
-							}
-							else
-							{
-								// 변환 실패 처리
+							case TEST:
+								{
+									Protocol::TEST pkt;
+
+									// Byte 배열(recvBuffer)을 Protobuf 객체로 변환
+									if (pkt.ParseFromArray(recvBuffer.data(), header[0]))
+									{
+										std::cout << "Recv Data: " << pkt.test().num() << std::endl;
+										recvBuffer.erase(recvBuffer.begin(), recvBuffer.begin() + header[0]);
+										header[0] = 0;
+										header[1] = 0;
+									}
+									else
+									{
+										// 변환 실패 처리
+									}
+								}
+								break;
+							case EnterRoom:
+								Protocol::EnterRoom pkt;
+
+								// Byte 배열(recvBuffer)을 Protobuf 객체로 변환
+								if (pkt.ParseFromArray(recvBuffer.data(), header[0]))
+								{
+									room.AddPlayer();
+									recvBuffer.erase(recvBuffer.begin(), recvBuffer.begin() + header[0]);
+									header[0] = 0;
+									header[1] = 0;
+								}
+								else
+								{
+									// 변환 실패 처리
+								}
+								break;
 							}
 						}
 					}

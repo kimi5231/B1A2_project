@@ -332,8 +332,6 @@ CCubePlayer::CCubePlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	pShader->CreateShader(pd3dDevice, pd3dGraphicsRootSignature);
 	pShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
 	SetShader(pShader);
-
-	// 
 }
 
 CCubePlayer::~CCubePlayer()

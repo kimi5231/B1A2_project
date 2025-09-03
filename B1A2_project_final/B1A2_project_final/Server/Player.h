@@ -7,6 +7,14 @@ public:
 
 	void Update();
 
+public:
+	void SetPos(XMFLOAT3 pos) { _pos = pos; }
+	void SetID(int id) { _id = id; }
+
+	XMFLOAT3 GetPos() { return _pos; }
+	int GetID() { return _id; }
+
 private:
-	DirectX::XMFLOAT3 _pos{};
+	XMFLOAT3 _pos{};
+	int _id{};
 };

@@ -55,8 +55,6 @@ using Microsoft::WRL::ComPtr;
 #pragma comment(lib, "Protobuf\\Release\\libprotobuf.lib")
 #endif
 
-#include "Global.h"
-
 // 윈도우 크기
 #define FRAME_BUFFER_WIDTH	800
 #define FRAME_BUFFER_HEIGHT	600
@@ -87,6 +85,8 @@ enum MeshColor
 	WallColor,
 	PlayerColor,
 };
+
+#include "Global.h"
 
 #define EPSILON					1.0e-10f
 

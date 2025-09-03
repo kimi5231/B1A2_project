@@ -7,3 +7,10 @@ message TestData
 {
 	uint64 num = 1;
 }
+
+message Pos
+{
+	float x = 1;
+	float y = 2;
+	float z = 3;
+}
