@@ -132,3 +132,28 @@
 4. 다음 미팅
  - 9월 3일 수요일 오후 1시 30분
  - 작업일지 작성 (일주일에 하나) 샘플 참조.
+
+2025-09-03
+-------------
+1. 진행상황
+ - 클라이언트
+ * Color 추가
+ * ShADING이 제대로 되지 않음 => https://heinleinsgame.tistory.com/15 이렇게 보여야 한다.
+ - 멀티플레이어 동기화
+  * 클라이언트가  플레이어 생성 API를 만들어서 전달해 주어야 한다.
+  * CreatePlayer(int player_id, float x, float y, float z)
+ - 서버
+  * WSApoll 사용=> WSAPoll 를 사용한 코드는 non-blocking 이 아니다.
+ - 기획
+  * 구체적인 수치가 없음
+2. ToDo
+ - 클라이언트
+  * Directional Light Shading 제대로 구현
+ - 서버
+  * 멀티플레이 동기화
+ - 기획
+  * 전투기획 다시.
+
+4. 다음 미팅
+ - 9월 17일 수요일 오전 10시 30분
+ - 작업일지 작성 (일주일에 하나) 샘플 참조.
