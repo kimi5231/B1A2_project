@@ -49,6 +49,8 @@ public:
 	void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	LRESULT CALLBACK OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 
+	void CreatePlayer(__int32 id, XMFLOAT3 pos);
+
 private:
 	HINSTANCE m_hInstance;
 	HWND m_hWnd;
@@ -99,7 +101,7 @@ private:
 	_TCHAR	m_pszFrameRate[50];
 
 	CScene* m_pScene = NULL;
-	CPlayer* m_pPlayer = NULL;
+	std::vector<CPlayer*> m_pPlayers;
 	CCamera* m_pCamera = NULL;
 
 	// 마지막으로 마우스 버튼을 클릭할 때의 커서 위치

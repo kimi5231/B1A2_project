@@ -28,7 +28,8 @@ CGameFramework::CGameFramework()
 	m_nWndClientHeight = FRAME_BUFFER_HEIGHT;
 
 	m_pScene = NULL;
-	m_pPlayer = NULL;
+
+	m_pPlayers.clear();
 
 	_tcscpy_s(m_pszFrameRate, _T("B1A2_project_final ("));
 }
@@ -356,7 +357,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		case VK_F1:
 		case VK_F2:
 		case VK_F3:
-			m_pCamera = m_pPlayer->ChangeCamera((DWORD)(wParam - VK_F1 + 1), m_GameTimer.GetTimeElapsed());
+			m_pCamera = m_pPlayers[0]->ChangeCamera((DWORD)(wParam - VK_F1 + 1), m_GameTimer.GetTimeElapsed());
 			break;
 		case VK_F9:
 		{
@@ -424,6 +425,15 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 	return(0);
 }
 
+void CGameFramework::CreatePlayer(__int32 id, XMFLOAT3 pos)
+{
+	CCubePlayer* pPlayer = new CCubePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature());
+	pPlayer->SetPosition(pos);
+	pPlayer->SetId(id);
+
+	m_pPlayers.push_back(pPlayer);
+}
+
 void CGameFramework::OnDestroy()
 {
 	// GPU가 모든 커맨드 리스트를 실행할 때까지 기다림
@@ -460,10 +470,11 @@ void CGameFramework::BuildObjects()
 	m_pScene = new CScene();
 	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList);
 
-	CCubePlayer* pCubePlayer = new CCubePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature());
-	m_pScene->m_pPlayer = m_pPlayer = pCubePlayer;
-	m_pCamera = m_pPlayer->GetCamera();
-	m_pPlayer->Rotate(0.f, 90.f, 0.f); // 임의로 수정함
+	// 로컬 플레이어 생성
+	CreatePlayer(1, XMFLOAT3(4.0f, 2.0f, 1.0f));	// id, Pos
+	// 로컬 플레이어와 씬, 카메라 연결
+	m_pScene->m_pPlayer = m_pPlayers[0];
+	m_pCamera = m_pPlayers[0]->GetCamera();
 
 	//씬 객체를 생성하기 위하여 필요한 그래픽 명령 리스트들을 명령 큐에 추가
 	m_pd3dCommandList->Close();
@@ -474,8 +485,10 @@ void CGameFramework::BuildObjects()
 	WaitForGpuComplete();
 
 	// 그래픽 리소스들을 생성하는 과정에서 생성된 업로드 버퍼들을 소멸시킴
-	if (m_pScene) m_pScene->ReleaseUploadBuffers();
-	if (m_pPlayer) m_pPlayer->ReleaseUploadBuffers();
+	if (m_pScene) 
+		m_pScene->ReleaseUploadBuffers();
+	for (auto player : m_pPlayers) 
+		player->ReleaseUploadBuffers();
 
 	// 타이머
 	m_GameTimer.Reset();
@@ -483,7 +496,9 @@ void CGameFramework::BuildObjects()
 
 void CGameFramework::ReleaseObjects()
 {
-	if (m_pPlayer) delete m_pPlayer;
+	for (CPlayer* player : m_pPlayers)
+		delete player;
+	m_pPlayers.clear();
 
 	if (m_pScene) m_pScene->ReleaseObjects();
 	if (m_pScene) delete m_pScene;
@@ -530,20 +545,20 @@ void CGameFramework::ProcessInput()
 			{
 				if (pKeysBuffer[VK_LBUTTON] & 0xF0)
 				{
-					m_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
+					m_pPlayers[0]->Rotate(cyDelta, cxDelta, 0.0f);
 				}
 			}
 
 			// 플레이어를 dwDirection 방향으로 이동(실제로는 속도 벡터를 변경함) 
 			// 이동 거리는 시간에 비례
 			// 플레이어의 이동 속력은 (1.0/초)로 가정
-			if (dwDirection) m_pPlayer->Move(dwDirection, 1.0f * m_GameTimer.GetTimeElapsed(), true);
+			if (dwDirection) m_pPlayers[0]->Move(dwDirection, 1.0f * m_GameTimer.GetTimeElapsed(), true);
 		}
 	}
 
 	// 플레이어를 실제로 이동하고 카메라 갱신
 	// 중력과 마찰력의 영향을 속도 벡터에 적용
-	m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
+	m_pPlayers[0]->Update(m_GameTimer.GetTimeElapsed());
 }
 
 void CGameFramework::AnimateObjects()
@@ -628,7 +643,8 @@ void CGameFramework::FrameAdvance()
 	m_pd3dCommandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
 #endif
 	// 3인칭 카메라일 때 플레이어 렌더링
-	if (m_pPlayer) m_pPlayer->Render(m_pd3dCommandList, m_pCamera);
+	for (auto& player : m_pPlayers)
+		player->Render(m_pd3dCommandList, m_pCamera);
 
 	// 현재 렌더 타겟에 대한 렌더링이 끝나기를 기다림
 	// GPU가 렌더 타겟(버퍼)을 더이상 사용하지 않으면 렌더 타겟의 상태는 프리젠트 상태로 바뀔 것
