@@ -315,7 +315,8 @@ CCamera* CAirplanePlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 CCubePlayer::CCubePlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
 {
 	// 큐브 메쉬 생성
-	CMesh* pCubeMesh = new CCubeMeshDiffused(pd3dDevice, pd3dCommandList, 0.2f, 0.2f, 0.2f, PlayerColor);
+	CCubeMeshIlluminated* pCubeMesh = new CCubeMeshIlluminated(pd3dDevice, pd3dCommandList, 0.2f, 0.2f, 0.2f);
+	SetMaterial(3);	// 초록	
 	SetMesh(pCubeMesh);
 
 	// 플레이어의 카메라를 3인칭 카메라로 생성
