@@ -164,7 +164,7 @@ int main()
 								// Byte 배열(recvBuffer)을 Protobuf 객체로 변환
 								if (pkt.ParseFromArray(recvBuffer.data(), header[0]))
 								{
-									room.AddPlayer();
+									room.CreatePlayer();
 									recvBuffer.erase(recvBuffer.begin(), recvBuffer.begin() + header[0]);
 									header[0] = 0;
 									header[1] = 0;
