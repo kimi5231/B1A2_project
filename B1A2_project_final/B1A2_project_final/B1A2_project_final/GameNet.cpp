@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GameNet.h"
+#include "GameFramework.h"
 
 GameNet::GameNet()
 {
@@ -134,8 +135,13 @@ void GameNet::Update()
                     // Byte 배열(recvBuffer)을 Protobuf 객체로 변환
                     if (pkt.ParseFromArray(_recvBuffer.data(), _header[0]))
                     {
-                        // 플레이어 추가
+                        XMFLOAT3 pos;
+                        pos.x = pkt.pos().x();
+                        pos.y = pkt.pos().y();
+                        pos.z = pkt.pos().z();
 
+                        // 플레이어 추가
+                        gGameFramework.CreatePlayer(pkt.id(), pos);
 
                         _recvBuffer.erase(_recvBuffer.begin(), _recvBuffer.begin() + _header[0]);
                         _header[0] = 0;
