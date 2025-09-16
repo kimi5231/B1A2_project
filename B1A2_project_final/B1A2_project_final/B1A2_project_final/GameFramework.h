@@ -51,6 +51,11 @@ public:
 
 	void CreatePlayer(__int32 id, XMFLOAT3 pos);
 
+	CScene* GetScene() { return m_pScene; }
+	std::vector<CPlayer*> GetPlayers() { return m_pPlayers; }
+	CCamera* GetCamera() { return m_pCamera; }
+	void SetCamera(CCamera* camera) { m_pCamera = camera; }
+
 private:
 	HINSTANCE m_hInstance;
 	HWND m_hWnd;

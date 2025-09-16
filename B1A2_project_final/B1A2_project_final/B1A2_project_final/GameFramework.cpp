@@ -601,6 +601,12 @@ void CGameFramework::FrameAdvance()
 
 	AnimateObjects();
 
+	// Update
+	for (auto& player : m_pPlayers)
+	{
+		player->Update(m_GameTimer.GetTimeElapsed());
+	}
+
 	// 명령 할당자와 명령 리스트 리셋
 	HRESULT hResult = m_pd3dCommandAllocator->Reset();
 	hResult = m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);

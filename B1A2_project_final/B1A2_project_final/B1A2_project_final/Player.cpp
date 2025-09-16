@@ -316,9 +316,11 @@ CCubePlayer::CCubePlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 {
 	// 큐브 메쉬 생성
 	CCubeMeshIlluminated* pCubeMesh = new CCubeMeshIlluminated(pd3dDevice, pd3dCommandList, 0.2f, 0.2f, 0.2f);
-	SetMaterial(3);	// 초록	
+	int i = 1;
+	UINT m = i % MAX_MATERIALS;
+	SetMaterial(m);	// 초록	
 	SetMesh(pCubeMesh);
-
+	
 	// 플레이어의 카메라를 3인칭 카메라로 생성
 	m_pCamera = ChangeCamera(THIRD_PERSON_CAMERA, 0.0f);
 
