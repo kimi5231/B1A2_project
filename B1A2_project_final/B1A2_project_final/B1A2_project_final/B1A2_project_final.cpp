@@ -28,8 +28,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
 	hAccelTable = ::LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_B1A2PROJECTFINAL));
 
-	g_gameNet.Init();
-
 	while (1)
 	{
 		if (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -84,6 +82,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 	if (!hMainWnd) return(FALSE);
 
+	g_gameNet.Init();
 	gGameFramework.OnCreate(hInstance, hMainWnd);
 
 	::ShowWindow(hMainWnd, nCmdShow);

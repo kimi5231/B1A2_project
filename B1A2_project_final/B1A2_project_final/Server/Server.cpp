@@ -56,7 +56,7 @@ int main()
 		for (SOCKET client : room._clients)
 		{
 			WSAPOLLFD pollfd;
-			pollfd.events = POLLRDNORM | POLLWRNORM;
+			pollfd.events = POLLOUT | POLLIN;
 			pollfd.fd = client;
 			pollfd.revents = 0;
 			pollfds.push_back(pollfd);
@@ -64,7 +64,7 @@ int main()
 
 		// listenSocket 관찰 대상 등록
 		WSAPOLLFD pollfd;
-		pollfd.events = POLLRDNORM;
+		pollfd.events = POLLIN;
 		pollfd.fd = listenSocket;
 		pollfd.revents = 0;
 		pollfds.push_back(pollfd);
@@ -74,8 +74,8 @@ int main()
 
 		for (WSAPOLLFD pollfd : pollfds)
 		{
-			// 이벤트가 발생했을 경우
-			if (pollfd.revents != 0)
+			// 수신(읽기 가능)
+			if (pollfd.revents & POLLIN)
 			{
 				// listenSocket
 				if (pollfd.fd == listenSocket)
@@ -136,34 +136,18 @@ int main()
 							std::cout << "pkt size: " << header[0] << std::endl;
 							std::cout << "pkt ID: " << header[1] << std::endl;
 						}
-						else if (recvLen > header[0]) // 본문 추출
+
+						if (recvLen > header[0]) // 본문 추출
 						{
 							switch (header[1])
 							{
-							case TEST:
-								{
-									Protocol::TEST pkt;
-
-									// Byte 배열(recvBuffer)을 Protobuf 객체로 변환
-									if (pkt.ParseFromArray(recvBuffer.data(), header[0]))
-									{
-										std::cout << "Recv Data: " << pkt.test().num() << std::endl;
-										recvBuffer.erase(recvBuffer.begin(), recvBuffer.begin() + header[0]);
-										header[0] = 0;
-										header[1] = 0;
-									}
-									else
-									{
-										// 변환 실패 처리
-									}
-								}
-								break;
 							case EnterRoom:
 								Protocol::EnterRoom pkt;
 
 								// Byte 배열(recvBuffer)을 Protobuf 객체로 변환
 								if (pkt.ParseFromArray(recvBuffer.data(), header[0]))
 								{
+									std::cout << "Recv Data: " << pkt.success() << std::endl;
 									room.CreatePlayer();
 									recvBuffer.erase(recvBuffer.begin(), recvBuffer.begin() + header[0]);
 									header[0] = 0;
@@ -178,6 +162,12 @@ int main()
 						}
 					}
 				}
+			}
+
+			// 송신(쓰기 가능)
+			if (pollfd.revents & POLLOUT)
+			{
+
 			}
 		}
 	}

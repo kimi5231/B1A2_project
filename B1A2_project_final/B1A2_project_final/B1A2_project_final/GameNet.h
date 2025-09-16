@@ -3,8 +3,7 @@
 
 enum
 {
-	TEST = 1,
-	EnterRoom = 2,
+	EnterRoom = 1,
 	AddPlayer = 3,
 };
 
@@ -18,9 +17,15 @@ public:
 	void Update();
 
 public:
+	// 
 	bool SendEnterRoomPacket();
 
+	// 
+
+
 private:
+	bool _isServerConnected = false;
+
 	SOCKET _clientSocket{};
 	WSAPOLLFD _pollfd{};
 	std::vector<char> _recvBuffer;

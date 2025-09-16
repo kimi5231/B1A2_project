@@ -2,8 +2,7 @@
 
 enum
 {
-	TEST = 1,
-	EnterRoom = 2,
+	EnterRoom = 1,
 	AddPlayer = 3,
 };
 
