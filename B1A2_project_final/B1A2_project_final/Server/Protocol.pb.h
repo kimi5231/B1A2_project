@@ -56,11 +56,15 @@ extern AddPlayerDefaultTypeInternal _AddPlayer_default_instance_;
 class EnterRoom;
 struct EnterRoomDefaultTypeInternal;
 extern EnterRoomDefaultTypeInternal _EnterRoom_default_instance_;
+class Move;
+struct MoveDefaultTypeInternal;
+extern MoveDefaultTypeInternal _Move_default_instance_;
 }  // namespace Protocol
 PROTOBUF_NAMESPACE_OPEN
 template<> ::Protocol::AddObject* Arena::CreateMaybeMessage<::Protocol::AddObject>(Arena*);
 template<> ::Protocol::AddPlayer* Arena::CreateMaybeMessage<::Protocol::AddPlayer>(Arena*);
 template<> ::Protocol::EnterRoom* Arena::CreateMaybeMessage<::Protocol::EnterRoom>(Arena*);
+template<> ::Protocol::Move* Arena::CreateMaybeMessage<::Protocol::Move>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace Protocol {
 
@@ -548,6 +552,185 @@ class AddObject final :
   union { Impl_ _impl_; };
   friend struct ::TableStruct_Protocol_2eproto;
 };
+// -------------------------------------------------------------------
+
+class Move final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.Move) */ {
+ public:
+  inline Move() : Move(nullptr) {}
+  ~Move() override;
+  explicit PROTOBUF_CONSTEXPR Move(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  Move(const Move& from);
+  Move(Move&& from) noexcept
+    : Move() {
+    *this = ::std::move(from);
+  }
+
+  inline Move& operator=(const Move& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline Move& operator=(Move&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const Move& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const Move* internal_default_instance() {
+    return reinterpret_cast<const Move*>(
+               &_Move_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    3;
+
+  friend void swap(Move& a, Move& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(Move* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(Move* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  Move* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<Move>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const Move& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const Move& from) {
+    Move::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(Move* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.Move";
+  }
+  protected:
+  explicit Move(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kPosFieldNumber = 2,
+    kIdFieldNumber = 1,
+    kCanMoveFieldNumber = 3,
+  };
+  // .Protocol.Pos pos = 2;
+  bool has_pos() const;
+  private:
+  bool _internal_has_pos() const;
+  public:
+  void clear_pos();
+  const ::Protocol::Pos& pos() const;
+  PROTOBUF_NODISCARD ::Protocol::Pos* release_pos();
+  ::Protocol::Pos* mutable_pos();
+  void set_allocated_pos(::Protocol::Pos* pos);
+  private:
+  const ::Protocol::Pos& _internal_pos() const;
+  ::Protocol::Pos* _internal_mutable_pos();
+  public:
+  void unsafe_arena_set_allocated_pos(
+      ::Protocol::Pos* pos);
+  ::Protocol::Pos* unsafe_arena_release_pos();
+
+  // int32 id = 1;
+  void clear_id();
+  int32_t id() const;
+  void set_id(int32_t value);
+  private:
+  int32_t _internal_id() const;
+  void _internal_set_id(int32_t value);
+  public:
+
+  // bool canMove = 3;
+  void clear_canmove();
+  bool canmove() const;
+  void set_canmove(bool value);
+  private:
+  bool _internal_canmove() const;
+  void _internal_set_canmove(bool value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.Move)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::Protocol::Pos* pos_;
+    int32_t id_;
+    bool canmove_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
 // ===================================================================
 
 
@@ -797,9 +980,140 @@ inline void AddObject::set_allocated_pos(::Protocol::Pos* pos) {
   // @@protoc_insertion_point(field_set_allocated:Protocol.AddObject.pos)
 }
 
+// -------------------------------------------------------------------
+
+// Move
+
+// int32 id = 1;
+inline void Move::clear_id() {
+  _impl_.id_ = 0;
+}
+inline int32_t Move::_internal_id() const {
+  return _impl_.id_;
+}
+inline int32_t Move::id() const {
+  // @@protoc_insertion_point(field_get:Protocol.Move.id)
+  return _internal_id();
+}
+inline void Move::_internal_set_id(int32_t value) {
+  
+  _impl_.id_ = value;
+}
+inline void Move::set_id(int32_t value) {
+  _internal_set_id(value);
+  // @@protoc_insertion_point(field_set:Protocol.Move.id)
+}
+
+// .Protocol.Pos pos = 2;
+inline bool Move::_internal_has_pos() const {
+  return this != internal_default_instance() && _impl_.pos_ != nullptr;
+}
+inline bool Move::has_pos() const {
+  return _internal_has_pos();
+}
+inline const ::Protocol::Pos& Move::_internal_pos() const {
+  const ::Protocol::Pos* p = _impl_.pos_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::Pos&>(
+      ::Protocol::_Pos_default_instance_);
+}
+inline const ::Protocol::Pos& Move::pos() const {
+  // @@protoc_insertion_point(field_get:Protocol.Move.pos)
+  return _internal_pos();
+}
+inline void Move::unsafe_arena_set_allocated_pos(
+    ::Protocol::Pos* pos) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.pos_);
+  }
+  _impl_.pos_ = pos;
+  if (pos) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.Move.pos)
+}
+inline ::Protocol::Pos* Move::release_pos() {
+  
+  ::Protocol::Pos* temp = _impl_.pos_;
+  _impl_.pos_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::Protocol::Pos* Move::unsafe_arena_release_pos() {
+  // @@protoc_insertion_point(field_release:Protocol.Move.pos)
+  
+  ::Protocol::Pos* temp = _impl_.pos_;
+  _impl_.pos_ = nullptr;
+  return temp;
+}
+inline ::Protocol::Pos* Move::_internal_mutable_pos() {
+  
+  if (_impl_.pos_ == nullptr) {
+    auto* p = CreateMaybeMessage<::Protocol::Pos>(GetArenaForAllocation());
+    _impl_.pos_ = p;
+  }
+  return _impl_.pos_;
+}
+inline ::Protocol::Pos* Move::mutable_pos() {
+  ::Protocol::Pos* _msg = _internal_mutable_pos();
+  // @@protoc_insertion_point(field_mutable:Protocol.Move.pos)
+  return _msg;
+}
+inline void Move::set_allocated_pos(::Protocol::Pos* pos) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.pos_);
+  }
+  if (pos) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(pos));
+    if (message_arena != submessage_arena) {
+      pos = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, pos, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  _impl_.pos_ = pos;
+  // @@protoc_insertion_point(field_set_allocated:Protocol.Move.pos)
+}
+
+// bool canMove = 3;
+inline void Move::clear_canmove() {
+  _impl_.canmove_ = false;
+}
+inline bool Move::_internal_canmove() const {
+  return _impl_.canmove_;
+}
+inline bool Move::canmove() const {
+  // @@protoc_insertion_point(field_get:Protocol.Move.canMove)
+  return _internal_canmove();
+}
+inline void Move::_internal_set_canmove(bool value) {
+  
+  _impl_.canmove_ = value;
+}
+inline void Move::set_canmove(bool value) {
+  _internal_set_canmove(value);
+  // @@protoc_insertion_point(field_set:Protocol.Move.canMove)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

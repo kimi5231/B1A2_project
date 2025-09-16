@@ -170,6 +170,51 @@ void GameNet::Update()
                     }
                 }
                 break;
+                case Move:
+                {
+                    Protocol::Move pkt;
+
+                    // Byte 배열(recvBuffer)을 Protobuf 객체로 변환
+                    if (pkt.ParseFromArray(_recvBuffer.data(), _header[0]))
+                    {
+                        std::vector<CPlayer*> players = gGameFramework.GetPlayers();
+
+                        XMFLOAT3 pos;
+                        pos.x = pkt.pos().x();
+                        pos.y = pkt.pos().y();
+                        pos.z = pkt.pos().z();
+
+                        // 이동 성공
+                        if (pkt.canmove())
+                        {
+                            // 자기 자신 제외
+                            if (players[0]->GetId() != pkt.id())
+                            {
+                                for (CPlayer* player : players)
+                                {
+                                    if (player->GetId() == pkt.id())
+                                        player->SetPosition(pos);
+                                }
+                            } 
+                        }
+                        else
+                        {
+                            // 이동 실패 처리
+                            // 이전 좌표로 되돌리기
+                            players[0]->SetPosition(pos);
+                        }
+
+                        _recvBuffer.erase(_recvBuffer.begin(), _recvBuffer.begin() + _header[0]);
+                        _header[0] = 0;
+                        _header[1] = 0;
+                    }
+                    else
+                    {
+                        // 변환 실패 처리
+                        OutputDebugStringA("Protobuf 변환 실패");
+                    }
+                }
+                break;
                 }
             }
         }
@@ -203,6 +248,55 @@ bool GameNet::SendEnterRoomPacket()
     {
         // SendBuffer 자리 없음
         if (WSAGetLastError() == WSAEWOULDBLOCK) 
+        {
+            return false;
+        }
+        else // 오류 발생
+        {
+            // send 오류 발생 처리
+            OutputDebugStringA("send 오류 발생");
+        }
+    }
+
+    return true;
+}
+
+bool GameNet::SendMovePacket()
+{
+    // 패킷 본문 작성
+    Protocol::Move pkt;
+
+    std::vector<CPlayer*> players = gGameFramework.GetPlayers();
+    XMFLOAT3 pos = players[0]->GetPosition();
+    pkt.mutable_pos()->set_x(pos.x);
+    pkt.mutable_pos()->set_y(pos.y);
+    pkt.mutable_pos()->set_z(pos.z);
+
+    pkt.set_id(players[0]->GetId());
+
+    pkt.set_canmove(true);
+
+    // 패킷 헤더 작성 및 빅엔디안으로 변환
+    uint32_t pktSize = pkt.ByteSizeLong();
+    uint32_t pktID = Move;
+
+    std::array<uint32_t, 2> header;
+    header[0] = ::htonl(pktSize);
+    header[1] = ::htonl(pktID);
+
+    // sendBuffer 생성
+    std::vector<char> sendBuffer(sizeof(header) + pktSize);
+    // sendBuffer에 패킷 헤더 추가
+    std::memcpy(sendBuffer.data(), &header, sizeof(header));
+    // sendBuffer에 패킷 본문 추가
+    // Protobuf 객체를 Byte 배열(sendBuffer)로 변환
+    // 이 과정에서 숫자형 필드도 빅엔디안으로 변환
+    pkt.SerializeToArray(sendBuffer.data() + sizeof(header), pktSize);
+
+    if (send(_clientSocket, sendBuffer.data(), sendBuffer.size(), 0) == SOCKET_ERROR)
+    {
+        // SendBuffer 자리 없음
+        if (WSAGetLastError() == WSAEWOULDBLOCK)
         {
             return false;
         }

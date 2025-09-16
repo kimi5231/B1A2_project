@@ -5,6 +5,7 @@ enum
 	EnterRoom = 1,
 	AddPlayer = 3,
     AddObject = 4,
+    Move = 5,
 };
 
 class Player;
@@ -19,13 +20,16 @@ public:
 
 public:
     void EnterRoom(SOCKET client);
+    void CheckMove(Protocol::Move pkt);
 
+public:
     std::shared_ptr<Player> CreatePlayer();
 
 public:
     std::vector<char> MakeAddPlayerSendBuffer(std::shared_ptr<Player> player);
     // 추후 매개변수 수정할 것
     std::vector<char> MakeAddObjectSendBuffer(std::shared_ptr<Player> player);
+    std::vector<char> MakeMoveSendBuffer(std::shared_ptr<Player> player, bool canMove);
 
 public:
 	template <class ptkType>

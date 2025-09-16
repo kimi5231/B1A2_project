@@ -16,7 +16,7 @@ CGameFramework::CGameFramework()
 
 	m_pd3dRtvDescriptorHeap = NULL;
 	m_pd3dDsvDescriptorHeap = NULL;
-
+	
 	m_nRtvDescriptorIncrementSize = 0;
 	m_nDsvDescriptorIncrementSize = 0;
 
@@ -553,7 +553,13 @@ void CGameFramework::ProcessInput()
 			// 플레이어를 dwDirection 방향으로 이동(실제로는 속도 벡터를 변경함) 
 			// 이동 거리는 시간에 비례
 			// 플레이어의 이동 속력은 (1.0/초)로 가정
-			if (dwDirection) m_pPlayers[0]->Move(dwDirection, 1.0f * m_GameTimer.GetTimeElapsed(), true);
+			if (dwDirection)
+			{
+				m_pPlayers[0]->Move(dwDirection, 1.0f * m_GameTimer.GetTimeElapsed(), true);
+			
+				// 이동 좌표 서버에 보내기
+				g_gameNet.SendMovePacket();
+			}
 		}
 	}
 

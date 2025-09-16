@@ -6,6 +6,7 @@ enum
 	EnterRoom = 1,
 	AddPlayer = 3,
 	AddObject = 4,
+	Move = 5,
 };
 
 class GameNet
@@ -18,11 +19,9 @@ public:
 	void Update();
 
 public:
-	// 
+	// ¼Û½Å
 	bool SendEnterRoomPacket();
-
-	// 
-
+	bool SendMovePacket();
 
 private:
 	bool _isServerConnected = false;

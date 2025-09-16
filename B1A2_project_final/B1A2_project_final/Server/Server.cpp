@@ -93,7 +93,7 @@ int main()
 					u_long mode = 1;
 					ioctlsocket(clientSocket, FIONBIO, &mode);
 
-					room.EnterRoom(clientSocket);
+					room._clients.push_back(clientSocket);
 
 					std::cout << "Connected" << std::endl;
 				}
@@ -142,13 +142,13 @@ int main()
 							switch (header[1])
 							{
 							case EnterRoom:
+							{
 								Protocol::EnterRoom pkt;
 
 								// Byte 배열(recvBuffer)을 Protobuf 객체로 변환
 								if (pkt.ParseFromArray(recvBuffer.data(), header[0]))
 								{
-									std::cout << "Recv Data: " << pkt.success() << std::endl;
-									room.CreatePlayer();
+									room.EnterRoom(pollfd.fd);
 									recvBuffer.erase(recvBuffer.begin(), recvBuffer.begin() + header[0]);
 									header[0] = 0;
 									header[1] = 0;
@@ -157,6 +157,29 @@ int main()
 								{
 									// 변환 실패 처리
 								}
+							}
+								break;
+							case Move:
+							{
+								Protocol::Move pkt;
+
+								// Byte 배열(recvBuffer)을 Protobuf 객체로 변환
+								if (pkt.ParseFromArray(recvBuffer.data(), header[0]))
+								{
+									std::cout << "ID: " << pkt.id() << std::endl;
+									std::cout << "x: " << pkt.pos().x() << std::endl;
+									std::cout << "y: " << pkt.pos().y() << std::endl;
+									std::cout << "z: " << pkt.pos().z() << std::endl;
+									room.CheckMove(pkt);
+									recvBuffer.erase(recvBuffer.begin(), recvBuffer.begin() + header[0]);
+									header[0] = 0;
+									header[1] = 0;
+								}
+								else
+								{
+									// 변환 실패 처리
+								}
+							}
 								break;
 							}
 						}

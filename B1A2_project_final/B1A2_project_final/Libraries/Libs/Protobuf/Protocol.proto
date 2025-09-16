@@ -20,3 +20,10 @@ message AddObject
 	int32 id = 1;
 	Pos pos = 2;
 }
+
+message Move
+{
+	int32 id = 1;
+	Pos pos = 2;
+	bool canMove = 3;
+}
