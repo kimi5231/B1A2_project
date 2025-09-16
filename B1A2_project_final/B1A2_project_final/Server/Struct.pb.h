@@ -49,165 +49,13 @@ namespace Protocol {
 class Pos;
 struct PosDefaultTypeInternal;
 extern PosDefaultTypeInternal _Pos_default_instance_;
-class TestData;
-struct TestDataDefaultTypeInternal;
-extern TestDataDefaultTypeInternal _TestData_default_instance_;
 }  // namespace Protocol
 PROTOBUF_NAMESPACE_OPEN
 template<> ::Protocol::Pos* Arena::CreateMaybeMessage<::Protocol::Pos>(Arena*);
-template<> ::Protocol::TestData* Arena::CreateMaybeMessage<::Protocol::TestData>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace Protocol {
 
 // ===================================================================
-
-class TestData final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.TestData) */ {
- public:
-  inline TestData() : TestData(nullptr) {}
-  ~TestData() override;
-  explicit PROTOBUF_CONSTEXPR TestData(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  TestData(const TestData& from);
-  TestData(TestData&& from) noexcept
-    : TestData() {
-    *this = ::std::move(from);
-  }
-
-  inline TestData& operator=(const TestData& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline TestData& operator=(TestData&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const TestData& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const TestData* internal_default_instance() {
-    return reinterpret_cast<const TestData*>(
-               &_TestData_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    0;
-
-  friend void swap(TestData& a, TestData& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(TestData* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(TestData* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  TestData* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<TestData>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const TestData& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const TestData& from) {
-    TestData::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
-
-  private:
-  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(TestData* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "Protocol.TestData";
-  }
-  protected:
-  explicit TestData(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kNumFieldNumber = 1,
-  };
-  // uint64 num = 1;
-  void clear_num();
-  uint64_t num() const;
-  void set_num(uint64_t value);
-  private:
-  uint64_t _internal_num() const;
-  void _internal_set_num(uint64_t value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:Protocol.TestData)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-    uint64_t num_;
-    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  };
-  union { Impl_ _impl_; };
-  friend struct ::TableStruct_Struct_2eproto;
-};
-// -------------------------------------------------------------------
 
 class Pos final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.Pos) */ {
@@ -257,7 +105,7 @@ class Pos final :
                &_Pos_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    1;
+    0;
 
   friend void swap(Pos& a, Pos& b) {
     a.Swap(&b);
@@ -386,30 +234,6 @@ class Pos final :
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif  // __GNUC__
-// TestData
-
-// uint64 num = 1;
-inline void TestData::clear_num() {
-  _impl_.num_ = uint64_t{0u};
-}
-inline uint64_t TestData::_internal_num() const {
-  return _impl_.num_;
-}
-inline uint64_t TestData::num() const {
-  // @@protoc_insertion_point(field_get:Protocol.TestData.num)
-  return _internal_num();
-}
-inline void TestData::_internal_set_num(uint64_t value) {
-  
-  _impl_.num_ = value;
-}
-inline void TestData::set_num(uint64_t value) {
-  _internal_set_num(value);
-  // @@protoc_insertion_point(field_set:Protocol.TestData.num)
-}
-
-// -------------------------------------------------------------------
-
 // Pos
 
 // float x = 1;
@@ -475,8 +299,6 @@ inline void Pos::set_z(float value) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
-// -------------------------------------------------------------------
-
 
 // @@protoc_insertion_point(namespace_scope)
 

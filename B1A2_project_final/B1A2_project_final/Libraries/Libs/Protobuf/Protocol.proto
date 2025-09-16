@@ -4,18 +4,18 @@ package Protocol;
 import "Enum.proto";
 import "Struct.proto";
 
-message TEST
-{
-	TestData test = 1;
-}
-
 message EnterRoom
 {
 	bool success = 1;
 }
 
-// 추후 AddObject로 수정할 것
 message AddPlayer
+{
+	int32 id = 1;
+	Pos pos = 2;
+}
+
+message AddObject
 {
 	int32 id = 1;
 	Pos pos = 2;

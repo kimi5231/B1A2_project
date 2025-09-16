@@ -93,7 +93,7 @@ int main()
 					u_long mode = 1;
 					ioctlsocket(clientSocket, FIONBIO, &mode);
 
-					room._clients.push_back(clientSocket);
+					room.EnterRoom(clientSocket);
 
 					std::cout << "Connected" << std::endl;
 				}

@@ -3,11 +3,6 @@ package Protocol;
 
 import "Enum.proto";
 
-message TestData
-{
-	uint64 num = 1;
-}
-
 message Pos
 {
 	float x = 1;

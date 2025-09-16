@@ -4,6 +4,7 @@ enum
 {
 	EnterRoom = 1,
 	AddPlayer = 3,
+    AddObject = 4,
 };
 
 class Player;
@@ -17,14 +18,18 @@ public:
 	void Update();
 
 public:
-	void CreatePlayer();
+    void EnterRoom(SOCKET client);
+
+    std::shared_ptr<Player> CreatePlayer();
 
 public:
-	void SendAddPlayerPacket(std::shared_ptr<Player> player);
+    std::vector<char> MakeAddPlayerSendBuffer(std::shared_ptr<Player> player);
+    // 추후 매개변수 수정할 것
+    std::vector<char> MakeAddObjectSendBuffer(std::shared_ptr<Player> player);
 
 public:
 	template <class ptkType>
-	void SendPakcet(ptkType pkt, uint32_t pktID);
+    std::vector<char> MakeSendBuffer(ptkType pkt, uint32_t pktID);
 
 public:
 	std::vector<SOCKET> _clients;
@@ -37,7 +42,7 @@ private:
 };
 
 template<class ptkType>
-inline void Room::SendPakcet(ptkType pkt, uint32_t pktID)
+inline std::vector<char> Room::MakeSendBuffer(ptkType pkt, uint32_t pktID)
 {
     // 패킷 헤더 작성 및 빅엔디안으로 변환
     uint32_t pktSize = pkt.ByteSizeLong();
@@ -55,13 +60,5 @@ inline void Room::SendPakcet(ptkType pkt, uint32_t pktID)
     // 이 과정에서 숫자형 필드도 빅엔디안으로 변환
     pkt.SerializeToArray(sendBuffer.data() + sizeof(header), pktSize);
 
-    // 모든 클라이언트에게 알림
-    for (SOCKET client : _clients)
-    {
-        int resultCode = ::send(client, sendBuffer.data(), sendBuffer.size(), 0);
-        if (resultCode == SOCKET_ERROR)
-        {
-            // 연결 끊김 처리
-        }
-    }
+    return sendBuffer;
 }

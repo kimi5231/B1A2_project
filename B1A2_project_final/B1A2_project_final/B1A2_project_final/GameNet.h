@@ -5,6 +5,7 @@ enum
 {
 	EnterRoom = 1,
 	AddPlayer = 3,
+	AddObject = 4,
 };
 
 class GameNet
