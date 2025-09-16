@@ -432,6 +432,10 @@ void CGameFramework::CreatePlayer(__int32 id, XMFLOAT3 pos)
 	pPlayer->SetId(id);
 
 	m_pPlayers.push_back(pPlayer);
+
+	// 로컬 플레이어와 씬, 카메라 연결
+	m_pScene->m_pPlayer = m_pPlayers[0];
+	m_pCamera = m_pPlayers[0]->GetCamera();
 }
 
 void CGameFramework::OnDestroy()
@@ -472,9 +476,6 @@ void CGameFramework::BuildObjects()
 
 	// 로컬 플레이어 생성
 	CreatePlayer(1, XMFLOAT3(4.0f, 2.0f, 1.0f));	// id, Pos
-	// 로컬 플레이어와 씬, 카메라 연결
-	m_pScene->m_pPlayer = m_pPlayers[0];
-	m_pCamera = m_pPlayers[0]->GetCamera();
 
 	//씬 객체를 생성하기 위하여 필요한 그래픽 명령 리스트들을 명령 큐에 추가
 	m_pd3dCommandList->Close();
