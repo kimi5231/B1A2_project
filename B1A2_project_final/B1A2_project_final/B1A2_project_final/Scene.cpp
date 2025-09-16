@@ -88,14 +88,6 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	m_pShaders[0].CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	m_pShaders[0].BuildObjects(pd3dDevice, pd3dCommandList);
 
-	// Player
-	// 로컬 플레이어 생성
-	gGameFramework.CreatePlayer(1, XMFLOAT3(4.0f, 2.0f, 1.0f));	// id, Pos
-	// 로컬 플레이어와 씬, 카메라 연결
-	gGameFramework.GetScene()->m_pPlayer = gGameFramework.GetPlayers()[0];
-	CCamera* camera = m_pPlayer->GetCamera();
-	gGameFramework.SetCamera(camera);
-
 	BuildLightsAndMaterials();
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
