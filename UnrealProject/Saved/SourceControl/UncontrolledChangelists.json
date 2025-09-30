@@ -1,0 +1,23 @@
+{
+	"version": 1,
+	"changelists": [
+		{
+			"guid": "00000000000000000000000000000000",
+			"description": "Default Uncontrolled Changelist",
+			"files": [
+				"D:/Devlog/B1A2_project/UnrealProject/Content/FBXModel/Amy_PhysicsAsset.uasset",
+				"D:/Devlog/B1A2_project/UnrealProject/Content/FBXModel/Ch46_1001_Diffuse.uasset",
+				"D:/Devlog/B1A2_project/UnrealProject/Content/FBXModel/Ch46_1001_Glossiness.uasset",
+				"D:/Devlog/B1A2_project/UnrealProject/Content/FBXModel/Ch46_1001_Normal.uasset",
+				"D:/Devlog/B1A2_project/UnrealProject/Content/FBXModel/Ch46_1001_Specular.uasset",
+				"D:/Devlog/B1A2_project/UnrealProject/Content/FBXModel/Amy_Skeleton.uasset",
+				"D:/Devlog/B1A2_project/UnrealProject/Content/FBXModel/Ch46_body.uasset",
+				"D:/Devlog/B1A2_project/UnrealProject/Content/FBXModel/Amy.uasset",
+				"D:/Devlog/B1A2_project/UnrealProject/Content/FBXModel/Amy_Anim.uasset",
+				"D:/Devlog/B1A2_project/UnrealProject/Content/ThirdPerson/Blueprints/BP_ThirdPersonCharacter.uasset",
+				"D:/Devlog/B1A2_project/UnrealProject/Content/MixamoAnimation/Walking.uasset",
+				"D:/Devlog/B1A2_project/UnrealProject/Content/ThirdPerson/Blueprints/NewAnimBlueprint.uasset"
+			]
+		}
+	]
+}
