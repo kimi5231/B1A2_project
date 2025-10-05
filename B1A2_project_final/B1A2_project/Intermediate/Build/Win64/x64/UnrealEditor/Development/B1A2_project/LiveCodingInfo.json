@@ -29,6 +29,7 @@
 		],
 		"Module.B1A2_project.2.cpp.obj": [
 			"EnvQueryContext_Player.gen.cpp.obj",
+			"MyGameInstance.gen.cpp.obj",
 			"PlatformingCharacter.gen.cpp.obj",
 			"PlatformingGameMode.gen.cpp.obj",
 			"PlatformingPlayerController.gen.cpp.obj",
@@ -50,6 +51,7 @@
 			"B1A2_projectCharacter.cpp.obj",
 			"B1A2_projectGameMode.cpp.obj",
 			"B1A2_projectPlayerController.cpp.obj",
+			"MyGameInstance.cpp.obj",
 			"CombatAIController.cpp.obj",
 			"CombatEnemy.cpp.obj",
 			"CombatEnemySpawner.cpp.obj",

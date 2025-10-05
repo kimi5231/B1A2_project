@@ -252,6 +252,8 @@
     <None Include="..\..\B1A2_project.uproject"/>
     <None Include="..\..\Source\B1A2_project.Target.cs"/>
     <None Include="..\..\Source\B1A2_projectEditor.Target.cs"/>
+    <None Include="..\..\.vsconfig"/>
+    <None Include="..\..\UpgradeLog.htm"/>
     <None Include="..\..\Config\DefaultEditor.ini"/>
     <None Include="..\..\Config\DefaultEditorPerProjectUserSettings.ini"/>
     <None Include="..\..\Config\DefaultEngine.ini"/>
@@ -274,6 +276,10 @@
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClInclude Include="..\..\Source\B1A2_project\B1A2_projectPlayerController.h"/>
+    <ClCompile Include="..\..\Source\B1A2_project\MyGameInstance.cpp">
+      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_project\MyGameInstance.h"/>
     <ClCompile Include="..\..\Source\B1A2_project\Variant_Combat\CombatCharacter.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>

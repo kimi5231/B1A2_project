@@ -1,0 +1,30 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "d:\\devlog\\b1a2_project\\b1a2_project_final\\b1a2_project\\source\\b1a2_project\\variant_sidescrolling\\gameplay\\sidescrollingsoftplatform.cpp",
+        "ProvidedModule": "",
+        "PCH": "d:\\devlog\\b1a2_project\\b1a2_project_final\\b1a2_project\\intermediate\\build\\win64\\x64\\b1a2_projecteditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.valexpapi.cpp20.h.pch",
+        "Includes": [
+            "d:\\devlog\\b1a2_project\\b1a2_project_final\\b1a2_project\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\b1a2_project\\definitions.b1a2_project.h",
+            "d:\\devlog\\b1a2_project\\b1a2_project_final\\b1a2_project\\source\\b1a2_project\\variant_sidescrolling\\gameplay\\sidescrollingsoftplatform.h",
+            "d:\\devlog\\b1a2_project\\b1a2_project_final\\b1a2_project\\intermediate\\build\\win64\\unrealeditor\\inc\\b1a2_project\\uht\\sidescrollingsoftplatform.generated.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\source\\runtime\\engine\\classes\\components\\boxcomponent.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\source\\runtime\\engine\\classes\\components\\shapecomponent.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\shapecomponent.generated.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\boxcomponent.generated.h",
+            "d:\\devlog\\b1a2_project\\b1a2_project_final\\b1a2_project\\source\\b1a2_project\\variant_sidescrolling\\sidescrollingcharacter.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\source\\runtime\\engine\\classes\\gameframework\\character.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\source\\runtime\\engine\\classes\\gameframework\\charactermovementreplication.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\source\\runtime\\net\\core\\public\\net\\core\\nettoken\\nettokenexportcontext.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\source\\runtime\\experimental\\iris\\core\\public\\iris\\serialization\\irisobjectreferencepackagemap.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\iriscore\\uht\\irisobjectreferencepackagemap.generated.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\charactermovementreplication.generated.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\source\\runtime\\engine\\classes\\gameframework\\rootmotionsource.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\rootmotionsource.generated.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\character.generated.h",
+            "d:\\devlog\\b1a2_project\\b1a2_project_final\\b1a2_project\\intermediate\\build\\win64\\unrealeditor\\inc\\b1a2_project\\uht\\sidescrollingcharacter.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

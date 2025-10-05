@@ -1,0 +1,15 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "d:\\devlog\\b1a2_project\\b1a2_project_final\\b1a2_project\\source\\b1a2_project\\variant_sidescrolling\\sidescrollingcameramanager.cpp",
+        "ProvidedModule": "",
+        "PCH": "d:\\devlog\\b1a2_project\\b1a2_project_final\\b1a2_project\\intermediate\\build\\win64\\x64\\b1a2_projecteditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.valexpapi.cpp20.h.pch",
+        "Includes": [
+            "d:\\devlog\\b1a2_project\\b1a2_project_final\\b1a2_project\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\b1a2_project\\definitions.b1a2_project.h",
+            "d:\\devlog\\b1a2_project\\b1a2_project_final\\b1a2_project\\source\\b1a2_project\\variant_sidescrolling\\sidescrollingcameramanager.h",
+            "d:\\devlog\\b1a2_project\\b1a2_project_final\\b1a2_project\\intermediate\\build\\win64\\unrealeditor\\inc\\b1a2_project\\uht\\sidescrollingcameramanager.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}
