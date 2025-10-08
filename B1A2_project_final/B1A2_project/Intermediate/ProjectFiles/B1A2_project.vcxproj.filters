@@ -11,8 +11,6 @@
     <None Include="..\..\Source\B1A2_projectEditor.Target.cs">
       <Filter>Source</Filter>
     </None>
-    <None Include="..\..\.vsconfig" />
-    <None Include="..\..\UpgradeLog.htm" />
     <Filter Include="Config">
       <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
     </Filter>
@@ -59,12 +57,6 @@
       <Filter>Source\B1A2_project</Filter>
     </ClCompile>
     <ClInclude Include="..\..\Source\B1A2_project\B1A2_projectPlayerController.h">
-      <Filter>Source\B1A2_project</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\Source\B1A2_project\MyGameInstance.cpp">
-      <Filter>Source\B1A2_project</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\B1A2_project\MyGameInstance.h">
       <Filter>Source\B1A2_project</Filter>
     </ClInclude>
     <Filter Include="Source\B1A2_project\Variant_Combat">

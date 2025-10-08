@@ -1,18 +1,18 @@
-##folders
+## folders
 Debug/
 Release/
 .vs/
 **/Debug/
 **/Release/
 
-##files
+## files
 **/*.i
 **/*.obj
 **/*.pb.cc
 **/*.pb.h
 ~$*
 
-########################################################### 
+###########################################################
 # Engine
 
 # Compiled Object files
@@ -85,5 +85,3 @@ Plugins/**/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
-
-# https://github.com/github/gitignore/blob/main/UnrealEngine.gitignore
