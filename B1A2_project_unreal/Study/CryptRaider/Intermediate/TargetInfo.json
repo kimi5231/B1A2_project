@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "CryptRaider",
+			"Path": "..\\Source\\CryptRaider.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "CryptRaiderEditor",
+			"Path": "..\\Source\\CryptRaiderEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}
