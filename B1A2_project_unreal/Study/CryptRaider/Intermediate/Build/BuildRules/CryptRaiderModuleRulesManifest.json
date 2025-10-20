@@ -1,8 +1,0 @@
-{
-	"SourceFiles": [
-		"D:\\Devlog\\UnrealStudy\\Udemy\\CryptRaider\\Source\\CryptRaider\\CryptRaider.Build.cs",
-		"D:\\Devlog\\UnrealStudy\\Udemy\\CryptRaider\\Source\\CryptRaider.Target.cs",
-		"D:\\Devlog\\UnrealStudy\\Udemy\\CryptRaider\\Source\\CryptRaiderEditor.Target.cs"
-	],
-	"EngineVersion": "5.6.1"
-}
