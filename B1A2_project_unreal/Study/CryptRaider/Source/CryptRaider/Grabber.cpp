@@ -49,3 +49,8 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	}
 }
 
+void UGrabber::Release()
+{
+	UE_LOG(LogTemp, Display, TEXT("Released grabber"));
+}
+
