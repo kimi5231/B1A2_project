@@ -40,6 +40,9 @@ public class B1A2_project_unreal : ModuleRules
 			"B1A2_project_unreal/Variant_SideScrolling/UI"
 		});
 
+		// Winsock 라이브러리 추가
+		PublicAdditionalLibraries.Add("ws2_32.lib");
+
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 
