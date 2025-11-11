@@ -1,0 +1,17 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "c:\\github\\b1a2_project\\b1a2_project_unreal\\testproject\\source\\testproject\\variant_combat\\gameplay\\combatlavafloor.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\github\\b1a2_project\\b1a2_project_unreal\\testproject\\intermediate\\build\\win64\\x64\\testprojecteditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.valexpapi.cpp20.h.pch",
+        "Includes": [
+            "c:\\github\\b1a2_project\\b1a2_project_unreal\\testproject\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\testproject\\definitions.testproject.h",
+            "c:\\github\\b1a2_project\\b1a2_project_unreal\\testproject\\source\\testproject\\variant_combat\\gameplay\\combatlavafloor.h",
+            "c:\\github\\b1a2_project\\b1a2_project_unreal\\testproject\\intermediate\\build\\win64\\unrealeditor\\inc\\testproject\\uht\\combatlavafloor.generated.h",
+            "c:\\github\\b1a2_project\\b1a2_project_unreal\\testproject\\source\\testproject\\variant_combat\\interfaces\\combatdamageable.h",
+            "c:\\github\\b1a2_project\\b1a2_project_unreal\\testproject\\intermediate\\build\\win64\\unrealeditor\\inc\\testproject\\uht\\combatdamageable.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}
