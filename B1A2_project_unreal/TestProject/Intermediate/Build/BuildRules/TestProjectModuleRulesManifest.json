@@ -1,8 +1,0 @@
-{
-	"SourceFiles": [
-		"C:\\GitHub\\B1A2_project\\B1A2_project_unreal\\TestProject\\Source\\TestProject\\TestProject.Build.cs",
-		"C:\\GitHub\\B1A2_project\\B1A2_project_unreal\\TestProject\\Source\\TestProject.Target.cs",
-		"C:\\GitHub\\B1A2_project\\B1A2_project_unreal\\TestProject\\Source\\TestProjectEditor.Target.cs"
-	],
-	"EngineVersion": "5.6.1"
-}
