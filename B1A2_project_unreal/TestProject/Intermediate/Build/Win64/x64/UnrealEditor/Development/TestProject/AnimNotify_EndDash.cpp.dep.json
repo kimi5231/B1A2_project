@@ -1,0 +1,26 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "c:\\github\\b1a2_project\\b1a2_project_unreal\\testproject\\source\\testproject\\variant_platforming\\animation\\animnotify_enddash.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\github\\b1a2_project\\b1a2_project_unreal\\testproject\\intermediate\\build\\win64\\x64\\testprojecteditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.valexpapi.cpp20.h.pch",
+        "Includes": [
+            "c:\\github\\b1a2_project\\b1a2_project_unreal\\testproject\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\testproject\\definitions.testproject.h",
+            "c:\\github\\b1a2_project\\b1a2_project_unreal\\testproject\\source\\testproject\\variant_platforming\\animation\\animnotify_enddash.h",
+            "c:\\github\\b1a2_project\\b1a2_project_unreal\\testproject\\intermediate\\build\\win64\\unrealeditor\\inc\\testproject\\uht\\animnotify_enddash.generated.h",
+            "c:\\github\\b1a2_project\\b1a2_project_unreal\\testproject\\source\\testproject\\variant_platforming\\platformingcharacter.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\source\\runtime\\engine\\classes\\gameframework\\character.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\source\\runtime\\engine\\classes\\gameframework\\charactermovementreplication.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\source\\runtime\\net\\core\\public\\net\\core\\nettoken\\nettokenexportcontext.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\source\\runtime\\experimental\\iris\\core\\public\\iris\\serialization\\irisobjectreferencepackagemap.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\iriscore\\uht\\irisobjectreferencepackagemap.generated.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\charactermovementreplication.generated.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\source\\runtime\\engine\\classes\\gameframework\\rootmotionsource.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\rootmotionsource.generated.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\character.generated.h",
+            "c:\\github\\b1a2_project\\b1a2_project_unreal\\testproject\\intermediate\\build\\win64\\unrealeditor\\inc\\testproject\\uht\\platformingcharacter.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}
