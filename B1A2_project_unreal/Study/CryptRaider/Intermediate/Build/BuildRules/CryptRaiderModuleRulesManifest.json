@@ -1,8 +1,0 @@
-{
-	"SourceFiles": [
-		"C:\\GitHub\\B1A2_project\\B1A2_project_unreal\\Study\\CryptRaider\\Source\\CryptRaider\\CryptRaider.Build.cs",
-		"C:\\GitHub\\B1A2_project\\B1A2_project_unreal\\Study\\CryptRaider\\Source\\CryptRaider.Target.cs",
-		"C:\\GitHub\\B1A2_project\\B1A2_project_unreal\\Study\\CryptRaider\\Source\\CryptRaiderEditor.Target.cs"
-	],
-	"EngineVersion": "5.6.1"
-}
