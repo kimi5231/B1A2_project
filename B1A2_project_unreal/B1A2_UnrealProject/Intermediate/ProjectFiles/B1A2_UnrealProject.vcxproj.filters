@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\B1A2_UnrealProject.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{F31BBDD1-B3E8-3BCC-9652-680E16935819}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\B1A2_UnrealProject.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\B1A2_UnrealProjectEditor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <Filter Include="Config">
+      <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEditorPerProjectUserSettings.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultInput.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Source\B1A2_UnrealProject">
+      <UniqueIdentifier>{527AF63C-992C-3B00-B551-CF5867E39867}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\B1A2_UnrealProject\B1A2_UnrealProject.Build.cs">
+      <Filter>Source\B1A2_UnrealProject</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\B1A2_UnrealProject.cpp">
+      <Filter>Source\B1A2_UnrealProject</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\B1A2_UnrealProject.h">
+      <Filter>Source\B1A2_UnrealProject</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\B1A2_UnrealProjectCharacter.cpp">
+      <Filter>Source\B1A2_UnrealProject</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\B1A2_UnrealProjectCharacter.h">
+      <Filter>Source\B1A2_UnrealProject</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\B1A2_UnrealProjectGameMode.cpp">
+      <Filter>Source\B1A2_UnrealProject</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\B1A2_UnrealProjectGameMode.h">
+      <Filter>Source\B1A2_UnrealProject</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\B1A2_UnrealProjectPlayerController.cpp">
+      <Filter>Source\B1A2_UnrealProject</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\B1A2_UnrealProjectPlayerController.h">
+      <Filter>Source\B1A2_UnrealProject</Filter>
+    </ClInclude>
+    <Filter Include="Source\B1A2_UnrealProject\Variant_Combat">
+      <UniqueIdentifier>{E87BC687-48D9-37A2-8026-0CD6A23D101B}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\CombatCharacter.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\CombatCharacter.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\CombatGameMode.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\CombatGameMode.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\CombatPlayerController.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\CombatPlayerController.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat</Filter>
+    </ClInclude>
+    <Filter Include="Source\B1A2_UnrealProject\Variant_Combat\AI">
+      <UniqueIdentifier>{B302C5A5-11DB-3592-B50E-5C4A8D27267A}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\AI\CombatAIController.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\AI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\AI\CombatAIController.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\AI</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\AI\CombatEnemy.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\AI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\AI\CombatEnemy.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\AI</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\AI\CombatEnemySpawner.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\AI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\AI\CombatEnemySpawner.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\AI</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\AI\CombatStateTreeUtility.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\AI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\AI\CombatStateTreeUtility.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\AI</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\AI\EnvQueryContext_Player.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\AI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\AI\EnvQueryContext_Player.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\AI</Filter>
+    </ClInclude>
+    <Filter Include="Source\B1A2_UnrealProject\Variant_Combat\Animation">
+      <UniqueIdentifier>{BBFB9169-4F7E-3315-A7AE-BB39F39791E2}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\Animation\AnimNotify_CheckChargedAttack.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\Animation</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\Animation\AnimNotify_CheckChargedAttack.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\Animation</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\Animation\AnimNotify_CheckCombo.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\Animation</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\Animation\AnimNotify_CheckCombo.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\Animation</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\Animation\AnimNotify_DoAttackTrace.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\Animation</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\Animation\AnimNotify_DoAttackTrace.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\Animation</Filter>
+    </ClInclude>
+    <Filter Include="Source\B1A2_UnrealProject\Variant_Combat\Gameplay">
+      <UniqueIdentifier>{23C3A8C8-9978-38AD-A679-C4A55CB0C5DC}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\Gameplay\CombatActivationVolume.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\Gameplay</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\Gameplay\CombatActivationVolume.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\Gameplay</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\Gameplay\CombatCheckpointVolume.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\Gameplay</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\Gameplay\CombatCheckpointVolume.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\Gameplay</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\Gameplay\CombatDamageableBox.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\Gameplay</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\Gameplay\CombatDamageableBox.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\Gameplay</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\Gameplay\CombatDummy.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\Gameplay</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\Gameplay\CombatDummy.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\Gameplay</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\Gameplay\CombatLavaFloor.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\Gameplay</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\Gameplay\CombatLavaFloor.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\Gameplay</Filter>
+    </ClInclude>
+    <Filter Include="Source\B1A2_UnrealProject\Variant_Combat\Interfaces">
+      <UniqueIdentifier>{15014C16-244D-3096-9CB6-D4D791D5D389}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\Interfaces\CombatActivatable.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\Interfaces</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\Interfaces\CombatActivatable.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\Interfaces</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\Interfaces\CombatAttacker.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\Interfaces</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\Interfaces\CombatAttacker.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\Interfaces</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\Interfaces\CombatDamageable.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\Interfaces</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\Interfaces\CombatDamageable.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\Interfaces</Filter>
+    </ClInclude>
+    <Filter Include="Source\B1A2_UnrealProject\Variant_Combat\UI">
+      <UniqueIdentifier>{CBF8C076-37E9-3936-8B7F-C1F1431CAE77}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\UI\CombatLifeBar.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\UI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_Combat\UI\CombatLifeBar.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_Combat\UI</Filter>
+    </ClInclude>
+    <Filter Include="Source\B1A2_UnrealProject\Variant_Platforming">
+      <UniqueIdentifier>{C92126A9-8387-3097-A2D0-2ECEBA22AE78}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_Platforming\PlatformingCharacter.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_Platforming</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_Platforming\PlatformingCharacter.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_Platforming</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_Platforming\PlatformingGameMode.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_Platforming</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_Platforming\PlatformingGameMode.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_Platforming</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_Platforming\PlatformingPlayerController.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_Platforming</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_Platforming\PlatformingPlayerController.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_Platforming</Filter>
+    </ClInclude>
+    <Filter Include="Source\B1A2_UnrealProject\Variant_Platforming\Animation">
+      <UniqueIdentifier>{A3713646-62F3-3C3B-9D16-CA26FCEAB6DB}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_Platforming\Animation\AnimNotify_EndDash.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_Platforming\Animation</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_Platforming\Animation\AnimNotify_EndDash.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_Platforming\Animation</Filter>
+    </ClInclude>
+    <Filter Include="Source\B1A2_UnrealProject\Variant_SideScrolling">
+      <UniqueIdentifier>{C8BFF42F-328B-3900-91ED-D1A75B41D462}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_SideScrolling\SideScrollingCameraManager.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_SideScrolling</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_SideScrolling\SideScrollingCameraManager.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_SideScrolling</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_SideScrolling\SideScrollingCharacter.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_SideScrolling</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_SideScrolling\SideScrollingCharacter.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_SideScrolling</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_SideScrolling\SideScrollingGameMode.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_SideScrolling</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_SideScrolling\SideScrollingGameMode.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_SideScrolling</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_SideScrolling\SideScrollingPlayerController.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_SideScrolling</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_SideScrolling\SideScrollingPlayerController.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_SideScrolling</Filter>
+    </ClInclude>
+    <Filter Include="Source\B1A2_UnrealProject\Variant_SideScrolling\AI">
+      <UniqueIdentifier>{DC4200A9-AADE-364C-A67E-DBE6B6AE064A}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_SideScrolling\AI\SideScrollingAIController.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_SideScrolling\AI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_SideScrolling\AI\SideScrollingAIController.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_SideScrolling\AI</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_SideScrolling\AI\SideScrollingNPC.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_SideScrolling\AI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_SideScrolling\AI\SideScrollingNPC.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_SideScrolling\AI</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_SideScrolling\AI\SideScrollingStateTreeUtility.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_SideScrolling\AI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_SideScrolling\AI\SideScrollingStateTreeUtility.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_SideScrolling\AI</Filter>
+    </ClInclude>
+    <Filter Include="Source\B1A2_UnrealProject\Variant_SideScrolling\Gameplay">
+      <UniqueIdentifier>{FAD97176-AF2C-3B5A-9BD1-7A8AC3C3CC80}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_SideScrolling\Gameplay\SideScrollingJumpPad.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_SideScrolling\Gameplay</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_SideScrolling\Gameplay\SideScrollingJumpPad.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_SideScrolling\Gameplay</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_SideScrolling\Gameplay\SideScrollingMovingPlatform.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_SideScrolling\Gameplay</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_SideScrolling\Gameplay\SideScrollingMovingPlatform.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_SideScrolling\Gameplay</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_SideScrolling\Gameplay\SideScrollingPickup.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_SideScrolling\Gameplay</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_SideScrolling\Gameplay\SideScrollingPickup.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_SideScrolling\Gameplay</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_SideScrolling\Gameplay\SideScrollingSoftPlatform.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_SideScrolling\Gameplay</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_SideScrolling\Gameplay\SideScrollingSoftPlatform.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_SideScrolling\Gameplay</Filter>
+    </ClInclude>
+    <Filter Include="Source\B1A2_UnrealProject\Variant_SideScrolling\Interfaces">
+      <UniqueIdentifier>{886D83EB-C4B4-373A-8D55-309EF199DC49}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_SideScrolling\Interfaces\SideScrollingInteractable.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_SideScrolling\Interfaces</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_SideScrolling\Interfaces\SideScrollingInteractable.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_SideScrolling\Interfaces</Filter>
+    </ClInclude>
+    <Filter Include="Source\B1A2_UnrealProject\Variant_SideScrolling\UI">
+      <UniqueIdentifier>{C96382E0-CF8B-3B9C-A918-E14580CB6225}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\B1A2_UnrealProject\Variant_SideScrolling\UI\SideScrollingUI.cpp">
+      <Filter>Source\B1A2_UnrealProject\Variant_SideScrolling\UI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\B1A2_UnrealProject\Variant_SideScrolling\UI\SideScrollingUI.h">
+      <Filter>Source\B1A2_UnrealProject\Variant_SideScrolling\UI</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

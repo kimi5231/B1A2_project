@@ -1,0 +1,36 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "d:\\devlog\\b1a2_project\\b1a2_project_unreal\\b1a2_unrealproject\\source\\b1a2_unrealproject\\variant_combat\\gameplay\\combatcheckpointvolume.cpp",
+        "ProvidedModule": "",
+        "PCH": "d:\\devlog\\b1a2_project\\b1a2_project_unreal\\b1a2_unrealproject\\intermediate\\build\\win64\\x64\\b1a2_unrealprojecteditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.valexpapi.cpp20.h.pch",
+        "Includes": [
+            "d:\\devlog\\b1a2_project\\b1a2_project_unreal\\b1a2_unrealproject\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\b1a2_unrealproject\\definitions.b1a2_unrealproject.h",
+            "d:\\devlog\\b1a2_project\\b1a2_project_unreal\\b1a2_unrealproject\\source\\b1a2_unrealproject\\variant_combat\\gameplay\\combatcheckpointvolume.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\source\\runtime\\engine\\classes\\components\\boxcomponent.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\source\\runtime\\engine\\classes\\components\\shapecomponent.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\shapecomponent.generated.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\boxcomponent.generated.h",
+            "d:\\devlog\\b1a2_project\\b1a2_project_unreal\\b1a2_unrealproject\\intermediate\\build\\win64\\unrealeditor\\inc\\b1a2_unrealproject\\uht\\combatcheckpointvolume.generated.h",
+            "d:\\devlog\\b1a2_project\\b1a2_project_unreal\\b1a2_unrealproject\\source\\b1a2_unrealproject\\variant_combat\\combatcharacter.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\source\\runtime\\engine\\classes\\gameframework\\character.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\source\\runtime\\engine\\classes\\gameframework\\charactermovementreplication.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\source\\runtime\\net\\core\\public\\net\\core\\nettoken\\nettokenexportcontext.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\source\\runtime\\experimental\\iris\\core\\public\\iris\\serialization\\irisobjectreferencepackagemap.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\iriscore\\uht\\irisobjectreferencepackagemap.generated.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\charactermovementreplication.generated.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\source\\runtime\\engine\\classes\\gameframework\\rootmotionsource.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\rootmotionsource.generated.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\character.generated.h",
+            "d:\\devlog\\b1a2_project\\b1a2_project_unreal\\b1a2_unrealproject\\source\\b1a2_unrealproject\\variant_combat\\interfaces\\combatattacker.h",
+            "d:\\devlog\\b1a2_project\\b1a2_project_unreal\\b1a2_unrealproject\\intermediate\\build\\win64\\unrealeditor\\inc\\b1a2_unrealproject\\uht\\combatattacker.generated.h",
+            "d:\\devlog\\b1a2_project\\b1a2_project_unreal\\b1a2_unrealproject\\source\\b1a2_unrealproject\\variant_combat\\interfaces\\combatdamageable.h",
+            "d:\\devlog\\b1a2_project\\b1a2_project_unreal\\b1a2_unrealproject\\intermediate\\build\\win64\\unrealeditor\\inc\\b1a2_unrealproject\\uht\\combatdamageable.generated.h",
+            "d:\\devlog\\b1a2_project\\b1a2_project_unreal\\b1a2_unrealproject\\intermediate\\build\\win64\\unrealeditor\\inc\\b1a2_unrealproject\\uht\\combatcharacter.generated.h",
+            "d:\\devlog\\b1a2_project\\b1a2_project_unreal\\b1a2_unrealproject\\source\\b1a2_unrealproject\\variant_combat\\combatplayercontroller.h",
+            "d:\\devlog\\b1a2_project\\b1a2_project_unreal\\b1a2_unrealproject\\intermediate\\build\\win64\\unrealeditor\\inc\\b1a2_unrealproject\\uht\\combatplayercontroller.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}
