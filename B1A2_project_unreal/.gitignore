@@ -42,6 +42,9 @@
 *.VC.opendb
 .vsconfig
 
+# Server의 .sln은 예외
+!Server/*.sln
+
 # Precompiled Assets
 SourceArt/**/*.png
 SourceArt/**/*.tga
