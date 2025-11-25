@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("B1A2_UnrealProjectModuleRules")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Development")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9607e2a0da534f5f05be4296ec00542dc0b123f0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+95115f45df0f90eb9d2f5366a47e13486f1f7927")]
 [assembly: System.Reflection.AssemblyProductAttribute("B1A2_UnrealProjectModuleRules")]
 [assembly: System.Reflection.AssemblyTitleAttribute("B1A2_UnrealProjectModuleRules")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
