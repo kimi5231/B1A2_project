@@ -1,8 +1,0 @@
-{
-	"SourceFiles": [
-		"D:\\Devlog\\B1A2_project\\B1A2_project_unreal\\B1A2_UnrealProject\\Source\\B1A2_UnrealProject\\B1A2_UnrealProject.Build.cs",
-		"D:\\Devlog\\B1A2_project\\B1A2_project_unreal\\B1A2_UnrealProject\\Source\\B1A2_UnrealProject.Target.cs",
-		"D:\\Devlog\\B1A2_project\\B1A2_project_unreal\\B1A2_UnrealProject\\Source\\B1A2_UnrealProjectEditor.Target.cs"
-	],
-	"EngineVersion": "5.6.1"
-}
