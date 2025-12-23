@@ -1,14 +1,12 @@
 #include "pch.h"
 #include "ServerFramework.h"
+#include "Global.h"
 
 int main(void)
 {
-	// ServerFramework »ı¼º
-	ServerFramework* framework = new ServerFramework();
-
 	while (true)
 	{
-		framework->Update();
+		g_framework->Update();
 	}
 
 	return 0;

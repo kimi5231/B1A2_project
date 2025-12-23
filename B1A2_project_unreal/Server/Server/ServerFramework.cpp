@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ServerFramework.h"
 #include "Room.h"
+#include "Player.h"
 
 ServerFramework::ServerFramework()
 {
@@ -61,14 +62,14 @@ void ServerFramework::Update()
 	FD_ZERO(&_writeSet);
 
 	// readSet, writeSet에 clientSocket 등록
-	for (SOCKET client : _clients)
+	for (ClientRef client : _clients)
 	{
-		FD_SET(client, &_readSet);
-		FD_SET(client, &_writeSet);
+		FD_SET(client->socket, &_readSet);
+		FD_SET(client->socket, &_writeSet);
 	}
 
 	// select
-	if (select(0, &_readSet, &_writeSet, NULL, 0) == SOCKET_ERROR)
+	if (select(0, &_readSet, &_writeSet, NULL, NULL) == SOCKET_ERROR)
 	{
 		std::cout << "select 실패" << std::endl;
 		return;
@@ -90,28 +91,66 @@ void ServerFramework::Update()
 		ProcessAccept(clientSocket);
 	}
 
-	for (SOCKET client : _clients)
+	for (ClientRef client : _clients)
 	{
-		if (FD_ISSET(client, &_readSet))
+		if (FD_ISSET(client->socket, &_readSet))
 		{
 			ProcessRecv(client);
 		}
+
+		// send가 가능할 때마다 true
+		if (FD_ISSET(client->socket, &_writeSet))
+		{
+			for (auto& sendEvent : _sendEvents)
+			{
+				std::visit([this, client](auto& event) {
+					if (event->isBroadcast)
+					{
+						Broadcast(event->packetID, event->packetData);
+						event->isComplete = true;
+						return;
+					}
+
+					if (client->socket == event->clientSocket)
+					{
+						ProcessSend(event->packetID, event->packetData, event->clientSocket);
+						event->isComplete = true;
+					}
+					}, sendEvent);
+			}
+
+			_sendEvents.erase(std::remove_if(_sendEvents.begin(), _sendEvents.end(),
+				[](const auto& sendEvent) {
+					return std::visit([](const auto& event) {return event->isComplete;}, sendEvent);
+				}), _sendEvents.end());
+		}
 	}
+
+	// 연결 끊긴 Client 제거
+	for (ClientRef client : _removeClients)
+	{
+		closesocket(client->socket);
+		_clients.erase(std::find(_clients.begin(), _clients.end(), client));
+	}
+
+	_removeClients.clear();
 }
 
-void ServerFramework::ProcessRecv(SOCKET client)
+void ServerFramework::ProcessRecv(ClientRef client)
 {
 	// PacketSize 수신(고정 길이)
 	int packetSize{};
-	if (recv(client, (char*)&packetSize, sizeof(int), MSG_WAITALL) <= 0)
+	if (recv(client->socket, (char*)&packetSize, sizeof(int), MSG_WAITALL) <= 0)
 	{
+		ProcessDisconnect(client);
 		return;
 	}
 
 	// Packet 수신(가변 데이터)
 	std::vector<char> packet(512);
-	if (recv(client, packet.data(), packetSize, MSG_WAITALL) <= 0)
+	if (recv(client->socket, packet.data(), packetSize, MSG_WAITALL) <= 0)
 	{
+		ProcessDisconnect(client);
 		return;
 	}
 
@@ -160,7 +199,17 @@ std::vector<char> ServerFramework::CreatePakcet(PacketID id, const T& packetData
 
 void ServerFramework::SendAddObjectPacket(GameObjectRef object, bool broadcast, SOCKET client)
 {
-	
+	// Packet Data 생성
+	S_AddObject_Packet packetData{ object->GetID(), object->GetPos(), object->GetRotation()};
+
+	// SendEvent 생성
+	SendEventRef<S_AddObject_Packet> event = std::make_shared<SendEvent<S_AddObject_Packet>>();
+	event->isBroadcast = broadcast;
+	event->clientSocket = client;
+	event->packetID = S_AddObject;
+	event->packetData = packetData;
+
+	_sendEvents.push_back(event);
 }
 
 void ServerFramework::SendMovePacket(GameObjectRef object, bool broadcast, SOCKET client)
@@ -171,12 +220,34 @@ template<class T>
 void ServerFramework::Broadcast(PacketID id, const T& packetData)
 {
 	// Room에 있는 모든 Client에게 Packet 송신
-	for (SOCKET client : _clients)
-		ProcessSend(id, packetData, client);
+	for (ClientRef client : _clients)
+		ProcessSend(id, packetData, client->socket);
 }
 
 void ServerFramework::ProcessAccept(SOCKET clientSocket)
 {
+	// 나중에 RoomList 보내는 걸로 수정하기
+
+	// 접속한 Client를 나타낼 Player 추가
+	GameObjectRef player = _room->AddObject(ObjectType::Player);
+
+	ClientRef newClient = std::make_shared<Client>();
+	newClient->socket = clientSocket;
+	newClient->player = std::dynamic_pointer_cast<Player>(player);
+
+	_clients.push_back(newClient);
+
+	std::cout << "Client 접속" << std::endl;
+
+	// 새로 접속한 Client에게 Room에 있는 Player 정보 송신
+	const std::unordered_map<UINT, PlayerRef>& players = _room->GetPlayers();
+	for (const auto& item : players)
+		SendAddObjectPacket(item.second, false, newClient->socket);
+}
+
+void ServerFramework::ProcessDisconnect(ClientRef client)
+{
+
 }
 
 void ServerFramework::ProcessMovePacket(C_Move_Packet packet)
