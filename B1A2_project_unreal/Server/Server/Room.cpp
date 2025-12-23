@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "Room.h"
-#include "Player.h"
 #include "Global.h"
-#include "ServerFramework.h"
 
 Room::Room()
 {
@@ -29,7 +27,6 @@ GameObjectRef Room::AddObject(ObjectType type)
 		_players[_generatePlayerID] = std::make_shared<Player>();
 		object = _players[_generatePlayerID];
 		break;
-	
 	}
 
 	object->SetID(_generatePlayerID++);

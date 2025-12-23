@@ -1,4 +1,6 @@
 #pragma once
+#include "Player.h"
+
 class Room
 {
 public:
@@ -12,7 +14,7 @@ public:
 	GameObjectRef AddObject(ObjectType type);
 
 public:
-	GameObjectRef GetObject(UINT id);
+	GameObjectRef GetObject(UINT id) { return _players[id]; }
 	const std::unordered_map<UINT, PlayerRef>& GetPlayers() { return _players; }
 
 private:

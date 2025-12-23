@@ -61,6 +61,9 @@ void ServerFramework::Update()
 	FD_ZERO(&_readSet);
 	FD_ZERO(&_writeSet);
 
+	// readSet에 listenSocket 등록
+	FD_SET(_listenSocket, &_readSet);
+
 	// readSet, writeSet에 clientSocket 등록
 	for (ClientRef client : _clients)
 	{

@@ -35,7 +35,7 @@
     <ClCompile Include="pch.cpp">
       <Filter>소스 파일\Main</Filter>
     </ClCompile>
-    <ClCompile Include="Object.cpp">
+    <ClCompile Include="GameObject.cpp">
       <Filter>소스 파일\Game\Object</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
@@ -61,7 +61,7 @@
     <ClInclude Include="Room.h">
       <Filter>소스 파일\Game</Filter>
     </ClInclude>
-    <ClInclude Include="Object.h">
+    <ClInclude Include="GameObject.h">
       <Filter>소스 파일\Game\Object</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
