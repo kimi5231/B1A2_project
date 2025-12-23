@@ -4,6 +4,7 @@
 #include "Engine/GameInstance.h"
 #include "Packets.h"
 #include "GameFramework/Character.h"
+#include "Engine/StaticMeshActor.h"
 
 #include "Main.generated.h"
 
@@ -42,11 +43,17 @@ public:
 	void ProcessRecv();
 	
 	void RecvAddObject(int id, Vector initLocation, Rotation initRotation);
+	void RecvCreateGameRoom(S_CreateGameRoom_Packet packet);
 	void RecvMovePlayer(int id, Vector location, Rotation rotation);
 
 public:
+	// Other Player Class
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ACharacter> OtherPlayerClass;
+
+	// Room Box Class
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AStaticMeshActor> GameRoomClass;
 
 private:
 	// FRunnbale
