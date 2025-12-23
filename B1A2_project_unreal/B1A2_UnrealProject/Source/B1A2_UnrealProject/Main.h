@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "Packets.h"
+#include "GameFramework/Character.h"
 
 #include "Main.generated.h"
 
@@ -42,8 +43,12 @@ public:
 	// Recv
 	void ProcessRecv();
 	
-	void RecvAddObject(int id, FVector initLocation, FRotator initRotation);
-	void RecvMovePlayer(int id, FVector location, FRotator rotation);
+	void RecvAddObject(int id, Vector initLocation, Rotation initRotation);
+	void RecvMovePlayer(int id, Vector location, Rotation rotation);
+
+public:
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ACharacter> OtherPlayerClass;
 
 private:
 	// FRunnbale
@@ -60,7 +65,7 @@ private:
 
 	// 다른 플레이어
 	UPROPERTY()
-	TMap<int32, ACharacter*> _otherPlayers;
+	TMap<int32, ACharacter*> _otherPlayers;		// ID, Character*
 
 	int _myID{};
 };
