@@ -23,25 +23,39 @@ struct Header
 	int dataSize;
 };
 
+struct Vector
+{
+	float x;
+	float y;
+	float z;
+};
+
+struct Rotation
+{
+	float pitch;
+	float yaw;
+	float roll;
+};
+
 // Client
 struct C_Move_Packet
 {
 	int objectID;
-	FVector pos;
-	FRotator rotation;
+	Vector pos;
+	Rotation rotation;
 };
 
 // Server
 struct S_AddObject_Packet
 {
 	int objectID;
-	FVector initialLocation;
-	FRotator initialRotaion;
+	Vector initialLotation;
+	Rotation initialRotation;
 };
 
 struct S_Move_Packet
 {
 	int objectID;
-	FVector pos;
-	FRotator rotation;
+	Vector pos;
+	Rotation rotation;
 };
