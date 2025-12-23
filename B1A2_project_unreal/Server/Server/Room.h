@@ -12,6 +12,7 @@ public:
 	GameObjectRef AddObject(ObjectType type);
 
 public:
+	GameObjectRef GetObject(UINT id);
 	const std::unordered_map<UINT, PlayerRef>& GetPlayers() { return _players; }
 
 private:

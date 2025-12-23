@@ -69,7 +69,7 @@ void ServerFramework::Update()
 	}
 
 	// select
-	if (select(0, &_readSet, &_writeSet, NULL, NULL) == SOCKET_ERROR)
+	if (select(0, &_readSet, &_writeSet, NULL, 0) == SOCKET_ERROR)
 	{
 		std::cout << "select 실패" << std::endl;
 		return;
@@ -214,6 +214,17 @@ void ServerFramework::SendAddObjectPacket(GameObjectRef object, bool broadcast, 
 
 void ServerFramework::SendMovePacket(GameObjectRef object, bool broadcast, SOCKET client)
 {
+	// Packet Data 생성
+	S_Move_Packet packetData{ object->GetID(), object->GetPos(), object->GetRotation() };
+
+	// SendEvent 생성
+	SendEventRef<S_Move_Packet> event = std::make_shared<SendEvent<S_Move_Packet>>();
+	event->isBroadcast = broadcast;
+	event->clientSocket = client;
+	event->packetID = S_Move;
+	event->packetData = packetData;
+
+	_sendEvents.push_back(event);
 }
 
 template<class T>
@@ -252,5 +263,15 @@ void ServerFramework::ProcessDisconnect(ClientRef client)
 
 void ServerFramework::ProcessMovePacket(C_Move_Packet packet)
 {
+	GameObjectRef object = _room->GetObject(packet.objectID);
 
+	object->SetPos(packet.pos);
+	object->SetRotation(packet.rotation);
+
+	// 자신을 제외한 모든 클라이언트에게 알리기
+	for (ClientRef client : _clients)
+	{
+		if (client->player->GetID() != packet.objectID)
+			SendMovePacket(object, false, client->socket);
+	}
 }
