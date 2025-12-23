@@ -131,11 +131,22 @@ void UMain::SendLocalPosition()
 	APlayerController* PlayerController = world->GetFirstPlayerController();
 	APawn* playerPawn = PlayerController ? PlayerController->GetPawn() : nullptr;
 
+	// 자료형 변환
+	Vector pos;
+	pos.x = (float)playerPawn->GetActorLocation().X;
+	pos.y = (float)playerPawn->GetActorLocation().Y;
+	pos.z = (float)playerPawn->GetActorLocation().Z;
+	
+	Rotation rot;
+	rot.pitch = (float)playerPawn->GetActorRotation().Pitch;
+	rot.yaw = (float)playerPawn->GetActorRotation().Yaw;
+	rot.roll = (float)playerPawn->GetActorRotation().Roll;
+
 	C_Move_Packet movePacket;
 	movePacket.objectID = _myID;
-	movePacket.pos = playerPawn->GetActorLocation();
-	movePacket.rotation = playerPawn->GetActorRotation();
-	
+	movePacket.pos = pos;
+	movePacket.rotation = rot;
+
 	// queue에 넣음
 	ProcessSend(PacketID::C_Move, &movePacket, sizeof(C_Move_Packet));
 }
@@ -144,7 +155,6 @@ void UMain::ProcessRecv()
 {
 	RecvData receivedData;
 
-	// 큐에서 데이터를 가져옵니다. (데이터가 있으면 true 반환)
 	while (_receivedQueue.Dequeue(receivedData))
 	{
 		const TArray<uint8>& PacketBuffer = receivedData.DataBuffer;
@@ -177,7 +187,7 @@ void UMain::ProcessRecv()
 				{
 					S_AddObject_Packet addObjectPacket;
 					FMemory::Memcpy(&addObjectPacket, DataPtr, sizeof(S_AddObject_Packet));
-					RecvAddObject(addObjectPacket.objectID, addObjectPacket.initialLocation, addObjectPacket.initialRotaion);
+					RecvAddObject(addObjectPacket.objectID, addObjectPacket.initialLotation, addObjectPacket.initialRotation);
 				}
 				break;
 			}
@@ -195,8 +205,15 @@ void UMain::ProcessRecv()
 	}
 }
 
-void UMain::RecvAddObject(int id, FVector initLocation, FRotator initRotation)
+void UMain::RecvAddObject(int id, Vector initLocation, Rotation initRotation)
 {
+	// 자신의 ID 설정
+	if (_myID == 0)
+	{
+		_myID = id;
+		return;
+	}
+
 	// 이미 존재하는 객체인지 확인
 	if (_otherPlayers.Contains(id))
 	{
@@ -204,25 +221,33 @@ void UMain::RecvAddObject(int id, FVector initLocation, FRotator initRotation)
 		return;
 	}
 
-	//UWorld* World = GetWorld();
-	//if (!World || !RemotePlayerCharacterClass) return;
+	UWorld* world = GetWorld();
 
-	//// 스폰
-	//FActorSpawnParameters SpawnParams;
-	//ACharacter* NewPlayer = World->SpawnActor<ACharacter>(
-	//	RemotePlayerCharacterClass,
-	//	initLocation,
-	//	initRotation,
-	//	SpawnParams
-	//);
+	// 자료형 변환
+	FVector spawnLocation(
+		initLocation.x,
+		initLocation.y,
+		initLocation.z
+	);
 
-	//if (NewPlayer)
-	//{
-	//	_otherPlayers.Add(id, NewPlayer);
-	//	UE_LOG(LogTemp, Log, TEXT("Player spawned with ID: %d at %s"), id, *initLocation.ToString());
-	//}
+	FRotator spawnRotation(
+		initRotation.pitch,
+		initRotation.yaw,
+		initRotation.roll
+	);
+
+	FActorSpawnParameters spawnParams;
+	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	// Spawn
+	ACharacter* newPlayer = world->SpawnActor<ACharacter>(OtherPlayerClass, spawnLocation, spawnRotation, spawnParams);
+
+	// 저장
+	_otherPlayers[id] = newPlayer;
+
+	UE_LOG(LogTemp, Log, TEXT("Other Player Spawned: ID: %d"), id);
 }
 
-void UMain::RecvMovePlayer(int id, FVector location, FRotator rotation)
+void UMain::RecvMovePlayer(int id, Vector location, Rotation rotation)
 {
 }
