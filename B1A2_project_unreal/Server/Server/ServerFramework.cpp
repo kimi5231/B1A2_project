@@ -2,6 +2,7 @@
 #include "ServerFramework.h"
 #include "Room.h"
 #include "Player.h"
+#include "GameRoom.h"
 
 ServerFramework::ServerFramework()
 {
@@ -137,6 +138,8 @@ void ServerFramework::Update()
 	}
 
 	_removeClients.clear();
+
+	_room->Update();
 }
 
 void ServerFramework::ProcessRecv(ClientRef client)
@@ -225,6 +228,30 @@ void ServerFramework::SendMovePacket(GameObjectRef object, bool broadcast, SOCKE
 	event->isBroadcast = broadcast;
 	event->clientSocket = client;
 	event->packetID = S_Move;
+	event->packetData = packetData;
+
+	_sendEvents.push_back(event);
+}
+
+void ServerFramework::SendCreateGameRoomPacket(std::array<GameRoomRef, 5> gameRooms, bool broadcast, SOCKET client)
+{
+	std::array<GameRoomInfo, 5> roomList;
+
+	for (int i = 0; i < roomList.size(); i++)
+	{
+		roomList[i].pos = gameRooms[i]->GetPos();
+		roomList[i].pos = gameRooms[i]->GetPos();
+		roomList[i].size = gameRooms[i]->GetSize();
+	}
+
+	// Packet Data 持失
+	S_CreateGameRoom_Packet packetData{ roomList };
+
+	// SendEvent 持失
+	SendEventRef<S_CreateGameRoom_Packet> event = std::make_shared<SendEvent<S_CreateGameRoom_Packet>>();
+	event->isBroadcast = broadcast;
+	event->clientSocket = client;
+	event->packetID = S_CreateGameRoom;
 	event->packetData = packetData;
 
 	_sendEvents.push_back(event);

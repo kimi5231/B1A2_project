@@ -1,6 +1,8 @@
 #pragma once
 #include "Player.h"
 
+class RoomInfo;
+
 class Room
 {
 public:
@@ -11,6 +13,8 @@ public:
 	void Update();
 
 public:
+	void CreateGameRoom();
+
 	GameObjectRef AddObject(ObjectType type);
 
 public:
@@ -20,5 +24,6 @@ public:
 private:
 	UINT _generatePlayerID{};
 
+	std::array<GameRoomRef, 5> _gameRooms;
 	std::unordered_map<UINT, PlayerRef> _players;
 };

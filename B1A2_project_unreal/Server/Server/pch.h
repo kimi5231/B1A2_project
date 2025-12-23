@@ -5,7 +5,9 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
+#include <array>
 #include <variant>
+#include <random>
 
 #pragma comment(lib, "ws2_32")
 
@@ -28,6 +30,29 @@ enum class ObjectType
 	Player,
 };
 
+enum class GameRoomType
+{
+	MainEntranceRoom,
+	GapRoom,
+
+	Staircase,
+	CorridorCatwalk,
+
+	ApparatusRoom,
+	ServerRoom,
+	LockerRoom,
+	StorageRoom,
+
+	None,
+};
+
+struct GameRoomInfo
+{
+	GameRoomType type;
+	Vector pos;
+	Vector size;
+};
+
 enum PacketID
 {
 	// Client
@@ -35,7 +60,8 @@ enum PacketID
 
 	//Server
 	S_AddObject,
-	S_Move
+	S_Move,
+	S_CreateGameRoom,
 };
 
 struct Header
@@ -53,6 +79,11 @@ struct C_Move_Packet
 };
 
 // Server
+struct S_CreateGameRoom_Packet
+{
+	std::array<GameRoomInfo, 5> roomList;
+};
+
 struct S_AddObject_Packet
 {
 	int objectID;
@@ -80,10 +111,12 @@ template <class T>
 using SendEventRef = std::shared_ptr<SendEvent<T>>;
 
 using EventType = std::variant<SendEventRef<S_AddObject_Packet>, SendEventRef<S_RemoveObject_Packet>,
-					SendEventRef<S_Move_Packet>>;
+					SendEventRef<S_Move_Packet>, SendEventRef<S_CreateGameRoom_Packet>>;
 
 
 using ClientRef = std::shared_ptr<class Client>;
+using RoomRef = std::shared_ptr<class Room>;
 
+using GameRoomRef = std::shared_ptr<class GameRoom>;
 using GameObjectRef = std::shared_ptr<class GameObject>;
 using PlayerRef = std::shared_ptr<class Player>;

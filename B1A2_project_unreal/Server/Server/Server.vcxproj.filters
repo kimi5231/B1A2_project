@@ -21,6 +21,9 @@
     <Filter Include="소스 파일\Game\Object">
       <UniqueIdentifier>{1dfd73e5-91ec-492c-bbf0-d732680bf631}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Game\Stage">
+      <UniqueIdentifier>{2506515e-ae49-4527-8783-187efa7c0088}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -47,6 +50,9 @@
     <ClCompile Include="Server.cpp">
       <Filter>소스 파일\Default</Filter>
     </ClCompile>
+    <ClCompile Include="GameRoom.cpp">
+      <Filter>소스 파일\Game\Stage</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h">
@@ -69,6 +75,9 @@
     </ClInclude>
     <ClInclude Include="Global.h">
       <Filter>소스 파일\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="GameRoom.h">
+      <Filter>소스 파일\Game\Stage</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
