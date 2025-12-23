@@ -25,10 +25,8 @@ uint32 NetworkRunnable::Run()
 {
     while (!bShouldStop)
     {
-        // Recv(Non-Blocking)
         ProcessSendLoop();
 
-        // Send(Blocking)
        TArray<uint8> PacketBuffer;
         if (ProcessRecvPacketBlocking(PacketBuffer))
         {
