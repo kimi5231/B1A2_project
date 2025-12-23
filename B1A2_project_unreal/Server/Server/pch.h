@@ -81,7 +81,11 @@ struct C_Move_Packet
 // Server
 struct S_CreateGameRoom_Packet
 {
-	std::array<GameRoomInfo, 5> roomList;
+	GameRoomInfo room1;
+	GameRoomInfo room2;
+	GameRoomInfo room3;
+	GameRoomInfo room4;
+	GameRoomInfo room5;
 };
 
 struct S_AddObject_Packet
