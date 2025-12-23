@@ -235,9 +235,9 @@ void ServerFramework::SendMovePacket(GameObjectRef object, bool broadcast, SOCKE
 
 void ServerFramework::SendCreateGameRoomPacket(std::array<GameRoomRef, 5> gameRooms, bool broadcast, SOCKET client)
 {
-	std::array<GameRoomInfo, 5> roomList;
+	GameRoomInfo roomList[5];
 
-	for (int i = 0; i < roomList.size(); i++)
+	for (int i = 0; i < gameRooms.size(); i++)
 	{
 		roomList[i].type = gameRooms[i]->GetGameRoomType();
 		roomList[i].pos = gameRooms[i]->GetPos();
@@ -245,7 +245,7 @@ void ServerFramework::SendCreateGameRoomPacket(std::array<GameRoomRef, 5> gameRo
 	}
 
 	// Packet Data 持失
-	S_CreateGameRoom_Packet packetData{ roomList };
+	S_CreateGameRoom_Packet packetData{ roomList[0], roomList[1], roomList[2], roomList[3], roomList[4]};
 
 	// SendEvent 持失
 	SendEventRef<S_CreateGameRoom_Packet> event = std::make_shared<SendEvent<S_CreateGameRoom_Packet>>();
