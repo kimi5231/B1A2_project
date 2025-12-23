@@ -133,7 +133,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Common.h" />
+    <ClInclude Include="Common.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="GameRoom.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="pch.h" />
@@ -142,6 +146,7 @@
     <ClInclude Include="ServerFramework.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GameRoom.cpp" />
     <ClCompile Include="Global.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="GameObject.cpp" />
