@@ -2,6 +2,23 @@
 
 class Room;
 
+struct Client
+{
+	int id;
+	SOCKET socket;
+	PlayerRef player;
+};
+
+template <class T>
+struct SendEvent
+{
+	bool isComplete = false;
+	bool isBroadcast;
+	SOCKET clientSocket;
+	PacketID packetID;
+	T packetData;
+};
+
 class ServerFramework
 {
 public:
@@ -10,7 +27,7 @@ public:
 
 public:
 	void Update();
-	void ProcessRecv(SOCKET client);
+	void ProcessRecv(ClientRef client);
 
 	template <class T>
 	void ProcessSend(PacketID id, const T& packetData, SOCKET clientSocket);
@@ -29,6 +46,7 @@ public:
 public:
 	// Recv
 	void ProcessAccept(SOCKET clientSocket);
+	void ProcessDisconnect(ClientRef client);
 	void ProcessMovePacket(C_Move_Packet packet);
 
 private:
@@ -36,7 +54,10 @@ private:
 	fd_set _writeSet{};
 
 	SOCKET _listenSocket{};
-	std::vector<SOCKET> _clients;
+	std::vector<ClientRef> _clients;
+	std::vector<ClientRef> _removeClients;
+
+	std::vector<EventType> _sendEvents;
 
 private:
 	Room* _room{};

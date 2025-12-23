@@ -18,14 +18,11 @@
     <Filter Include="소스 파일\Main">
       <UniqueIdentifier>{4fadb5d4-7c0d-41b6-9fdf-c3edbba8a59d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Game\Object">
+      <UniqueIdentifier>{1dfd73e5-91ec-492c-bbf0-d732680bf631}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Server.cpp">
-      <Filter>소스 파일\Default</Filter>
-    </ClCompile>
-    <ClCompile Include="pch.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>소스 파일\Main</Filter>
     </ClCompile>
@@ -34,6 +31,21 @@
     </ClCompile>
     <ClCompile Include="Room.cpp">
       <Filter>소스 파일\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>소스 파일\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>소스 파일\Game\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>소스 파일\Game\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Global.cpp">
+      <Filter>소스 파일\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Server.cpp">
+      <Filter>소스 파일\Default</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -48,6 +60,15 @@
     </ClInclude>
     <ClInclude Include="Room.h">
       <Filter>소스 파일\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>소스 파일\Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>소스 파일\Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Global.h">
+      <Filter>소스 파일\Main</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
