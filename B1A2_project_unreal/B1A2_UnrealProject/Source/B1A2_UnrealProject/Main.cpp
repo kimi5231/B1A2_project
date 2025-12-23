@@ -178,6 +178,15 @@ void UMain::ProcessRecv()
 				
 				break;
 			}
+			case S_CreateGameRoom:
+			{
+				S_CreateGameRoom_Packet createGameRoomPacket;
+				FMemory::Memcpy(&createGameRoomPacket, packet.GetData() + sizeof(Header), sizeof(S_CreateGameRoom_Packet));
+				RecvCreateGameRoom(createGameRoomPacket);
+
+				break;
+			}
+
 			case S_Move:
 			{
 				S_Move_Packet movePacket;
@@ -215,18 +224,20 @@ void UMain::RecvAddObject(int id, Vector initLocation, Rotation initRotation)
 		if (!world || !OtherPlayerClass)
 			return;
 
-		//FVector spawnLocation(
-		//	initLocation.x,
-		//	initLocation.y,
-		//	initLocation.z
-		//);
-
-		//FRotator spawnRotation(
-		//	initRotation.pitch,
-		//	initRotation.yaw,
-		//	initRotation.roll
-		//);
 		FVector spawnLocation(
+			initLocation.x,
+			initLocation.y,
+			initLocation.z
+		);
+
+		FRotator spawnRotation(
+			initRotation.pitch,
+			initRotation.yaw,
+			initRotation.roll
+		);
+
+		// ÀÓÀÇ°ª
+		/*FVector spawnLocation(
 			0.f,
 			0.f,
 			300.f
@@ -236,7 +247,7 @@ void UMain::RecvAddObject(int id, Vector initLocation, Rotation initRotation)
 			0.f,
 			0.f,
 			0.f
-		);
+		);*/
 
 		FActorSpawnParameters spawnParams;
 		spawnParams.SpawnCollisionHandlingOverride =
@@ -256,6 +267,40 @@ void UMain::RecvAddObject(int id, Vector initLocation, Rotation initRotation)
 		_otherPlayers.Add(id, newPlayer);
 
 		UE_LOG(LogTemp, Log, TEXT("Other Player Spawned: ID %d"), id);
+	});
+}
+
+void UMain::RecvCreateGameRoom(S_CreateGameRoom_Packet packet)
+{
+	AsyncTask(ENamedThreads::GameThread, [this, packet]()
+	{
+		UWorld* world = GetWorld();
+		if (!world || !GameRoomClass)
+			return;
+	
+
+		const GameRoomInfo* rooms[5] = { &packet.room1, &packet.room2, &packet.room3, &packet.room4, &packet.room5 };
+
+		for (int i = 0; i < 5; ++i)
+		{
+			const GameRoomInfo& room = *rooms[i];
+
+			UE_LOG(LogTemp, Warning, TEXT("Room[%d] pos = %f, %f, %f"),i, room.pos.x, room.pos.y, room.pos.z);
+
+			FVector pos(room.pos.x, room.pos.y, room.pos.z);
+			FVector size(room.size.x, room.size.y, room.size.z);
+			FVector scale = size / 100.f;
+
+			FActorSpawnParameters params;
+			params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+			AStaticMeshActor* roomActor = world->SpawnActor<AStaticMeshActor>(GameRoomClass, pos, FRotator::ZeroRotator, params);
+
+			if (!roomActor)
+				continue;
+
+			// roomActor->GetStaticMeshComponent()->SetWorldScale3D(scale);
+		}
 	});
 }
 
