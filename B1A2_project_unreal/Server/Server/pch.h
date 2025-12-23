@@ -48,8 +48,8 @@ struct Header
 struct C_Move_Packet
 {
 	int objectID;
-	/*FVector pos;
-	FRotator rotation;*/
+	Vector pos;
+	Rotation rotation;
 };
 
 // Server
@@ -70,8 +70,8 @@ struct S_RemoveObject_Packet
 struct S_Move_Packet
 {
 	int objectID;
-	/*FVector pos;
-	FRotator rotation;*/
+	Vector pos;
+	Rotation rotation;
 };
 
 template <class T>
