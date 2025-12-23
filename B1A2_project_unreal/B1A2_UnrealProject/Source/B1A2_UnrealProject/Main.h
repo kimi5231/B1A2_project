@@ -31,8 +31,6 @@ public:
 	virtual void Init() override;
 	virtual void Shutdown() override;
 
-	void GameTick();
-
 	TArray<uint8> CreatePacket(PacketID id, const void* packetData, int dataSize);
 
 	// Send

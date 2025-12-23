@@ -31,7 +31,7 @@ void UMain::Init()
 
 	SOCKADDR_IN stServerAddr;
 	stServerAddr.sin_family = AF_INET;
-	stServerAddr.sin_port = htons(9000);
+	stServerAddr.sin_port = htons(7777);
 	stServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
 	// connect
@@ -62,30 +62,34 @@ void UMain::Init()
 		);
 
 		// 위치 송신 함수 주기적 호출 - SendMyPosition
-		GetWorld()->GetTimerManager().SetTimer(
+		/*GetWorld()->GetTimerManager().SetTimer(
 			_sendPositionTimerHandle,
 			this,
 			&UMain::SendLocalPosition,
 			0.05f,
 			true
-		);
+		);*/
 	}
 }
 
 void UMain::Shutdown()
 {
+	if (_networkRunnable)
+		_networkRunnable->StopThread();
+
+	if (_networkThread)
+	{
+		_networkThread->WaitForCompletion();
+		delete _networkThread;
+		_networkThread = nullptr;
+	}
+
 	closesocket(_clientSocket);
 	UE_LOG(LogTemp, Log, TEXT("Connection Closed..."));
 
 	WSACleanup();
 
 	Super::Shutdown();
-}
-
-void UMain::GameTick()
-{
-	// Recv 패킷 처리
-	ProcessRecv();
 }
 
 TArray<uint8> UMain::CreatePacket(PacketID id, const void* packetData, int dataSize)
@@ -157,48 +161,29 @@ void UMain::ProcessRecv()
 
 	while (_receivedQueue.Dequeue(receivedData))
 	{
-		const TArray<uint8>& PacketBuffer = receivedData.DataBuffer;
-
-		if (PacketBuffer.Num() < sizeof(Header))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Received packet is too small: %d bytes"), PacketBuffer.Num());
-			continue;
-		}
+		const TArray<uint8>& packet = receivedData.DataBuffer;
 
 		// Header 추출
-		Header NetHeader;
-		FMemory::Memcpy(&NetHeader, PacketBuffer.GetData(), sizeof(Header));
+		Header header;
+		FMemory::Memcpy(&header, packet.GetData(), sizeof(Header));
 
-		const uint8* DataPtr = PacketBuffer.GetData() + sizeof(Header);
-
-		int32 ExpectedTotalSize = sizeof(Header) + NetHeader.dataSize;
-		if (PacketBuffer.Num() != ExpectedTotalSize)
-		{
-			UE_LOG(LogTemp, Error, TEXT("Packet size mismatch. Received: %d, Expected: %d (Data Size: %d)"),
-				PacketBuffer.Num(), ExpectedTotalSize, NetHeader.dataSize);
-			continue;
-		}
-
-		switch (NetHeader.id)
+		// Data 추출
+		switch (header.id)
 		{
 			case S_AddObject:
-			{
-				if (NetHeader.dataSize == sizeof(S_AddObject_Packet))
-				{
-					S_AddObject_Packet addObjectPacket;
-					FMemory::Memcpy(&addObjectPacket, DataPtr, sizeof(S_AddObject_Packet));
-					RecvAddObject(addObjectPacket.objectID, addObjectPacket.initialLotation, addObjectPacket.initialRotation);
-				}
+			{	
+				S_AddObject_Packet addObjectPacket;
+				FMemory::Memcpy(&addObjectPacket, packet.GetData() + sizeof(Header), sizeof(S_AddObject_Packet));
+				RecvAddObject(addObjectPacket.objectID, addObjectPacket.initialLotation, addObjectPacket.initialRotation);
+				
 				break;
 			}
 			case S_Move:
 			{
-				if (NetHeader.dataSize == sizeof(S_Move_Packet))
-				{
-					S_Move_Packet movePacket;
-					FMemory::Memcpy(&movePacket, DataPtr, sizeof(S_Move_Packet));
-					RecvMovePlayer(movePacket.objectID, movePacket.pos, movePacket.rotation);
-				}
+				S_Move_Packet movePacket;
+				FMemory::Memcpy(&movePacket, packet.GetData() + sizeof(Header), sizeof(S_Move_Packet));
+				RecvMovePlayer(movePacket.objectID, movePacket.pos, movePacket.rotation);
+
 				break;
 			}
 		}
@@ -214,6 +199,9 @@ void UMain::RecvAddObject(int id, Vector initLocation, Rotation initRotation)
 		return;
 	}
 
+	if (id == _myID)
+		return;
+
 	// 이미 존재하는 객체인지 확인
 	if (_otherPlayers.Contains(id))
 	{
@@ -221,31 +209,54 @@ void UMain::RecvAddObject(int id, Vector initLocation, Rotation initRotation)
 		return;
 	}
 
-	UWorld* world = GetWorld();
+	AsyncTask(ENamedThreads::GameThread, [this, id, initLocation, initRotation]()
+	{
+		UWorld* world = GetWorld();
+		if (!world || !OtherPlayerClass)
+			return;
 
-	// 자료형 변환
-	FVector spawnLocation(
-		initLocation.x,
-		initLocation.y,
-		initLocation.z
-	);
+		//FVector spawnLocation(
+		//	initLocation.x,
+		//	initLocation.y,
+		//	initLocation.z
+		//);
 
-	FRotator spawnRotation(
-		initRotation.pitch,
-		initRotation.yaw,
-		initRotation.roll
-	);
+		//FRotator spawnRotation(
+		//	initRotation.pitch,
+		//	initRotation.yaw,
+		//	initRotation.roll
+		//);
+		FVector spawnLocation(
+			0.f,
+			0.f,
+			300.f
+		);
 
-	FActorSpawnParameters spawnParams;
-	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		FRotator spawnRotation(
+			0.f,
+			0.f,
+			0.f
+		);
 
-	// Spawn
-	ACharacter* newPlayer = world->SpawnActor<ACharacter>(OtherPlayerClass, spawnLocation, spawnRotation, spawnParams);
+		FActorSpawnParameters spawnParams;
+		spawnParams.SpawnCollisionHandlingOverride =
+			ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	// 저장
-	_otherPlayers[id] = newPlayer;
+		ACharacter* newPlayer =
+			world->SpawnActor<ACharacter>(
+				OtherPlayerClass,
+				spawnLocation,
+				spawnRotation,
+				spawnParams
+			);
 
-	UE_LOG(LogTemp, Log, TEXT("Other Player Spawned: ID: %d"), id);
+		if (!newPlayer)
+			return;
+
+		_otherPlayers.Add(id, newPlayer);
+
+		UE_LOG(LogTemp, Log, TEXT("Other Player Spawned: ID %d"), id);
+	});
 }
 
 void UMain::RecvMovePlayer(int id, Vector location, Rotation rotation)
