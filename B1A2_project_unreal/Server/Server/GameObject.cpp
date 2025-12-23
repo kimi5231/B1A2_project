@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Object.h"
+#include "GameObject.h"
 
 GameObject::GameObject()
 {
