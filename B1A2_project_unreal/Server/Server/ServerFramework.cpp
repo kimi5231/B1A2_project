@@ -239,7 +239,7 @@ void ServerFramework::SendCreateGameRoomPacket(std::array<GameRoomRef, 5> gameRo
 
 	for (int i = 0; i < roomList.size(); i++)
 	{
-		roomList[i].pos = gameRooms[i]->GetPos();
+		roomList[i].type = gameRooms[i]->GetGameRoomType();
 		roomList[i].pos = gameRooms[i]->GetPos();
 		roomList[i].size = gameRooms[i]->GetSize();
 	}

@@ -6,8 +6,6 @@
 Room::Room()
 {
 	_generatePlayerID = 1;
-
-	CreateGameRoom();
 }
 
 Room::~Room()
@@ -23,7 +21,7 @@ void Room::Update()
 void Room::CreateGameRoom()
 {
 	// 랜덤으로 방 생성 (일단은 절차적 생성 알고리즘 고려X)
-	std::uniform_int_distribution<int> dist1(0, static_cast<int>(GameRoomType::None));
+	std::uniform_int_distribution<int> dist1(0, static_cast<int>(GameRoomType::StorageRoom));
 	std::uniform_int_distribution<int> dist2(0, 3);
 
 	for (int i = 0; i < _gameRooms.size(); i++)
@@ -79,6 +77,8 @@ GameObjectRef Room::AddObject(ObjectType type)
 	object->SetID(_generatePlayerID++);
 
 	g_framework->SendAddObjectPacket(object, true);
+
+	CreateGameRoom();
 
 	return object;
 }
