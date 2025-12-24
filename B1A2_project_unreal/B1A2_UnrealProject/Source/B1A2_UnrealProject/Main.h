@@ -11,18 +11,6 @@
 class NetworkRunnable;
 class FRunnableThread;
 
-// Recv: Recv -> 게임
-struct RecvData
-{
-	TArray<uint8> DataBuffer;
-};
-
-// Send: 게임 -> Send
-struct SendData
-{
-	TArray<uint8> DataBuffer;
-};
-
 UCLASS()
 class B1A2_UNREALPROJECT_API UMain : public UGameInstance
 {
@@ -40,9 +28,10 @@ public:
 	void SendLocalPosition();
 
 	// Recv
+	void Update();
 	void ProcessRecv();
 	
-	void RecvAddObject(int id, Vector initLocation, Rotation initRotation);
+	void RecvAddObject(S_AddObject_Packet addObjectPacket);
 	void RecvCreateGameRoom(S_CreateGameRoom_Packet packet);
 	void RecvMovePlayer(int id, Vector location, Rotation rotation);
 
@@ -57,12 +46,8 @@ public:
 
 private:
 	// FRunnbale
-	NetworkRunnable* _networkRunnable = nullptr;
-	FRunnableThread* _networkThread = nullptr;
-
-	// 패킷 Queue
-	TQueue<RecvData> _receivedQueue;
-	TQueue<SendData> _sendQueue;
+	NetworkRunnable* _recvRunnable = nullptr;
+	FRunnableThread* _recvThread = nullptr;
 
 	// 패킷 처리 주기
 	FTimerHandle _packetProcessTimerHandle; 
