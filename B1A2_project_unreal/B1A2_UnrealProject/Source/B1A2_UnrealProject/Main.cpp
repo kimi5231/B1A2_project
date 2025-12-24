@@ -1,4 +1,4 @@
-#include "Main.h"
+Ôªø#include "Main.h"
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include "NetworkRecvRunnable.h"
@@ -13,7 +13,7 @@ void UMain::Init()
 
 	WSADATA wsa;
 
-	// ¿©º” √ ±‚»≠
+	// ÏúàÏÜç Ï¥àÍ∏∞Ìôî
 	int nRet = WSAStartup(MAKEWORD(2, 2), &wsa);
 	if (nRet != 0)
 	{
@@ -21,7 +21,7 @@ void UMain::Init()
 		return;
 	}
 
-	// º“ƒœ ª˝º∫
+	// ÏÜåÏºì ÏÉùÏÑ±
 	_clientSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);	// socket -> WSASocket
 	if (_clientSocket == INVALID_SOCKET)
 	{
@@ -44,45 +44,25 @@ void UMain::Init()
 
 	if (_clientSocket != INVALID_SOCKET)
 	{
-		_networkRunnable = new NetworkRunnable(
-			_clientSocket,
-			_receivedQueue, // Output Queue
-			_sendQueue      // Input Queue
-		);
-
-		_networkThread = FRunnableThread::Create(_networkRunnable, TEXT("NetworkRecvSendThread"));
-
-		// ∆–≈∂ √≥∏Æ «‘ºˆ ¡÷±‚¿˚ »£√‚ - ProcessRecv
-		GetWorld()->GetTimerManager().SetTimer(
-			_packetProcessTimerHandle,
-			this,
-			&UMain::ProcessRecv,
-			0.016f,
-			true
-		);
-
-		// ¿ßƒ° º€Ω≈ «‘ºˆ ¡÷±‚¿˚ »£√‚ - SendMyPosition
-		/*GetWorld()->GetTimerManager().SetTimer(
-			_sendPositionTimerHandle,
-			this,
-			&UMain::SendLocalPosition,
-			0.05f,
-			true
-		);*/
+		_recvRunnable = new NetworkRunnable(this);
+		_recvThread = FRunnableThread::Create(_recvRunnable, TEXT("RecvThread"));
 	}
 }
 
 void UMain::Shutdown()
 {
-	if (_networkRunnable)
-		_networkRunnable->StopThread();
+	if (_recvRunnable)
+		_recvRunnable->Stop();
 
-	if (_networkThread)
+	if (_recvThread)
 	{
-		_networkThread->WaitForCompletion();
-		delete _networkThread;
-		_networkThread = nullptr;
+		_recvThread->WaitForCompletion();
+		delete _recvThread;
+		_recvThread = nullptr;
 	}
+
+	delete _recvRunnable;
+	_recvRunnable = nullptr;
 
 	closesocket(_clientSocket);
 	UE_LOG(LogTemp, Log, TEXT("Connection Closed..."));
@@ -100,7 +80,7 @@ TArray<uint8> UMain::CreatePacket(PacketID id, const void* packetData, int dataS
 	NetHeader.id = id;
 	NetHeader.dataSize = (int16)dataSize;
 
-	// ¿¸√º ∆–≈∂ ≈©±‚ ∞ËªÍ
+	// Ï†ÑÏ≤¥ Ìå®ÌÇ∑ ÌÅ¨Í∏∞ Í≥ÑÏÇ∞
 	int32 TotalPacketSize = sizeof(Header) + dataSize;
 
 	RetBuffer.SetNumUninitialized(TotalPacketSize);
@@ -112,17 +92,17 @@ TArray<uint8> UMain::CreatePacket(PacketID id, const void* packetData, int dataS
 
 bool UMain::ProcessSend(PacketID id, const void* packetData, int dataSize)
 {
-	TArray<uint8> SendPacket = CreatePacket(id, packetData, dataSize);
-	int32 PacketSize = SendPacket.Num(); // ¿Ã ∞™(¿¸√º ∆–≈∂ ≈©±‚)¿ª ∏’¿˙ ∫∏≥ø
+	//TArray<uint8> SendPacket = CreatePacket(id, packetData, dataSize);
+	//int32 PacketSize = SendPacket.Num(); // Ïù¥ Í∞í(Ï†ÑÏ≤¥ Ìå®ÌÇ∑ ÌÅ¨Í∏∞)ÏùÑ Î®ºÏ†Ä Î≥¥ÎÉÑ
 
-	TArray<uint8> SizeBuffer;
-	SizeBuffer.SetNumUninitialized(sizeof(int32));
-	FMemory::Memcpy(SizeBuffer.GetData(), &PacketSize, sizeof(int32));
+	//TArray<uint8> SizeBuffer;
+	//SizeBuffer.SetNumUninitialized(sizeof(int32));
+	//FMemory::Memcpy(SizeBuffer.GetData(), &PacketSize, sizeof(int32));
 
-	// ∞Ì¡§ ±Ê¿Ã µ•¿Ã≈Õ
-	_sendQueue.Enqueue({ SizeBuffer });
-	// ∞°∫Ø ±Ê¿Ã µ•¿Ã≈Õ
-	_sendQueue.Enqueue({ SendPacket });
+	//// Í≥†Ï†ï Í∏∏Ïù¥ Îç∞Ïù¥ÌÑ∞
+	//_sendQueue.Enqueue({ SizeBuffer });
+	//// Í∞ÄÎ≥Ä Í∏∏Ïù¥ Îç∞Ïù¥ÌÑ∞
+	//_sendQueue.Enqueue({ SendPacket });
 
 	return true;
 }
@@ -135,7 +115,7 @@ void UMain::SendLocalPosition()
 	APlayerController* PlayerController = world->GetFirstPlayerController();
 	APawn* playerPawn = PlayerController ? PlayerController->GetPawn() : nullptr;
 
-	// ¿⁄∑·«¸ ∫Ø»Ø
+	// ÏûêÎ£åÌòï Î≥ÄÌôò
 	Vector pos;
 	pos.x = (float)playerPawn->GetActorLocation().X;
 	pos.y = (float)playerPawn->GetActorLocation().Y;
@@ -151,122 +131,123 @@ void UMain::SendLocalPosition()
 	movePacket.pos = pos;
 	movePacket.rotation = rot;
 
-	// queueø° ≥÷¿Ω
+	// queueÏóê ÎÑ£Ïùå
 	ProcessSend(PacketID::C_Move, &movePacket, sizeof(C_Move_Packet));
+}
+
+void UMain::Update()
+{
+	ProcessRecv();
 }
 
 void UMain::ProcessRecv()
 {
-	RecvData receivedData;
-
-	while (_receivedQueue.Dequeue(receivedData))
+	int packetSize = 0;
+	int ret = recv(_clientSocket, (char*)&packetSize, sizeof(int), MSG_WAITALL);
+	if (ret <= 0)
 	{
-		const TArray<uint8>& packet = receivedData.DataBuffer;
+		UE_LOG(LogTemp, Error, TEXT("recv packetSize failed"));
+		return;
+	}
 
-		// Header √ﬂ√‚
-		Header header;
-		FMemory::Memcpy(&header, packet.GetData(), sizeof(Header));
+	constexpr int MAX_PACKET_SIZE = 4096;
 
-		// Data √ﬂ√‚
-		switch (header.id)
-		{
-			case S_AddObject:
-			{	
-				S_AddObject_Packet addObjectPacket;
-				FMemory::Memcpy(&addObjectPacket, packet.GetData() + sizeof(Header), sizeof(S_AddObject_Packet));
-				RecvAddObject(addObjectPacket.objectID, addObjectPacket.initialLotation, addObjectPacket.initialRotation);
-				
-				break;
-			}
-			case S_CreateGameRoom:
-			{
-				S_CreateGameRoom_Packet createGameRoomPacket;
-				FMemory::Memcpy(&createGameRoomPacket, packet.GetData() + sizeof(Header), sizeof(S_CreateGameRoom_Packet));
-				RecvCreateGameRoom(createGameRoomPacket);
+	if (packetSize <= 0 || packetSize > MAX_PACKET_SIZE)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Invalid packetSize: %d"), packetSize);
+		return;
+	}
 
-				break;
-			}
+	if (packetSize < sizeof(Header))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Packet too small for Header"));
+		return;
+	}
 
-			case S_Move:
-			{
-				S_Move_Packet movePacket;
-				FMemory::Memcpy(&movePacket, packet.GetData() + sizeof(Header), sizeof(S_Move_Packet));
-				RecvMovePlayer(movePacket.objectID, movePacket.pos, movePacket.rotation);
+	TArray<uint8> packet;
+	packet.SetNumUninitialized(packetSize);
 
-				break;
-			}
-		}
+	ret = recv(_clientSocket, (char*)packet.GetData(), packetSize, MSG_WAITALL);
+	if (ret <= 0)
+	{
+		UE_LOG(LogTemp, Error, TEXT("recv packet failed"));
+		return;
+	}
+
+	Header header;
+	FMemory::Memcpy(&header, packet.GetData(), sizeof(Header));
+
+	// Data
+	switch (header.id)
+	{
+	case S_AddObject:
+		UE_LOG(LogTemp, Warning, TEXT("Original AddObject Packet Size  = %d"), sizeof(S_AddObject_Packet));
+		UE_LOG(LogTemp, Warning, TEXT("AddObject Header Size  = %d"), sizeof(Header));
+		UE_LOG(LogTemp, Warning, TEXT("AddObject Packet Size = %d"), packetSize);
+
+		S_AddObject_Packet addObjectPacket;
+		//memcpy(&addObjectPacket, packet.data() + sizeof(Header), sizeof(S_AddObject_Packet));
+		FMemory::Memcpy(&addObjectPacket, packet.GetData() + sizeof(Header), sizeof(S_AddObject_Packet));
+		RecvAddObject(addObjectPacket);
+		break;
+	case S_CreateGameRoom:
+		UE_LOG(LogTemp, Warning, TEXT("Original CreateGameRoom Packet Size  = %d"), sizeof(S_CreateGameRoom_Packet));
+		UE_LOG(LogTemp, Warning, TEXT("CreateGameRoom Header Size  = %d"), sizeof(Header));
+		UE_LOG(LogTemp, Warning, TEXT("CreateGameRoom Packet Size = %d"), packetSize);
+
+		S_CreateGameRoom_Packet createGameRoomPacket;
+		//memcpy(&createGameRoomPacket, packet.data() + sizeof(Header), sizeof(S_CreateGameRoom_Packet));
+		FMemory::Memcpy(&createGameRoomPacket, packet.GetData() + sizeof(Header), sizeof(S_CreateGameRoom_Packet));
+		RecvCreateGameRoom(createGameRoomPacket);
+		break;
+	case S_Move:
+		S_Move_Packet movePacket;
+		FMemory::Memcpy(&movePacket, packet.GetData() + sizeof(Header), sizeof(S_Move_Packet));
+		RecvMovePlayer(movePacket.objectID, movePacket.pos, movePacket.rotation);
+		break;
 	}
 }
 
-void UMain::RecvAddObject(int id, Vector initLocation, Rotation initRotation)
+void UMain::RecvAddObject(S_AddObject_Packet addObjectPacket)
 {
-	// ¿⁄Ω≈¿« ID º≥¡§
+	// ÏûêÏã†Ïùò ID ÏÑ§Ï†ï
 	if (_myID == 0)
 	{
-		_myID = id;
+		_myID = addObjectPacket.objectID;
 		return;
 	}
 
-	if (id == _myID)
+	if (addObjectPacket.objectID == _myID)
 		return;
 
-	// ¿ÃπÃ ¡∏¿Á«œ¥¬ ∞¥√º¿Œ¡ˆ »Æ¿Œ
-	if (_otherPlayers.Contains(id))
+	// Ïù¥ÎØ∏ Ï°¥Ïû¨ÌïòÎäî Í∞ùÏ≤¥Ïù∏ÏßÄ ÌôïÏù∏
+	if (_otherPlayers.Contains(addObjectPacket.objectID))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Attempted to add existing object ID: %d"), id);
+		UE_LOG(LogTemp, Warning, TEXT("Attempted to add existing object ID: %d"), addObjectPacket.objectID);
 		return;
 	}
 
-	AsyncTask(ENamedThreads::GameThread, [this, id, initLocation, initRotation]()
+	FVector spawnLocation(addObjectPacket.pos.x, addObjectPacket.pos.y, addObjectPacket.pos.z);
+	FRotator spawnRotation(addObjectPacket.rotation.pitch, addObjectPacket.rotation.yaw, addObjectPacket.rotation.roll);
+	int id = addObjectPacket.objectID;
+
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
 		UWorld* world = GetWorld();
 		if (!world || !OtherPlayerClass)
 			return;
 
-		FVector spawnLocation(
-			initLocation.x,
-			initLocation.y,
-			initLocation.z
-		);
-
-		FRotator spawnRotation(
-			initRotation.pitch,
-			initRotation.yaw,
-			initRotation.roll
-		);
-
-		// ¿”¿«∞™
-		/*FVector spawnLocation(
-			0.f,
-			0.f,
-			300.f
-		);
-
-		FRotator spawnRotation(
-			0.f,
-			0.f,
-			0.f
-		);*/
-
 		FActorSpawnParameters spawnParams;
-		spawnParams.SpawnCollisionHandlingOverride =
-			ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-		ACharacter* newPlayer =
-			world->SpawnActor<ACharacter>(
-				OtherPlayerClass,
-				spawnLocation,
-				spawnRotation,
-				spawnParams
-			);
+		ACharacter* newPlayer = world->SpawnActor<ACharacter>(OtherPlayerClass, spawnLocation, spawnRotation, spawnParams);
 
 		if (!newPlayer)
 			return;
 
 		_otherPlayers.Add(id, newPlayer);
 
-		UE_LOG(LogTemp, Log, TEXT("Other Player Spawned: ID %d"), id);
+		UE_LOG(LogTemp, Log, TEXT("Other Player ID = %d"), id);
 	});
 }
 
@@ -277,7 +258,6 @@ void UMain::RecvCreateGameRoom(S_CreateGameRoom_Packet packet)
 		UWorld* world = GetWorld();
 		if (!world || !GameRoomClass)
 			return;
-	
 
 		const GameRoomInfo* rooms[5] = { &packet.room1, &packet.room2, &packet.room3, &packet.room4, &packet.room5 };
 
@@ -285,7 +265,7 @@ void UMain::RecvCreateGameRoom(S_CreateGameRoom_Packet packet)
 		{
 			const GameRoomInfo& room = *rooms[i];
 
-			UE_LOG(LogTemp, Warning, TEXT("Room[%d] pos = %f, %f, %f"),i, room.pos.x, room.pos.y, room.pos.z);
+			UE_LOG(LogTemp, Warning, TEXT("Room[%d] pos = %f, %f, %f, type = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type);
 
 			FVector pos(room.pos.x, room.pos.y, room.pos.z);
 			FVector size(room.size.x, room.size.y, room.size.z);

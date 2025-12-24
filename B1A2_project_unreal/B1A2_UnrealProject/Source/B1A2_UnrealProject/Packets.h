@@ -80,8 +80,8 @@ struct S_CreateGameRoom_Packet
 struct S_AddObject_Packet
 {
 	int objectID;
-	Vector initialLotation;
-	Rotation initialRotation;
+	Vector pos;
+	Rotation rotation;
 };
 
 struct S_RemoveObject_Packet
