@@ -279,7 +279,7 @@ void UMain::RecvAddObject(S_AddObject_Packet addObjectPacket)
 
 		UE_LOG(LogTemp, Log, TEXT("Other Player ID = %d"), id);
 	});
-}
+} 
 
 void UMain::RecvCreateGameRoom(S_CreateGameRoom_Packet packet)
 {
