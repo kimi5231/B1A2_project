@@ -26,4 +26,7 @@ private:
 
 	std::array<GameRoomRef, 5> _gameRooms;
 	std::unordered_map<UINT, PlayerRef> _players;
+
+	// temp
+	UINT _playerCount{};
 };
