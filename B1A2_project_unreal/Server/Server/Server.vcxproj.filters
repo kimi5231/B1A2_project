@@ -47,17 +47,11 @@
     <ClCompile Include="Global.cpp">
       <Filter>소스 파일\Main</Filter>
     </ClCompile>
-    <ClCompile Include="Server.cpp">
-      <Filter>소스 파일\Default</Filter>
-    </ClCompile>
     <ClCompile Include="GameRoom.cpp">
       <Filter>소스 파일\Game\Stage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Common.h">
-      <Filter>소스 파일\Default</Filter>
-    </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>소스 파일\Main</Filter>
     </ClInclude>
