@@ -32,7 +32,7 @@ void UMain::Init()
 	SOCKADDR_IN stServerAddr;
 	stServerAddr.sin_family = AF_INET;
 	stServerAddr.sin_port = htons(7777);
-	stServerAddr.sin_addr.s_addr = inet_addr("61.255.49.141");
+	stServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
 	// connect
 	nRet = connect(_clientSocket, (sockaddr*)&stServerAddr, sizeof(sockaddr));
