@@ -71,6 +71,11 @@ GameObjectRef Room::AddObject(ObjectType type)
 	case ObjectType::Player:
 		_players[_generatePlayerID] = std::make_shared<Player>();
 		object = _players[_generatePlayerID];
+		// temp
+		Vector pos = object->GetPos();
+		pos.x += _playerCount * 100;
+		object->SetPos(pos);
+		_playerCount++;
 		break;
 	}
 
