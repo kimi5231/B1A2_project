@@ -31,7 +31,7 @@ void Room::CreateGameRoom()
 
 		// 방 위치 계산
 		if (i == 0)
-			gameRoom->SetPos({ 0, 0, 300 });
+			gameRoom->SetPos({ 0, 0, 500 });
 		else
 		{
 			Vector prevRoomPos = _gameRooms[i - 1]->GetPos();

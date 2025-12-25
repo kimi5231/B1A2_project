@@ -179,7 +179,7 @@ template <class T>
 void ServerFramework::ProcessSend(PacketID id, const T& packetData, SOCKET clientSocket)
 {
 	std::vector<char> packet = CreatePakcet(id, packetData);
-	int packetSize = sizeof(packet);
+	int packetSize = packet.size();
 
 	// packetSize 송신(고정 길이)
 	send(clientSocket, (char*)&packetSize, sizeof(int), 0);
