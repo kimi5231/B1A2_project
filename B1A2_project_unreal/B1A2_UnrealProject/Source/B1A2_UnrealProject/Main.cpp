@@ -2,6 +2,7 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include "NetworkRecvRunnable.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 SOCKET _clientSocket;
 
@@ -214,6 +215,33 @@ void UMain::RecvAddObject(S_AddObject_Packet addObjectPacket)
 	if (_myID == 0)
 	{
 		_myID = addObjectPacket.objectID;
+	
+		// 자신의 위치를 서버 위치로 설정
+		AsyncTask(ENamedThreads::GameThread, [=, this]()
+		{
+			UWorld* world = GetWorld();
+			if (!world) return;
+
+			APlayerController* PlayerController = world->GetFirstPlayerController();
+			APawn* playerPawn = PlayerController ? PlayerController->GetPawn() : nullptr;
+
+			if (playerPawn)
+			{
+				FVector myPos(addObjectPacket.pos.x, addObjectPacket.pos.y, addObjectPacket.pos.z);
+
+				// TeleportPhysics -> 엔진이 꼬이는 걸 방지하여 위치 강제 고정
+				playerPawn->SetActorLocation(myPos, false, nullptr, ETeleportType::TeleportPhysics);
+
+				// Test Log
+				Vector pos;
+				pos.x = (float)playerPawn->GetActorLocation().X;
+				pos.y = (float)playerPawn->GetActorLocation().Y;
+				pos.z = (float)playerPawn->GetActorLocation().Z;
+				UE_LOG(LogTemp, Error, TEXT("My Pos: %f, %f, %f"), pos.x, pos.y, pos.z);
+				UE_LOG(LogTemp, Error, TEXT("Server Spawn Pos: %f, %f, %f"), addObjectPacket.pos.x, addObjectPacket.pos.y, addObjectPacket.pos.z);
+			}
+			UE_LOG(LogTemp, Error, TEXT("Not player Pawn"));
+		});
 		return;
 	}
 
@@ -227,10 +255,11 @@ void UMain::RecvAddObject(S_AddObject_Packet addObjectPacket)
 		return;
 	}
 
+	// 다른 플레이어 위치 설정
 	FVector spawnLocation(addObjectPacket.pos.x, addObjectPacket.pos.y, addObjectPacket.pos.z);
 	FRotator spawnRotation(addObjectPacket.rotation.pitch, addObjectPacket.rotation.yaw, addObjectPacket.rotation.roll);
 	int id = addObjectPacket.objectID;
-
+	
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
 		UWorld* world = GetWorld();
@@ -240,12 +269,13 @@ void UMain::RecvAddObject(S_AddObject_Packet addObjectPacket)
 		FActorSpawnParameters spawnParams;
 		spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-		ACharacter* newPlayer = world->SpawnActor<ACharacter>(OtherPlayerClass, spawnLocation, spawnRotation, spawnParams);
+		ACharacter* newPlayer = world->SpawnActor<ACharacter>(OtherPlayerClass, spawnLocation, FRotator::ZeroRotator/*일단 기본 값으로*/, spawnParams);
 
 		if (!newPlayer)
 			return;
 
 		_otherPlayers.Add(id, newPlayer);
+		newPlayer->GetCharacterMovement()->SetDefaultMovementMode();	// 엔진에서 캐릭터를 바닥에 맞춰 설정해줌
 
 		UE_LOG(LogTemp, Log, TEXT("Other Player ID = %d"), id);
 	});
