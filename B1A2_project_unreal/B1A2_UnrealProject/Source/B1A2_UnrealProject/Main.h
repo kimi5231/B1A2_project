@@ -20,6 +20,9 @@ public:
 	virtual void Init() override;
 	virtual void Shutdown() override;
 
+	UFUNCTION(BlueprintCallable)
+	void ConnectServer();
+
 	TArray<uint8> CreatePacket(PacketID id, const void* packetData, int dataSize);
 
 	// Send
