@@ -11,43 +11,6 @@ SOCKET _clientSocket;
 void UMain::Init()
 {
 	Super::Init();
-
-	WSADATA wsa;
-
-	// 윈속 초기화
-	int nRet = WSAStartup(MAKEWORD(2, 2), &wsa);
-	if (nRet != 0)
-	{
-		UE_LOG(LogTemp, Error, TEXT("WSAStartup Failed..."));
-		return;
-	}
-
-	// 소켓 생성
-	_clientSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);	// socket -> WSASocket
-	if (_clientSocket == INVALID_SOCKET)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Invalid Socket..."));
-		return;
-	}
-
-	SOCKADDR_IN stServerAddr;
-	stServerAddr.sin_family = AF_INET;
-	stServerAddr.sin_port = htons(7777);
-	stServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-
-	// connect
-	nRet = connect(_clientSocket, (sockaddr*)&stServerAddr, sizeof(sockaddr));
-	if (nRet == SOCKET_ERROR)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Socket Error..."));
-		return;
-	}
-
-	if (_clientSocket != INVALID_SOCKET)
-	{
-		_recvRunnable = new NetworkRunnable(this);
-		_recvThread = FRunnableThread::Create(_recvRunnable, TEXT("RecvThread"));
-	}
 }
 
 void UMain::Shutdown()
@@ -71,6 +34,48 @@ void UMain::Shutdown()
 	WSACleanup();
 
 	Super::Shutdown();
+}
+
+void UMain::ConnectServer()
+{
+	WSADATA wsa;
+
+	// 윈속 초기화
+	int retval = WSAStartup(MAKEWORD(2, 2), &wsa);
+	if (retval != 0)
+	{
+		UE_LOG(LogTemp, Error, TEXT("WSAStartup Failed..."));
+		return;
+	}
+
+	// 소켓 생성
+	_clientSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);	// socket -> WSASocket
+	if (_clientSocket == INVALID_SOCKET)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Invalid Socket..."));
+		return;
+	}
+
+	SOCKADDR_IN stServerAddr;
+	stServerAddr.sin_family = AF_INET;
+	stServerAddr.sin_port = htons(7777);
+	stServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+	// connect
+	retval = connect(_clientSocket, (sockaddr*)&stServerAddr, sizeof(sockaddr));
+	if (retval == SOCKET_ERROR)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Socket Error..."));
+		return;
+	}
+
+	if (_clientSocket != INVALID_SOCKET)
+	{
+		_recvRunnable = new NetworkRunnable(this);
+		_recvThread = FRunnableThread::Create(_recvRunnable, TEXT("RecvThread"));
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Server Connected!"));
 }
 
 TArray<uint8> UMain::CreatePacket(PacketID id, const void* packetData, int dataSize)
