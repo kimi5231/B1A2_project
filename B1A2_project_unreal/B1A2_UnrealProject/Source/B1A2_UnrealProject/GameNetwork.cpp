@@ -39,3 +39,8 @@ GameNetwork::~GameNetwork()
 	// 윈속 종료
 	WSACleanup();
 }
+
+void GameNetwork::Update()
+{
+
+}

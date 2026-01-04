@@ -1,6 +1,7 @@
 ﻿#include "Main.h"
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#include "GameNetwork.h"
 #include "NetworkRecvRunnable.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -12,42 +13,44 @@ void UMain::Init()
 {
 	Super::Init();
 
-	WSADATA wsa;
+	_gameNetwork = new GameNetwork();
 
-	// 윈속 초기화
-	int nRet = WSAStartup(MAKEWORD(2, 2), &wsa);
-	if (nRet != 0)
-	{
-		UE_LOG(LogTemp, Error, TEXT("WSAStartup Failed..."));
-		return;
-	}
+	//WSADATA wsa;
 
-	// 소켓 생성
-	_clientSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);	// socket -> WSASocket
-	if (_clientSocket == INVALID_SOCKET)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Invalid Socket..."));
-		return;
-	}
+	//// 윈속 초기화
+	//int nRet = WSAStartup(MAKEWORD(2, 2), &wsa);
+	//if (nRet != 0)
+	//{
+	//	UE_LOG(LogTemp, Error, TEXT("WSAStartup Failed..."));
+	//	return;
+	//}
 
-	SOCKADDR_IN stServerAddr;
-	stServerAddr.sin_family = AF_INET;
-	stServerAddr.sin_port = htons(7777);
-	stServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	//// 소켓 생성
+	//_clientSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);	// socket -> WSASocket
+	//if (_clientSocket == INVALID_SOCKET)
+	//{
+	//	UE_LOG(LogTemp, Error, TEXT("Invalid Socket..."));
+	//	return;
+	//}
 
-	// connect
-	nRet = connect(_clientSocket, (sockaddr*)&stServerAddr, sizeof(sockaddr));
-	if (nRet == SOCKET_ERROR)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Socket Error..."));
-		return;
-	}
+	//SOCKADDR_IN stServerAddr;
+	//stServerAddr.sin_family = AF_INET;
+	//stServerAddr.sin_port = htons(7777);
+	//stServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
-	if (_clientSocket != INVALID_SOCKET)
-	{
-		_recvRunnable = new NetworkRunnable(this);
-		_recvThread = FRunnableThread::Create(_recvRunnable, TEXT("RecvThread"));
-	}
+	//// connect
+	//nRet = connect(_clientSocket, (sockaddr*)&stServerAddr, sizeof(sockaddr));
+	//if (nRet == SOCKET_ERROR)
+	//{
+	//	UE_LOG(LogTemp, Error, TEXT("Socket Error..."));
+	//	return;
+	//}
+
+	//if (_clientSocket != INVALID_SOCKET)
+	//{
+	//	_recvRunnable = new NetworkRunnable(this);
+	//	_recvThread = FRunnableThread::Create(_recvRunnable, TEXT("RecvThread"));
+	//}
 }
 
 void UMain::Shutdown()

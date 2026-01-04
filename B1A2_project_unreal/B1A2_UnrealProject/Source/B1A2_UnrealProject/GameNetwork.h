@@ -12,7 +12,7 @@ public:
 	~GameNetwork();
 
 public:
-	void Update() {};
+	void Update();
 
 private:
 	SOCKET _clientSocket;
