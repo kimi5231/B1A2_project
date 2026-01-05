@@ -42,5 +42,97 @@ GameNetwork::~GameNetwork()
 
 void GameNetwork::Update()
 {
+	// socket set 초기화
+	FD_ZERO(&_readSet);
+	FD_ZERO(&_writeSet);
 
+	// readSet, writeSet에 clientSocket 등록
+	FD_SET(_clientSocket, &_readSet);
+	FD_SET(_clientSocket, &_writeSet);
+
+	// select
+	if (select(0, &_readSet, &_writeSet, NULL, 0) == SOCKET_ERROR)
+	{
+		//std::cout << "select 실패" << std::endl;
+		return;
+	}
+
+	if (FD_ISSET(_clientSocket, &_readSet))
+	{
+		ProcessRecv();
+	}
+
+	// send가 가능할 때마다 true
+	/*if (FD_ISSET(_clientSocket, &_writeSet))
+	{
+		for (auto& sendEvent : _sendEvents)
+		{
+			std::visit([this, client](auto& event) {
+				if (event->isBroadcast)
+				{
+					Broadcast(event->packetID, event->packetData);
+					event->isComplete = true;
+					return;
+				}
+
+				if (client->socket == event->clientSocket)
+				{
+					ProcessSend(event->packetID, event->packetData, event->clientSocket);
+					event->isComplete = true;
+				}
+				}, sendEvent);
+		}
+
+		_sendEvents.erase(std::remove_if(_sendEvents.begin(), _sendEvents.end(),
+			[](const auto& sendEvent) {
+				return std::visit([](const auto& event) {return event->isComplete;}, sendEvent);
+			}), _sendEvents.end());
+	}*/
+
+	// 처리된 이벤트 삭제
+	_recvEvents.erase(std::remove_if(_recvEvents.begin(), _recvEvents.end(),
+		[](const auto& recvEvent) {
+			return std::visit([](const auto& event) {return event->isComplete;}, recvEvent);
+		}), _recvEvents.end());
+}
+
+void GameNetwork::ProcessRecv()
+{
+	// PacketSize 수신(고정 길이)
+	int packetSize{};
+	if (recv(_clientSocket, (char*)&packetSize, sizeof(int), MSG_WAITALL) <= 0)
+	{
+		//ProcessDisconnect(client);
+		return;
+	}
+
+	// Packet 수신(가변 데이터)
+	std::vector<char> packet(512);
+	if (recv(_clientSocket, packet.data(), packetSize, MSG_WAITALL) <= 0)
+	{
+		//ProcessDisconnect(client);
+		return;
+	}
+
+	// Header 추출
+	Header header;
+	memcpy(&header, packet.data(), sizeof(Header));
+
+	// Data 추출
+	switch (header.id)
+	{
+	case S_AddObject:
+	{
+		RecvEventRef<S_AddObject_Packet> event = std::make_shared<RecvEvent<S_AddObject_Packet>>();
+		event->packetID = header.id;
+		memcpy(&event->packetData, packet.data() + sizeof(Header), sizeof(S_AddObject_Packet));
+		_recvEvents.push_back(event);
+		break;
+	}
+	case S_Move:
+		/*S_Move_Packet movePacket;
+		memcpy(&movePacket, packet.data() + sizeof(Header), sizeof(S_Move_Packet));
+		ProcessMovePacket(movePacket);*/
+		break;
+	}
 }

@@ -1,9 +1,5 @@
 #pragma once
-#define WIN32_LEAN_AND_MEAN
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#undef min
-#undef max
+#include "Includes.h"
 
 class GameNetwork
 {
@@ -13,7 +9,16 @@ public:
 
 public:
 	void Update();
+	void ProcessRecv();
+
+public:
+	std::vector<RecvEventType>& GetRecvEvents() { return _recvEvents; }
 
 private:
-	SOCKET _clientSocket;
+	fd_set _readSet{};
+	fd_set _writeSet{};
+
+	SOCKET _clientSocket{};
+
+	std::vector<RecvEventType> _recvEvents;
 };

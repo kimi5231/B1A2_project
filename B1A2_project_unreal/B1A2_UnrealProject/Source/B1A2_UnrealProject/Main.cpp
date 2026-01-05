@@ -3,7 +3,7 @@
 #include "NetworkRecvRunnable.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-SOCKET _clientSocket;
+//SOCKET _clientSocket;
 
 #define BUFSIZE	64
 
@@ -44,16 +44,13 @@ void UMain::Init()
 	//	return;
 	//}
 
-	//if (_clientSocket != INVALID_SOCKET)
-	//{
-	//	_recvRunnable = new NetworkRunnable(this);
-	//	_recvThread = FRunnableThread::Create(_recvRunnable, TEXT("RecvThread"));
-	//}
+	_recvRunnable = new NetworkRunnable(this);
+	_recvThread = FRunnableThread::Create(_recvRunnable, TEXT("RecvThread"));
 }
 
 void UMain::Shutdown()
 {
-	if (_recvRunnable)
+	/*if (_recvRunnable)
 		_recvRunnable->Stop();
 
 	if (_recvThread)
@@ -69,7 +66,7 @@ void UMain::Shutdown()
 	closesocket(_clientSocket);
 	UE_LOG(LogTemp, Log, TEXT("Connection Closed..."));
 
-	WSACleanup();
+	WSACleanup();*/
 
 	Super::Shutdown();
 }
@@ -139,75 +136,94 @@ void UMain::SendLocalPosition()
 
 void UMain::Update()
 {
+	_gameNetwork->Update();
+
 	ProcessRecv();
 }
 
 void UMain::ProcessRecv()
 {
-	int packetSize = 0;
-	int ret = recv(_clientSocket, (char*)&packetSize, sizeof(int), MSG_WAITALL);
-	if (ret <= 0)
+	std::vector<RecvEventType>& recvEvents = _gameNetwork->GetRecvEvents();
+
+	for (auto& recvEvent : recvEvents)
 	{
-		UE_LOG(LogTemp, Error, TEXT("recv packetSize failed"));
-		return;
+		std::visit([this](auto& event){
+			switch (event->packetID)
+			{
+			case S_AddObject:
+				S_AddObject_Packet addObjectPacket;
+				FMemory::Memcpy(&addObjectPacket, &event->packetData, sizeof(S_AddObject_Packet));
+				RecvAddObject(addObjectPacket);
+				event->isComplete = true;
+				break;
+			}
+		}, recvEvent);
 	}
 
-	constexpr int MAX_PACKET_SIZE = 4096;
+	//int packetSize = 0;
+	//int ret = recv(_clientSocket, (char*)&packetSize, sizeof(int), MSG_WAITALL);
+	//if (ret <= 0)
+	//{
+	//	UE_LOG(LogTemp, Error, TEXT("recv packetSize failed"));
+	//	return;
+	//}
 
-	if (packetSize <= 0 || packetSize > MAX_PACKET_SIZE)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Invalid packetSize: %d"), packetSize);
-		return;
-	}
+	//constexpr int MAX_PACKET_SIZE = 4096;
 
-	if (packetSize < sizeof(Header))
-	{
-		UE_LOG(LogTemp, Error, TEXT("Packet too small for Header"));
-		return;
-	}
+	//if (packetSize <= 0 || packetSize > MAX_PACKET_SIZE)
+	//{
+	//	UE_LOG(LogTemp, Error, TEXT("Invalid packetSize: %d"), packetSize);
+	//	return;
+	//}
 
-	TArray<uint8> packet;
-	packet.SetNumUninitialized(packetSize);
+	//if (packetSize < sizeof(Header))
+	//{
+	//	UE_LOG(LogTemp, Error, TEXT("Packet too small for Header"));
+	//	return;
+	//}
 
-	ret = recv(_clientSocket, (char*)packet.GetData(), packetSize, MSG_WAITALL);
-	if (ret <= 0)
-	{
-		UE_LOG(LogTemp, Error, TEXT("recv packet failed"));
-		return;
-	}
+	//TArray<uint8> packet;
+	//packet.SetNumUninitialized(packetSize);
 
-	Header header;
-	FMemory::Memcpy(&header, packet.GetData(), sizeof(Header));
+	//ret = recv(_clientSocket, (char*)packet.GetData(), packetSize, MSG_WAITALL);
+	//if (ret <= 0)
+	//{
+	//	UE_LOG(LogTemp, Error, TEXT("recv packet failed"));
+	//	return;
+	//}
 
-	// Data
-	switch (header.id)
-	{
-	case S_AddObject:
-		UE_LOG(LogTemp, Warning, TEXT("Original AddObject Packet Size  = %d"), sizeof(S_AddObject_Packet));
-		UE_LOG(LogTemp, Warning, TEXT("AddObject Header Size  = %d"), sizeof(Header));
-		UE_LOG(LogTemp, Warning, TEXT("AddObject Packet Size = %d"), packetSize);
+	//Header header;
+	//FMemory::Memcpy(&header, packet.GetData(), sizeof(Header));
 
-		S_AddObject_Packet addObjectPacket;
-		//memcpy(&addObjectPacket, packet.data() + sizeof(Header), sizeof(S_AddObject_Packet));
-		FMemory::Memcpy(&addObjectPacket, packet.GetData() + sizeof(Header), sizeof(S_AddObject_Packet));
-		RecvAddObject(addObjectPacket);
-		break;
-	case S_CreateGameRoom:
-		UE_LOG(LogTemp, Warning, TEXT("Original CreateGameRoom Packet Size  = %d"), sizeof(S_CreateGameRoom_Packet));
-		UE_LOG(LogTemp, Warning, TEXT("CreateGameRoom Header Size  = %d"), sizeof(Header));
-		UE_LOG(LogTemp, Warning, TEXT("CreateGameRoom Packet Size = %d"), packetSize);
+	//// Data
+	//switch (header.id)
+	//{
+	//case S_AddObject:
+	//	UE_LOG(LogTemp, Warning, TEXT("Original AddObject Packet Size  = %d"), sizeof(S_AddObject_Packet));
+	//	UE_LOG(LogTemp, Warning, TEXT("AddObject Header Size  = %d"), sizeof(Header));
+	//	UE_LOG(LogTemp, Warning, TEXT("AddObject Packet Size = %d"), packetSize);
 
-		S_CreateGameRoom_Packet createGameRoomPacket;
-		//memcpy(&createGameRoomPacket, packet.data() + sizeof(Header), sizeof(S_CreateGameRoom_Packet));
-		FMemory::Memcpy(&createGameRoomPacket, packet.GetData() + sizeof(Header), sizeof(S_CreateGameRoom_Packet));
-		RecvCreateGameRoom(createGameRoomPacket);
-		break;
-	case S_Move:
-		S_Move_Packet movePacket;
-		FMemory::Memcpy(&movePacket, packet.GetData() + sizeof(Header), sizeof(S_Move_Packet));
-		RecvMovePlayer(movePacket.objectID, movePacket.pos, movePacket.rotation);
-		break;
-	}
+	//	S_AddObject_Packet addObjectPacket;
+	//	//memcpy(&addObjectPacket, packet.data() + sizeof(Header), sizeof(S_AddObject_Packet));
+	//	FMemory::Memcpy(&addObjectPacket, packet.GetData() + sizeof(Header), sizeof(S_AddObject_Packet));
+	//	RecvAddObject(addObjectPacket);
+	//	break;
+	//case S_CreateGameRoom:
+	//	UE_LOG(LogTemp, Warning, TEXT("Original CreateGameRoom Packet Size  = %d"), sizeof(S_CreateGameRoom_Packet));
+	//	UE_LOG(LogTemp, Warning, TEXT("CreateGameRoom Header Size  = %d"), sizeof(Header));
+	//	UE_LOG(LogTemp, Warning, TEXT("CreateGameRoom Packet Size = %d"), packetSize);
+
+	//	S_CreateGameRoom_Packet createGameRoomPacket;
+	//	//memcpy(&createGameRoomPacket, packet.data() + sizeof(Header), sizeof(S_CreateGameRoom_Packet));
+	//	FMemory::Memcpy(&createGameRoomPacket, packet.GetData() + sizeof(Header), sizeof(S_CreateGameRoom_Packet));
+	//	RecvCreateGameRoom(createGameRoomPacket);
+	//	break;
+	//case S_Move:
+	//	S_Move_Packet movePacket;
+	//	FMemory::Memcpy(&movePacket, packet.GetData() + sizeof(Header), sizeof(S_Move_Packet));
+	//	RecvMovePlayer(movePacket.objectID, movePacket.pos, movePacket.rotation);
+	//	break;
+	//}
 }
 
 void UMain::RecvAddObject(S_AddObject_Packet addObjectPacket)
