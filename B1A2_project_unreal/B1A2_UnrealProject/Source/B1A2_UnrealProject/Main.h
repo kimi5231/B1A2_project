@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
-#include "Packets.h"
+#include "Network/Packets.h"
 #include "GameFramework/Character.h"
 #include "Engine/StaticMeshActor.h"
 
