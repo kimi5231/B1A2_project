@@ -1,7 +1,5 @@
 ﻿#include "Main.h"
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#include "GameNetwork.h"
+#include "Network/GameNetwork.h"
 #include "NetworkRecvRunnable.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
