@@ -11,6 +11,9 @@
 class NetworkRunnable;
 class FRunnableThread;
 
+class AOtherPlayer;
+class AMyPlayer;
+
 UCLASS()
 class B1A2_UNREALPROJECT_API UMain : public UGameInstance
 {
@@ -57,8 +60,15 @@ private:
 	FTimerHandle _sendPositionTimerHandle;  
 
 	// 다른 플레이어
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AOtherPlayer> _otherPlayerClass;
+
 	UPROPERTY()
-	TMap<int32, ACharacter*> _otherPlayers;		// ID, Character*
+	TMap<int32, AOtherPlayer*> _otherPlayers;		// ID, Character*
+
+	// 내 플레이어
+	UPROPERTY()
+	AMyPlayer* _myPlayer;
 
 	int _myID{};
 };
