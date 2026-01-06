@@ -11,6 +11,7 @@ class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
+class UMain;
 
 /**
  * 
@@ -62,4 +63,7 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+private:
+	float _movePacketSendTimer = 0.2f;	// 현재 남은 시간
+	const float MOVE_PACKET_SEND_DELAY = 0.2f;	// 전송 간격
 };

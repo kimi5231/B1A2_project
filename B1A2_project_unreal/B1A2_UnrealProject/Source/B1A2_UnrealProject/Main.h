@@ -29,7 +29,7 @@ public:
 	TArray<uint8> CreatePacket(PacketID id, const void* packetData, int dataSize);
 
 	// Send
-	bool ProcessSend(PacketID id, const void* packetData, int dataSize);
+	void ProcessSend(PacketID id, const void* packetData, int dataSize);
 	
 	void SendLocalPosition();
 

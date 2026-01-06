@@ -7,6 +7,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Packets.h"
+#include "Main.h"
 
 AMyPlayer::AMyPlayer()
 {
@@ -39,6 +41,16 @@ void AMyPlayer::BeginPlay()
 void AMyPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	_movePacketSendTimer -= DeltaTime;
+
+	if (_movePacketSendTimer <= 0.f)
+	{
+		_movePacketSendTimer = MOVE_PACKET_SEND_DELAY;
+
+		if (UMain* GameInstance = Cast<UMain>(GetGameInstance()))
+			GameInstance->SendLocalPosition();
+	}
 }
 
 void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
