@@ -83,37 +83,42 @@ void UMain::ConnectServer()
 
 TArray<uint8> UMain::CreatePacket(PacketID id, const void* packetData, int dataSize)
 {
-	TArray<uint8> RetBuffer;
+	TArray<uint8> retPacket;
 
-	Header NetHeader;
-	NetHeader.id = id;
-	NetHeader.dataSize = (int16)dataSize;
+	// 헤더
+	Header header;
+	header.id = id;
+	header.dataSize = (int16)dataSize;
 
 	// 전체 패킷 크기 계산
-	int32 TotalPacketSize = sizeof(Header) + dataSize;
+	int32 totalSize = sizeof(Header) + dataSize;
 
-	RetBuffer.SetNumUninitialized(TotalPacketSize);
-	FMemory::Memcpy(RetBuffer.GetData(), &NetHeader, sizeof(Header));
-	FMemory::Memcpy(RetBuffer.GetData() + sizeof(Header), packetData, dataSize);
+	retPacket.SetNumUninitialized(totalSize);
+	
+	// 패킷에 데이터 넣기
+	FMemory::Memcpy(retPacket.GetData(), &header, sizeof(Header));
+	FMemory::Memcpy(retPacket.GetData() + sizeof(Header), packetData, dataSize);
 
-	return RetBuffer;
+	return retPacket;
 }
 
-bool UMain::ProcessSend(PacketID id, const void* packetData, int dataSize)
+void UMain::ProcessSend(PacketID id, const void* packetData, int dataSize)
 {
-	//TArray<uint8> SendPacket = CreatePacket(id, packetData, dataSize);
-	//int32 PacketSize = SendPacket.Num(); // 이 값(전체 패킷 크기)을 먼저 보냄
+	// 패킷 생성
+	TArray<uint8> sendPacket = CreatePacket(id, packetData, dataSize);
+	
+	int32 retval;
+	int32 packetSize = sendPacket.Num(); 
 
-	//TArray<uint8> SizeBuffer;
-	//SizeBuffer.SetNumUninitialized(sizeof(int32));
-	//FMemory::Memcpy(SizeBuffer.GetData(), &PacketSize, sizeof(int32));
+	// 고정 길이 데이터 전송
+	retval = send(_clientSocket, reinterpret_cast<const char*>(&packetSize), sizeof(int32), 0);
+	if (retval == SOCKET_ERROR)
+		return;
 
-	//// 고정 길이 데이터
-	//_sendQueue.Enqueue({ SizeBuffer });
-	//// 가변 길이 데이터
-	//_sendQueue.Enqueue({ SendPacket });
-
-	return true;
+	// 가변 길이 데이터 전송
+	retval = send(_clientSocket, reinterpret_cast<const char*>(sendPacket.GetData()), packetSize, 0);
+	if (retval == SOCKET_ERROR)
+		return;
 }
 
 void UMain::SendLocalPosition()
@@ -140,7 +145,6 @@ void UMain::SendLocalPosition()
 	movePacket.pos = pos;
 	movePacket.rotation = rot;
 
-	// queue에 넣음
 	ProcessSend(PacketID::C_Move, &movePacket, sizeof(C_Move_Packet));
 }
 
@@ -190,22 +194,12 @@ void UMain::ProcessRecv()
 	switch (header.id)
 	{
 	case S_AddObject:
-		UE_LOG(LogTemp, Warning, TEXT("Original AddObject Packet Size  = %d"), sizeof(S_AddObject_Packet));
-		UE_LOG(LogTemp, Warning, TEXT("AddObject Header Size  = %d"), sizeof(Header));
-		UE_LOG(LogTemp, Warning, TEXT("AddObject Packet Size = %d"), packetSize);
-
 		S_AddObject_Packet addObjectPacket;
-		//memcpy(&addObjectPacket, packet.data() + sizeof(Header), sizeof(S_AddObject_Packet));
 		FMemory::Memcpy(&addObjectPacket, packet.GetData() + sizeof(Header), sizeof(S_AddObject_Packet));
 		RecvAddObject(addObjectPacket);
 		break;
 	case S_CreateGameRoom:
-		UE_LOG(LogTemp, Warning, TEXT("Original CreateGameRoom Packet Size  = %d"), sizeof(S_CreateGameRoom_Packet));
-		UE_LOG(LogTemp, Warning, TEXT("CreateGameRoom Header Size  = %d"), sizeof(Header));
-		UE_LOG(LogTemp, Warning, TEXT("CreateGameRoom Packet Size = %d"), packetSize);
-
 		S_CreateGameRoom_Packet createGameRoomPacket;
-		//memcpy(&createGameRoomPacket, packet.data() + sizeof(Header), sizeof(S_CreateGameRoom_Packet));
 		FMemory::Memcpy(&createGameRoomPacket, packet.GetData() + sizeof(Header), sizeof(S_CreateGameRoom_Packet));
 		RecvCreateGameRoom(createGameRoomPacket);
 		break;
@@ -213,6 +207,7 @@ void UMain::ProcessRecv()
 		S_Move_Packet movePacket;
 		FMemory::Memcpy(&movePacket, packet.GetData() + sizeof(Header), sizeof(S_Move_Packet));
 		RecvMovePlayer(movePacket.objectID, movePacket.pos, movePacket.rotation);
+		UE_LOG(LogTemp, Warning, TEXT("[%d] Other Player Moved... %f, %f"), movePacket.objectID, movePacket.pos.x, movePacket.pos.y);
 		break;
 	}
 }
@@ -310,4 +305,20 @@ void UMain::RecvCreateGameRoom(S_CreateGameRoom_Packet packet)
 
 void UMain::RecvMovePlayer(int id, Vector location, Rotation rotation)
 {
+	if (id == _myID)
+		return;
+
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		AOtherPlayer** targetPlayer = _otherPlayers.Find(id);
+
+		if (targetPlayer && *targetPlayer)
+		{
+			FVector pos(location.x, location.y, location.z);
+			FRotator rot(0, rotation.yaw, 0);	// 수정 필요!
+
+			(*targetPlayer)->SetPlayerLocation(pos, rot);
+			UE_LOG(LogTemp, Display, TEXT("Set Other Player Location [%d]"), id);
+		}
+	});
 }

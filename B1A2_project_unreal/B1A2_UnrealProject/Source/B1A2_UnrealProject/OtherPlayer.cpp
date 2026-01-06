@@ -46,3 +46,8 @@ void AOtherPlayer::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+
+void AOtherPlayer::SetPlayerLocation(FVector location, FRotator rotation)
+{
+	SetActorLocation(location);
+}
