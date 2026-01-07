@@ -1,24 +1,59 @@
 ﻿#include "Main.h"
-#include <winsock2.h>
-#include <ws2tcpip.h>
+#include "Network/GameNetwork.h"
 #include "NetworkRecvRunnable.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "MyPlayer.h"
 #include "OtherPlayer.h"
 
-SOCKET _clientSocket;
+//SOCKET _clientSocket;
 
 #define BUFSIZE	64
 
 void UMain::Init()
 {
 	Super::Init();
+
+	_gameNetwork = new GameNetwork();
+
+	//WSADATA wsa;
+
+	//// 윈속 초기화
+	//int nRet = WSAStartup(MAKEWORD(2, 2), &wsa);
+	//if (nRet != 0)
+	//{
+	//	UE_LOG(LogTemp, Error, TEXT("WSAStartup Failed..."));
+	//	return;
+	//}
+
+	//// 소켓 생성
+	//_clientSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);	// socket -> WSASocket
+	//if (_clientSocket == INVALID_SOCKET)
+	//{
+	//	UE_LOG(LogTemp, Error, TEXT("Invalid Socket..."));
+	//	return;
+	//}
+
+	//SOCKADDR_IN stServerAddr;
+	//stServerAddr.sin_family = AF_INET;
+	//stServerAddr.sin_port = htons(7777);
+	//stServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+	//// connect
+	//nRet = connect(_clientSocket, (sockaddr*)&stServerAddr, sizeof(sockaddr));
+	//if (nRet == SOCKET_ERROR)
+	//{
+	//	UE_LOG(LogTemp, Error, TEXT("Socket Error..."));
+	//	return;
+	//}
+
+	_recvRunnable = new NetworkRunnable(this);
+	_recvThread = FRunnableThread::Create(_recvRunnable, TEXT("RecvThread"));
 }
 
 void UMain::Shutdown()
 {
-	if (_recvRunnable)
+	/*if (_recvRunnable)
 		_recvRunnable->Stop();
 
 	if (_recvThread)
@@ -34,7 +69,7 @@ void UMain::Shutdown()
 	closesocket(_clientSocket);
 	UE_LOG(LogTemp, Log, TEXT("Connection Closed..."));
 
-	WSACleanup();
+	WSACleanup();*/
 
 	Super::Shutdown();
 }
@@ -129,114 +164,123 @@ void UMain::SendLocalPosition()
 	APlayerController* PlayerController = world->GetFirstPlayerController();
 	APawn* playerPawn = PlayerController ? PlayerController->GetPawn() : nullptr;
 
-	// 위치
-	Vector pos;
-	pos.x = (float)playerPawn->GetActorLocation().X;
-	pos.y = (float)playerPawn->GetActorLocation().Y;
-	pos.z = (float)playerPawn->GetActorLocation().Z;
-	
-	// 회전
-	Rotation rot;
-	rot.pitch = (float)playerPawn->GetActorRotation().Pitch;
-	rot.yaw = (float)playerPawn->GetActorRotation().Yaw;
-	rot.roll = (float)playerPawn->GetActorRotation().Roll;
-
-	// 상태
-	MoveState state = MOVE_STATE_IDLE;
-	if (ACharacter* character = Cast<ACharacter>(playerPawn))
+	if (playerPawn)
 	{
-		if (character->GetCharacterMovement()->IsFalling())
-		{
-			state = MOVE_STATE_JUMP;
-		}
-		else
-		{
-			const float Speed = character->GetVelocity().Size();
+		// 자료형 변환
+		Vector pos;
+		pos.x = (float)playerPawn->GetActorLocation().X;
+		pos.y = (float)playerPawn->GetActorLocation().Y;
+		pos.z = (float)playerPawn->GetActorLocation().Z;
 
-			if (Speed > 10.f)
-				state = MOVE_STATE_RUN;
-			else
-				state = MOVE_STATE_IDLE;
-		}
-	}
-	else
-	{
-		const float Speed = playerPawn->GetVelocity().Size();
-		state = (Speed > 10.f) ? MOVE_STATE_RUN : MOVE_STATE_IDLE;
+		Rotation rot;
+		rot.pitch = (float)playerPawn->GetActorRotation().Pitch;
+		rot.yaw = (float)playerPawn->GetActorRotation().Yaw;
+		rot.roll = (float)playerPawn->GetActorRotation().Roll;
+
+		_gameNetwork->SendMovePacket(_myID, pos, rot);
 	}
 
-	// 패킷
-	C_Move_Packet movePacket;
-	movePacket.objectID = _myID;
-	movePacket.pos = pos;
-	movePacket.rotation = rot;
-	movePacket.state = state;
+	//C_Move_Packet movePacket;
+	//movePacket.objectID = _myID;
+	//movePacket.pos = pos;
+	//movePacket.rotation = rot;
 
-	ProcessSend(PacketID::C_Move, &movePacket, sizeof(C_Move_Packet));
+	//// queue에 넣음
+	//ProcessSend(PacketID::C_Move, &movePacket, sizeof(C_Move_Packet));
 }
 
 void UMain::Update()
 {
+	_gameNetwork->Update();
+
+	SendLocalPosition();
+
 	ProcessRecv();
 }
 
 void UMain::ProcessRecv()
 {
-	int packetSize = 0;
-	int ret = recv(_clientSocket, (char*)&packetSize, sizeof(int), MSG_WAITALL);
-	if (ret <= 0)
+	std::vector<RecvEventType>& recvEvents = _gameNetwork->GetRecvEvents();
+
+	for (auto& recvEvent : recvEvents)
 	{
-		UE_LOG(LogTemp, Error, TEXT("recv packetSize failed"));
-		return;
+		std::visit([this](auto& event){
+			switch (event->packetID)
+			{
+			case S_AddObject:
+				S_AddObject_Packet addObjectPacket;
+				FMemory::Memcpy(&addObjectPacket, &event->packetData, sizeof(S_AddObject_Packet));
+				RecvAddObject(addObjectPacket);
+				event->isComplete = true;
+				break;
+			}
+		}, recvEvent);
 	}
 
-	constexpr int MAX_PACKET_SIZE = 4096;
+	//int packetSize = 0;
+	//int ret = recv(_clientSocket, (char*)&packetSize, sizeof(int), MSG_WAITALL);
+	//if (ret <= 0)
+	//{
+	//	UE_LOG(LogTemp, Error, TEXT("recv packetSize failed"));
+	//	return;
+	//}
 
-	if (packetSize <= 0 || packetSize > MAX_PACKET_SIZE)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Invalid packetSize: %d"), packetSize);
-		return;
-	}
+	//constexpr int MAX_PACKET_SIZE = 4096;
 
-	if (packetSize < sizeof(Header))
-	{
-		UE_LOG(LogTemp, Error, TEXT("Packet too small for Header"));
-		return;
-	}
+	//if (packetSize <= 0 || packetSize > MAX_PACKET_SIZE)
+	//{
+	//	UE_LOG(LogTemp, Error, TEXT("Invalid packetSize: %d"), packetSize);
+	//	return;
+	//}
 
-	TArray<uint8> packet;
-	packet.SetNumUninitialized(packetSize);
+	//if (packetSize < sizeof(Header))
+	//{
+	//	UE_LOG(LogTemp, Error, TEXT("Packet too small for Header"));
+	//	return;
+	//}
 
-	ret = recv(_clientSocket, (char*)packet.GetData(), packetSize, MSG_WAITALL);
-	if (ret <= 0)
-	{
-		UE_LOG(LogTemp, Error, TEXT("recv packet failed"));
-		return;
-	}
+	//TArray<uint8> packet;
+	//packet.SetNumUninitialized(packetSize);
 
-	Header header;
-	FMemory::Memcpy(&header, packet.GetData(), sizeof(Header));
+	//ret = recv(_clientSocket, (char*)packet.GetData(), packetSize, MSG_WAITALL);
+	//if (ret <= 0)
+	//{
+	//	UE_LOG(LogTemp, Error, TEXT("recv packet failed"));
+	//	return;
+	//}
 
-	// Data
-	switch (header.id)
-	{
-	case S_AddObject:
-		S_AddObject_Packet addObjectPacket;
-		FMemory::Memcpy(&addObjectPacket, packet.GetData() + sizeof(Header), sizeof(S_AddObject_Packet));
-		RecvAddObject(addObjectPacket);
-		break;
-	case S_CreateGameRoom:
-		S_CreateGameRoom_Packet createGameRoomPacket;
-		FMemory::Memcpy(&createGameRoomPacket, packet.GetData() + sizeof(Header), sizeof(S_CreateGameRoom_Packet));
-		RecvCreateGameRoom(createGameRoomPacket);
-		break;
-	case S_Move:
-		S_Move_Packet movePacket;
-		FMemory::Memcpy(&movePacket, packet.GetData() + sizeof(Header), sizeof(S_Move_Packet));
-		RecvMovePlayer(movePacket.objectID, movePacket.pos, movePacket.rotation, movePacket.state);
-		//UE_LOG(LogTemp, Warning, TEXT("Other Player Moved... [%d] %f, %f, %f"), movePacket.objectID, movePacket.pos.x, movePacket.pos.y, movePacket.pos.z);
-		break;
-	}
+	//Header header;
+	//FMemory::Memcpy(&header, packet.GetData(), sizeof(Header));
+
+	//// Data
+	//switch (header.id)
+	//{
+	//case S_AddObject:
+	//	UE_LOG(LogTemp, Warning, TEXT("Original AddObject Packet Size  = %d"), sizeof(S_AddObject_Packet));
+	//	UE_LOG(LogTemp, Warning, TEXT("AddObject Header Size  = %d"), sizeof(Header));
+	//	UE_LOG(LogTemp, Warning, TEXT("AddObject Packet Size = %d"), packetSize);
+
+	//	S_AddObject_Packet addObjectPacket;
+	//	//memcpy(&addObjectPacket, packet.data() + sizeof(Header), sizeof(S_AddObject_Packet));
+	//	FMemory::Memcpy(&addObjectPacket, packet.GetData() + sizeof(Header), sizeof(S_AddObject_Packet));
+	//	RecvAddObject(addObjectPacket);
+	//	break;
+	//case S_CreateGameRoom:
+	//	UE_LOG(LogTemp, Warning, TEXT("Original CreateGameRoom Packet Size  = %d"), sizeof(S_CreateGameRoom_Packet));
+	//	UE_LOG(LogTemp, Warning, TEXT("CreateGameRoom Header Size  = %d"), sizeof(Header));
+	//	UE_LOG(LogTemp, Warning, TEXT("CreateGameRoom Packet Size = %d"), packetSize);
+
+	//	S_CreateGameRoom_Packet createGameRoomPacket;
+	//	//memcpy(&createGameRoomPacket, packet.data() + sizeof(Header), sizeof(S_CreateGameRoom_Packet));
+	//	FMemory::Memcpy(&createGameRoomPacket, packet.GetData() + sizeof(Header), sizeof(S_CreateGameRoom_Packet));
+	//	RecvCreateGameRoom(createGameRoomPacket);
+	//	break;
+	//case S_Move:
+	//	S_Move_Packet movePacket;
+	//	FMemory::Memcpy(&movePacket, packet.GetData() + sizeof(Header), sizeof(S_Move_Packet));
+	//	RecvMovePlayer(movePacket.objectID, movePacket.pos, movePacket.rotation);
+	//	break;
+	//}
 }
 
 void UMain::RecvAddObject(S_AddObject_Packet addObjectPacket)

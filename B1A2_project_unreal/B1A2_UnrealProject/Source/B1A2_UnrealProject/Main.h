@@ -2,12 +2,13 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
-#include "Packets.h"
+#include "Network/Packets.h"
 #include "GameFramework/Character.h"
 #include "Engine/StaticMeshActor.h"
 
 #include "Main.generated.h"
 
+class GameNetwork;
 class NetworkRunnable;
 class FRunnableThread;
 
@@ -46,6 +47,8 @@ public:
 	TSubclassOf<AStaticMeshActor> GameRoomClass;
 
 private:
+	GameNetwork* _gameNetwork = nullptr;
+
 	// FRunnbale
 	NetworkRunnable* _recvRunnable = nullptr;
 	FRunnableThread* _recvThread = nullptr;
