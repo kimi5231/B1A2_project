@@ -24,4 +24,14 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void SetPlayerLocation(FVector location, FRotator rotation);
+
+private:
+	FVector _destPos;
+	FRotator _destRot;
+	
+protected:
+	bool _isInterpolation = true;
+
+	UPROPERTY(EditAnywhere, Category = "Interpolation")
+	float InterpolationSpeed = 10.0f;
 };

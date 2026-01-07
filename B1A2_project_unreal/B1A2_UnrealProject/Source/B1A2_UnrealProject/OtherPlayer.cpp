@@ -45,13 +45,20 @@ void AOtherPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (_isInterpolation)	// MyPlayer에서는 보간 X
+	{
+		FVector newLocation = FMath::VInterpTo(GetActorLocation(), _destPos, DeltaTime, InterpolationSpeed);
+		FRotator newRotation = FMath::RInterpTo(GetActorRotation(), _destRot, DeltaTime, InterpolationSpeed);
+
+		SetActorLocation(newLocation);
+		SetActorRotation(newRotation);
+	}
 }
 
 void AOtherPlayer::SetPlayerLocation(FVector location, FRotator rotation)
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Other Player Received Pos: %s"),*location.ToString());
 
-	// 순간이동 강제 실행
-	SetActorLocation(location);
-	SetActorRotation(rotation);
+	_destPos = location;
+	_destRot = rotation;
 }

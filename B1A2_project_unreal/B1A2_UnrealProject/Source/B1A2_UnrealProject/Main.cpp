@@ -338,6 +338,6 @@ void UMain::RecvMovePlayer(int id, Vector location, Rotation rotation)
 		FVector pos(location.x, location.y, location.z);
 		FRotator rot(0, rotation.yaw, 0);
 		player->SetPlayerLocation(pos, rot);
-		UE_LOG(LogTemp, Display, TEXT("Other Player [%d] SetPlayerLocation!!!"), id);
+		//UE_LOG(LogTemp, Display, TEXT("Other Player [%d] SetPlayerLocation!!!"), id);
 	});
 }
