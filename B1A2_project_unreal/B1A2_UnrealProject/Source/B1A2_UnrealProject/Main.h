@@ -61,13 +61,11 @@ private:
 
 	// 다른 플레이어
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<AOtherPlayer> _otherPlayerClass;
+	TSubclassOf<AOtherPlayer> OtherPlayerClass;
 
-	UPROPERTY()
-	TMap<int32, AOtherPlayer*> _otherPlayers;		// ID, Character*
+	TMap<uint64, AOtherPlayer*> _otherPlayers;		// ID, Character*
 
 	// 내 플레이어
-	UPROPERTY()
 	AMyPlayer* _myPlayer;
 
 	int _myID{};

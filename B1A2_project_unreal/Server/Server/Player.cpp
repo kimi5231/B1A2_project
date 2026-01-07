@@ -3,8 +3,8 @@
 
 Player::Player()
 {
-	_pos = { 0, 0, 300 };
-	_rotation = { 0, 0, 300 };
+	_pos = { 0, 0, 100 };
+	_rotation = { 0, 0, 0 };
 }
 
 Player::~Player()

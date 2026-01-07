@@ -207,7 +207,7 @@ void UMain::ProcessRecv()
 		S_Move_Packet movePacket;
 		FMemory::Memcpy(&movePacket, packet.GetData() + sizeof(Header), sizeof(S_Move_Packet));
 		RecvMovePlayer(movePacket.objectID, movePacket.pos, movePacket.rotation);
-		UE_LOG(LogTemp, Warning, TEXT("[%d] Other Player Moved... %f, %f"), movePacket.objectID, movePacket.pos.x, movePacket.pos.y);
+		//UE_LOG(LogTemp, Warning, TEXT("Other Player Moved... [%d] %f, %f, %f"), movePacket.objectID, movePacket.pos.x, movePacket.pos.y, movePacket.pos.z);
 		break;
 	}
 }
@@ -237,7 +237,7 @@ void UMain::RecvAddObject(S_AddObject_Packet addObjectPacket)
 
 			_myPlayer = player;
 
-			UE_LOG(LogTemp, Log, TEXT("My Player Spawned! [ID] = %d"), addObjectPacket.objectID);
+			UE_LOG(LogTemp, Log, TEXT("My Player Spawned! [%d], %f, %f, %f"), addObjectPacket.objectID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
 		});
 		return;
 	}
@@ -254,19 +254,28 @@ void UMain::RecvAddObject(S_AddObject_Packet addObjectPacket)
 
 	// 다른 플레이어 Spawn
 	FVector spawnLocation(addObjectPacket.pos.x, addObjectPacket.pos.y, addObjectPacket.pos.z);
-	FRotator spawnRotation(0, addObjectPacket.rotation.yaw, 0);
+	FRotator spawnRotation(0, 0, 0);	// 일단 0으로 설정
 	int id = addObjectPacket.objectID;
-	
+
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
 		UWorld* world = GetWorld();
 		if (!world || !OtherPlayerClass)
 			return;
 
-		AOtherPlayer* player = Cast<AOtherPlayer>(world->SpawnActor(OtherPlayerClass, &spawnLocation, &spawnRotation));
-		_otherPlayers.Add(id, player);
+		AOtherPlayer* player = world->SpawnActor<AOtherPlayer>(OtherPlayerClass, spawnLocation, spawnRotation);
+		
+		if (player)
+		{
+			_otherPlayers.Add(id, player);
+			UE_LOG(LogTemp, Log, TEXT("Other Player Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+		}
+		else
+		{
+			_otherPlayers.Remove(id);
+			UE_LOG(LogTemp, Error, TEXT("Other Spawn Failed... ID [%d]"), id);
+		}
 
-		UE_LOG(LogTemp, Log, TEXT("Other Player Spawned! [ID] = %d"), id);
 	});
 } 
 
@@ -306,19 +315,29 @@ void UMain::RecvCreateGameRoom(S_CreateGameRoom_Packet packet)
 void UMain::RecvMovePlayer(int id, Vector location, Rotation rotation)
 {
 	if (id == _myID)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ID %d is MyID. Ignore."), id);
 		return;
+	}
 
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
-		AOtherPlayer** targetPlayer = _otherPlayers.Find(id);
+		UWorld* world = GetWorld();
+		if (!world)
+			return;
 
-		if (targetPlayer && *targetPlayer)
+		AOtherPlayer** findPlayer = _otherPlayers.Find(id);
+		if (!findPlayer)
 		{
-			FVector pos(location.x, location.y, location.z);
-			FRotator rot(0, rotation.yaw, 0);	// 수정 필요!
-
-			(*targetPlayer)->SetPlayerLocation(pos, rot);
-			UE_LOG(LogTemp, Display, TEXT("Set Other Player Location [%d]"), id);
+			UE_LOG(LogTemp, Error, TEXT("Other Player [%d] not in _otherPlayers"), id);
+			return;
 		}
+
+		AOtherPlayer* player = (*findPlayer);
+
+		FVector pos(location.x, location.y, location.z);
+		FRotator rot(0, rotation.yaw, 0);
+		player->SetPlayerLocation(pos, rot);
+		UE_LOG(LogTemp, Display, TEXT("Other Player [%d] SetPlayerLocation!!!"), id);
 	});
 }
