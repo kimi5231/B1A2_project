@@ -15,10 +15,13 @@ public:
 	Vector GetPos() { return _pos; }
 	void SetRotation(Rotation rotation) { _rotation = rotation; }
 	Rotation GetRotation() { return _rotation; }
+	void SetState(MoveState state) { _state = state; }
+	MoveState GetState() { return _state; }
 
 protected:
 	UINT _id{};
 	Vector _pos{};
 	Rotation _rotation{};
+	MoveState _state{};
 };
 

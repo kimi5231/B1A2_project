@@ -18,7 +18,7 @@ public:
 	std::vector<char> CreatePacket(PacketID id, const T& packetData);
 
 public:
-	void SendMovePacket(int id, Vector pos, Rotation rotation);
+	void SendMovePacket(int id, Vector pos, Rotation rotation, MoveState state);
 
 public:
 	std::vector<RecvEventType>& GetRecvEvents() { return _recvEvents; }
@@ -31,8 +31,6 @@ private:
 
 	std::vector<RecvEventType> _recvEvents;
 	std::vector<SendEventType> _sendEvents;
-
-	
 };
 
 template<class T>

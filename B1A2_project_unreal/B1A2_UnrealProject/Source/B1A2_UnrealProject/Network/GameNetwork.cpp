@@ -130,10 +130,10 @@ void GameNetwork::ProcessRecv()
 	}
 }
 
-void GameNetwork::SendMovePacket(int id, Vector pos, Rotation rotation)
+void GameNetwork::SendMovePacket(int id, Vector pos, Rotation rotation, MoveState state)
 {
 	// Packet Data 持失
-	C_Move_Packet packetData{ id, pos, rotation };
+	C_Move_Packet packetData{ id, pos, rotation, state };
 
 	// SendEvent 持失
 	NetworkEventRef<C_Move_Packet> event = std::make_shared<NetworkEvent<C_Move_Packet>>();
