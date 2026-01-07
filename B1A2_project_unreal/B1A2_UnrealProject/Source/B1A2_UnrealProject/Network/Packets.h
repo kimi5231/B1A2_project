@@ -72,7 +72,7 @@ struct C_Move_Packet
 	int objectID;
 	Vector pos;
 	Rotation rotation;
-	MoveState state;
+	//MoveState state;
 };
 
 // Server

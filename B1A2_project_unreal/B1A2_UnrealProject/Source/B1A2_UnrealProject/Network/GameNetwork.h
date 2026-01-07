@@ -31,6 +31,8 @@ private:
 
 	std::vector<RecvEventType> _recvEvents;
 	std::vector<SendEventType> _sendEvents;
+
+	
 };
 
 template<class T>

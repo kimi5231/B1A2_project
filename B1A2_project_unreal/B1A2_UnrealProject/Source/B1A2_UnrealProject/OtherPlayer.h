@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Packets.h"
+#include "Network/Packets.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "OtherPlayer.generated.h"

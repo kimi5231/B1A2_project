@@ -13,42 +13,6 @@
 void UMain::Init()
 {
 	Super::Init();
-
-	_gameNetwork = new GameNetwork();
-
-	//WSADATA wsa;
-
-	//// 윈속 초기화
-	//int nRet = WSAStartup(MAKEWORD(2, 2), &wsa);
-	//if (nRet != 0)
-	//{
-	//	UE_LOG(LogTemp, Error, TEXT("WSAStartup Failed..."));
-	//	return;
-	//}
-
-	//// 소켓 생성
-	//_clientSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);	// socket -> WSASocket
-	//if (_clientSocket == INVALID_SOCKET)
-	//{
-	//	UE_LOG(LogTemp, Error, TEXT("Invalid Socket..."));
-	//	return;
-	//}
-
-	//SOCKADDR_IN stServerAddr;
-	//stServerAddr.sin_family = AF_INET;
-	//stServerAddr.sin_port = htons(7777);
-	//stServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-
-	//// connect
-	//nRet = connect(_clientSocket, (sockaddr*)&stServerAddr, sizeof(sockaddr));
-	//if (nRet == SOCKET_ERROR)
-	//{
-	//	UE_LOG(LogTemp, Error, TEXT("Socket Error..."));
-	//	return;
-	//}
-
-	_recvRunnable = new NetworkRunnable(this);
-	_recvThread = FRunnableThread::Create(_recvRunnable, TEXT("RecvThread"));
 }
 
 void UMain::Shutdown()
@@ -76,44 +40,49 @@ void UMain::Shutdown()
 
 void UMain::ConnectServer()
 {
-	WSADATA wsa;
+	//WSADATA wsa;
 
-	// 윈속 초기화
-	int retval = WSAStartup(MAKEWORD(2, 2), &wsa);
-	if (retval != 0)
-	{
-		UE_LOG(LogTemp, Error, TEXT("WSAStartup Failed..."));
-		return;
-	}
+	//// 윈속 초기화
+	//int retval = WSAStartup(MAKEWORD(2, 2), &wsa);
+	//if (retval != 0)
+	//{
+	//	UE_LOG(LogTemp, Error, TEXT("WSAStartup Failed..."));
+	//	return;
+	//}
 
-	// 소켓 생성
-	_clientSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);	// socket -> WSASocket
-	if (_clientSocket == INVALID_SOCKET)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Invalid Socket..."));
-		return;
-	}
+	//// 소켓 생성
+	//_clientSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);	// socket -> WSASocket
+	//if (_clientSocket == INVALID_SOCKET)
+	//{
+	//	UE_LOG(LogTemp, Error, TEXT("Invalid Socket..."));
+	//	return;
+	//}
 
-	SOCKADDR_IN stServerAddr;
-	stServerAddr.sin_family = AF_INET;
-	stServerAddr.sin_port = htons(7777);
-	stServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	//SOCKADDR_IN stServerAddr;
+	//stServerAddr.sin_family = AF_INET;
+	//stServerAddr.sin_port = htons(7777);
+	//stServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
-	// connect
-	retval = connect(_clientSocket, (sockaddr*)&stServerAddr, sizeof(sockaddr));
-	if (retval == SOCKET_ERROR)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Socket Error..."));
-		return;
-	}
+	//// connect
+	//retval = connect(_clientSocket, (sockaddr*)&stServerAddr, sizeof(sockaddr));
+	//if (retval == SOCKET_ERROR)
+	//{
+	//	UE_LOG(LogTemp, Error, TEXT("Socket Error..."));
+	//	return;
+	//}
 
-	if (_clientSocket != INVALID_SOCKET)
-	{
-		_recvRunnable = new NetworkRunnable(this);
-		_recvThread = FRunnableThread::Create(_recvRunnable, TEXT("RecvThread"));
-	}
+	//if (_clientSocket != INVALID_SOCKET)
+	//{
+	//	_recvRunnable = new NetworkRunnable(this);
+	//	_recvThread = FRunnableThread::Create(_recvRunnable, TEXT("RecvThread"));
+	//}
 
-	UE_LOG(LogTemp, Warning, TEXT("Server Connected!"));
+	//UE_LOG(LogTemp, Warning, TEXT("Server Connected!"));
+
+	_gameNetwork = new GameNetwork();
+
+	_recvRunnable = new NetworkRunnable(this);
+	_recvThread = FRunnableThread::Create(_recvRunnable, TEXT("RecvThread"));
 }
 
 TArray<uint8> UMain::CreatePacket(PacketID id, const void* packetData, int dataSize)
@@ -139,21 +108,21 @@ TArray<uint8> UMain::CreatePacket(PacketID id, const void* packetData, int dataS
 
 void UMain::ProcessSend(PacketID id, const void* packetData, int dataSize)
 {
-	// 패킷 생성
-	TArray<uint8> sendPacket = CreatePacket(id, packetData, dataSize);
-	
-	int32 retval;
-	int32 packetSize = sendPacket.Num(); 
+	//// 패킷 생성
+	//TArray<uint8> sendPacket = CreatePacket(id, packetData, dataSize);
+	//
+	//int32 retval;
+	//int32 packetSize = sendPacket.Num(); 
 
-	// 고정 길이 데이터 전송
-	retval = send(_clientSocket, reinterpret_cast<const char*>(&packetSize), sizeof(int32), 0);
-	if (retval == SOCKET_ERROR)
-		return;
+	//// 고정 길이 데이터 전송
+	//retval = send(_clientSocket, reinterpret_cast<const char*>(&packetSize), sizeof(int32), 0);
+	//if (retval == SOCKET_ERROR)
+	//	return;
 
-	// 가변 길이 데이터 전송
-	retval = send(_clientSocket, reinterpret_cast<const char*>(sendPacket.GetData()), packetSize, 0);
-	if (retval == SOCKET_ERROR)
-		return;
+	//// 가변 길이 데이터 전송
+	//retval = send(_clientSocket, reinterpret_cast<const char*>(sendPacket.GetData()), packetSize, 0);
+	//if (retval == SOCKET_ERROR)
+	//	return;
 }
 
 void UMain::SendLocalPosition()
@@ -178,6 +147,30 @@ void UMain::SendLocalPosition()
 		rot.roll = (float)playerPawn->GetActorRotation().Roll;
 
 		_gameNetwork->SendMovePacket(_myID, pos, rot);
+	
+		// 상태
+		MoveState state = MOVE_STATE_IDLE;
+		if (ACharacter* character = Cast<ACharacter>(playerPawn))
+		{
+			if (character->GetCharacterMovement()->IsFalling())
+			{
+				state = MOVE_STATE_JUMP;
+			}
+			else
+			{
+				const float Speed = character->GetVelocity().Size();
+
+				if (Speed > 10.f)
+					state = MOVE_STATE_RUN;
+				else
+					state = MOVE_STATE_IDLE;
+			}
+		}
+		else
+		{
+			const float Speed = playerPawn->GetVelocity().Size();
+			state = (Speed > 10.f) ? MOVE_STATE_RUN : MOVE_STATE_IDLE;
+		}
 	}
 
 	//C_Move_Packet movePacket;
@@ -192,8 +185,6 @@ void UMain::SendLocalPosition()
 void UMain::Update()
 {
 	_gameNetwork->Update();
-
-	SendLocalPosition();
 
 	ProcessRecv();
 }
@@ -211,6 +202,12 @@ void UMain::ProcessRecv()
 				S_AddObject_Packet addObjectPacket;
 				FMemory::Memcpy(&addObjectPacket, &event->packetData, sizeof(S_AddObject_Packet));
 				RecvAddObject(addObjectPacket);
+				event->isComplete = true;
+				break;
+			case S_Move:
+				S_Move_Packet movePacket;
+				FMemory::Memcpy(&movePacket, &event->packetData, sizeof(S_Move_Packet));
+				RecvMovePlayer(movePacket);
 				event->isComplete = true;
 				break;
 			}
@@ -382,11 +379,11 @@ void UMain::RecvCreateGameRoom(S_CreateGameRoom_Packet packet)
 	});
 }
 
-void UMain::RecvMovePlayer(int id, Vector location, Rotation rotation, MoveState state)
+void UMain::RecvMovePlayer(S_Move_Packet packet)
 {
-	if (id == _myID)
+	if (packet.objectID == _myID)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ID %d is MyID. Ignore."), id);
+		UE_LOG(LogTemp, Warning, TEXT("ID %d is MyID. Ignore."), packet.objectID);
 		return;
 	}
 
@@ -396,19 +393,19 @@ void UMain::RecvMovePlayer(int id, Vector location, Rotation rotation, MoveState
 		if (!world)
 			return;
 
-		AOtherPlayer** findPlayer = _otherPlayers.Find(id);
+		AOtherPlayer** findPlayer = _otherPlayers.Find(packet.objectID);
 		if (!findPlayer)
 		{
-			UE_LOG(LogTemp, Error, TEXT("Other Player [%d] not in _otherPlayers"), id);
+			UE_LOG(LogTemp, Error, TEXT("Other Player [%d] not in _otherPlayers"), packet.objectID);
 			return;
 		}
 
 		AOtherPlayer* player = (*findPlayer);
 
-		FVector pos(location.x, location.y, location.z);
-		FRotator rot(0, rotation.yaw, 0);
+		FVector pos(packet.pos.x, packet.pos.y, packet.pos.z);
+		FRotator rot(0, packet.rotation.yaw, 0);
 		player->SetPlayerLocation(pos, rot);
-		player->SetPlayerState(state);
+		//player->SetPlayerState(state);
 		//UE_LOG(LogTemp, Display, TEXT("Other Player [%d] SetPlayerLocation!!!"), id);
 	});
 }

@@ -7,7 +7,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
-#include "Packets.h"
+#include "Network/Packets.h"
 #include "Main.h"
 
 AMyPlayer::AMyPlayer()

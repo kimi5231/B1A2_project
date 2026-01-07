@@ -120,10 +120,13 @@ void GameNetwork::ProcessRecv()
 		break;
 	}
 	case S_Move:
-		/*S_Move_Packet movePacket;
-		memcpy(&movePacket, packet.data() + sizeof(Header), sizeof(S_Move_Packet));
-		ProcessMovePacket(movePacket);*/
+	{
+		NetworkEventRef<S_Move_Packet> event = std::make_shared<NetworkEvent<S_Move_Packet>>();
+		event->packetID = header.id;
+		memcpy(&event->packetData, packet.data() + sizeof(Header), sizeof(S_Move_Packet));
+		_recvEvents.push_back(event);
 		break;
+	}
 	}
 }
 

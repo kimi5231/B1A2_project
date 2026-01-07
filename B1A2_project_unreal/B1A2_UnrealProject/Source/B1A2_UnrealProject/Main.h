@@ -39,7 +39,7 @@ public:
 	
 	void RecvAddObject(S_AddObject_Packet addObjectPacket);
 	void RecvCreateGameRoom(S_CreateGameRoom_Packet packet);
-	void RecvMovePlayer(int id, Vector location, Rotation rotation, MoveState state);
+	void RecvMovePlayer(S_Move_Packet packet);
 
 public:
 	// Room Box Class
