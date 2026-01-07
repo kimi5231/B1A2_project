@@ -62,3 +62,8 @@ void AOtherPlayer::SetPlayerLocation(FVector location, FRotator rotation)
 	_destPos = location;
 	_destRot = rotation;
 }
+
+void AOtherPlayer::SetPlayerState(MoveState state)
+{
+	_state = state;
+}
