@@ -49,5 +49,9 @@ void AOtherPlayer::Tick(float DeltaTime)
 
 void AOtherPlayer::SetPlayerLocation(FVector location, FRotator rotation)
 {
+	//UE_LOG(LogTemp, Warning, TEXT("Other Player Received Pos: %s"),*location.ToString());
+
+	// 순간이동 강제 실행
 	SetActorLocation(location);
+	SetActorRotation(rotation);
 }
