@@ -221,7 +221,7 @@ void ServerFramework::SendAddObjectPacket(GameObjectRef object, bool broadcast, 
 void ServerFramework::SendMovePacket(GameObjectRef object, bool broadcast, SOCKET client)
 {
 	// Packet Data 생성
-	S_Move_Packet packetData{ object->GetID(), object->GetPos(), object->GetRotation() };
+	S_Move_Packet packetData{ object->GetID(), object->GetPos(), object->GetRotation(), object->GetState() };
 
 	// SendEvent 생성
 	SendEventRef<S_Move_Packet> event = std::make_shared<SendEvent<S_Move_Packet>>();
@@ -297,6 +297,7 @@ void ServerFramework::ProcessMovePacket(C_Move_Packet packet)
 
 	object->SetPos(packet.pos);
 	object->SetRotation(packet.rotation);
+	object->SetState(packet.state);
 
 	// 자신을 제외한 모든 클라이언트에게 알리기
 	for (ClientRef client : _clients)

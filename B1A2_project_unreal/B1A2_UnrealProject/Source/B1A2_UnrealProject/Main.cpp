@@ -146,8 +146,6 @@ void UMain::SendLocalPosition()
 		rot.yaw = (float)playerPawn->GetActorRotation().Yaw;
 		rot.roll = (float)playerPawn->GetActorRotation().Roll;
 
-		_gameNetwork->SendMovePacket(_myID, pos, rot);
-	
 		// 상태
 		MoveState state = MOVE_STATE_IDLE;
 		if (ACharacter* character = Cast<ACharacter>(playerPawn))
@@ -171,6 +169,8 @@ void UMain::SendLocalPosition()
 			const float Speed = playerPawn->GetVelocity().Size();
 			state = (Speed > 10.f) ? MOVE_STATE_RUN : MOVE_STATE_IDLE;
 		}
+
+		_gameNetwork->SendMovePacket(_myID, pos, rot, state);
 	}
 
 	//C_Move_Packet movePacket;
@@ -405,7 +405,7 @@ void UMain::RecvMovePlayer(S_Move_Packet packet)
 		FVector pos(packet.pos.x, packet.pos.y, packet.pos.z);
 		FRotator rot(0, packet.rotation.yaw, 0);
 		player->SetPlayerLocation(pos, rot);
-		//player->SetPlayerState(state);
+		player->SetPlayerState(packet.state);
 		//UE_LOG(LogTemp, Display, TEXT("Other Player [%d] SetPlayerLocation!!!"), id);
 	});
 }

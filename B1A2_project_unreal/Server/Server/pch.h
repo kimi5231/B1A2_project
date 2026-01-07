@@ -30,6 +30,13 @@ enum class ObjectType
 	Player,
 };
 
+enum MoveState
+{
+	MOVE_STATE_IDLE,
+	MOVE_STATE_RUN,
+	MOVE_STATE_JUMP,
+};
+
 enum class GameRoomType
 {
 	MainEntranceRoom,
@@ -76,6 +83,7 @@ struct C_Move_Packet
 	int objectID;
 	Vector pos;
 	Rotation rotation;
+	MoveState state;
 };
 
 // Server
@@ -107,6 +115,7 @@ struct S_Move_Packet
 	int objectID;
 	Vector pos;
 	Rotation rotation;
+	MoveState state;
 };
 
 template <class T>
