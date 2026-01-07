@@ -30,9 +30,8 @@ public:
 
 	// Send
 	void ProcessSend(PacketID id, const void* packetData, int dataSize);
-	
-	void SendLocalPosition();
 
+	void SendLocalPosition();
 	// Recv
 	void Update();
 	void ProcessRecv();
@@ -42,10 +41,6 @@ public:
 	void RecvMovePlayer(int id, Vector location, Rotation rotation);
 
 public:
-	// Other Player Class
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<ACharacter> OtherPlayerClass;
-
 	// Room Box Class
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AStaticMeshActor> GameRoomClass;
