@@ -129,21 +129,48 @@ void UMain::SendLocalPosition()
 	APlayerController* PlayerController = world->GetFirstPlayerController();
 	APawn* playerPawn = PlayerController ? PlayerController->GetPawn() : nullptr;
 
-	// 자료형 변환
+	// 위치
 	Vector pos;
 	pos.x = (float)playerPawn->GetActorLocation().X;
 	pos.y = (float)playerPawn->GetActorLocation().Y;
 	pos.z = (float)playerPawn->GetActorLocation().Z;
 	
+	// 회전
 	Rotation rot;
 	rot.pitch = (float)playerPawn->GetActorRotation().Pitch;
 	rot.yaw = (float)playerPawn->GetActorRotation().Yaw;
 	rot.roll = (float)playerPawn->GetActorRotation().Roll;
 
+	// 상태
+	MoveState state = MOVE_STATE_IDLE;
+	if (ACharacter* character = Cast<ACharacter>(playerPawn))
+	{
+		if (character->GetCharacterMovement()->IsFalling())
+		{
+			state = MOVE_STATE_JUMP;
+		}
+		else
+		{
+			const float Speed = character->GetVelocity().Size();
+
+			if (Speed > 10.f)
+				state = MOVE_STATE_RUN;
+			else
+				state = MOVE_STATE_IDLE;
+		}
+	}
+	else
+	{
+		const float Speed = playerPawn->GetVelocity().Size();
+		state = (Speed > 10.f) ? MOVE_STATE_RUN : MOVE_STATE_IDLE;
+	}
+
+	// 패킷
 	C_Move_Packet movePacket;
 	movePacket.objectID = _myID;
 	movePacket.pos = pos;
 	movePacket.rotation = rot;
+	movePacket.state = state;
 
 	ProcessSend(PacketID::C_Move, &movePacket, sizeof(C_Move_Packet));
 }
@@ -206,7 +233,7 @@ void UMain::ProcessRecv()
 	case S_Move:
 		S_Move_Packet movePacket;
 		FMemory::Memcpy(&movePacket, packet.GetData() + sizeof(Header), sizeof(S_Move_Packet));
-		RecvMovePlayer(movePacket.objectID, movePacket.pos, movePacket.rotation);
+		RecvMovePlayer(movePacket.objectID, movePacket.pos, movePacket.rotation, movePacket.state);
 		//UE_LOG(LogTemp, Warning, TEXT("Other Player Moved... [%d] %f, %f, %f"), movePacket.objectID, movePacket.pos.x, movePacket.pos.y, movePacket.pos.z);
 		break;
 	}
@@ -214,7 +241,6 @@ void UMain::ProcessRecv()
 
 void UMain::RecvAddObject(S_AddObject_Packet addObjectPacket)
 {
-
 	if (_myID == 0)
 	{	
 		// 자신의 ID 설정
@@ -312,7 +338,7 @@ void UMain::RecvCreateGameRoom(S_CreateGameRoom_Packet packet)
 	});
 }
 
-void UMain::RecvMovePlayer(int id, Vector location, Rotation rotation)
+void UMain::RecvMovePlayer(int id, Vector location, Rotation rotation, MoveState state)
 {
 	if (id == _myID)
 	{
@@ -338,6 +364,7 @@ void UMain::RecvMovePlayer(int id, Vector location, Rotation rotation)
 		FVector pos(location.x, location.y, location.z);
 		FRotator rot(0, rotation.yaw, 0);
 		player->SetPlayerLocation(pos, rot);
+		player->SetPlayerState(state);
 		//UE_LOG(LogTemp, Display, TEXT("Other Player [%d] SetPlayerLocation!!!"), id);
 	});
 }

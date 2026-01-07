@@ -2,9 +2,11 @@
 
 #pragma once
 
+#include "Packets.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "OtherPlayer.generated.h"
+
 
 UCLASS()
 class B1A2_UNREALPROJECT_API AOtherPlayer : public ACharacter
@@ -24,11 +26,14 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void SetPlayerLocation(FVector location, FRotator rotation);
+	void SetPlayerState(MoveState state);
 
 private:
 	FVector _destPos;
 	FRotator _destRot;
 	
+	MoveState _state;
+
 protected:
 	bool _isInterpolation = true;
 
