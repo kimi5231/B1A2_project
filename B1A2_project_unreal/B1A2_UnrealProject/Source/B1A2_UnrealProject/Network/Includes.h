@@ -16,7 +16,7 @@
 #undef max
 
 template <class T>
-struct RecvEvent
+struct NetworkEvent
 {
 	bool isComplete = false;
 	PacketID packetID;
@@ -24,6 +24,7 @@ struct RecvEvent
 };
 
 template <class T>
-using RecvEventRef = std::shared_ptr<RecvEvent<T>>;
+using NetworkEventRef = std::shared_ptr<NetworkEvent<T>>;
 
-using RecvEventType = std::variant<RecvEventRef<S_AddObject_Packet>, RecvEventRef<S_Move_Packet>>;
+using RecvEventType = std::variant<NetworkEventRef<S_AddObject_Packet>, NetworkEventRef<S_Move_Packet>>;
+using SendEventType = std::variant<NetworkEventRef<C_Move_Packet>>;

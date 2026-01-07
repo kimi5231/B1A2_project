@@ -114,29 +114,36 @@ void UMain::SendLocalPosition()
 	APlayerController* PlayerController = world->GetFirstPlayerController();
 	APawn* playerPawn = PlayerController ? PlayerController->GetPawn() : nullptr;
 
-	// 자료형 변환
-	Vector pos;
-	pos.x = (float)playerPawn->GetActorLocation().X;
-	pos.y = (float)playerPawn->GetActorLocation().Y;
-	pos.z = (float)playerPawn->GetActorLocation().Z;
-	
-	Rotation rot;
-	rot.pitch = (float)playerPawn->GetActorRotation().Pitch;
-	rot.yaw = (float)playerPawn->GetActorRotation().Yaw;
-	rot.roll = (float)playerPawn->GetActorRotation().Roll;
+	if (playerPawn)
+	{
+		// 자료형 변환
+		Vector pos;
+		pos.x = (float)playerPawn->GetActorLocation().X;
+		pos.y = (float)playerPawn->GetActorLocation().Y;
+		pos.z = (float)playerPawn->GetActorLocation().Z;
 
-	C_Move_Packet movePacket;
-	movePacket.objectID = _myID;
-	movePacket.pos = pos;
-	movePacket.rotation = rot;
+		Rotation rot;
+		rot.pitch = (float)playerPawn->GetActorRotation().Pitch;
+		rot.yaw = (float)playerPawn->GetActorRotation().Yaw;
+		rot.roll = (float)playerPawn->GetActorRotation().Roll;
 
-	// queue에 넣음
-	ProcessSend(PacketID::C_Move, &movePacket, sizeof(C_Move_Packet));
+		_gameNetwork->SendMovePacket(_myID, pos, rot);
+	}
+
+	//C_Move_Packet movePacket;
+	//movePacket.objectID = _myID;
+	//movePacket.pos = pos;
+	//movePacket.rotation = rot;
+
+	//// queue에 넣음
+	//ProcessSend(PacketID::C_Move, &movePacket, sizeof(C_Move_Packet));
 }
 
 void UMain::Update()
 {
 	_gameNetwork->Update();
+
+	SendLocalPosition();
 
 	ProcessRecv();
 }
