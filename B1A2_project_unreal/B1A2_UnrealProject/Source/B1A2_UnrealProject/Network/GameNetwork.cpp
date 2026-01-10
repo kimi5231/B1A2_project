@@ -119,6 +119,14 @@ void GameNetwork::ProcessRecv()
 		_recvEvents.push_back(event);
 		break;
 	}
+	case S_UpdateObjectState:
+	{
+		NetworkEventRef<S_UpdateObjectState_Packet> event = std::make_shared<NetworkEvent<S_UpdateObjectState_Packet>>();
+		event->packetID = header.id;
+		memcpy(&event->packetData, packet.data() + sizeof(Header), sizeof(S_UpdateObjectState_Packet));
+		_recvEvents.push_back(event);
+		break;
+	}
 	case S_Move:
 	{
 		NetworkEventRef<S_Move_Packet> event = std::make_shared<NetworkEvent<S_Move_Packet>>();
@@ -128,6 +136,19 @@ void GameNetwork::ProcessRecv()
 		break;
 	}
 	}
+}
+
+void GameNetwork::SendUpdateObjectStatePacket(int id, ObjectType type, MoveState state)
+{
+	// Packet Data 持失
+	C_UpdateObjectState_Packet packetData{ id, type, state };
+
+	// SendEvent 持失
+	NetworkEventRef<C_UpdateObjectState_Packet> event = std::make_shared<NetworkEvent<C_UpdateObjectState_Packet>>();
+	event->packetID = C_UpdateObjectState;
+	event->packetData = packetData;
+
+	_sendEvents.push_back(event);
 }
 
 void GameNetwork::SendMovePacket(int id, Vector pos, Rotation rotation, MoveState state)

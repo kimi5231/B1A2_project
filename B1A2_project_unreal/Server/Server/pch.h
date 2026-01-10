@@ -63,10 +63,12 @@ struct GameRoomInfo
 enum PacketID
 {
 	// Client
+	C_UpdateObjectState,
 	C_Move,
 
 	//Server
 	S_AddObject,
+	S_UpdateObjectState,
 	S_Move,
 	S_CreateGameRoom,
 };
@@ -78,6 +80,13 @@ struct Header
 };
 
 // Client
+struct C_UpdateObjectState_Packet
+{
+	int objectID;
+	ObjectType type;
+	MoveState state;
+};
+
 struct C_Move_Packet
 {
 	int objectID;
@@ -87,15 +96,6 @@ struct C_Move_Packet
 };
 
 // Server
-struct S_CreateGameRoom_Packet
-{
-	GameRoomInfo room1;
-	GameRoomInfo room2;
-	GameRoomInfo room3;
-	GameRoomInfo room4;
-	GameRoomInfo room5;
-};
-
 struct S_AddObject_Packet
 {
 	int objectID;
@@ -110,6 +110,13 @@ struct S_RemoveObject_Packet
 	Rotation rotaion;
 };
 
+struct S_UpdateObjectState_Packet
+{
+	int objectID;
+	ObjectType type;
+	MoveState state;
+};
+
 struct S_Move_Packet
 {
 	int objectID;
@@ -118,13 +125,22 @@ struct S_Move_Packet
 	MoveState state;
 };
 
+struct S_CreateGameRoom_Packet
+{
+	GameRoomInfo room1;
+	GameRoomInfo room2;
+	GameRoomInfo room3;
+	GameRoomInfo room4;
+	GameRoomInfo room5;
+};
+
 template <class T>
 struct SendEvent;
 template <class T>
 using SendEventRef = std::shared_ptr<SendEvent<T>>;
 
 using EventType = std::variant<SendEventRef<S_AddObject_Packet>, SendEventRef<S_RemoveObject_Packet>,
-					SendEventRef<S_Move_Packet>, SendEventRef<S_CreateGameRoom_Packet>>;
+	SendEventRef<S_UpdateObjectState_Packet>, SendEventRef<S_Move_Packet>, SendEventRef<S_CreateGameRoom_Packet>>;
 
 
 using ClientRef = std::shared_ptr<class Client>;

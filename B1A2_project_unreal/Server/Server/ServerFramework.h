@@ -38,6 +38,7 @@ public:
 public:
 	// Send
 	void SendAddObjectPacket(GameObjectRef object, bool broadcast, SOCKET client = 0);
+	void SendUpdateObjectStatePacket(GameObjectRef object, bool broadcast, SOCKET client = 0);
 	void SendMovePacket(GameObjectRef object, bool broadcast, SOCKET client = 0);
 	void SendCreateGameRoomPacket(std::array<GameRoomRef, 5> gameRooms, bool broadcast, SOCKET client = 0);
 
@@ -48,6 +49,7 @@ public:
 	// Recv
 	void ProcessAccept(SOCKET clientSocket);
 	void ProcessDisconnect(ClientRef client);
+	void ProcessUpdateObjectStatePacket(C_UpdateObjectState_Packet packet);
 	void ProcessMovePacket(C_Move_Packet packet);
 
 private:
