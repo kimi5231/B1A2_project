@@ -11,6 +11,8 @@ public:
 public:
 	void SetID(UINT id) { _id = id; }
 	UINT GetID() { return _id; }
+	void SetObjectType(ObjectType type) { _type = type; }
+	ObjectType GetObjectType() { return _type; }
 	void SetPos(Vector pos) { _pos = pos; }
 	Vector GetPos() { return _pos; }
 	void SetRotation(Rotation rotation) { _rotation = rotation; }
@@ -20,6 +22,7 @@ public:
 
 protected:
 	UINT _id{};
+	ObjectType _type{};
 	Vector _pos{};
 	Rotation _rotation{};
 	MoveState _state{};

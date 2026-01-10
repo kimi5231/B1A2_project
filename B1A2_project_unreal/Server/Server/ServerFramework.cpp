@@ -218,6 +218,21 @@ void ServerFramework::SendAddObjectPacket(GameObjectRef object, bool broadcast, 
 	_sendEvents.push_back(event);
 }
 
+void ServerFramework::SendUpdateObjectStatePacket(GameObjectRef object, bool broadcast, SOCKET client)
+{
+	// Packet Data 생성
+	S_UpdateObjectState_Packet packetData{ object->GetID(), object->GetObjectType(), object->GetState() };
+
+	// SendEvent 생성
+	SendEventRef<S_UpdateObjectState_Packet> event = std::make_shared<SendEvent<S_UpdateObjectState_Packet>>();
+	event->isBroadcast = broadcast;
+	event->clientSocket = client;
+	event->packetID = S_UpdateObjectState;
+	event->packetData = packetData;
+
+	_sendEvents.push_back(event);
+}
+
 void ServerFramework::SendMovePacket(GameObjectRef object, bool broadcast, SOCKET client)
 {
 	// Packet Data 생성
@@ -289,6 +304,20 @@ void ServerFramework::ProcessAccept(SOCKET clientSocket)
 void ServerFramework::ProcessDisconnect(ClientRef client)
 {
 
+}
+
+void ServerFramework::ProcessUpdateObjectStatePacket(C_UpdateObjectState_Packet packet)
+{
+	GameObjectRef object = _room->GetObject(packet.objectID);
+
+	object->SetState(packet.state);
+
+	// 자신을 제외한 모든 클라이언트에게 알리기
+	for (ClientRef client : _clients)
+	{
+		if (client->player->GetID() != packet.objectID)
+			SendUpdateObjectStatePacket(object, false, client->socket);
+	}
 }
 
 void ServerFramework::ProcessMovePacket(C_Move_Packet packet)

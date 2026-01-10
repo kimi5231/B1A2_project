@@ -45,12 +45,21 @@ struct GameRoomInfo
 enum PacketID
 {
 	// Client
+	C_UpdateObjectState,
 	C_Move,
 
 	//Server
 	S_AddObject,
+	S_UpdateObjectState,
 	S_Move,
 	S_CreateGameRoom,
+};
+
+enum MoveState
+{
+	MOVE_STATE_IDLE,
+	MOVE_STATE_RUN,
+	MOVE_STATE_JUMP,
 };
 
 struct Header
@@ -60,11 +69,11 @@ struct Header
 };
 
 // Client
-enum MoveState
+struct C_UpdateObjectState_Packet
 {
-	MOVE_STATE_IDLE,
-	MOVE_STATE_RUN,
-	MOVE_STATE_JUMP,
+	int objectID;
+	ObjectType type;
+	MoveState state;
 };
 
 struct C_Move_Packet
@@ -76,15 +85,6 @@ struct C_Move_Packet
 };
 
 // Server
-struct S_CreateGameRoom_Packet
-{
-	GameRoomInfo room1;
-	GameRoomInfo room2;
-	GameRoomInfo room3;
-	GameRoomInfo room4;
-	GameRoomInfo room5;
-};
-
 struct S_AddObject_Packet
 {
 	int objectID;
@@ -99,10 +99,26 @@ struct S_RemoveObject_Packet
 	Rotation rotaion;
 };
 
+struct S_UpdateObjectState_Packet
+{
+	int objectID;
+	ObjectType type;
+	MoveState state;
+};
+
 struct S_Move_Packet
 {
 	int objectID;
 	Vector pos;
 	Rotation rotation;
 	MoveState state;
+};
+
+struct S_CreateGameRoom_Packet
+{
+	GameRoomInfo room1;
+	GameRoomInfo room2;
+	GameRoomInfo room3;
+	GameRoomInfo room4;
+	GameRoomInfo room5;
 };

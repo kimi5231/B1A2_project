@@ -204,6 +204,12 @@ void UMain::ProcessRecv()
 				RecvAddObject(addObjectPacket);
 				event->isComplete = true;
 				break;
+			case S_UpdateObjectState:
+				S_UpdateObjectState_Packet updateObjectStatePacket;
+				FMemory::Memcpy(&updateObjectStatePacket, &event->packetData, sizeof(S_UpdateObjectState_Packet));
+				RecvUpdateObjectState(updateObjectStatePacket);
+				event->isComplete = true;
+				break;
 			case S_Move:
 				S_Move_Packet movePacket;
 				FMemory::Memcpy(&movePacket, &event->packetData, sizeof(S_Move_Packet));
@@ -408,4 +414,8 @@ void UMain::RecvMovePlayer(S_Move_Packet packet)
 		player->SetPlayerState(packet.state);
 		//UE_LOG(LogTemp, Display, TEXT("Other Player [%d] SetPlayerLocation!!!"), id);
 	});
+}
+
+void UMain::RecvUpdateObjectState(S_UpdateObjectState_Packet packet)
+{
 }

@@ -18,6 +18,7 @@ public:
 	std::vector<char> CreatePacket(PacketID id, const T& packetData);
 
 public:
+	void SendUpdateObjectStatePacket(int id, ObjectType type, MoveState state);
 	void SendMovePacket(int id, Vector pos, Rotation rotation, MoveState state);
 
 public:
