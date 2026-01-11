@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 struct Vector
 {
 	float x;
@@ -116,9 +118,5 @@ struct S_Move_Packet
 
 struct S_CreateGameRoom_Packet
 {
-	GameRoomInfo room1;
-	GameRoomInfo room2;
-	GameRoomInfo room3;
-	GameRoomInfo room4;
-	GameRoomInfo room5;
+	std::vector<GameRoomInfo> gameRooms;
 };
