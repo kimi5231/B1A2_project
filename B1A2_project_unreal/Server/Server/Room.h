@@ -21,10 +21,13 @@ public:
 	GameObjectRef GetObject(UINT id) { return _players[id]; }
 	const std::unordered_map<UINT, PlayerRef>& GetPlayers() { return _players; }
 
+	// temp
+	const std::vector<GameRoomRef>& GetGameRooms() { return _gameRooms; }
+
 private:
 	UINT _generatePlayerID{};
 
-	std::array<GameRoomRef, 5> _gameRooms;
+	std::vector<GameRoomRef> _gameRooms;
 	std::unordered_map<UINT, PlayerRef> _players;
 
 	// temp
