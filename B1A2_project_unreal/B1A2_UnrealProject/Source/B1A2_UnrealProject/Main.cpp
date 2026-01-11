@@ -330,7 +330,7 @@ void UMain::RecvAddObject(S_AddObject_Packet packet)
 
 	// 다른 플레이어 Spawn
 	FVector spawnLocation(packet.pos.x, packet.pos.y, packet.pos.z);
-	FRotator spawnRotation(0, 0, 0);	// 일단 0으로 설정
+	FRotator spawnRotation(0, packet.rotation.yaw, 0);	// 일단 0으로 설정
 	int id = packet.objectID;
 
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
