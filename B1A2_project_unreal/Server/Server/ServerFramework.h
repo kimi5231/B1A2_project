@@ -9,14 +9,13 @@ struct Client
 	PlayerRef player;
 };
 
-template <class T>
 struct SendEvent
 {
 	bool isComplete = false;
 	bool isBroadcast;
 	SOCKET clientSocket;
 	PacketID packetID;
-	T packetData;
+	std::vector<char> serializedPacketData;
 };
 
 class ServerFramework
@@ -29,11 +28,19 @@ public:
 	void Update();
 	void ProcessRecv(ClientRef client);
 
-	template <class T>
-	void ProcessSend(PacketID id, const T& packetData, SOCKET clientSocket);
+	void ProcessSend(PacketID id, const std::vector<char>& packetData, SOCKET clientSocket);
 
+	std::vector<char> CreatePakcet(PacketID id, const std::vector<char>& packetData);
+
+private:
+	template <class T >
+	std::vector<char> SerializePOD(const T& pod);
+
+	template <class T >
+	std::vector<char> SerializeVector(const std::vector<T>& vector);
+	
 	template <class T>
-	std::vector<char> CreatePakcet(PacketID id, const T& packetData);
+	std::vector<T> DeserializeVector(const std::vector<char>& data);
 
 public:
 	// Send
@@ -42,8 +49,7 @@ public:
 	void SendMovePacket(GameObjectRef object, bool broadcast, SOCKET client = 0);
 	void SendCreateGameRoomPacket(const std::vector<GameRoomRef>& gameRooms, bool broadcast, SOCKET client = 0);
 
-	template <class T>
-	void Broadcast(PacketID id, const T& packetData);
+	void Broadcast(PacketID id, const std::vector<char>& packetData);
 
 public:
 	// Recv
@@ -60,7 +66,7 @@ private:
 	std::vector<ClientRef> _clients;
 	std::vector<ClientRef> _removeClients;
 
-	std::vector<EventType> _sendEvents;
+	std::vector<SendEventRef> _sendEvents;
 
 private:
 	Room* _room{};
