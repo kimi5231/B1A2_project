@@ -191,33 +191,36 @@ void UMain::Update()
 
 void UMain::ProcessRecv()
 {
-	std::vector<RecvEventType>& recvEvents = _gameNetwork->GetRecvEvents();
+	std::vector<NetworkEventRef>& recvEvents = _gameNetwork->GetRecvEvents();
 
-	for (auto& recvEvent : recvEvents)
+	for (NetworkEventRef event : recvEvents)
 	{
-		std::visit([this](auto& event){
-			switch (event->packetID)
-			{
-			case S_AddObject:
-				S_AddObject_Packet addObjectPacket;
-				FMemory::Memcpy(&addObjectPacket, &event->packetData, sizeof(S_AddObject_Packet));
-				RecvAddObject(addObjectPacket);
-				event->isComplete = true;
-				break;
-			case S_UpdateObjectState:
-				S_UpdateObjectState_Packet updateObjectStatePacket;
-				FMemory::Memcpy(&updateObjectStatePacket, &event->packetData, sizeof(S_UpdateObjectState_Packet));
-				RecvUpdateObjectState(updateObjectStatePacket);
-				event->isComplete = true;
-				break;
-			case S_Move:
-				S_Move_Packet movePacket;
-				FMemory::Memcpy(&movePacket, &event->packetData, sizeof(S_Move_Packet));
-				RecvMovePlayer(movePacket);
-				event->isComplete = true;
-				break;
-			}
-		}, recvEvent);
+		switch (event->packetID)
+		{
+		case S_AddObject:
+			S_AddObject_Packet addObjectPacket;
+			FMemory::Memcpy(&addObjectPacket, event->serializedPacketData.data(), sizeof(S_AddObject_Packet));
+			RecvAddObject(addObjectPacket);
+			event->isComplete = true;
+			break;
+		case S_UpdateObjectState:
+			S_UpdateObjectState_Packet updateObjectStatePacket;
+			FMemory::Memcpy(&updateObjectStatePacket, event->serializedPacketData.data(), sizeof(S_UpdateObjectState_Packet));
+			RecvUpdateObjectState(updateObjectStatePacket);
+			event->isComplete = true;
+			break;
+		case S_Move:
+			S_Move_Packet movePacket;
+			FMemory::Memcpy(&movePacket, event->serializedPacketData.data(), sizeof(S_Move_Packet));
+			RecvMovePlayer(movePacket);
+			event->isComplete = true;
+			break;
+		case S_CreateGameRoom:
+			S_CreateGameRoom_Packet createGameRoomPacket{ _gameNetwork->DeserializeVector<GameRoomInfo>(event->serializedPacketData) };
+			RecvCreateGameRoom(createGameRoomPacket);
+			event->isComplete = true;
+			break;
+		}
 	}
 
 	//int packetSize = 0;
@@ -286,12 +289,12 @@ void UMain::ProcessRecv()
 	//}
 }
 
-void UMain::RecvAddObject(S_AddObject_Packet addObjectPacket)
+void UMain::RecvAddObject(S_AddObject_Packet packet)
 {
 	if (_myID == 0)
 	{	
 		// 자신의 ID 설정
-		_myID = addObjectPacket.objectID;
+		_myID = packet.objectID;
 
 		// Spawn
 		AsyncTask(ENamedThreads::GameThread, [=, this]()
@@ -299,8 +302,8 @@ void UMain::RecvAddObject(S_AddObject_Packet addObjectPacket)
 			UWorld* world = GetWorld();
 			if (!world) return;
 
-			FVector spawnLocation(addObjectPacket.pos.x, addObjectPacket.pos.y, addObjectPacket.pos.z);
-			FRotator spawnRotation(0, addObjectPacket.rotation.yaw, 0);
+			FVector spawnLocation(packet.pos.x, packet.pos.y, packet.pos.z);
+			FRotator spawnRotation(0, packet.rotation.yaw, 0);
 
 			auto playerController = UGameplayStatics::GetPlayerController(this, 0);
 			AMyPlayer* player = Cast<AMyPlayer>(playerController->GetPawn());
@@ -310,25 +313,25 @@ void UMain::RecvAddObject(S_AddObject_Packet addObjectPacket)
 
 			_myPlayer = player;
 
-			UE_LOG(LogTemp, Log, TEXT("My Player Spawned! [%d], %f, %f, %f"), addObjectPacket.objectID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+			UE_LOG(LogTemp, Log, TEXT("My Player Spawned! [%d], %f, %f, %f"), packet.objectID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
 		});
 		return;
 	}
 
-	if (addObjectPacket.objectID == _myID)
+	if (packet.objectID == _myID)
 		return;
 
 	// 이미 존재하는 객체인지 확인
-	if (_otherPlayers.Contains(addObjectPacket.objectID))
+	if (_otherPlayers.Contains(packet.objectID))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Attempted to add existing object ID: %d"), addObjectPacket.objectID);
+		UE_LOG(LogTemp, Warning, TEXT("Attempted to add existing object ID: %d"), packet.objectID);
 		return;
 	}
 
 	// 다른 플레이어 Spawn
-	FVector spawnLocation(addObjectPacket.pos.x, addObjectPacket.pos.y, addObjectPacket.pos.z);
+	FVector spawnLocation(packet.pos.x, packet.pos.y, packet.pos.z);
 	FRotator spawnRotation(0, 0, 0);	// 일단 0으로 설정
-	int id = addObjectPacket.objectID;
+	int id = packet.objectID;
 
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
@@ -351,39 +354,6 @@ void UMain::RecvAddObject(S_AddObject_Packet addObjectPacket)
 
 	});
 } 
-
-void UMain::RecvCreateGameRoom(S_CreateGameRoom_Packet packet)
-{
-	AsyncTask(ENamedThreads::GameThread, [this, packet]()
-	{
-		UWorld* world = GetWorld();
-		if (!world || !GameRoomClass)
-			return;
-
-		const GameRoomInfo* rooms[5] = { &packet.room1, &packet.room2, &packet.room3, &packet.room4, &packet.room5 };
-
-		for (int i = 0; i < 5; ++i)
-		{
-			const GameRoomInfo& room = *rooms[i];
-
-			UE_LOG(LogTemp, Warning, TEXT("Room[%d] pos = %f, %f, %f, type = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type);
-
-			FVector pos(room.pos.x, room.pos.y, room.pos.z);
-			FVector size(room.size.x, room.size.y, room.size.z);
-			FVector scale = size / 100.f;
-
-			FActorSpawnParameters params;
-			params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-			AStaticMeshActor* roomActor = world->SpawnActor<AStaticMeshActor>(GameRoomClass, pos, FRotator::ZeroRotator, params);
-
-			if (!roomActor)
-				continue;
-
-			// roomActor->GetStaticMeshComponent()->SetWorldScale3D(scale);
-		}
-	});
-}
 
 void UMain::RecvMovePlayer(S_Move_Packet packet)
 {
@@ -418,4 +388,35 @@ void UMain::RecvMovePlayer(S_Move_Packet packet)
 
 void UMain::RecvUpdateObjectState(S_UpdateObjectState_Packet packet)
 {
+}
+
+void UMain::RecvCreateGameRoom(S_CreateGameRoom_Packet packet)
+{
+	AsyncTask(ENamedThreads::GameThread, [this, packet]()
+	{
+		UWorld* world = GetWorld();
+		if (!world || !GameRoomClass)
+			return;
+
+		for (int i = 0; i < packet.gameRooms.size(); ++i)
+		{
+			const GameRoomInfo& room = packet.gameRooms[i];
+
+			UE_LOG(LogTemp, Warning, TEXT("Room[%d] pos = %f, %f, %f, type = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type);
+
+			FVector pos(room.pos.x, room.pos.y, room.pos.z);
+			FVector size(room.size.x, room.size.y, room.size.z);
+			FVector scale = size / 100.f;
+
+			FActorSpawnParameters params;
+			params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+			AStaticMeshActor* roomActor = world->SpawnActor<AStaticMeshActor>(GameRoomClass, pos, FRotator::ZeroRotator, params);
+
+			if (!roomActor)
+				continue;
+
+			// roomActor->GetStaticMeshComponent()->SetWorldScale3D(scale);
+		}
+	});
 }

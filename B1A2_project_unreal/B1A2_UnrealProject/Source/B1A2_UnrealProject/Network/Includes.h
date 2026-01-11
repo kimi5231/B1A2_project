@@ -15,17 +15,11 @@
 #undef min
 #undef max
 
-template <class T>
 struct NetworkEvent
 {
 	bool isComplete = false;
 	PacketID packetID;
-	T packetData;
+	std::vector<char> serializedPacketData;
 };
 
-template <class T>
-using NetworkEventRef = std::shared_ptr<NetworkEvent<T>>;
-
-using RecvEventType = std::variant<NetworkEventRef<S_AddObject_Packet>, NetworkEventRef<S_Move_Packet>, 
-	NetworkEventRef<S_UpdateObjectState_Packet>>;
-using SendEventType = std::variant<NetworkEventRef<C_UpdateObjectState_Packet>, NetworkEventRef<C_Move_Packet>>;
+using NetworkEventRef = std::shared_ptr<NetworkEvent>;
