@@ -127,21 +127,11 @@ struct S_Move_Packet
 
 struct S_CreateGameRoom_Packet
 {
-	GameRoomInfo room1;
-	GameRoomInfo room2;
-	GameRoomInfo room3;
-	GameRoomInfo room4;
-	GameRoomInfo room5;
+	std::vector<GameRoomInfo> gameRooms;
 };
 
-template <class T>
 struct SendEvent;
-template <class T>
-using SendEventRef = std::shared_ptr<SendEvent<T>>;
-
-using EventType = std::variant<SendEventRef<S_AddObject_Packet>, SendEventRef<S_RemoveObject_Packet>,
-	SendEventRef<S_UpdateObjectState_Packet>, SendEventRef<S_Move_Packet>, SendEventRef<S_CreateGameRoom_Packet>>;
-
+using SendEventRef = std::shared_ptr<SendEvent>;
 
 using ClientRef = std::shared_ptr<class Client>;
 using RoomRef = std::shared_ptr<class Room>;

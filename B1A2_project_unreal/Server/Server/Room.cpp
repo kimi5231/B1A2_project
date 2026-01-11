@@ -26,39 +26,39 @@ void Room::CreateGameRoom()
 	std::uniform_int_distribution<int> dist1(0, static_cast<int>(GameRoomType::StorageRoom));
 	std::uniform_int_distribution<int> dist2(0, 3);
 
-	for (int i = 0; i < _gameRooms.size(); i++)
+	for (int i = 0; i < 5; i++)
 	{
-		//GameRoomRef gameRoom = std::make_shared<GameRoom>();
-		//gameRoom->SetGameRoomType(static_cast<GameRoomType>(dist1(gen)));
+		GameRoomRef gameRoom = std::make_shared<GameRoom>();
+		gameRoom->SetGameRoomType(static_cast<GameRoomType>(dist1(gen)));
 
-		//// 방 위치 계산
-		//if (i == 0)
-		//	gameRoom->SetPos({ 0, 0, 500 });
-		//else
-		//{
-		//	Vector prevRoomPos = _gameRooms[i - 1]->GetPos();
-		//	switch (dist2(gen))
-		//	{
-		//	case 0: // 앞
-		//		prevRoomPos.x += 500;
-		//		gameRoom->SetPos(prevRoomPos);
-		//		break;
-		//	case 1: // 뒤
-		//		prevRoomPos.x -= 500;
-		//		gameRoom->SetPos(prevRoomPos);
-		//		break;
-		//	case 2: // 좌
-		//		prevRoomPos.y -= 500;
-		//		gameRoom->SetPos(prevRoomPos);
-		//		break;
-		//	case 3: // 우
-		//		prevRoomPos.y += 500;
-		//		gameRoom->SetPos(prevRoomPos);
-		//		break;
-		//	}
-		//}
+		// 방 위치 계산
+		if (i == 0)
+			gameRoom->SetPos({ 0, 0, 500 });
+		else
+		{
+			Vector prevRoomPos = _gameRooms[i - 1]->GetPos();
+			switch (dist2(gen))
+			{
+			case 0: // 앞
+				prevRoomPos.x += 500;
+				gameRoom->SetPos(prevRoomPos);
+				break;
+			case 1: // 뒤
+				prevRoomPos.x -= 500;
+				gameRoom->SetPos(prevRoomPos);
+				break;
+			case 2: // 좌
+				prevRoomPos.y -= 500;
+				gameRoom->SetPos(prevRoomPos);
+				break;
+			case 3: // 우
+				prevRoomPos.y += 500;
+				gameRoom->SetPos(prevRoomPos);
+				break;
+			}
+		}
 
-		//_gameRooms[i] = gameRoom;
+		_gameRooms.push_back(gameRoom);
 	}
 
 	// 추후 다시 사용할 예정

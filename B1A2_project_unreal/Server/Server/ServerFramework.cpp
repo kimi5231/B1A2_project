@@ -105,27 +105,25 @@ void ServerFramework::Update()
 		// send가 가능할 때마다 true
 		if (FD_ISSET(client->socket, &_writeSet))
 		{
-			for (auto& sendEvent : _sendEvents)
+			for (SendEventRef event : _sendEvents)
 			{
-				std::visit([this, client](auto& event) {
-					if (event->isBroadcast)
-					{
-						Broadcast(event->packetID, event->packetData);
-						event->isComplete = true;
-						return;
-					}
+				if (event->isBroadcast)
+				{
+					Broadcast(event->packetID, event->serializedPacketData);
+					event->isComplete = true;
+					break;
+				}
 
-					if (client->socket == event->clientSocket)
-					{
-						ProcessSend(event->packetID, event->packetData, event->clientSocket);
-						event->isComplete = true;
-					}
-					}, sendEvent);
+				if (client->socket == event->clientSocket)
+				{
+					ProcessSend(event->packetID, event->serializedPacketData, event->clientSocket);
+					event->isComplete = true;
+				}
 			}
 
 			_sendEvents.erase(std::remove_if(_sendEvents.begin(), _sendEvents.end(),
-				[](const auto& sendEvent) {
-					return std::visit([](const auto& event) {return event->isComplete;}, sendEvent);
+				[](SendEventRef event) {
+					return event->isComplete;
 				}), _sendEvents.end());
 		}
 	}
@@ -175,8 +173,7 @@ void ServerFramework::ProcessRecv(ClientRef client)
 	}
 }
 
-template <class T>
-void ServerFramework::ProcessSend(PacketID id, const T& packetData, SOCKET clientSocket)
+void ServerFramework::ProcessSend(PacketID id, const std::vector<char>& packetData, SOCKET clientSocket)
 {
 	std::vector<char> packet = CreatePakcet(id, packetData);
 	int packetSize = packet.size();
@@ -187,20 +184,52 @@ void ServerFramework::ProcessSend(PacketID id, const T& packetData, SOCKET clien
 	send(clientSocket, packet.data(), packetSize, 0);
 }
 
-template<class T>
-std::vector<char> ServerFramework::CreatePakcet(PacketID id, const T& packetData)
+std::vector<char> ServerFramework::CreatePakcet(PacketID id, const std::vector<char>& packetData)
 {
 	// Header
 	Header header;
 	header.id = id;
-	header.dataSize = sizeof(packetData);
+	header.dataSize = packetData.size();
 
 	// Packet
 	std::vector<char> packet(sizeof(Header) + header.dataSize);
 	memcpy(packet.data(), &header, sizeof(Header));
-	memcpy(packet.data() + sizeof(Header), &packetData, header.dataSize);
+	memcpy(packet.data() + sizeof(Header), packetData.data(), header.dataSize);
 
 	return packet;
+}
+
+template<class T>
+std::vector<char> ServerFramework::SerializePOD(const T& pod)
+{
+	std::vector<char> serializedData(sizeof(pod));
+	memcpy(serializedData.data(), &pod, sizeof(pod));
+	
+	return serializedData;
+}
+
+template<class T>
+std::vector<char> ServerFramework::SerializeVector(const std::vector<T>& vector)
+{
+	int size = vector.size();
+
+	std::vector<char> serializedData(sizeof(int) + vector.size() * sizeof(T));
+	memcpy(serializedData.data(), &size, sizeof(int));
+	memcpy(serializedData.data() + sizeof(int), vector.data(), size * sizeof(T));
+
+	return serializedData;
+}
+
+template<class T>
+std::vector<T> ServerFramework::DeserializeVector(const std::vector<char>& data)
+{
+	int size;
+	memcpy(&size, data.data(), sizeof(int));
+	
+	std::vector<T> vector(size);
+	memcpy(vector.data(), data.data() + sizeof(int), size * sizeof(T));
+
+	return vector;
 }
 
 void ServerFramework::SendAddObjectPacket(GameObjectRef object, bool broadcast, SOCKET client)
@@ -208,12 +237,15 @@ void ServerFramework::SendAddObjectPacket(GameObjectRef object, bool broadcast, 
 	// Packet Data 생성
 	S_AddObject_Packet packetData{ object->GetID(), object->GetPos(), object->GetRotation()};
 
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
 	// SendEvent 생성
-	SendEventRef<S_AddObject_Packet> event = std::make_shared<SendEvent<S_AddObject_Packet>>();
+	SendEventRef event = std::make_shared<SendEvent>();
 	event->isBroadcast = broadcast;
 	event->clientSocket = client;
 	event->packetID = S_AddObject;
-	event->packetData = packetData;
+	event->serializedPacketData = serializedPacketData;
 
 	_sendEvents.push_back(event);
 }
@@ -223,12 +255,15 @@ void ServerFramework::SendUpdateObjectStatePacket(GameObjectRef object, bool bro
 	// Packet Data 생성
 	S_UpdateObjectState_Packet packetData{ object->GetID(), object->GetObjectType(), object->GetState() };
 
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
 	// SendEvent 생성
-	SendEventRef<S_UpdateObjectState_Packet> event = std::make_shared<SendEvent<S_UpdateObjectState_Packet>>();
+	SendEventRef event = std::make_shared<SendEvent>();
 	event->isBroadcast = broadcast;
 	event->clientSocket = client;
 	event->packetID = S_UpdateObjectState;
-	event->packetData = packetData;
+	event->serializedPacketData = serializedPacketData;
 
 	_sendEvents.push_back(event);
 }
@@ -238,42 +273,45 @@ void ServerFramework::SendMovePacket(GameObjectRef object, bool broadcast, SOCKE
 	// Packet Data 생성
 	S_Move_Packet packetData{ object->GetID(), object->GetPos(), object->GetRotation(), object->GetState() };
 
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
 	// SendEvent 생성
-	SendEventRef<S_Move_Packet> event = std::make_shared<SendEvent<S_Move_Packet>>();
+	SendEventRef event = std::make_shared<SendEvent>();
 	event->isBroadcast = broadcast;
 	event->clientSocket = client;
 	event->packetID = S_Move;
-	event->packetData = packetData;
+	event->serializedPacketData = serializedPacketData;
 
 	_sendEvents.push_back(event);
 }
 
 void ServerFramework::SendCreateGameRoomPacket(const std::vector<GameRoomRef>& gameRooms, bool broadcast, SOCKET client)
 {
-	GameRoomInfo roomList[5];
+	std::vector<GameRoomInfo> roomInfos;
+	roomInfos.resize(gameRooms.size());
 
 	for (int i = 0; i < gameRooms.size(); i++)
 	{
-		roomList[i].type = gameRooms[i]->GetGameRoomType();
-		roomList[i].pos = gameRooms[i]->GetPos();
-		roomList[i].size = gameRooms[i]->GetSize();
+		roomInfos[i].type = gameRooms[i]->GetGameRoomType();
+		roomInfos[i].pos = gameRooms[i]->GetPos();
+		roomInfos[i].size = gameRooms[i]->GetSize();
 	}
 
-	// Packet Data 생성
-	S_CreateGameRoom_Packet packetData{ roomList[0], roomList[1], roomList[2], roomList[3], roomList[4]};
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializeVector(roomInfos);
 
 	// SendEvent 생성
-	SendEventRef<S_CreateGameRoom_Packet> event = std::make_shared<SendEvent<S_CreateGameRoom_Packet>>();
+	SendEventRef event = std::make_shared<SendEvent>();
 	event->isBroadcast = broadcast;
 	event->clientSocket = client;
 	event->packetID = S_CreateGameRoom;
-	event->packetData = packetData;
+	event->serializedPacketData = serializedPacketData;
 
 	_sendEvents.push_back(event);
 }
 
-template<class T>
-void ServerFramework::Broadcast(PacketID id, const T& packetData)
+void ServerFramework::Broadcast(PacketID id, const std::vector<char>& packetData)
 {
 	// Room에 있는 모든 Client에게 Packet 송신
 	for (ClientRef client : _clients)
@@ -297,7 +335,7 @@ void ServerFramework::ProcessAccept(SOCKET clientSocket)
 	// GameRoom 정보 송신
 	SendCreateGameRoomPacket(_room->GetGameRooms(), false, newClient->socket);
 
-	// 새로 접속한 Client에게 Room에 있는 모든 Player 정보 송신 (자기 자신 포함)
+	// 새로 접속한 Client에게 Room에 있는 모든 Player 정보 송신
 	const std::unordered_map<UINT, PlayerRef>& players = _room->GetPlayers();
 	for (const auto& item : players)
 		SendAddObjectPacket(item.second, false, newClient->socket);
