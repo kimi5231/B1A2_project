@@ -7,7 +7,6 @@
 #include "GameFramework/Character.h"
 #include "OtherPlayer.generated.h"
 
-
 UCLASS()
 class B1A2_UNREALPROJECT_API AOtherPlayer : public ACharacter
 {
@@ -36,6 +35,9 @@ private:
 
 protected:
 	bool _isInterpolation = true;
+
+	UPROPERTY(BlueprintReadOnly, Category = "MoveState")
+	EMoveState _eState;
 
 	UPROPERTY(EditAnywhere, Category = "Interpolation")
 	float InterpolationSpeed = 10.0f;

@@ -66,4 +66,19 @@ void AOtherPlayer::SetPlayerLocation(FVector location, FRotator rotation)
 void AOtherPlayer::SetPlayerState(MoveState state)
 {
 	_state = state;
+	
+	switch (state)
+	{
+	case MOVE_STATE_IDLE:
+		_eState = EMoveState::MOVE_STATE_IDLE;
+		break;
+	case MOVE_STATE_RUN:
+		_eState = EMoveState::MOVE_STATE_RUN;
+		break;
+	case MOVE_STATE_JUMP:
+		_eState = EMoveState::MOVE_STATE_JUMP;
+		break;
+	default:
+		break;
+	}
 }
