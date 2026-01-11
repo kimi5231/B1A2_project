@@ -27,9 +27,7 @@ public:
 public:
 	void Update();
 	void ProcessRecv(ClientRef client);
-
 	void ProcessSend(PacketID id, const std::vector<char>& packetData, SOCKET clientSocket);
-
 	std::vector<char> CreatePakcet(PacketID id, const std::vector<char>& packetData);
 
 private:

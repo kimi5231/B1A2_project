@@ -9,20 +9,28 @@ public:
 
 public:
 	void Update();
+	
+private:
 	void ProcessRecv();
+	void ProcessSend(PacketID id, const std::vector<char>& packetData);
+	std::vector<char> CreatePakcet(PacketID id, const std::vector<char>& packetData);
+
+public:
+	template <class T >
+	std::vector<char> SerializePOD(const T& pod);
+
+	template <class T >
+	std::vector<char> SerializeVector(const std::vector<T>& vector);
 
 	template <class T>
-	void ProcessSend(PacketID id, const T& packetData);
-
-	template <class T>
-	std::vector<char> CreatePacket(PacketID id, const T& packetData);
+	std::vector<T> DeserializeVector(const std::vector<char>& data);
 
 public:
 	void SendUpdateObjectStatePacket(int id, ObjectType type, MoveState state);
 	void SendMovePacket(int id, Vector pos, Rotation rotation, MoveState state);
 
 public:
-	std::vector<RecvEventType>& GetRecvEvents() { return _recvEvents; }
+	std::vector<NetworkEventRef>& GetRecvEvents() { return _recvEvents; }
 
 private:
 	fd_set _readSet{};
@@ -30,34 +38,39 @@ private:
 
 	SOCKET _clientSocket{};
 
-	std::vector<RecvEventType> _recvEvents;
-	std::vector<SendEventType> _sendEvents;
+	std::vector<NetworkEventRef> _recvEvents;
+	std::vector<NetworkEventRef> _sendEvents;
 };
 
 template<class T>
-inline void GameNetwork::ProcessSend(PacketID id, const T& packetData)
+inline std::vector<char> GameNetwork::SerializePOD(const T& pod)
 {
-	std::vector<char> packet = CreatePacket(id, packetData);
-	int packetSize = packet.size();
+	std::vector<char> serializedData(sizeof(pod));
+	memcpy(serializedData.data(), &pod, sizeof(pod));
 
-	// packetSize 송신(고정 길이)
-	send(_clientSocket, (char*)&packetSize, sizeof(int), 0);
-	// packet 송신(가변 데이터)
-	send(_clientSocket, packet.data(), packetSize, 0);
+	return serializedData;
 }
 
 template<class T>
-inline std::vector<char> GameNetwork::CreatePacket(PacketID id, const T& packetData)
+inline std::vector<char> GameNetwork::SerializeVector(const std::vector<T>& vector)
 {
-	// Header
-	Header header;
-	header.id = id;
-	header.dataSize = sizeof(packetData);
+	int size = vector.size();
 
-	// Packet
-	std::vector<char> packet(sizeof(Header) + header.dataSize);
-	memcpy(packet.data(), &header, sizeof(Header));
-	memcpy(packet.data() + sizeof(Header), &packetData, header.dataSize);
+	std::vector<char> serializedData(sizeof(int) + vector.size() * sizeof(T));
+	memcpy(serializedData.data(), &size, sizeof(int));
+	memcpy(serializedData.data() + sizeof(int), vector.data(), size * sizeof(T));
 
-	return packet;
+	return serializedData;
+}
+
+template<class T>
+inline std::vector<T> GameNetwork::DeserializeVector(const std::vector<char>& data)
+{
+	int size;
+	memcpy(&size, data.data(), sizeof(int));
+
+	std::vector<T> vector(size);
+	memcpy(vector.data(), data.data() + sizeof(int), size * sizeof(T));
+
+	return vector;
 }
