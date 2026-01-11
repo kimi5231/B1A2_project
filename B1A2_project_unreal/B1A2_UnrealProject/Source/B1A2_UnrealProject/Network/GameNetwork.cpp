@@ -65,24 +65,22 @@ void GameNetwork::Update()
 	// send가 가능할 때마다 true
 	if (FD_ISSET(_clientSocket, &_writeSet))
 	{
-		for (auto& sendEvent : _sendEvents)
+		for (NetworkEventRef event : _sendEvents)
 		{
-			std::visit([this](const auto& event) {
-				ProcessSend(event->packetID, event->packetData);
-				event->isComplete = true;
-			}, sendEvent);
+			ProcessSend(event->packetID, event->serializedPacketData);
+			event->isComplete = true;
 		}
 
 		_sendEvents.erase(std::remove_if(_sendEvents.begin(), _sendEvents.end(),
-			[](const auto& sendEvent) {
-				return std::visit([](const auto& event) {return event->isComplete;}, sendEvent);
+			[](NetworkEventRef event) {
+				return event->isComplete;
 			}), _sendEvents.end());
 	}
 
-	// 처리된 이벤트 삭제
+	// 처리된 Recv 이벤트 삭제
 	_recvEvents.erase(std::remove_if(_recvEvents.begin(), _recvEvents.end(),
-		[](const auto& recvEvent) {
-			return std::visit([](const auto& event) {return event->isComplete;}, recvEvent);
+		[](NetworkEventRef event) {
+			return event->isComplete;
 		}), _recvEvents.end());
 }
 
@@ -113,29 +111,58 @@ void GameNetwork::ProcessRecv()
 	{
 	case S_AddObject:
 	{
-		NetworkEventRef<S_AddObject_Packet> event = std::make_shared<NetworkEvent<S_AddObject_Packet>>();
+		NetworkEventRef event = std::make_shared<NetworkEvent>();
 		event->packetID = header.id;
-		memcpy(&event->packetData, packet.data() + sizeof(Header), sizeof(S_AddObject_Packet));
+		event->serializedPacketData.resize(sizeof(S_AddObject_Packet));
+		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), sizeof(S_AddObject_Packet));
 		_recvEvents.push_back(event);
 		break;
 	}
 	case S_UpdateObjectState:
 	{
-		NetworkEventRef<S_UpdateObjectState_Packet> event = std::make_shared<NetworkEvent<S_UpdateObjectState_Packet>>();
+		NetworkEventRef event = std::make_shared<NetworkEvent>();
 		event->packetID = header.id;
-		memcpy(&event->packetData, packet.data() + sizeof(Header), sizeof(S_UpdateObjectState_Packet));
+		event->serializedPacketData.resize(sizeof(S_UpdateObjectState_Packet));
+		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), sizeof(S_UpdateObjectState_Packet));
 		_recvEvents.push_back(event);
 		break;
 	}
 	case S_Move:
 	{
-		NetworkEventRef<S_Move_Packet> event = std::make_shared<NetworkEvent<S_Move_Packet>>();
+		NetworkEventRef event = std::make_shared<NetworkEvent>();
 		event->packetID = header.id;
-		memcpy(&event->packetData, packet.data() + sizeof(Header), sizeof(S_Move_Packet));
+		event->serializedPacketData.resize(sizeof(S_Move_Packet));
+		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), sizeof(S_Move_Packet));
 		_recvEvents.push_back(event);
 		break;
 	}
 	}
+}
+
+void GameNetwork::ProcessSend(PacketID id, const std::vector<char>& packetData)
+{
+	std::vector<char> packet = CreatePakcet(id, packetData);
+	int packetSize = packet.size();
+
+	// packetSize 송신(고정 길이)
+	send(_clientSocket, (char*)&packetSize, sizeof(int), 0);
+	// packet 송신(가변 데이터)
+	send(_clientSocket, packet.data(), packetSize, 0);
+}
+
+std::vector<char> GameNetwork::CreatePakcet(PacketID id, const std::vector<char>& packetData)
+{
+	// Header
+	Header header;
+	header.id = id;
+	header.dataSize = packetData.size();
+
+	// Packet
+	std::vector<char> packet(sizeof(Header) + header.dataSize);
+	memcpy(packet.data(), &header, sizeof(Header));
+	memcpy(packet.data() + sizeof(Header), packetData.data(), header.dataSize);
+
+	return packet;
 }
 
 void GameNetwork::SendUpdateObjectStatePacket(int id, ObjectType type, MoveState state)
@@ -143,10 +170,13 @@ void GameNetwork::SendUpdateObjectStatePacket(int id, ObjectType type, MoveState
 	// Packet Data 생성
 	C_UpdateObjectState_Packet packetData{ id, type, state };
 
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
 	// SendEvent 생성
-	NetworkEventRef<C_UpdateObjectState_Packet> event = std::make_shared<NetworkEvent<C_UpdateObjectState_Packet>>();
+	NetworkEventRef event = std::make_shared<NetworkEvent>();
 	event->packetID = C_UpdateObjectState;
-	event->packetData = packetData;
+	event->serializedPacketData = serializedPacketData;
 
 	_sendEvents.push_back(event);
 }
@@ -156,10 +186,13 @@ void GameNetwork::SendMovePacket(int id, Vector pos, Rotation rotation, MoveStat
 	// Packet Data 생성
 	C_Move_Packet packetData{ id, pos, rotation, state };
 
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
 	// SendEvent 생성
-	NetworkEventRef<C_Move_Packet> event = std::make_shared<NetworkEvent<C_Move_Packet>>();
+	NetworkEventRef event = std::make_shared<NetworkEvent>();
 	event->packetID = C_Move;
-	event->packetData = packetData;
+	event->serializedPacketData = serializedPacketData;
 
 	_sendEvents.push_back(event);
 }

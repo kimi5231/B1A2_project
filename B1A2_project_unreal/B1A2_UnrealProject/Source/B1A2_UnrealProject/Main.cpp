@@ -191,33 +191,31 @@ void UMain::Update()
 
 void UMain::ProcessRecv()
 {
-	std::vector<RecvEventType>& recvEvents = _gameNetwork->GetRecvEvents();
+	std::vector<NetworkEventRef>& recvEvents = _gameNetwork->GetRecvEvents();
 
-	for (auto& recvEvent : recvEvents)
+	for (NetworkEventRef event : recvEvents)
 	{
-		std::visit([this](auto& event){
-			switch (event->packetID)
-			{
-			case S_AddObject:
-				S_AddObject_Packet addObjectPacket;
-				FMemory::Memcpy(&addObjectPacket, &event->packetData, sizeof(S_AddObject_Packet));
-				RecvAddObject(addObjectPacket);
-				event->isComplete = true;
-				break;
-			case S_UpdateObjectState:
-				S_UpdateObjectState_Packet updateObjectStatePacket;
-				FMemory::Memcpy(&updateObjectStatePacket, &event->packetData, sizeof(S_UpdateObjectState_Packet));
-				RecvUpdateObjectState(updateObjectStatePacket);
-				event->isComplete = true;
-				break;
-			case S_Move:
-				S_Move_Packet movePacket;
-				FMemory::Memcpy(&movePacket, &event->packetData, sizeof(S_Move_Packet));
-				RecvMovePlayer(movePacket);
-				event->isComplete = true;
-				break;
-			}
-		}, recvEvent);
+		switch (event->packetID)
+		{
+		case S_AddObject:
+			S_AddObject_Packet addObjectPacket;
+			FMemory::Memcpy(&addObjectPacket, event->serializedPacketData.data(), sizeof(S_AddObject_Packet));
+			RecvAddObject(addObjectPacket);
+			event->isComplete = true;
+			break;
+		case S_UpdateObjectState:
+			S_UpdateObjectState_Packet updateObjectStatePacket;
+			FMemory::Memcpy(&updateObjectStatePacket, event->serializedPacketData.data(), sizeof(S_UpdateObjectState_Packet));
+			RecvUpdateObjectState(updateObjectStatePacket);
+			event->isComplete = true;
+			break;
+		case S_Move:
+			S_Move_Packet movePacket;
+			FMemory::Memcpy(&movePacket, event->serializedPacketData.data(), sizeof(S_Move_Packet));
+			RecvMovePlayer(movePacket);
+			event->isComplete = true;
+			break;
+		}
 	}
 
 	//int packetSize = 0;
