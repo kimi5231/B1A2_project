@@ -136,6 +136,15 @@ void GameNetwork::ProcessRecv()
 		_recvEvents.push_back(event);
 		break;
 	}
+	case S_CreateGameRoom:
+	{
+		NetworkEventRef event = std::make_shared<NetworkEvent>();
+		event->packetID = header.id;
+		event->serializedPacketData.resize(sizeof(S_CreateGameRoom_Packet));
+		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), sizeof(S_CreateGameRoom_Packet));
+		_recvEvents.push_back(event);
+		break;
+	}
 	}
 }
 
