@@ -248,7 +248,7 @@ void ServerFramework::SendMovePacket(GameObjectRef object, bool broadcast, SOCKE
 	_sendEvents.push_back(event);
 }
 
-void ServerFramework::SendCreateGameRoomPacket(std::array<GameRoomRef, 5> gameRooms, bool broadcast, SOCKET client)
+void ServerFramework::SendCreateGameRoomPacket(const std::vector<GameRoomRef>& gameRooms, bool broadcast, SOCKET client)
 {
 	GameRoomInfo roomList[5];
 
@@ -282,8 +282,6 @@ void ServerFramework::Broadcast(PacketID id, const T& packetData)
 
 void ServerFramework::ProcessAccept(SOCKET clientSocket)
 {
-	// 나중에 RoomList 보내는 걸로 수정하기
-
 	// 접속한 Client를 나타낼 Player 추가
 	GameObjectRef player = _room->AddObject(ObjectType::Player);
 
@@ -295,7 +293,11 @@ void ServerFramework::ProcessAccept(SOCKET clientSocket)
 
 	std::cout << "Client 접속" << std::endl;
 
-	// 새로 접속한 Client에게 Room에 있는 Player 정보 송신
+	// 추후 게임 시작 시 broadcast로 보내도록 코드 옮기기
+	// GameRoom 정보 송신
+	SendCreateGameRoomPacket(_room->GetGameRooms(), false, newClient->socket);
+
+	// 새로 접속한 Client에게 Room에 있는 모든 Player 정보 송신 (자기 자신 포함)
 	const std::unordered_map<UINT, PlayerRef>& players = _room->GetPlayers();
 	for (const auto& item : players)
 		SendAddObjectPacket(item.second, false, newClient->socket);

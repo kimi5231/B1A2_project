@@ -40,7 +40,7 @@ public:
 	void SendAddObjectPacket(GameObjectRef object, bool broadcast, SOCKET client = 0);
 	void SendUpdateObjectStatePacket(GameObjectRef object, bool broadcast, SOCKET client = 0);
 	void SendMovePacket(GameObjectRef object, bool broadcast, SOCKET client = 0);
-	void SendCreateGameRoomPacket(std::array<GameRoomRef, 5> gameRooms, bool broadcast, SOCKET client = 0);
+	void SendCreateGameRoomPacket(const std::vector<GameRoomRef>& gameRooms, bool broadcast, SOCKET client = 0);
 
 	template <class T>
 	void Broadcast(PacketID id, const T& packetData);

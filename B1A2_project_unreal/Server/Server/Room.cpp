@@ -6,6 +6,8 @@
 Room::Room()
 {
 	_generatePlayerID = 1;
+
+	CreateGameRoom();
 }
 
 Room::~Room()
@@ -26,40 +28,41 @@ void Room::CreateGameRoom()
 
 	for (int i = 0; i < _gameRooms.size(); i++)
 	{
-		GameRoomRef gameRoom = std::make_shared<GameRoom>();
-		gameRoom->SetGameRoomType(static_cast<GameRoomType>(dist1(gen)));
+		//GameRoomRef gameRoom = std::make_shared<GameRoom>();
+		//gameRoom->SetGameRoomType(static_cast<GameRoomType>(dist1(gen)));
 
-		// 방 위치 계산
-		if (i == 0)
-			gameRoom->SetPos({ 0, 0, 500 });
-		else
-		{
-			Vector prevRoomPos = _gameRooms[i - 1]->GetPos();
-			switch (dist2(gen))
-			{
-			case 0: // 앞
-				prevRoomPos.x += 500;
-				gameRoom->SetPos(prevRoomPos);
-				break;
-			case 1: // 뒤
-				prevRoomPos.x -= 500;
-				gameRoom->SetPos(prevRoomPos);
-				break;
-			case 2: // 좌
-				prevRoomPos.y -= 500;
-				gameRoom->SetPos(prevRoomPos);
-				break;
-			case 3: // 우
-				prevRoomPos.y += 500;
-				gameRoom->SetPos(prevRoomPos);
-				break;
-			}
-		}
+		//// 방 위치 계산
+		//if (i == 0)
+		//	gameRoom->SetPos({ 0, 0, 500 });
+		//else
+		//{
+		//	Vector prevRoomPos = _gameRooms[i - 1]->GetPos();
+		//	switch (dist2(gen))
+		//	{
+		//	case 0: // 앞
+		//		prevRoomPos.x += 500;
+		//		gameRoom->SetPos(prevRoomPos);
+		//		break;
+		//	case 1: // 뒤
+		//		prevRoomPos.x -= 500;
+		//		gameRoom->SetPos(prevRoomPos);
+		//		break;
+		//	case 2: // 좌
+		//		prevRoomPos.y -= 500;
+		//		gameRoom->SetPos(prevRoomPos);
+		//		break;
+		//	case 3: // 우
+		//		prevRoomPos.y += 500;
+		//		gameRoom->SetPos(prevRoomPos);
+		//		break;
+		//	}
+		//}
 
-		_gameRooms[i] = gameRoom;
+		//_gameRooms[i] = gameRoom;
 	}
 
-	g_framework->SendCreateGameRoomPacket(_gameRooms, true);
+	// 추후 다시 사용할 예정
+	//g_framework->SendCreateGameRoomPacket(_gameRooms, true);
 }
 
 GameObjectRef Room::AddObject(ObjectType type)
@@ -82,8 +85,6 @@ GameObjectRef Room::AddObject(ObjectType type)
 	object->SetID(_generatePlayerID++);
 
 	g_framework->SendAddObjectPacket(object, true);
-
-	CreateGameRoom();
 
 	return object;
 }
