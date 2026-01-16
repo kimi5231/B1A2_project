@@ -133,6 +133,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Packets.h" />
+    <ClInclude Include="Types.h" />
     <ClInclude Include="GameRoom.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="GameObject.h" />

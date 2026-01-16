@@ -73,5 +73,11 @@
     <ClInclude Include="GameRoom.h">
       <Filter>소스 파일\Game\Stage</Filter>
     </ClInclude>
+    <ClInclude Include="Types.h">
+      <Filter>소스 파일\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Packets.h">
+      <Filter>소스 파일\Main</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
