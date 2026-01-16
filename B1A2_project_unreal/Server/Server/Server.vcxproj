@@ -133,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="DataManager.h" />
     <ClInclude Include="Packets.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="GameRoom.h" />
@@ -144,6 +145,7 @@
     <ClInclude Include="ServerFramework.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DataManager.cpp" />
     <ClCompile Include="GameRoom.cpp" />
     <ClCompile Include="Global.cpp" />
     <ClCompile Include="main.cpp" />

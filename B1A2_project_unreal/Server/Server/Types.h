@@ -31,7 +31,7 @@ enum class GameRoomType
 	GameRoomTypeCount,
 };
 
-enum class Difficulty 
+enum Difficulty 
 {
 	Easy,
 	Normal,
@@ -57,4 +57,12 @@ struct GameRoomInfo
 	GameRoomType type;
 	Vector pos;
 	Vector size;
+	bool isCreateItem;
+	bool isCreateExit;
+	std::unordered_map<std::string, uint> minCreateCount;
+	std::unordered_map<std::string, uint> maxCreateCount;
+	float spawnChance;
+	uint minDoorCount;
+	uint maxDoorCount;
+	std::vector<Vector> doorPos;
 };

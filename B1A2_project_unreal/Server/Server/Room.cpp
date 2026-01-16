@@ -10,7 +10,7 @@ Room::Room()
 	_currentDifficulty = Difficulty::Easy;
 	_detailDifficulty = Difficulty::Easy;
 
-	CreateGameRoom();
+	CreateFactoryGameRoom();
 }
 
 Room::~Room()
@@ -73,9 +73,14 @@ void Room::CreateFactoryGameRoom()
 	// 난이도에 맞춰 조건 설정
 
 	// 방 생성(문은 방 안에서 생성 + 비상구)
+	// MainEntranceRoom 생성
+	GameRoomRef gameRoom = std::make_shared<GameRoom>();
+	gameRoom->SetGameRoomInfo(g_dataManager->GetGameRoomInfo(GameRoomType::MainEntranceRoom));
+	gameRoom->SetPos({ 0, 0 });
+
 	for (int i : std::views::iota(0, _gameRoomCount))
 	{
-
+		GameRoomRef gameRoom = std::make_shared<GameRoom>();
 	}
 
 	// 아이템 생성

@@ -288,7 +288,7 @@ void ServerFramework::SendMovePacket(GameObjectRef object, bool broadcast, SOCKE
 
 void ServerFramework::SendCreateGameRoomPacket(const std::vector<GameRoomRef>& gameRooms, bool broadcast, SOCKET client)
 {
-	std::vector<GameRoomInfo> roomInfos;
+	std::vector<GameRoomDTO> roomInfos;
 	roomInfos.resize(gameRooms.size());
 
 	for (int i = 0; i < gameRooms.size(); i++)
