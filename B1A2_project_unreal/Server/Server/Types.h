@@ -1,5 +1,7 @@
 #pragma once
 
+using uint = unsigned int;
+
 enum class ObjectType
 {
 	Player,
@@ -16,16 +18,24 @@ enum class GameRoomType
 {
 	MainEntranceRoom,
 	GapRoom,
-
 	Staircase,
-	CorridorCatwalk,
-
+	RailCatwalk,
 	ApparatusRoom,
 	ServerRoom,
-	LockerRoom,
+	CabinetRoom,
 	StorageRoom,
 
-	None,
+	PipedHallways,
+	FactoryRoom,
+
+	GameRoomTypeCount,
+};
+
+enum class Difficulty 
+{
+	Easy,
+	Normal,
+	Hard,
 };
 
 struct Vector

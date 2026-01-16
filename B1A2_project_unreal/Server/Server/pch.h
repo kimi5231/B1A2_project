@@ -6,8 +6,8 @@
 #include <vector>
 #include <unordered_map>
 #include <array>
-#include <variant>
 #include <random>
+#include <ranges>
 
 #include "Types.h"
 

@@ -7,6 +7,9 @@ Room::Room()
 {
 	_generatePlayerID = 1;
 
+	_currentDifficulty = Difficulty::Easy;
+	_detailDifficulty = Difficulty::Easy;
+
 	CreateGameRoom();
 }
 
@@ -63,6 +66,19 @@ void Room::CreateGameRoom()
 
 	// 추후 다시 사용할 예정
 	//g_framework->SendCreateGameRoomPacket(_gameRooms, true);
+}
+
+void Room::CreateFactoryGameRoom()
+{
+	// 난이도에 맞춰 조건 설정
+
+	// 방 생성(문은 방 안에서 생성 + 비상구)
+	for (int i : std::views::iota(0, _gameRoomCount))
+	{
+
+	}
+
+	// 아이템 생성
 }
 
 GameObjectRef Room::AddObject(ObjectType type)
