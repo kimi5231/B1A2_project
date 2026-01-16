@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Packets.h"
+
 class Room;
 
 struct Client
