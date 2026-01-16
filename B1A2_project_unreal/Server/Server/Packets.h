@@ -21,6 +21,13 @@ struct Header
 	int dataSize;
 };
 
+struct GameRoomDTO
+{
+	GameRoomType type;
+	Vector pos;
+	Vector size;
+};
+
 // Client
 struct C_UpdateObjectState_Packet
 {
@@ -69,5 +76,5 @@ struct S_Move_Packet
 
 struct S_CreateGameRoom_Packet
 {
-	std::vector<GameRoomInfo> gameRooms;
+	std::vector<GameRoomDTO> gameRooms;
 };

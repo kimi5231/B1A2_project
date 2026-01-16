@@ -8,6 +8,7 @@
 #include <array>
 #include <random>
 #include <ranges>
+#include <filesystem>
 
 #include "Types.h"
 

@@ -1,0 +1,16 @@
+{
+    "rooms": [
+        {
+            "type": 0,
+            "size": [600, 600, 500],
+            "isCreateItem": true,
+            "isCreateExit": false,
+            "minCreateCount": { "Easy": 1, "Normal": 1, "Hard": 1 },
+            "maxCreateCount": { "Easy": 1, "Normal": 1, "Hard": 1 },
+            "spawnChance": 0.0,
+            "minDoorCount": 2,
+            "maxDoorCount": 3,
+            "doorPos": [[-300, 0, 0], [0, -300, 0], [300, 0, 0]]
+        }
+    ]
+}

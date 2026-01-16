@@ -9,15 +9,15 @@ public:
 	void Update();
 
 public:
-	void SetGameRoomType(GameRoomType type) { _type = type; }
-	GameRoomType GetGameRoomType() { return _type; }
-	void SetPos(Vector pos) { _pos = pos; }
-	Vector GetPos() { return _pos; }
-	void SetSize(Vector size) { _size = size; }
-	Vector GetSize() { return _size; }
+	void SetGameRoomInfo(GameRoomInfo info) { _info = info; }
+	GameRoomInfo GetGameRoomInfo() { return _info; }
+	void SetGameRoomType(GameRoomType type) { _info.type = type; }
+	GameRoomType GetGameRoomType() { return _info.type; }
+	void SetPos(Vector pos) { _info.pos = pos; }
+	Vector GetPos() { return _info.pos; }
+	void SetSize(Vector size) { _info.size = size; }
+	Vector GetSize() { return _info.size; }
 
 private:
-	GameRoomType _type;
-	Vector _pos;
-	Vector _size;
+	GameRoomInfo _info{};
 };
