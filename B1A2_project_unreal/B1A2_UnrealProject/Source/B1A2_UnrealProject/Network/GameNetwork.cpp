@@ -174,7 +174,7 @@ std::vector<char> GameNetwork::CreatePakcet(PacketID id, const std::vector<char>
 	return packet;
 }
 
-void GameNetwork::SendUpdateObjectStatePacket(int id, ObjectType type, MoveState state)
+void GameNetwork::SendUpdateObjectStatePacket(int id, ObjectType type, ObjectState state)
 {
 	// Packet Data 持失
 	C_UpdateObjectState_Packet packetData{ id, type, state };
@@ -190,7 +190,7 @@ void GameNetwork::SendUpdateObjectStatePacket(int id, ObjectType type, MoveState
 	_sendEvents.push_back(event);
 }
 
-void GameNetwork::SendMovePacket(int id, Vector pos, Rotation rotation, MoveState state)
+void GameNetwork::SendMovePacket(int id, Vector pos, Rotation rotation, ObjectState state)
 {
 	// Packet Data 持失
 	C_Move_Packet packetData{ id, pos, rotation, state };

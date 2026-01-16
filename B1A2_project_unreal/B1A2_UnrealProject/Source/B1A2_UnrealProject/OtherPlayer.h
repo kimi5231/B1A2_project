@@ -25,13 +25,13 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void SetPlayerLocation(FVector location, FRotator rotation);
-	void SetPlayerState(MoveState state);
+	void SetPlayerState(ObjectState state);
 
 private:
 	FVector _destPos;
 	FRotator _destRot;
 	
-	MoveState _state;
+	ObjectState _state;
 
 protected:
 	bool _isInterpolation = true;
