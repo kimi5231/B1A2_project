@@ -147,27 +147,27 @@ void UMain::SendLocalPosition()
 		rot.roll = (float)playerPawn->GetActorRotation().Roll;
 
 		// 상태
-		MoveState state = MOVE_STATE_IDLE;
+		ObjectState state = IDLE;
 		if (ACharacter* character = Cast<ACharacter>(playerPawn))
 		{
 			if (character->GetCharacterMovement()->IsFalling())
 			{
-				state = MOVE_STATE_JUMP;
+				state = JUMP;
 			}
 			else
 			{
 				const float Speed = character->GetVelocity().Size();
 
 				if (Speed > 10.f)
-					state = MOVE_STATE_RUN;
+					state = RUN;
 				else
-					state = MOVE_STATE_IDLE;
+					state = IDLE;
 			}
 		}
 		else
 		{
 			const float Speed = playerPawn->GetVelocity().Size();
-			state = (Speed > 10.f) ? MOVE_STATE_RUN : MOVE_STATE_IDLE;
+			state = (Speed > 10.f) ? RUN : IDLE;
 		}
 
 		_gameNetwork->SendMovePacket(_myID, pos, rot, state);

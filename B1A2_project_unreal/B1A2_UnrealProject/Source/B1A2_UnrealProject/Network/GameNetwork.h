@@ -26,8 +26,8 @@ public:
 	std::vector<T> DeserializeVector(const std::vector<char>& data);
 
 public:
-	void SendUpdateObjectStatePacket(int id, ObjectType type, MoveState state);
-	void SendMovePacket(int id, Vector pos, Rotation rotation, MoveState state);
+	void SendUpdateObjectStatePacket(int id, ObjectType type, ObjectState state);
+	void SendMovePacket(int id, Vector pos, Rotation rotation, ObjectState state);
 
 public:
 	std::vector<NetworkEventRef>& GetRecvEvents() { return _recvEvents; }
