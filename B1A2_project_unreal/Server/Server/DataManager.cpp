@@ -9,7 +9,36 @@ DataManager::DataManager()
 {
     _dataPath = std::filesystem::current_path().parent_path() / "Data";
 
+    LoadGameRoomConditionInfos();
     LoadGameRoomInfos();
+}
+
+void DataManager::LoadGameRoomConditionInfos()
+{
+    std::ifstream file(_dataPath / "GameRoomConditions.json");
+    json data = json::parse(file);
+
+    // GameRoomConditionInfo √ﬂ√‚
+    for (const auto& condition : data["conditions"])
+    {
+        GameRoomConditionInfo info;
+
+        info.totalGameRoomCount = condition["totalRoomCount"];
+
+        info.createItemCount.first = condition["createItemCount"]["min"];
+        info.createItemCount.second = condition["createItemCount"]["max"];
+
+        info.createExitCount.first = condition["createExitCount"]["min"];
+        info.createExitCount.second = condition["createExitCount"]["max"];
+
+        info.exitPos.first = condition["exitCount"]["min"];
+        info.exitPos.second = condition["exitCount"]["max"];
+
+        info.floor.first = condition["floor"]["min"];
+        info.floor.second = condition["floor"]["max"];
+
+        _gameRoomconditionInfos[{condition["current"], condition["detail"]}] = info;
+    }
 }
 
 void DataManager::LoadGameRoomInfos()
@@ -29,14 +58,15 @@ void DataManager::LoadGameRoomInfos()
         info.isCreateItem = room["isCreateItem"];
         info.isCreateExit = room["isCreateExit"];
 
-        for (const auto& [key, value] : room["minCreateCount"].items())
-            info.minCreateCount[key] = value;
-        for (const auto& [key, value] : room["maxCreateCount"].items())
-            info.maxCreateCount[key] = value;
+        for (int i = 0; i < DifficultyCount; i++)
+            info.minCreateCount[static_cast<Difficulty>(i)] = room["minCreateCount"][i];
+        for (int i = 0; i < DifficultyCount; i++)
+            info.maxCreateCount[static_cast<Difficulty>(i)] = room["minCreateCount"][i];
+        for (int i = 0; i < DifficultyCount; i++)
+            info.spawnChance[static_cast<Difficulty>(i)] = room["minCreateCount"][i];
 
-        info.spawnChance = room["spawnChance"];
-        info.minDoorCount = room["minDoorCount"];
-        info.maxDoorCount = room["maxDoorCount"];
+        info.doorCount.first = room["doorCount"]["min"];
+        info.doorCount.second = room["doorCount"]["max"];
     
         for (const auto& doorPos : room["doorPos"]) 
         {

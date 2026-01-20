@@ -1,8 +1,6 @@
 #pragma once
 #include "Player.h"
 
-class RoomInfo;
-
 class Room
 {
 public:
@@ -15,24 +13,26 @@ public:
 public:
 	// temp
 	void CreateGameRoom();
-	
-	void CreateFactoryGameRoom();
+
+	void SetupGameRoomConditions();
+
+	void CreateFactoryGameRooms();
 
 	GameObjectRef AddObject(ObjectType type);
 
 public:
-	GameObjectRef GetObject(UINT id) { return _players[id]; }
-	const std::unordered_map<UINT, PlayerRef>& GetPlayers() { return _players; }
+	GameObjectRef GetObject(uint id) { return _players[id]; }
+	const std::unordered_map<uint, PlayerRef>& GetPlayers() { return _players; }
 	const std::vector<GameRoomRef>& GetGameRooms() { return _gameRooms; }
 
 private:
 	// 추후 로그인 기능 추가 후 ID로 대체할 것
-	UINT _generatePlayerID{};
+	uint _generatePlayerID{};
 
 	std::vector<GameRoomRef> _gameRooms;
-	std::unordered_map<UINT, PlayerRef> _players;
+	std::unordered_map<uint, PlayerRef> _players;
 
-	UINT _playerCount{};
+	uint _playerCount{};
 
 private:
 	// 현재 맵의 난이도
@@ -40,5 +40,5 @@ private:
 	// 세부 난이도
 	Difficulty _detailDifficulty{};
 
-	int _gameRoomCount{};
+	std::unordered_map<GameRoomType, uint> _currentGameRoomCount;
 };
