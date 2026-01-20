@@ -53,6 +53,11 @@ struct Vector
 	float x;
 	float y;
 	float z;
+
+	Vector operator+(const Vector& other) const
+	{
+		return {other.x + x, other.y + y, other.z + z};
+	}
 };
 
 struct Rotation
@@ -65,7 +70,6 @@ struct Rotation
 struct GameRoomInfo
 {
 	GameRoomType type;
-	Vector pos;
 	Vector size;
 	bool isCreateItem;
 	bool isCreateExit;
@@ -74,4 +78,13 @@ struct GameRoomInfo
 	std::unordered_map<Difficulty, float> spawnChance;
 	std::pair<uint, uint> doorCount;
 	std::vector<Vector> doorPos;
+};
+
+struct GameRoomConditionInfo
+{
+	uint totalGameRoomCount;
+	std::pair<uint, uint> createItemCount;
+	std::pair<uint, uint> createExitCount;
+	std::pair<uint, uint> exitPos;
+	std::pair<uint, uint> floor;
 };

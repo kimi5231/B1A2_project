@@ -31,13 +31,13 @@ void DataManager::LoadGameRoomConditionInfos()
         info.createExitCount.first = condition["createExitCount"]["min"];
         info.createExitCount.second = condition["createExitCount"]["max"];
 
-        info.exitPos.first = condition["exitCount"]["min"];
-        info.exitPos.second = condition["exitCount"]["max"];
+        info.exitPos.first = condition["exitPos"]["min"];
+        info.exitPos.second = condition["exitPos"]["max"];
 
         info.floor.first = condition["floor"]["min"];
         info.floor.second = condition["floor"]["max"];
 
-        _gameRoomconditionInfos[{condition["current"], condition["detail"]}] = info;
+       _gameRoomconditionInfos[{condition["current"], condition["detail"]}] = info;
     }
 }
 
@@ -61,9 +61,9 @@ void DataManager::LoadGameRoomInfos()
         for (int i = 0; i < DifficultyCount; i++)
             info.minCreateCount[static_cast<Difficulty>(i)] = room["minCreateCount"][i];
         for (int i = 0; i < DifficultyCount; i++)
-            info.maxCreateCount[static_cast<Difficulty>(i)] = room["minCreateCount"][i];
+            info.maxCreateCount[static_cast<Difficulty>(i)] = room["maxCreateCount"][i];
         for (int i = 0; i < DifficultyCount; i++)
-            info.spawnChance[static_cast<Difficulty>(i)] = room["minCreateCount"][i];
+            info.spawnChance[static_cast<Difficulty>(i)] = room["spawnChance"][i];
 
         info.doorCount.first = room["doorCount"]["min"];
         info.doorCount.second = room["doorCount"]["max"];

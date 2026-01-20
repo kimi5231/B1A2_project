@@ -1,6 +1,8 @@
 #pragma once
 #include "Player.h"
 
+class Door;
+
 class Room
 {
 public:
@@ -41,4 +43,6 @@ private:
 	Difficulty _detailDifficulty{};
 
 	std::unordered_map<GameRoomType, uint> _currentGameRoomCount;
+
+	std::vector<DoorRef> _connectableDoors;
 };
