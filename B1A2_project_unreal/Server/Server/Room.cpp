@@ -87,6 +87,8 @@ void Room::CreateFactoryGameRooms()
 		GameRoomRef gameRoom = std::make_shared<GameRoom>();
 		gameRoom->SetGameRoomInfo(g_dataManager->GetGameRoomInfo(GameRoomType::MainEntranceRoom));
 		gameRoom->SetPos({ 0, 0 });
+		std::vector<DoorRef>& doors = gameRoom->CreateDoors();
+		_connectableDoors.insert(_connectableDoors.end(), doors.begin(), doors.end());
 		_gameRooms.push_back(gameRoom);
 	}
 
