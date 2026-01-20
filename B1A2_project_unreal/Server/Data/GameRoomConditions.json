@@ -1,0 +1,13 @@
+{
+    "conditions": [
+        {
+            "current": 0,
+            "detail": 0, 
+            "totalRoomCount": 37,
+            "createItemCount": {"min": 12, "max": 14},
+            "createExitCount": {"min": 3, "max": 3},
+            "exitPos": {"min": 3, "max": 3},
+            "floor": {"min": 2, "max": 2}
+        }
+    ]
+}

@@ -7,11 +7,19 @@ enum class ObjectType
 	Player,
 };
 
-enum MoveState
+enum ObjectState
 {
-	MOVE_STATE_IDLE,
-	MOVE_STATE_RUN,
-	MOVE_STATE_JUMP,
+	IDLE,
+	RUN,
+	JUMP,
+};
+
+enum Dir
+{
+	Front,
+	Right,
+	Back,
+	Left,
 };
 
 enum class GameRoomType
@@ -23,12 +31,12 @@ enum class GameRoomType
 	ApparatusRoom,
 	ServerRoom,
 	CabinetRoom,
-	StorageRoom,
-
+	StorageRoom_Rect,
+	StorageRoom_Corner,
+	StorageRoom_Step,
+	YellowOfficeRoom,
 	PipedHallways,
 	FactoryRoom,
-
-	GameRoomTypeCount,
 };
 
 enum Difficulty 
@@ -36,6 +44,8 @@ enum Difficulty
 	Easy,
 	Normal,
 	Hard,
+
+	DifficultyCount,
 };
 
 struct Vector
@@ -59,10 +69,9 @@ struct GameRoomInfo
 	Vector size;
 	bool isCreateItem;
 	bool isCreateExit;
-	std::unordered_map<std::string, uint> minCreateCount;
-	std::unordered_map<std::string, uint> maxCreateCount;
-	float spawnChance;
-	uint minDoorCount;
-	uint maxDoorCount;
+	std::unordered_map<Difficulty, uint> minCreateCount;
+	std::unordered_map<Difficulty, uint> maxCreateCount;
+	std::unordered_map<Difficulty, float> spawnChance;
+	std::pair<uint, uint> doorCount;
 	std::vector<Vector> doorPos;
 };

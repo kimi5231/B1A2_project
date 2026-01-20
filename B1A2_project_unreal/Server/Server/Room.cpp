@@ -10,7 +10,7 @@ Room::Room()
 	_currentDifficulty = Difficulty::Easy;
 	_detailDifficulty = Difficulty::Easy;
 
-	CreateFactoryGameRoom();
+	CreateFactoryGameRooms();
 }
 
 Room::~Room()
@@ -26,7 +26,7 @@ void Room::Update()
 void Room::CreateGameRoom()
 {
 	// 랜덤으로 방 생성 (일단은 절차적 생성 알고리즘 고려X)
-	std::uniform_int_distribution<int> dist1(0, static_cast<int>(GameRoomType::StorageRoom));
+	std::uniform_int_distribution<int> dist1(0, static_cast<int>(GameRoomType::FactoryRoom));
 	std::uniform_int_distribution<int> dist2(0, 3);
 
 	for (int i = 0; i < 5; i++)
@@ -68,19 +68,59 @@ void Room::CreateGameRoom()
 	//g_framework->SendCreateGameRoomPacket(_gameRooms, true);
 }
 
-void Room::CreateFactoryGameRoom()
+void Room::SetupGameRoomConditions()
+{
+	
+
+	// 방별 개수 초기화
+	//std::iota(_currentGameRoomCount.begin(), _currentGameRoomCount.end(), 0);
+}
+
+void Room::CreateFactoryGameRooms()
 {
 	// 난이도에 맞춰 조건 설정
+	GameRoomConditionInfo conditions = g_dataManager->GetGameRoomConditionInfo(_currentDifficulty, _detailDifficulty);
 
 	// 방 생성(문은 방 안에서 생성 + 비상구)
 	// MainEntranceRoom 생성
-	GameRoomRef gameRoom = std::make_shared<GameRoom>();
-	gameRoom->SetGameRoomInfo(g_dataManager->GetGameRoomInfo(GameRoomType::MainEntranceRoom));
-	gameRoom->SetPos({ 0, 0 });
-
-	for (int i : std::views::iota(0, _gameRoomCount))
 	{
 		GameRoomRef gameRoom = std::make_shared<GameRoom>();
+		gameRoom->SetGameRoomInfo(g_dataManager->GetGameRoomInfo(GameRoomType::MainEntranceRoom));
+		gameRoom->SetPos({ 0, 0 });
+		_gameRooms.push_back(gameRoom);
+	}
+
+	for (int i : std::views::iota(1u, conditions.totalGameRoomCount))
+	{
+		// 이전 방이 뭔지 확인
+		GameRoomRef prevRoom = _gameRooms[i - 1];
+
+		// 이전 방이 계단
+		if (prevRoom->GetGameRoomType() == GameRoomType::Staircase)
+		{
+			break;
+		}
+		
+		// 이전 방이 난간 통로 or 복도 => 모든 방 가능
+		if (prevRoom->GetGameRoomType() == GameRoomType::RailCatwalk || prevRoom->GetGameRoomType() == GameRoomType::PipedHallways)
+		{
+			std::uniform_int_distribution<int> dist1(0, static_cast<int>(GameRoomType::FactoryRoom));
+			GameRoomInfo info = g_dataManager->GetGameRoomInfo(static_cast<GameRoomType>(dist1(gen)));
+			
+			//
+			if (_currentGameRoomCount[info.type] < info.maxCreateCount[_currentDifficulty])
+			{
+				GameRoomRef gameRoom = std::make_shared<GameRoom>();
+				gameRoom->SetGameRoomInfo(info);
+				gameRoom->SetPos({ 0, 0 });
+			}
+
+			break;
+		}
+
+		// 그 외
+		GameRoomRef gameRoom = std::make_shared<GameRoom>();
+		
 	}
 
 	// 아이템 생성

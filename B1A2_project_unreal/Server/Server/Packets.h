@@ -33,7 +33,7 @@ struct C_UpdateObjectState_Packet
 {
 	int objectID;
 	ObjectType type;
-	MoveState state;
+	ObjectState state;
 };
 
 struct C_Move_Packet
@@ -41,7 +41,7 @@ struct C_Move_Packet
 	int objectID;
 	Vector pos;
 	Rotation rotation;
-	MoveState state;
+	ObjectState state;
 };
 
 // Server
@@ -63,7 +63,7 @@ struct S_UpdateObjectState_Packet
 {
 	int objectID;
 	ObjectType type;
-	MoveState state;
+	ObjectState state;
 };
 
 struct S_Move_Packet
@@ -71,7 +71,7 @@ struct S_Move_Packet
 	int objectID;
 	Vector pos;
 	Rotation rotation;
-	MoveState state;
+	ObjectState state;
 };
 
 struct S_CreateGameRoom_Packet

@@ -17,14 +17,14 @@ public:
 	Vector GetPos() { return _pos; }
 	void SetRotation(Rotation rotation) { _rotation = rotation; }
 	Rotation GetRotation() { return _rotation; }
-	void SetState(MoveState state) { _state = state; }
-	MoveState GetState() { return _state; }
+	void SetState(ObjectState state) { _state = state; }
+	ObjectState GetState() { return _state; }
 
 protected:
 	UINT _id{};
 	ObjectType _type{};
 	Vector _pos{};
 	Rotation _rotation{};
-	MoveState _state{};
+	ObjectState _state{};
 };
 
