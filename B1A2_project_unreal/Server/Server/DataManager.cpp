@@ -78,6 +78,9 @@ void DataManager::LoadGameRoomInfos()
             info.doorPos.push_back(pos);
         }
 
+        for (const auto& doorDir : room["doorDir"])
+            info.doorDir.push_back(doorDir);
+
         _gameRoomInfos[info.type] = info;
     }
 }
