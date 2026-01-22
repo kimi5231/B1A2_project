@@ -78,6 +78,7 @@ struct GameRoomInfo
 	std::unordered_map<Difficulty, float> spawnChance;
 	std::pair<uint, uint> doorCount;
 	std::vector<Vector> doorPos;
+	std::vector<Dir> doorDir;
 };
 
 struct GameRoomConditionInfo

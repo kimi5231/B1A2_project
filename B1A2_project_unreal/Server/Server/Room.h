@@ -45,4 +45,6 @@ private:
 	std::unordered_map<GameRoomType, uint> _currentGameRoomCount;
 
 	std::vector<DoorRef> _connectableDoors;
+
+	std::array<std::array<char, 1000>, 1000> _map;
 };
