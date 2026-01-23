@@ -20,11 +20,14 @@ enum Dir
 	Right,
 	Back,
 	Left,
+
+	DirCount
 };
 
 enum class GameRoomType
 {
 	MainEntranceRoom,
+
 	GapRoom,
 	Staircase,
 	RailCatwalk,
@@ -35,7 +38,8 @@ enum class GameRoomType
 	StorageRoom_Corner,
 	StorageRoom_Step,
 	YellowOfficeRoom,
-	PipedHallways,
+	PipedHallways_Line,
+
 	FactoryRoom,
 };
 
@@ -78,6 +82,7 @@ struct GameRoomInfo
 	std::unordered_map<Difficulty, float> spawnChance;
 	std::pair<uint, uint> doorCount;
 	std::vector<Vector> doorPos;
+	std::vector<Dir> doorDir;
 };
 
 struct GameRoomConditionInfo

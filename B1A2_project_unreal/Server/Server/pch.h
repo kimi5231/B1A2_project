@@ -25,3 +25,6 @@ using GameRoomRef = std::shared_ptr<class GameRoom>;
 using GameObjectRef = std::shared_ptr<class GameObject>;
 using PlayerRef = std::shared_ptr<class Player>;
 using DoorRef = std::shared_ptr<class Door>;
+
+#define Width 1000
+#define Height 1000
