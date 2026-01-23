@@ -28,18 +28,18 @@ std::vector<DoorRef>& GameRoom::CreateDoors()
 	for (int i : std::views::iota(0u, _info.doorCount.second))
 	{
 		// 추후 방향 지정 필요
-		if (goalDoorCount - _doors.size() == _info.doorCount.second - i)
+		/*if (goalDoorCount - _doors.size() == _info.doorCount.second - i)
 		{
-			DoorRef door = std::make_shared<Door>(_pos + _info.doorPos[i]);
+			DoorRef door = std::make_shared<Door>(_pos + _info.doorPos[i], _info.doorDir, _dir);
 			_doors.push_back(door);
 			break;
 		}
 
 		if (bern(gen))
 		{
-			DoorRef door = std::make_shared<Door>(_pos + _info.doorPos[i]);
+			DoorRef door = std::make_shared<Door>(_pos + _info.doorPos[i], _info.doorDir, _dir);
 			_doors.push_back(door);
-		}
+		}*/
 	}
 
 	return _doors;
