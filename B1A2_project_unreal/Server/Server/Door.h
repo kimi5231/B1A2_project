@@ -4,7 +4,7 @@
 class Door : public GameObject
 {
 public:
-	Door(Vector pos);
+	Door(Vector pos, Dir dir, Dir roomDir);
 	~Door() {};
 
 public:

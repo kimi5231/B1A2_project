@@ -86,7 +86,25 @@ void Room::CreateFactoryGameRooms()
 	{
 		GameRoomRef gameRoom = std::make_shared<GameRoom>();
 		gameRoom->SetGameRoomInfo(g_dataManager->GetGameRoomInfo(GameRoomType::MainEntranceRoom));
-		gameRoom->SetPos({ 0, 0 });
+		Vector size = gameRoom->GetSize();
+		// 1층에 배치
+		Vector pos{ (Width / 2 * 100) - size.x / 2, 0, 0 };
+		gameRoom->SetPos(pos);
+		gameRoom->SetDir(Dir::Front);
+
+		// 방 배치 후 차지한 자리 채우기 
+		uint x = pos.x / 100;
+		uint y = pos.y / 100;
+		
+		for (int i = 0; i < (size.x/100); i++)
+		{
+			for (int j = 0; j < (size.y / 100); j++)
+				_map[x][y++] = '■';
+			x++;
+			y = 0;
+		}
+		//std::iota(_map[x].begin(), _map[x].begin() + size.x, '0');
+
 		std::vector<DoorRef>& doors = gameRoom->CreateDoors();
 		_connectableDoors.insert(_connectableDoors.end(), doors.begin(), doors.end());
 		_gameRooms.push_back(gameRoom);
@@ -104,7 +122,7 @@ void Room::CreateFactoryGameRooms()
 		}
 		
 		// 이전 방이 난간 통로 or 복도 => 모든 방 가능
-		if (prevRoom->GetGameRoomType() == GameRoomType::RailCatwalk || prevRoom->GetGameRoomType() == GameRoomType::PipedHallways)
+		if (prevRoom->GetGameRoomType() == GameRoomType::RailCatwalk || prevRoom->GetGameRoomType() == GameRoomType::PipedHallways_Line)
 		{
 			std::uniform_int_distribution<int> dist1(0, static_cast<int>(GameRoomType::FactoryRoom));
 			GameRoomInfo info = g_dataManager->GetGameRoomInfo(static_cast<GameRoomType>(dist1(gen)));

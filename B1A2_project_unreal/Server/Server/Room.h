@@ -46,5 +46,5 @@ private:
 
 	std::vector<DoorRef> _connectableDoors;
 
-	std::array<std::array<char, 1000>, 1000> _map;
+	std::array<std::array<char, Height>, Width> _map;
 };
