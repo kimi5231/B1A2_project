@@ -29,8 +29,6 @@ enum class GameRoomType
 	MainEntranceRoom,
 
 	GapRoom,
-	Staircase,
-	RailCatwalk,
 	ApparatusRoom,
 	ServerRoom,
 	CabinetRoom,
@@ -38,9 +36,13 @@ enum class GameRoomType
 	StorageRoom_Corner,
 	StorageRoom_Step,
 	YellowOfficeRoom,
+	FactoryRoom,
+
+	RailCatwalk,
 	PipedHallways_Line,
 	PipedHallways_Grid,
-	FactoryRoom,
+
+	Staircase,
 };
 
 enum Difficulty 
@@ -81,8 +83,10 @@ struct GameRoomInfo
 	std::unordered_map<Difficulty, uint> minCreateCount;
 	std::unordered_map<Difficulty, uint> maxCreateCount;
 	std::unordered_map<Difficulty, float> spawnChance;
-	std::pair<uint, uint> doorCount;
-	std::unordered_map<Dir, std::vector<Vector>> doorPos;
+	std::pair<uint, uint> f1DoorCount;
+	std::pair<uint, uint> f2DoorCount;
+	std::unordered_map<Dir, std::vector<Vector>> f1DoorPos;
+	std::unordered_map<Dir, std::vector<Vector>> f2DoorPos;
 	std::vector<Dir> doorDir;
 };
 
