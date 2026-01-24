@@ -43,7 +43,7 @@ void DataManager::LoadGameRoomConditionInfos()
 
 void DataManager::LoadGameRoomInfos()
 {
-    std::ifstream file(_dataPath/"test.json");
+    std::ifstream file(_dataPath/"GameRoomInfos.json");
     json data = json::parse(file);
 
     // GameRoomInfo √ﬂ√‚
@@ -73,17 +73,29 @@ void DataManager::LoadGameRoomInfos()
         for (int i = 0; i < DifficultyCount; i++)
             info.spawnChance[static_cast<Difficulty>(i)] = room["spawnChance"][i];
 
-        info.doorCount.first = room["doorCount"]["min"];
-        info.doorCount.second = room["doorCount"]["max"];
+        info.f1DoorCount.first = room["f1DoorCount"]["min"];
+        info.f1DoorCount.second = room["f1DoorCount"]["max"];
+        info.f2DoorCount.first = room["f2DoorCount"]["min"];
+        info.f2DoorCount.second = room["f2DoorCount"]["max"];
     
-        for (const auto& doorPos : room["doorPos"]) 
+        for (const auto& doorPos : room["f1DoorPos"]) 
         {            
             Vector pos;
             pos.x = doorPos[1];
             pos.y = doorPos[2];
             pos.z = doorPos[3];
             
-            info.doorPos[doorPos[0]].push_back(pos);
+            info.f1DoorPos[doorPos[0]].push_back(pos);
+        }
+
+        for (const auto& doorPos : room["f2DoorPos"])
+        {
+            Vector pos;
+            pos.x = doorPos[1];
+            pos.y = doorPos[2];
+            pos.z = doorPos[3];
+
+            info.f2DoorPos[doorPos[0]].push_back(pos);
         }
 
         for (const auto& doorDir : room["doorDir"])
