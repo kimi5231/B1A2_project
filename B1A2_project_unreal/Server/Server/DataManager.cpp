@@ -55,6 +55,14 @@ void DataManager::LoadGameRoomInfos()
         info.size.x = room["size"][0];
         info.size.y = room["size"][1];
         info.size.z = room["size"][2];
+
+        for (int i = 0; i < DirCount; i++)
+        {
+            info.leftTopPos[static_cast<Dir>(i)].x = room["leftTopPos"][i][0];
+            info.leftTopPos[static_cast<Dir>(i)].y = room["leftTopPos"][i][1];
+            info.leftTopPos[static_cast<Dir>(i)].z = room["leftTopPos"][i][2];
+        }
+            
         info.isCreateItem = room["isCreateItem"];
         info.isCreateExit = room["isCreateExit"];
 
@@ -69,13 +77,13 @@ void DataManager::LoadGameRoomInfos()
         info.doorCount.second = room["doorCount"]["max"];
     
         for (const auto& doorPos : room["doorPos"]) 
-        {
+        {            
             Vector pos;
-            pos.x = doorPos[0];
-            pos.y = doorPos[1];
-            pos.z = doorPos[2];
+            pos.x = doorPos[1];
+            pos.y = doorPos[2];
+            pos.z = doorPos[3];
             
-            info.doorPos.push_back(pos);
+            info.doorPos[doorPos[0]].push_back(pos);
         }
 
         for (const auto& doorDir : room["doorDir"])

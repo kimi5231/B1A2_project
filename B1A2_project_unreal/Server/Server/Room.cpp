@@ -2,6 +2,7 @@
 #include "Room.h"
 #include "Global.h"
 #include "GameRoom.h"
+#include "Door.h"
 
 Room::Room()
 {
@@ -70,8 +71,6 @@ void Room::CreateGameRoom()
 
 void Room::SetupGameRoomConditions()
 {
-	
-
 	// 방별 개수 초기화
 	//std::iota(_currentGameRoomCount.begin(), _currentGameRoomCount.end(), 0);
 }
@@ -81,66 +80,171 @@ void Room::CreateFactoryGameRooms()
 	// 난이도에 맞춰 조건 설정
 	GameRoomConditionInfo conditions = g_dataManager->GetGameRoomConditionInfo(_currentDifficulty, _detailDifficulty);
 
+	// 나중에 json으로 불러올 예정
+	// array로 바꾸는 것도 고려할 것, 고정된 크기
+	for (int i = 0; i < DirCount; i++)
+		_roomSpawnChance[static_cast<Dir>(i)] = 0.25;
+
+	// map 초기화
+	for (int i = 0; i < Height; i++)
+	{
+		for (int j = 0; j < Width; j++)
+			_map[i][j] = '1';
+	}
+
 	// 방 생성(문은 방 안에서 생성 + 비상구)
 	// MainEntranceRoom 생성
 	{
-		GameRoomRef gameRoom = std::make_shared<GameRoom>();
-		gameRoom->SetGameRoomInfo(g_dataManager->GetGameRoomInfo(GameRoomType::MainEntranceRoom));
-		Vector size = gameRoom->GetSize();
-		// 1층에 배치
-		Vector pos{ (Width / 2 * 100) - size.x / 2, 0, 0 };
-		gameRoom->SetPos(pos);
-		gameRoom->SetDir(Dir::Front);
+		GameRoomInfo info = g_dataManager->GetGameRoomInfo(GameRoomType::MainEntranceRoom);
 
-		// 방 배치 후 차지한 자리 채우기 
-		uint x = pos.x / 100;
-		uint y = pos.y / 100;
+		GameRoomRef gameRoom = std::make_shared<GameRoom>();
+		gameRoom->SetGameRoomInfo(info);
 		
-		for (int i = 0; i < (size.x/100); i++)
+		// 1층에 배치
+		//Vector pos{ Width / 2 * 100, info.size.y / 2, 0 };
+		Vector pos{ Width / 2 * 100, Height / 2 * 100, 0 };
+		gameRoom->SetPos(pos);
+		gameRoom->SetDir(Front);
+
+		// 방 배치 후 차지한 자리 채우기
+		uint x = (pos.x + info.leftTopPos[Front].x) / 100;
+		uint y = (pos.y + info.leftTopPos[Front].y) / 100;
+
+		for (int i = 0; i < (info.size.y / 100); i++)
 		{
-			for (int j = 0; j < (size.y / 100); j++)
-				_map[x][y++] = '■';
-			x++;
-			y = 0;
+			for (int j = 0; j < (info.size.x / 100); j++)
+				_map[y][x++] = '0';
+			y++;
+			x = (pos.x + info.leftTopPos[Front].x) / 100;
 		}
 		//std::iota(_map[x].begin(), _map[x].begin() + size.x, '0');
 
 		std::vector<DoorRef>& doors = gameRoom->CreateDoors();
-		_connectableDoors.insert(_connectableDoors.end(), doors.begin(), doors.end());
+		for (const DoorRef door : doors)
+		{
+			_connectableDoors[door->GetDir()].push_back(door);
+		}
+
 		_gameRooms.push_back(gameRoom);
 	}
 
+	// 이후 방 절차적 생성
+	// 방별 최대 최소 개수 고려 아직X
 	for (int i : std::views::iota(1u, conditions.totalGameRoomCount))
 	{
-		// 이전 방이 뭔지 확인
-		GameRoomRef prevRoom = _gameRooms[i - 1];
-
-		// 이전 방이 계단
-		if (prevRoom->GetGameRoomType() == GameRoomType::Staircase)
+		Dir connectDir;
+		while (true)
 		{
+			// 연결할 방향 선택
+			std::discrete_distribution disc({ _roomSpawnChance[Front], _roomSpawnChance[Right], _roomSpawnChance[Back], _roomSpawnChance[Left] });
+			connectDir = static_cast<Dir>(disc(gen));
+			if (_connectableDoors[connectDir].size() == 0)
+				continue;
 			break;
 		}
+
+		// 연결할 방향에 맞는 문 선택
+		std::uniform_int_distribution<int> dist(0, _connectableDoors[connectDir].size() - 1);
+		DoorRef door = _connectableDoors[connectDir][dist(gen)];
+
+		// 이전 방이 계단
+		//if (prevRoom->GetGameRoomType() == GameRoomType::Staircase)
 		
 		// 이전 방이 난간 통로 or 복도 => 모든 방 가능
-		if (prevRoom->GetGameRoomType() == GameRoomType::RailCatwalk || prevRoom->GetGameRoomType() == GameRoomType::PipedHallways_Line)
+		//if (prevRoom->GetGameRoomType() == GameRoomType::RailCatwalk || prevRoom->GetGameRoomType() == GameRoomType::PipedHallways_Line)
 		{
-			std::uniform_int_distribution<int> dist1(0, static_cast<int>(GameRoomType::FactoryRoom));
-			GameRoomInfo info = g_dataManager->GetGameRoomInfo(static_cast<GameRoomType>(dist1(gen)));
+			// 나중에 랜덤으로 바꾸기
+			//std::uniform_int_distribution<int> dist1(1, static_cast<int>(GameRoomType::FactoryRoom));
+			//GameRoomInfo info = g_dataManager->GetGameRoomInfo(static_cast<GameRoomType>(dist1(gen)));
 			
-			//
-			if (_currentGameRoomCount[info.type] < info.maxCreateCount[_currentDifficulty])
+			GameRoomInfo info = g_dataManager->GetGameRoomInfo(GameRoomType::MainEntranceRoom);
+
+			// 나중에 개수 따지기
+			//if (_currentGameRoomCount[info.type] < info.maxCreateCount[_currentDifficulty])
+
+			// 배치할 위치 계산 후 배치 가능한지 판단
+			// 연결할 방의 좌표 문 방향에 따라 설정
+			Vector pos;
+			Vector doorPos = door->GetPos();
+			switch (connectDir)
 			{
-				GameRoomRef gameRoom = std::make_shared<GameRoom>();
-				gameRoom->SetGameRoomInfo(info);
-				gameRoom->SetPos({ 0, 0 });
+			case Front:
+				pos = {doorPos.x, doorPos.y - info.size.y / 2, doorPos.z};
+				break;
+			case Right:
+				pos = { doorPos.x + info.size.y / 2, doorPos.y, doorPos.z };
+				break;
+			case Back:
+				pos = { doorPos.x, doorPos.y + info.size.y / 2, doorPos.z };
+				break;
+			case Left:
+				pos = { doorPos.x - info.size.y / 2, doorPos.y, doorPos.z };
+				break;
 			}
 
-			break;
+			// 방의 방향은 문과 반대
+			Dir dir = static_cast<Dir>((connectDir + 2) % 4);
+
+			// 방을 배치할 자리가 있는지 확인
+			// 이거 다음칸 기준으로 해야됨 수정필요
+			uint x = (pos.x + info.leftTopPos[dir].x) / 100;
+			uint y = (pos.y + info.leftTopPos[dir].y) / 100;
+
+			// STL로 변경할 것
+			for (int i = 0; i < (info.size.y / 100); i++)
+			{
+				for (int j = 0; j < (info.size.x / 100); j++)
+				{
+					// 배치할 공간이 없음, 방 종류 변경 나중에 처리
+					// 인덱스 넘는 거 처리 필요
+					if (_map[y][x++] != '1')
+						break;
+				}
+					
+				y++;
+				x = (pos.x + info.leftTopPos[dir].x) / 100;
+			}
+			
+			// 배치 가능하면 방 생성 후 배치 기록
+			GameRoomRef gameRoom = std::make_shared<GameRoom>();
+			gameRoom->SetGameRoomInfo(info);
+			gameRoom->SetPos(pos);
+			gameRoom->SetDir(dir);
+
+			// 방과 연결된 문은 제외
+			door->SetConnectable(false);
+			_connectableDoors[connectDir].erase(std::remove(_connectableDoors[connectDir].begin(), _connectableDoors[connectDir].end(), door), _connectableDoors[connectDir].end());
+
+			// 이거는 이대로 해야됨 
+			x = (pos.x + info.leftTopPos[dir].x) / 100;
+			y = (pos.y + info.leftTopPos[dir].y) / 100;
+
+			for (int i = 0; i < (info.size.y / 100); i++)
+			{
+				for (int j = 0; j < (info.size.x / 100); j++)
+					_map[y][x++] = '0';
+				y++;
+				x = (pos.x + info.leftTopPos[dir].x) / 100;
+			}
+
+			_gameRooms.push_back(gameRoom);
+
+			// 문 생성
+			std::vector<DoorRef>& doors = gameRoom->CreateDoors();
+			for (const DoorRef door : doors)
+			{
+				_connectableDoors[door->GetDir()].push_back(door);
+			}
 		}
 
 		// 그 외
-		GameRoomRef gameRoom = std::make_shared<GameRoom>();
-		
+	}
+
+	for (int i = 0; i < Height; i++)
+	{
+		for (int j = 0; j < Width; j++)
+			std::cout << _map[i][j];
+		std::cout << std::endl;
 	}
 
 	// 아이템 생성

@@ -10,8 +10,11 @@ public:
 public:
 	void Update() {};
 
+public:
+	Dir GetDir() { return _dir; }
+	void SetConnectable(bool isConnectable) { _isConnectable = isConnectable; }
+
 private:
-	Vector _pos{};
 	Dir _dir{};
 	bool _isConnectable;
 };

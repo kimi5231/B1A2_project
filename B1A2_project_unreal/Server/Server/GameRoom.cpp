@@ -27,20 +27,23 @@ std::vector<DoorRef>& GameRoom::CreateDoors()
 
 	for (int i : std::views::iota(0u, _info.doorCount.second))
 	{
-		// 추후 방향 지정 필요
-		/*if (goalDoorCount - _doors.size() == _info.doorCount.second - i)
+		if (goalDoorCount - _doors.size() == _info.doorCount.second - i)
 		{
-			DoorRef door = std::make_shared<Door>(_pos + _info.doorPos[i], _info.doorDir, _dir);
+			// 이 문 다음으로 연결될 공간이 있는지 확인 후 생성
+			
+			DoorRef door = std::make_shared<Door>(_pos + _info.doorPos[_dir][i], _info.doorDir[i], _dir);
 			_doors.push_back(door);
-			break;
+			continue;
 		}
 
 		if (bern(gen))
 		{
-			DoorRef door = std::make_shared<Door>(_pos + _info.doorPos[i], _info.doorDir, _dir);
+			DoorRef door = std::make_shared<Door>(_pos + _info.doorPos[_dir][i], _info.doorDir[i], _dir);
 			_doors.push_back(door);
-		}*/
+		}
 	}
+
+	// 문이 최소 수치보다 부족한지 확인
 
 	return _doors;
 }
