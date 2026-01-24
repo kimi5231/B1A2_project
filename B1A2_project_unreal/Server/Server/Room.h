@@ -44,7 +44,11 @@ private:
 
 	std::unordered_map<GameRoomType, uint> _currentGameRoomCount;
 
-	std::vector<DoorRef> _connectableDoors;
+	std::unordered_map<Dir, std::vector<DoorRef>> _connectableDoors;
 
-	std::array<std::array<char, Height>, Width> _map;
+	// 절차적으로 생성되는 방들이 기록되는 전체 공간
+	std::array<std::array<char, Width>, Height> _map;
+
+	// 각 방향별로 방이 생성될 확률
+	std::unordered_map < Dir, float> _roomSpawnChance;
 };

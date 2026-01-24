@@ -39,7 +39,7 @@ enum class GameRoomType
 	StorageRoom_Step,
 	YellowOfficeRoom,
 	PipedHallways_Line,
-
+	PipedHallways_Grid,
 	FactoryRoom,
 };
 
@@ -75,13 +75,14 @@ struct GameRoomInfo
 {
 	GameRoomType type;
 	Vector size;
+	std::unordered_map<Dir, Vector> leftTopPos;
 	bool isCreateItem;
 	bool isCreateExit;
 	std::unordered_map<Difficulty, uint> minCreateCount;
 	std::unordered_map<Difficulty, uint> maxCreateCount;
 	std::unordered_map<Difficulty, float> spawnChance;
 	std::pair<uint, uint> doorCount;
-	std::vector<Vector> doorPos;
+	std::unordered_map<Dir, std::vector<Vector>> doorPos;
 	std::vector<Dir> doorDir;
 };
 
