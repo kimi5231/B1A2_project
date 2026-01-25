@@ -18,6 +18,7 @@ void GameRoom::Update()
 }
 
 // 추후 비상구 생성 여부도 따질 것
+// 문 다음에 최소만큼의 방을 만들 공간이 없다면 만들지 않기 처리 필요
 std::vector<DoorRef>& GameRoom::CreateDoors()
 {
 	std::uniform_int_distribution<int> dist1(_info.f1DoorCount.first, _info.f1DoorCount.second);
