@@ -2,6 +2,7 @@
 
 using uint = unsigned int;
 
+//------------------Enums------------------
 enum class ObjectType
 {
 	Player,
@@ -54,6 +55,7 @@ enum Difficulty
 	DifficultyCount,
 };
 
+//------------------Struct------------------
 struct Vector
 {
 	float x;

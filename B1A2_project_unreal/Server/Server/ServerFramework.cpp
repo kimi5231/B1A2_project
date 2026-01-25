@@ -291,11 +291,12 @@ void ServerFramework::SendCreateGameRoomPacket(const std::vector<GameRoomRef>& g
 	std::vector<GameRoomDTO> roomInfos;
 	roomInfos.resize(gameRooms.size());
 
-	for (int i = 0; i < gameRooms.size(); i++)
+	for (int i : std::views::iota(0u, gameRooms.size()))
 	{
 		roomInfos[i].type = gameRooms[i]->GetGameRoomType();
 		roomInfos[i].pos = gameRooms[i]->GetPos();
 		roomInfos[i].size = gameRooms[i]->GetSize();
+		roomInfos[i].dir = gameRooms[i]->GetDir();
 	}
 
 	// Packet Serialize
