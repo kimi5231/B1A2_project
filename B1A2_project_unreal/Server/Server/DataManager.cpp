@@ -43,7 +43,7 @@ void DataManager::LoadGameRoomConditionInfos()
 
 void DataManager::LoadGameRoomInfos()
 {
-    std::ifstream file(_dataPath/"GameRoomInfos.json");
+    std::ifstream file(_dataPath/"GameRoomInfos_TEST.json");
     json data = json::parse(file);
 
     // GameRoomInfo √ﬂ√‚

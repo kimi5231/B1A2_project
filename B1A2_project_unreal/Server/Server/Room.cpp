@@ -109,10 +109,8 @@ void Room::CreateFactoryGameRooms()
 		//if (prevRoom->GetGameRoomType() == GameRoomType::RailCatwalk || prevRoom->GetGameRoomType() == GameRoomType::PipedHallways_Line)
 		{
 			// 나중에 랜덤으로 바꾸기
-			//std::uniform_int_distribution<int> dist1(1, static_cast<int>(GameRoomType::FactoryRoom));
-			//GameRoomInfo info = g_dataManager->GetGameRoomInfo(static_cast<GameRoomType>(dist1(gen)));
-			
-			GameRoomInfo info = g_dataManager->GetGameRoomInfo(GameRoomType::MainEntranceRoom);
+			std::uniform_int_distribution<int> dist1(1, static_cast<int>(GameRoomType::ServerRoom));
+			GameRoomInfo info = g_dataManager->GetGameRoomInfo(static_cast<GameRoomType>(dist1(gen)));
 
 			// 나중에 개수 따지기
 			//if (_currentGameRoomCount[info.type] < info.maxCreateCount[_currentDifficulty])
@@ -187,20 +185,18 @@ void Room::CreateFactoryGameRooms()
 			// 문 생성
 			std::vector<DoorRef>& doors = gameRoom->CreateDoors();
 			for (const DoorRef door : doors)
-			{
 				_connectableDoors[door->GetDir()].push_back(door);
-			}
 		}
 
 		// 그 외
-	}
 
-	// 방 배치 임시 확인용 출력 (추후 삭제 예정)
-	for (int i = 0; i < Height; i++)
-	{
-		for (int j = 0; j < Width; j++)
-			std::cout << _map[i][j];
-		std::cout << std::endl;
+		// 방 배치 임시 확인용 출력 (추후 삭제 예정)
+		for (int i = 0; i < Height; i++)
+		{
+			for (int j = 0; j < Width; j++)
+				std::cout << _map[i][j];
+			std::cout << std::endl;
+		}
 	}
 
 	// 아이템 생성
