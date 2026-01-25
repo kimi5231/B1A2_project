@@ -24,24 +24,40 @@ enum class ObjectType
 enum class GameRoomType
 {
 	MainEntranceRoom,
+
 	GapRoom,
-
-	Staircase,
-	CorridorCatwalk,
-
 	ApparatusRoom,
 	ServerRoom,
-	LockerRoom,
-	StorageRoom,
+	CabinetRoom,
+	StorageRoom_Rect,
+	StorageRoom_Corner,
+	StorageRoom_Step,
+	YellowOfficeRoom,
+	FactoryRoom,
 
-	None,
+	RailCatwalk,
+	PipedHallways_Line,
+	PipedHallways_Grid,
+
+	Staircase,
 };
 
-struct GameRoomInfo
+enum Dir
+{
+	Front,
+	Right,
+	Back,
+	Left,
+
+	DirCount
+};
+
+struct GameRoomDTO
 {
 	GameRoomType type;
 	Vector pos;
 	Vector size;
+	Dir dir;
 };
 
 enum PacketID
@@ -127,5 +143,5 @@ struct S_Move_Packet
 
 struct S_CreateGameRoom_Packet
 {
-	std::vector<GameRoomInfo> gameRooms;
+	std::vector<GameRoomDTO> gameRooms;
 };

@@ -13,11 +13,7 @@ public:
 	void Update();
 
 public:
-	// temp
-	void CreateGameRoom();
-
 	void SetupGameRoomConditions();
-
 	void CreateFactoryGameRooms();
 
 	GameObjectRef AddObject(ObjectType type);

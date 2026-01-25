@@ -216,7 +216,7 @@ void UMain::ProcessRecv()
 			event->isComplete = true;
 			break;
 		case S_CreateGameRoom:
-			S_CreateGameRoom_Packet createGameRoomPacket{ _gameNetwork->DeserializeVector<GameRoomInfo>(event->serializedPacketData) };
+			S_CreateGameRoom_Packet createGameRoomPacket{ _gameNetwork->DeserializeVector<GameRoomDTO>(event->serializedPacketData) };
 			RecvCreateGameRoom(createGameRoomPacket);
 			event->isComplete = true;
 			break;
@@ -400,7 +400,7 @@ void UMain::RecvCreateGameRoom(S_CreateGameRoom_Packet packet)
 
 		for (int i = 0; i < packet.gameRooms.size(); ++i)
 		{
-			const GameRoomInfo& room = packet.gameRooms[i];
+			const GameRoomDTO& room = packet.gameRooms[i];
 
 			UE_LOG(LogTemp, Warning, TEXT("Room[%d] pos = %f, %f, %f, type = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type);
 
