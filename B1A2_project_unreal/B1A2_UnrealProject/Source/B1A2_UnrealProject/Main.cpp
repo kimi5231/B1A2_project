@@ -416,7 +416,7 @@ void UMain::RecvCreateGameRoom(S_CreateGameRoom_Packet packet)
 	AsyncTask(ENamedThreads::GameThread, [this, packet]()
 	{
 		UWorld* world = GetWorld();
-		if (!world || !GameRoomClass)
+		if (!world)
 			return;
 
 		for (int i = 0; i < packet.gameRooms.size(); ++i)
@@ -426,18 +426,34 @@ void UMain::RecvCreateGameRoom(S_CreateGameRoom_Packet packet)
 			UE_LOG(LogTemp, Warning, TEXT("Room[%d] pos = %f, %f, %f, type = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type);
 
 			FVector pos(room.pos.x, room.pos.y, room.pos.z);
-			//FVector size(room.size.x, room.size.y, room.size.z);
-			//FVector scale = size / 100.f;
+			FRotator rot = DirToRotation(room.dir);
 
 			FActorSpawnParameters params;
 			params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-			AStaticMeshActor* roomActor = world->SpawnActor<AStaticMeshActor>(GameRoomClass, pos, FRotator::ZeroRotator, params);
-
-			if (!roomActor)
-				continue;
-
-			// roomActor->GetStaticMeshComponent()->SetWorldScale3D(scale);
+			if (packet.gameRooms[i].type == GameRoomType::MainEntranceRoom)
+				AStaticMeshActor* roomActor = world->SpawnActor<AStaticMeshActor>(MainEntranceRoomClass, pos, rot, params);
+			if (packet.gameRooms[i].type == GameRoomType::GapRoom)
+				AStaticMeshActor* roomActor = world->SpawnActor<AStaticMeshActor>(GapRoomClass, pos, rot, params);
+			if (packet.gameRooms[i].type == GameRoomType::ApparatusRoom)
+				AStaticMeshActor* roomActor = world->SpawnActor<AStaticMeshActor>(ApparatusRoomClass, pos, rot, params);
+			if (packet.gameRooms[i].type == GameRoomType::ServerRoom)
+				AStaticMeshActor* roomActor = world->SpawnActor<AStaticMeshActor>(ServerRoomClass, pos, rot, params);
 		}
 	});
+}
+
+FRotator UMain::DirToRotation(Dir dir)
+{
+	FRotator rotation = FRotator::ZeroRotator;
+
+	switch (dir)
+	{
+	case Front: rotation.Yaw = 0.f; break;
+	case Right: rotation.Yaw = 90.f; break;
+	case Back:	rotation.Yaw = 180.f; break;
+	case Left:	rotation.Yaw = 270.f; break;
+	}
+
+	return rotation;
 }
