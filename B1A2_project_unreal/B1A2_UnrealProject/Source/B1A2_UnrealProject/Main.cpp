@@ -184,6 +184,12 @@ void UMain::SendLocalPosition()
 
 void UMain::Update()
 {
+	if (!_gameNetwork)
+	{
+		UE_LOG(LogTemp, Error, TEXT("_gameNetwork is null"));
+		return;
+	}
+
 	_gameNetwork->Update();
 
 	ProcessRecv();
@@ -191,6 +197,12 @@ void UMain::Update()
 
 void UMain::ProcessRecv()
 {
+	if (!_gameNetwork)
+	{
+		UE_LOG(LogTemp, Error, TEXT("_gameNetwork is null"));
+		return;
+	}
+
 	std::vector<NetworkEventRef>& recvEvents = _gameNetwork->GetRecvEvents();
 
 	for (NetworkEventRef event : recvEvents)
@@ -310,6 +322,15 @@ void UMain::RecvAddObject(S_AddObject_Packet packet)
 			
 			if (!player)
 				return;
+
+			// 서버에서 받은 위치로 수정
+			player->SetActorLocationAndRotation(
+				spawnLocation,
+				spawnRotation,
+				false,
+				nullptr,
+				ETeleportType::TeleportPhysics
+			);
 
 			_myPlayer = player;
 

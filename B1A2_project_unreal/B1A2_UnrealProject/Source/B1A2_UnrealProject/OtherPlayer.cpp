@@ -45,13 +45,55 @@ void AOtherPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (_isInterpolation)	// MyPlayer에서는 보간 X
-	{
-		FVector newLocation = FMath::VInterpTo(GetActorLocation(), _destPos, DeltaTime, InterpolationSpeed);
-		FRotator newRotation = FMath::RInterpTo(GetActorRotation(), _destRot, DeltaTime, InterpolationSpeed);
+	if (!_isInterpolation)	// MyPlayer에서는 보간 X
+		return;
 
-		SetActorLocation(newLocation);
-		SetActorRotation(newRotation);
+	// 보간 전 위치 저장
+	FVector oldLocation = GetActorLocation();
+	
+	// 보간 이동
+	FVector newLocation = FMath::VInterpTo(
+		oldLocation,
+		_destPos,
+		DeltaTime,
+		InterpolationSpeed
+	);
+	FRotator newRotation = FMath::RInterpTo(
+		GetActorRotation(),
+		_destRot,
+		DeltaTime,
+		InterpolationSpeed
+	);
+	SetActorLocationAndRotation(
+		newLocation,
+		newRotation,
+		false,
+		nullptr,
+		ETeleportType::TeleportPhysics
+	);
+
+	// 속도 계산
+	FVector DeltaMove = (newLocation - oldLocation);
+	CalculatedSpeed = DeltaMove.Size() / DeltaTime;
+
+	// 각도 계산
+	if (CalculatedSpeed > 1.f)
+	{
+		FVector LocalMove =
+			GetActorTransform().InverseTransformVectorNoScale(DeltaMove);
+
+		CalculatedAngle =
+			FRotationMatrix::MakeFromX(LocalMove).Rotator().Yaw;
+	}
+	else
+	{
+		CalculatedAngle = 0.f;
+	}
+
+	// 목적지 도착시 보간 종료
+	if (FVector::DistSquared(newLocation, _destPos) < 1.f)
+	{
+		CalculatedSpeed = 0.f;
 	}
 }
 

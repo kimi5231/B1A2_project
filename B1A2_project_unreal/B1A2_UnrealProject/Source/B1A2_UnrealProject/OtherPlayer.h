@@ -28,6 +28,8 @@ public:
 	void SetPlayerState(ObjectState state);
 
 private:
+	FVector _prevPos;
+	FRotator _prevRot;
 	FVector _destPos;
 	FRotator _destRot;
 	
@@ -36,9 +38,15 @@ private:
 protected:
 	bool _isInterpolation = true;
 
-	UPROPERTY(BlueprintReadOnly, Category = "MoveState")
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 	EMoveState _eState;
 
-	UPROPERTY(EditAnywhere, Category = "Interpolation")
+	UPROPERTY(EditAnywhere, Category = "Movement")
 	float InterpolationSpeed = 10.0f;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	float CalculatedSpeed;		// 계산된 속도(ABP 사용)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	float CalculatedAngle;		// 계산된 각도(ABP 사용)
 };
