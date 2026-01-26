@@ -44,7 +44,7 @@ void GameNetwork::Update()
 {
 	// socket set 초기화
 	FD_ZERO(&_readSet);
-	FD_ZERO(&_writeSet);
+ 	FD_ZERO(&_writeSet);
 
 	// readSet, writeSet에 clientSocket 등록
 	FD_SET(_clientSocket, &_readSet);
