@@ -140,8 +140,8 @@ void GameNetwork::ProcessRecv()
 	{
 		NetworkEventRef event = std::make_shared<NetworkEvent>();
 		event->packetID = header.id;
-		event->serializedPacketData.resize(sizeof(S_CreateGameRoom_Packet));
-		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), sizeof(S_CreateGameRoom_Packet));
+		event->serializedPacketData.resize(packet.size() - sizeof(Header));
+		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), packet.size() - sizeof(Header));
 		_recvEvents.push_back(event);
 		break;
 	}
