@@ -295,7 +295,6 @@ void ServerFramework::SendCreateGameRoomPacket(const std::vector<GameRoomRef>& g
 	{
 		roomInfos[i].type = gameRooms[i]->GetGameRoomType();
 		roomInfos[i].pos = gameRooms[i]->GetPos();
-		roomInfos[i].size = gameRooms[i]->GetSize();
 		roomInfos[i].dir = gameRooms[i]->GetDir();
 	}
 
