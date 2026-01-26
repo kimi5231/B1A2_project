@@ -42,10 +42,21 @@ public:
 	void RecvUpdateObjectState(S_UpdateObjectState_Packet packet);
 	void RecvCreateGameRoom(S_CreateGameRoom_Packet packet);
 
+	FRotator DirToRotation(Dir dir);
+
 public:
 	// Room Box Class
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<AStaticMeshActor> GameRoomClass;
+	TSubclassOf<AStaticMeshActor> MainEntranceRoomClass;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AStaticMeshActor> GapRoomClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AStaticMeshActor> ApparatusRoomClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AStaticMeshActor> ServerRoomClass;
 
 private:
 	GameNetwork* _gameNetwork = nullptr;
