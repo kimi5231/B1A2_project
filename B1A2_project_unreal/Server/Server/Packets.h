@@ -25,7 +25,6 @@ struct GameRoomDTO
 {
 	GameRoomType type;
 	Vector pos;
-	Vector size;
 	Dir dir;
 };
 

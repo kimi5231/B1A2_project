@@ -405,8 +405,8 @@ void UMain::RecvCreateGameRoom(S_CreateGameRoom_Packet packet)
 			UE_LOG(LogTemp, Warning, TEXT("Room[%d] pos = %f, %f, %f, type = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type);
 
 			FVector pos(room.pos.x, room.pos.y, room.pos.z);
-			FVector size(room.size.x, room.size.y, room.size.z);
-			FVector scale = size / 100.f;
+			//FVector size(room.size.x, room.size.y, room.size.z);
+			//FVector scale = size / 100.f;
 
 			FActorSpawnParameters params;
 			params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
