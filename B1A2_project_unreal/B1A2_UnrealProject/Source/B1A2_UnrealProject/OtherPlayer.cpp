@@ -51,49 +51,41 @@ void AOtherPlayer::Tick(float DeltaTime)
 	// 보간 전 위치 저장
 	FVector oldLocation = GetActorLocation();
 	
-	// 보간 이동
-	FVector newLocation = FMath::VInterpTo(
-		oldLocation,
-		_destPos,
-		DeltaTime,
-		InterpolationSpeed
-	);
-	FRotator newRotation = FMath::RInterpTo(
-		GetActorRotation(),
-		_destRot,
-		DeltaTime,
-		InterpolationSpeed
-	);
-	SetActorLocationAndRotation(
-		newLocation,
-		newRotation,
-		false,
-		nullptr,
-		ETeleportType::TeleportPhysics
-	);
+	// 위치 보간
+	FVector newLocation = FMath::VInterpTo(oldLocation, _destPos, DeltaTime, InterpolationSpeed);
+	// 회전 보간
+	FRotator newRotation = FMath::RInterpTo(GetActorRotation(), _destRot, DeltaTime, InterpolationSpeed);
 
-	// 속도 계산
+	SetActorLocationAndRotation(newLocation, newRotation, false, nullptr, ETeleportType::TeleportPhysics);
+
+	// 순간 속도 계산
 	FVector DeltaMove = (newLocation - oldLocation);
-	CalculatedSpeed = DeltaMove.Size() / DeltaTime;
+	float InstantSpeed = DeltaMove.Size() / DeltaTime; 
 
-	// 각도 계산
-	if (CalculatedSpeed > 1.f)
+	float TargetAngle = 0.f;
+
+	if (InstantSpeed > 5.f)
 	{
-		FVector LocalMove =
-			GetActorTransform().InverseTransformVectorNoScale(DeltaMove);
-
-		CalculatedAngle =
-			FRotationMatrix::MakeFromX(LocalMove).Rotator().Yaw;
+		FVector LocalMove = GetActorTransform().InverseTransformVectorNoScale(DeltaMove);
+		TargetAngle = FRotationMatrix::MakeFromX(LocalMove).Rotator().Yaw;
 	}
-	else
+	else	// 속도가 너무 작으면 방향 계산 X
 	{
-		CalculatedAngle = 0.f;
+		TargetAngle = 0.f;
 	}
 
-	// 목적지 도착시 보간 종료
+	// 최종 애니메이션 값 보간 
+	_currentAnimSpeed = FMath::FInterpTo(_currentAnimSpeed, InstantSpeed, DeltaTime, AnimSmoothingSpeed);
+	CalculatedSpeed = _currentAnimSpeed;
+
+	_currentAnimAngle = FMath::FInterpTo(_currentAnimAngle, TargetAngle, DeltaTime, AnimSmoothingSpeed);
+	CalculatedAngle = _currentAnimAngle;
+
+	// 목적지 도착
 	if (FVector::DistSquared(newLocation, _destPos) < 1.f)
 	{
-		CalculatedSpeed = 0.f;
+		_currentAnimSpeed = FMath::FInterpTo(_currentAnimSpeed, 0.f, DeltaTime, AnimSmoothingSpeed);
+		CalculatedSpeed = _currentAnimSpeed;
 	}
 }
 

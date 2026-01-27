@@ -35,6 +35,10 @@ private:
 	
 	ObjectState _state;
 
+	// Animation 현재 속도와 각도
+	float _currentAnimSpeed = 0.f;
+	float _currentAnimAngle = 0.f;
+
 protected:
 	bool _isInterpolation = true;
 
@@ -43,6 +47,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float InterpolationSpeed = 10.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float AnimSmoothingSpeed = 10.0f;	// Animation 보간 속도
 
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 	float CalculatedSpeed;		// 계산된 속도(ABP 사용)
