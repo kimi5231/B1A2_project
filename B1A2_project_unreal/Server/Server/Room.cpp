@@ -131,7 +131,7 @@ void Room::CreateFactoryGameRooms()
 				y = 1;
 				break;
 			case Right:
-				pos = { doorPos.x - info.size.y / 2, doorPos.y, doorPos.z };
+				pos = { doorPos.x + info.size.y / 2, doorPos.y, doorPos.z };
 				x = -1;
 				break;
 			case Back:
@@ -139,7 +139,7 @@ void Room::CreateFactoryGameRooms()
 				y = -1;
 				break;
 			case Left:
-				pos = { doorPos.x + info.size.y / 2, doorPos.y, doorPos.z };
+				pos = { doorPos.x - info.size.y / 2, doorPos.y, doorPos.z };
 				x = 1;
 				break;
 			}
