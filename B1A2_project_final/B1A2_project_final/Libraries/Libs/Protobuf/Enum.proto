@@ -1,7 +1,0 @@
-syntax = "proto3";
-package Protocol;
-
-enum OBJECT_STATE_TYPE
-{
-	OBJECT_STATE_TYPE_IDLE = 0;
-}
