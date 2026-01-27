@@ -62,15 +62,19 @@ void Room::CreateFactoryGameRooms()
 		gameRoom->SetDir(Front);
 
 		// 방 배치 후 차지한 자리 채우기
-		uint x = (pos.x + info.leftTopPos[Front].x) / 100;
-		uint y = (pos.y + info.leftTopPos[Front].y) / 100;
+		//uint x = (pos.x + info.leftTopPos[Front].x) / 100;
+		//uint y = (pos.y + info.leftTopPos[Front].y) / 100;
+
+		uint x = (pos.x - info.size.x / 2) / 100;
+		uint y = (pos.x - info.size.x / 2) / 100;
 
 		for (int i = 0; i < (info.size.y / 100); i++)
 		{
 			for (int j = 0; j < (info.size.x / 100); j++)
 				_map[y][x++] = '0' + static_cast<int>(GameRoomType::MainEntranceRoom) + 1;
 			y++;
-			x = (pos.x + info.leftTopPos[Front].x) / 100;
+			//x = (pos.x + info.leftTopPos[Front].x) / 100;
+			x = (pos.x - info.size.x / 2) / 100;
 		}
 		//std::iota(_map[x].begin(), _map[x].begin() + size.x, '0');
 
@@ -109,6 +113,7 @@ void Room::CreateFactoryGameRooms()
 		{
 			std::uniform_int_distribution<int> dist1(1, static_cast<int>(GameRoomType::ServerRoom));
 			GameRoomType type = static_cast<GameRoomType>(dist1(gen));
+			//GameRoomType type = static_cast<GameRoomType>(3);
 			GameRoomInfo info = g_dataManager->GetGameRoomInfo(type);
 
 			// 나중에 개수 따지기
@@ -127,52 +132,79 @@ void Room::CreateFactoryGameRooms()
 			switch (dir)
 			{
 			case Front:
-				pos = {doorPos.x, doorPos.y + info.size.y / 2, doorPos.z};
-				y = 1;
+				pos = {doorPos.x + info.enterDistance, doorPos.y + info.size.y / 2, doorPos.z};
+				x = (pos.x - info.size.x / 2) / 100;
+				y = (pos.y - info.size.y / 2) / 100 + 1;
 				break;
 			case Right:
-				pos = { doorPos.x + info.size.y / 2, doorPos.y, doorPos.z };
-				x = -1;
+				pos = { doorPos.x + info.size.x / 2, doorPos.y + info.enterDistance, doorPos.z };
+				x = (pos.x - info.size.y / 2) / 100 - 1;
+				y = (pos.y - info.size.x / 2) / 100;
 				break;
 			case Back:
-				pos = { doorPos.x, doorPos.y - info.size.y / 2, doorPos.z };
-				y = -1;
+				pos = { doorPos.x - info.enterDistance, doorPos.y - info.size.y / 2, doorPos.z };
+				x = (pos.x - info.size.x / 2) / 100;
+				y = (pos.y - info.size.y / 2) / 100 - 1;
 				break;
 			case Left:
-				pos = { doorPos.x - info.size.y / 2, doorPos.y, doorPos.z };
-				x = 1;
+				pos = { doorPos.x - info.size.x / 2, doorPos.y - info.enterDistance, doorPos.z };
+				x = (pos.x - info.size.y / 2) / 100 + 1;
+				y = (pos.y - info.size.x / 2) / 100;
 				break;
 			}
 
 			// 방을 배치할 자리가 있는지 확인
-			// 이거 다음칸 기준으로 해야됨 수정필요
-			x += (pos.x + info.leftTopPos[dir].x) / 100;
-			y += (pos.y + info.leftTopPos[dir].y) / 100;
+			//x += (pos.x + info.leftTopPos[dir].x) / 100;
+			//y += (pos.y + info.leftTopPos[dir].y) / 100;
 
 			bool isCreate = true;
 
 			// STL로 변경할 것
-			for (int i = 0; i < (info.size.y / 100); i++)
+			switch (dir)
 			{
-				for (int j = 0; j < (info.size.x / 100); j++)
+			case Front:
+			case Back:
+				for (int i = 0; i < (info.size.y / 100); i++)
 				{
-					// 배치할 공간이 없음, 방 종류 변경 나중에 처리
-					if (_map[y][x++] != '0')
+					for (int j = 0; j < (info.size.x / 100); j++)
 					{
-						isCreate = false;
-						break;
-					}	
-				}
-					
-				y++;
-				x = (pos.x + info.leftTopPos[dir].x) / 100;
+						// 배치할 공간이 없음, 방 종류 변경 나중에 처리
+						if (_map[y][x++] != '0')
+						{
+							isCreate = false;
+							break;
+						}
+					}
 
-				if (dir == Right)
-					x += -1;
-				else if (dir == Left)
-					x += 1;
+					y++;
+					x = (pos.x - info.size.x / 2) / 100;
+				}
+				break;
+			case Right:
+			case Left:
+				for (int i = 0; i < (info.size.x / 100); i++)
+				{
+					for (int j = 0; j < (info.size.y / 100); j++)
+					{
+						// 배치할 공간이 없음, 방 종류 변경 나중에 처리
+						if (_map[y][x++] != '0')
+						{
+							isCreate = false;
+							break;
+						}
+					}
+
+					y++;
+					x = (pos.x - info.size.y / 2) / 100;
+
+					if (dir == Right)
+						x += -1;
+					else if (dir == Left)
+						x += 1;
+				}
+				break;
 			}
-			
+
 			// 배치 가능하면 방 생성 후 배치 기록
 			if (isCreate)
 			{
@@ -185,16 +217,56 @@ void Room::CreateFactoryGameRooms()
 				door->SetConnectable(false);
 				_connectableDoors[connectDir].erase(std::remove(_connectableDoors[connectDir].begin(), _connectableDoors[connectDir].end(), door), _connectableDoors[connectDir].end());
 
-				// 이거는 이대로 해야됨 
-				x = (pos.x + info.leftTopPos[dir].x) / 100;
-				y = (pos.y + info.leftTopPos[dir].y) / 100;
+				//x = (pos.x + info.leftTopPos[dir].x) / 100;
+				//y = (pos.y + info.leftTopPos[dir].y) / 100;
 
-				for (int i = 0; i < (info.size.y / 100); i++)
+				switch (dir)
 				{
-					for (int j = 0; j < (info.size.x / 100); j++)
-						_map[y][x++] = '0' + (static_cast<int>(type) + 1);
-					y++;
-					x = (pos.x + info.leftTopPos[dir].x) / 100;
+				case Front:
+					x = (pos.x - info.size.x / 2) / 100;
+					y = (pos.y - info.size.y / 2) / 100 + 1;
+					break;
+				case Right:
+					x = (pos.x - info.size.y / 2) / 100 - 1;
+					y = (pos.y - info.size.x / 2) / 100;
+					break;
+				case Back:
+					x = (pos.x - info.size.x / 2) / 100;
+					y = (pos.y - info.size.y / 2) / 100 - 1;
+					break;
+				case Left:
+					x = (pos.x - info.size.y / 2) / 100 + 1;
+					y = (pos.y - info.size.x / 2) / 100;
+					break;
+				}
+
+				switch (dir)
+				{
+				case Front:
+				case Back:
+					for (int i = 0; i < (info.size.y / 100); i++)
+					{
+						for (int j = 0; j < (info.size.x / 100); j++)
+							_map[y][x++] = '0' + (static_cast<int>(type) + 1);
+						y++;
+						x = (pos.x - info.size.x / 2) / 100;
+					}
+					break;
+				case Right:
+				case Left:
+					for (int i = 0; i < (info.size.x / 100); i++)
+					{
+						for (int j = 0; j < (info.size.y / 100); j++)
+							_map[y][x++] = '0' + (static_cast<int>(type) + 1);
+						y++;
+						x = (pos.x - info.size.y / 2) / 100;
+
+						if (dir == Right)
+							x += -1;
+						else if (dir == Left)
+							x += 1;
+					}
+					break;
 				}
 
 				_gameRooms.push_back(gameRoom);

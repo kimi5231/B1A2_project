@@ -43,7 +43,7 @@ void DataManager::LoadGameRoomConditionInfos()
 
 void DataManager::LoadGameRoomInfos()
 {
-    std::ifstream file(_dataPath/"GameRoomInfos_TEST.json");
+    std::ifstream file(_dataPath/"GameRoomInfos.json");
     json data = json::parse(file);
 
     // GameRoomInfo √ﬂ√‚
@@ -56,12 +56,12 @@ void DataManager::LoadGameRoomInfos()
         info.size.y = room["size"][1];
         info.size.z = room["size"][2];
 
-        for (int i = 0; i < DirCount; i++)
+       /* for (int i = 0; i < DirCount; i++)
         {
             info.leftTopPos[static_cast<Dir>(i)].x = room["leftTopPos"][i][0];
             info.leftTopPos[static_cast<Dir>(i)].y = room["leftTopPos"][i][1];
             info.leftTopPos[static_cast<Dir>(i)].z = room["leftTopPos"][i][2];
-        }
+        }*/
             
         info.isCreateItem = room["isCreateItem"];
         info.isCreateExit = room["isCreateExit"];
@@ -78,7 +78,7 @@ void DataManager::LoadGameRoomInfos()
         info.f2DoorCount.first = room["f2DoorCount"]["min"];
         info.f2DoorCount.second = room["f2DoorCount"]["max"];
     
-        for (const auto& doorPos : room["f1DoorPos"]) 
+        /*for (const auto& doorPos : room["f1DoorPos"]) 
         {            
             Vector pos;
             pos.x = doorPos[1];
@@ -96,10 +96,32 @@ void DataManager::LoadGameRoomInfos()
             pos.z = doorPos[3];
 
             info.f2DoorPos[doorPos[0]].push_back(pos);
+        }*/
+
+        for (const auto& doorPos : room["f1DoorPos"])
+        {
+            Vector pos;
+            pos.x = doorPos[0];
+            pos.y = doorPos[1];
+            pos.z = doorPos[2];
+
+            info.f1DoorPos.push_back(pos);
+        }
+
+        for (const auto& doorPos : room["f2DoorPos"])
+        {
+            Vector pos;
+            pos.x = doorPos[0];
+            pos.y = doorPos[1];
+            pos.z = doorPos[2];
+
+            info.f2DoorPos.push_back(pos);
         }
 
         for (const auto& doorDir : room["doorDir"])
             info.doorDir.push_back(doorDir);
+
+        info.enterDistance = room["enterDistance"];
 
         _gameRoomInfos[info.type] = info;
     }

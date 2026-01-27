@@ -3,7 +3,6 @@
         {
             "type": 0,
             "size": [600, 600, 500],
-            "leftTopPos": [[-300, -300, 0], [-300, -300, 0], [-300, -300, 0], [-300, -300, 0]],
             "isCreateItem": true,
             "isCreateExit": false,
             "minCreateCount": [1, 1, 1],
@@ -11,12 +10,55 @@
             "spawnChance": [0.0, 0.0, 0.0],
             "f1DoorCount": {"min": 2, "max": 3}, 
             "f2DoorCount": {"min": 0, "max": 0},
-            "f1DoorPos": [[0, -300, 0, 0], [0, 0, 300, 0], [0, 300, 0, 0],
-                        [1, 0, -300, 0], [1, -300, 0, 0], [1, 0, 300, 0],
-                        [2, 300, 0, 0], [2, 0, -300, 0], [2, -300, 0, 0],
-                        [3, 0, 300, 0], [3, 300, 0, 0], [3, 0, -300, 0]],
+            "f1DoorPos": [[-300, 0, 0], [0, 300, 0], [300, 0, 0]],
             "f2DoorPos": [],
-            "doorDir": [3, 2, 1]
+            "doorDir": [3, 2, 1],
+            "enterDistance": 0
+        },
+         {
+            "type": 1,
+            "size": [1200, 600, 1000],
+            "isCreateItem": true,
+            "isCreateExit": true,
+            "minCreateCount": [2, 2, 2],
+            "maxCreateCount": [3, 3, 4],
+            "spawnChance": [0.35, 0.35, 0.45],
+            "f1DoorCount": {"min": 0, "max": 0}, 
+            "f2DoorCount": {"min": 3, "max": 6},
+            "f1DoorPos": [],
+            "f2DoorPos": [[-600, 0, 500], [-300, 300, 500], [300, 300, 500], [600, 0, 500], [300, -300, 500], [-300, -300, 500]],
+            "doorDir": [3, 2, 2, 1, 0, 0],
+            "enterDistance": 600
+        },
+        {
+            "type": 2,
+            "size": [1200, 700, 500],
+            "isCreateItem": true,
+            "isCreateExit": false,
+            "minCreateCount": [1, 1, 1],
+            "maxCreateCount": [1, 1, 1],
+            "spawnChance": [0.0, 0.0, 0.0],
+            "f1DoorCount": {"min": 2, "max": 2}, 
+            "f2DoorCount": {"min": 0, "max": 0},
+            "f1DoorPos": [[350, 350, 0], [-350, 350, 0]],
+            "f2DoorPos": [],
+            "doorDir": [2, 2],
+            "enterDistance": -350
+        },
+        {
+            "type": 3,
+            "size": [1300, 1200, 500],
+            "isCreateItem": true,
+            "isCreateExit": false,
+            "minCreateCount": [1, 1, 1],
+            "maxCreateCount": [1, 1, 1],
+            "spawnChance": [0.0, 0.0, 0.0],
+            "f1DoorCount": {"min": 1, "max": 2}, 
+            "f2DoorCount": {"min": 0, "max": 0},
+            "f1DoorPos": [[-350, -600, 0], [-350, 600, 0]],
+            "f2DoorPos": [],
+            "doorDir": [0, 2],
+            "enterDistance": 350
         }
     ]
 }
