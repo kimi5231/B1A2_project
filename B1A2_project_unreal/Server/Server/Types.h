@@ -79,7 +79,7 @@ struct GameRoomInfo
 {
 	GameRoomType type;
 	Vector size;
-	std::unordered_map<Dir, Vector> leftTopPos;
+	//std::unordered_map<Dir, Vector> leftTopPos;
 	bool isCreateItem;
 	bool isCreateExit;
 	std::unordered_map<Difficulty, uint> minCreateCount;
@@ -87,9 +87,12 @@ struct GameRoomInfo
 	std::unordered_map<Difficulty, float> spawnChance;
 	std::pair<uint, uint> f1DoorCount;
 	std::pair<uint, uint> f2DoorCount;
-	std::unordered_map<Dir, std::vector<Vector>> f1DoorPos;
-	std::unordered_map<Dir, std::vector<Vector>> f2DoorPos;
+	std::vector<Vector> f1DoorPos;
+	std::vector<Vector> f2DoorPos;
+	//std::unordered_map<Dir, std::vector<Vector>> f1DoorPos;
+	//std::unordered_map<Dir, std::vector<Vector>> f2DoorPos;
 	std::vector<Dir> doorDir;
+	int enterDistance;
 };
 
 struct GameRoomConditionInfo
