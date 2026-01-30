@@ -17,68 +17,11 @@ void UMain::Init()
 
 void UMain::Shutdown()
 {
-	/*if (_recvRunnable)
-		_recvRunnable->Stop();
-
-	if (_recvThread)
-	{
-		_recvThread->WaitForCompletion();
-		delete _recvThread;
-		_recvThread = nullptr;
-	}
-
-	delete _recvRunnable;
-	_recvRunnable = nullptr;
-
-	closesocket(_clientSocket);
-	UE_LOG(LogTemp, Log, TEXT("Connection Closed..."));
-
-	WSACleanup();*/
-
 	Super::Shutdown();
 }
 
 void UMain::ConnectServer()
 {
-	//WSADATA wsa;
-
-	//// 윈속 초기화
-	//int retval = WSAStartup(MAKEWORD(2, 2), &wsa);
-	//if (retval != 0)
-	//{
-	//	UE_LOG(LogTemp, Error, TEXT("WSAStartup Failed..."));
-	//	return;
-	//}
-
-	//// 소켓 생성
-	//_clientSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);	// socket -> WSASocket
-	//if (_clientSocket == INVALID_SOCKET)
-	//{
-	//	UE_LOG(LogTemp, Error, TEXT("Invalid Socket..."));
-	//	return;
-	//}
-
-	//SOCKADDR_IN stServerAddr;
-	//stServerAddr.sin_family = AF_INET;
-	//stServerAddr.sin_port = htons(7777);
-	//stServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-
-	//// connect
-	//retval = connect(_clientSocket, (sockaddr*)&stServerAddr, sizeof(sockaddr));
-	//if (retval == SOCKET_ERROR)
-	//{
-	//	UE_LOG(LogTemp, Error, TEXT("Socket Error..."));
-	//	return;
-	//}
-
-	//if (_clientSocket != INVALID_SOCKET)
-	//{
-	//	_recvRunnable = new NetworkRunnable(this);
-	//	_recvThread = FRunnableThread::Create(_recvRunnable, TEXT("RecvThread"));
-	//}
-
-	//UE_LOG(LogTemp, Warning, TEXT("Server Connected!"));
-
 	_gameNetwork = new GameNetwork();
 
 	_recvRunnable = new NetworkRunnable(this);
@@ -108,21 +51,6 @@ TArray<uint8> UMain::CreatePacket(PacketID id, const void* packetData, int dataS
 
 void UMain::ProcessSend(PacketID id, const void* packetData, int dataSize)
 {
-	//// 패킷 생성
-	//TArray<uint8> sendPacket = CreatePacket(id, packetData, dataSize);
-	//
-	//int32 retval;
-	//int32 packetSize = sendPacket.Num(); 
-
-	//// 고정 길이 데이터 전송
-	//retval = send(_clientSocket, reinterpret_cast<const char*>(&packetSize), sizeof(int32), 0);
-	//if (retval == SOCKET_ERROR)
-	//	return;
-
-	//// 가변 길이 데이터 전송
-	//retval = send(_clientSocket, reinterpret_cast<const char*>(sendPacket.GetData()), packetSize, 0);
-	//if (retval == SOCKET_ERROR)
-	//	return;
 }
 
 void UMain::SendLocalPosition()
@@ -172,14 +100,6 @@ void UMain::SendLocalPosition()
 
 		_gameNetwork->SendMovePacket(_myID, pos, rot, state);
 	}
-
-	//C_Move_Packet movePacket;
-	//movePacket.objectID = _myID;
-	//movePacket.pos = pos;
-	//movePacket.rotation = rot;
-
-	//// queue에 넣음
-	//ProcessSend(PacketID::C_Move, &movePacket, sizeof(C_Move_Packet));
 }
 
 void UMain::Update()
@@ -234,71 +154,6 @@ void UMain::ProcessRecv()
 			break;
 		}
 	}
-
-	//int packetSize = 0;
-	//int ret = recv(_clientSocket, (char*)&packetSize, sizeof(int), MSG_WAITALL);
-	//if (ret <= 0)
-	//{
-	//	UE_LOG(LogTemp, Error, TEXT("recv packetSize failed"));
-	//	return;
-	//}
-
-	//constexpr int MAX_PACKET_SIZE = 4096;
-
-	//if (packetSize <= 0 || packetSize > MAX_PACKET_SIZE)
-	//{
-	//	UE_LOG(LogTemp, Error, TEXT("Invalid packetSize: %d"), packetSize);
-	//	return;
-	//}
-
-	//if (packetSize < sizeof(Header))
-	//{
-	//	UE_LOG(LogTemp, Error, TEXT("Packet too small for Header"));
-	//	return;
-	//}
-
-	//TArray<uint8> packet;
-	//packet.SetNumUninitialized(packetSize);
-
-	//ret = recv(_clientSocket, (char*)packet.GetData(), packetSize, MSG_WAITALL);
-	//if (ret <= 0)
-	//{
-	//	UE_LOG(LogTemp, Error, TEXT("recv packet failed"));
-	//	return;
-	//}
-
-	//Header header;
-	//FMemory::Memcpy(&header, packet.GetData(), sizeof(Header));
-
-	//// Data
-	//switch (header.id)
-	//{
-	//case S_AddObject:
-	//	UE_LOG(LogTemp, Warning, TEXT("Original AddObject Packet Size  = %d"), sizeof(S_AddObject_Packet));
-	//	UE_LOG(LogTemp, Warning, TEXT("AddObject Header Size  = %d"), sizeof(Header));
-	//	UE_LOG(LogTemp, Warning, TEXT("AddObject Packet Size = %d"), packetSize);
-
-	//	S_AddObject_Packet addObjectPacket;
-	//	//memcpy(&addObjectPacket, packet.data() + sizeof(Header), sizeof(S_AddObject_Packet));
-	//	FMemory::Memcpy(&addObjectPacket, packet.GetData() + sizeof(Header), sizeof(S_AddObject_Packet));
-	//	RecvAddObject(addObjectPacket);
-	//	break;
-	//case S_CreateGameRoom:
-	//	UE_LOG(LogTemp, Warning, TEXT("Original CreateGameRoom Packet Size  = %d"), sizeof(S_CreateGameRoom_Packet));
-	//	UE_LOG(LogTemp, Warning, TEXT("CreateGameRoom Header Size  = %d"), sizeof(Header));
-	//	UE_LOG(LogTemp, Warning, TEXT("CreateGameRoom Packet Size = %d"), packetSize);
-
-	//	S_CreateGameRoom_Packet createGameRoomPacket;
-	//	//memcpy(&createGameRoomPacket, packet.data() + sizeof(Header), sizeof(S_CreateGameRoom_Packet));
-	//	FMemory::Memcpy(&createGameRoomPacket, packet.GetData() + sizeof(Header), sizeof(S_CreateGameRoom_Packet));
-	//	RecvCreateGameRoom(createGameRoomPacket);
-	//	break;
-	//case S_Move:
-	//	S_Move_Packet movePacket;
-	//	FMemory::Memcpy(&movePacket, packet.GetData() + sizeof(Header), sizeof(S_Move_Packet));
-	//	RecvMovePlayer(movePacket.objectID, movePacket.pos, movePacket.rotation);
-	//	break;
-	//}
 }
 
 void UMain::RecvAddObject(S_AddObject_Packet packet)
@@ -423,8 +278,6 @@ void UMain::RecvCreateGameRoom(S_CreateGameRoom_Packet packet)
 		{
 			const GameRoomDTO& room = packet.gameRooms[i];
 
-			UE_LOG(LogTemp, Warning, TEXT("Room[%d] pos = %f, %f, %f, type = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type);
-
 			FVector pos(room.pos.x, room.pos.y, room.pos.z);
 			FRotator rot = DirToRotation(room.dir);
 
@@ -432,13 +285,25 @@ void UMain::RecvCreateGameRoom(S_CreateGameRoom_Packet packet)
 			params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 			if (packet.gameRooms[i].type == GameRoomType::MainEntranceRoom)
+			{
 				AStaticMeshActor* roomActor = world->SpawnActor<AStaticMeshActor>(MainEntranceRoomClass, pos, rot, params);
+				UE_LOG(LogTemp, Warning, TEXT("MainEntrance Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+			}
 			if (packet.gameRooms[i].type == GameRoomType::GapRoom)
+			{
 				AStaticMeshActor* roomActor = world->SpawnActor<AStaticMeshActor>(GapRoomClass, pos, rot, params);
+				UE_LOG(LogTemp, Warning, TEXT("Gap Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+			}
 			if (packet.gameRooms[i].type == GameRoomType::ApparatusRoom)
+			{
 				AStaticMeshActor* roomActor = world->SpawnActor<AStaticMeshActor>(ApparatusRoomClass, pos, rot, params);
+				UE_LOG(LogTemp, Warning, TEXT("Apparatus Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+			}
 			if (packet.gameRooms[i].type == GameRoomType::ServerRoom)
+			{
 				AStaticMeshActor* roomActor = world->SpawnActor<AStaticMeshActor>(ServerRoomClass, pos, rot, params);
+				UE_LOG(LogTemp, Warning, TEXT("Server Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+			}
 		}
 	});
 }
