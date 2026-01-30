@@ -122,7 +122,7 @@ void Room::CreateFactoryGameRooms()
 			// 배치할 위치 계산 후 배치 가능한지 판단
 			// 연결할 방의 좌표 문 방향에 따라 설정
 			uint x{}, y{};
-			Vector pos;
+			Vector pos{};
 			Vector doorPos = door->GetPos();
 
 			// 방의 방향은 문과 반대
