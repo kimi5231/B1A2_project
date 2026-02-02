@@ -40,9 +40,9 @@
             "spawnChance": [0.0, 0.0, 0.0],
             "f1DoorCount": {"min": 2, "max": 2}, 
             "f2DoorCount": {"min": 0, "max": 0},
-            "f1DoorPos": [[350, 350, 0], [-350, 350, 0]],
+            "f1DoorPos": [[350, -350, 0], [-350, -350, 0]],
             "f2DoorPos": [],
-            "doorDir": [2, 2],
+            "doorDir": [0, 0],
             "enterDistance": -350
         },
         {
