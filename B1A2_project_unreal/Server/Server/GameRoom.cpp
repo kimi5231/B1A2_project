@@ -60,7 +60,7 @@ std::vector<DoorRef>& GameRoom::CreateDoors()
 		if (bern(gen))
 		{
 			//DoorRef door = std::make_shared<Door>(_pos + _info.f1DoorPos[_dir][i], _info.doorDir[i], _dir);
-			Vector doorPos;
+			Vector doorPos{};
 			switch (_dir)
 			{
 			case Front:
