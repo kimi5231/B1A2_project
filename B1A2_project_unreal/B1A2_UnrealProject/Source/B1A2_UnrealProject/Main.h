@@ -10,6 +10,7 @@
 
 class GameNetwork;
 class NetworkRunnable;
+class EmotionExtractionRunnable;
 class FRunnableThread;
 
 class AOtherPlayer;
@@ -27,12 +28,16 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ConnectServer();
 
+	UFUNCTION(BlueprintCallable)
+	void ConnectOpenCV();
+
 	TArray<uint8> CreatePacket(PacketID id, const void* packetData, int dataSize);
 
 	// Send
 	void ProcessSend(PacketID id, const void* packetData, int dataSize);
 
 	void SendLocalPosition();
+
 	// Recv
 	void Update();
 	void ProcessRecv();
@@ -64,6 +69,8 @@ private:
 	// FRunnbale
 	NetworkRunnable* _recvRunnable = nullptr;
 	FRunnableThread* _recvThread = nullptr;
+	EmotionExtractionRunnable* _emotionExtractionRunnable = nullptr;
+	FRunnableThread* _emotionExtractionThread = nullptr;
 
 	// 패킷 처리 주기
 	FTimerHandle _packetProcessTimerHandle; 
