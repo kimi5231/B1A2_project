@@ -13,9 +13,13 @@ public:
 	void Update();
 
 public:
+	// 절차적 생성 관련 함수
 	void SetupGameRoomConditions();
 	void CreateFactoryGameRooms();
 
+	void SetTileState(std::pair<int, int> index, TileState state, int layer);
+
+public:
 	GameObjectRef AddObject(ObjectType type);
 
 public:
@@ -44,6 +48,8 @@ private:
 
 	// 절차적으로 생성되는 방들이 기록되는 전체 공간
 	std::array<std::array<char, Width>, Height> _map;
+
+	std::unordered_map<std::pair<int, int>, short, PairHash> map;
 
 	// 각 방향별로 방이 생성될 확률
 	std::unordered_map < Dir, float> _roomSpawnChance;
