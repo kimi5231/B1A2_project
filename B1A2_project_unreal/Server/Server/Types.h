@@ -55,7 +55,25 @@ enum Difficulty
 	DifficultyCount,
 };
 
+enum TileState : short
+{
+	Impassable = 0b00, // 갈 수 없음 + 물체 없음
+	Passable = 0b01, // 갈 수 있음 + 물체 없음
+	Wall = 0b10, // 갈 수 없음 + 물체 있음 == 벽
+	Occupied = 0b11  // 갈 수 있음 + 물체 있음
+};
+
 //------------------Struct------------------
+// unordered map에 pair를 쓰기 위해 필요한 구조체
+struct PairHash
+{
+	std::size_t operator()(const std::pair<int, int>& p) const noexcept 
+	{
+		// 두 값을 섞어서 Hash 생성
+		return std::hash<int>()(p.first) ^ (std::hash<int>()(p.second) << 1);
+	}
+};
+
 struct Vector
 {
 	float x;
