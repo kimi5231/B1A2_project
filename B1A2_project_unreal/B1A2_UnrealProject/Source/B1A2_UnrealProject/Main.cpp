@@ -1,12 +1,11 @@
 ﻿#include "Main.h"
 #include "Network/GameNetwork.h"
 #include "NetworkRecvRunnable.h"
+#include "EmotionExtractionRunnable.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "MyPlayer.h"
 #include "OtherPlayer.h"
-
-//SOCKET _clientSocket;
 
 #define BUFSIZE	64
 
@@ -26,6 +25,14 @@ void UMain::ConnectServer()
 
 	_recvRunnable = new NetworkRunnable(this);
 	_recvThread = FRunnableThread::Create(_recvRunnable, TEXT("RecvThread"));
+}
+
+void UMain::ConnectOpenCV()
+{
+	_emotionExtractionRunnable = new EmotionExtractionRunnable(this);
+	_emotionExtractionThread = FRunnableThread::Create(_emotionExtractionRunnable, TEXT("EmotionExtractionThread"));
+
+	_emotionExtractionRunnable->Init();
 }
 
 TArray<uint8> UMain::CreatePacket(PacketID id, const void* packetData, int dataSize)
