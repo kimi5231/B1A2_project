@@ -97,7 +97,7 @@ void Room::CreateFactoryGameRooms()
 		//if (prevRoom->GetGameRoomType() == GameRoomType::RailCatwalk || prevRoom->GetGameRoomType() == GameRoomType::PipedHallways_Line)
 		{
 			// GameRoomType º±≈√
-			std::uniform_int_distribution<int> selectGameRoomType(static_cast<int>(GameRoomType::GapRoom), static_cast<int>(GameRoomType::ServerRoom));
+			std::uniform_int_distribution<int> selectGameRoomType(static_cast<int>(GameRoomType::ApparatusRoom), static_cast<int>(GameRoomType::ServerRoom));
 			GameRoomType type = static_cast<GameRoomType>(selectGameRoomType(gen));
 			GameRoomInfo info = g_dataManager->GetGameRoomInfo(type);
 
@@ -119,7 +119,7 @@ void Room::CreateFactoryGameRooms()
 				y = (pos.y - info.size.y / 2) / 10;
 				break;
 			case Right:
-				pos = { doorPos.x + info.size.x / 2, doorPos.y + info.enterDistance, doorPos.z };
+				pos = { doorPos.x - info.size.y / 2, doorPos.y + info.enterDistance, doorPos.z };
 				x = (pos.x - info.size.y / 2) / 10;
 				y = (pos.y - info.size.x / 2) / 10;
 				break;
@@ -129,7 +129,7 @@ void Room::CreateFactoryGameRooms()
 				y = (pos.y - info.size.y / 2) / 10;
 				break;
 			case Left:
-				pos = { doorPos.x - info.size.x / 2, doorPos.y - info.enterDistance, doorPos.z };
+				pos = { doorPos.x + info.size.y / 2, doorPos.y - info.enterDistance, doorPos.z };
 				x = (pos.x - info.size.y / 2) / 10;
 				y = (pos.y - info.size.x / 2) / 10;
 				break;
@@ -216,6 +216,8 @@ void Room::CreateFactoryGameRooms()
 				std::vector<DoorRef>& doors = gameRoom->CreateDoors();
 				for (const DoorRef door : doors)
 					_connectableDoors[door->GetDir()].push_back(door);
+				
+				std::cout << "Create" << static_cast<int>(type) << std::endl;
 			}
 		}
 
