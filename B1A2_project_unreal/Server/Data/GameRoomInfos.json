@@ -197,7 +197,7 @@
         },
         {
             "type": 13,
-            "size": [600, 600, 1500],
+            "size": [800, 800, 1500],
             "isCreateItem": true,
             "isCreateExit": false,
             "minCreateCount": [1, 1, 2],
@@ -205,8 +205,8 @@
             "spawnChance": [0.0, 0.0, 0.0],
             "f1DoorCount": {"min": 1, "max": 2}, 
             "f2DoorCount": {"min": 1, "max": 2},
-            "f1DoorPos": [[0, -600, 500], [0, 600, 500]],
-            "f2DoorPos": [[0, -600, 1000], [0, 600, 1000]],
+            "f1DoorPos": [[0, -400, 500], [0, 400, 500]],
+            "f2DoorPos": [[0, -400, 1000], [0, 400, 1000]],
             "doorDir": [0, 2, 0, 2],
             "enterDistance": 0
         }
