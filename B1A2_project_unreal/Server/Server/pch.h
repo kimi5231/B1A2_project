@@ -11,6 +11,7 @@
 #include <ranges>
 #include <filesystem>
 #include <numeric>
+#include <utility> 
 
 #include "Types.h"
 
@@ -28,3 +29,7 @@ using DoorRef = std::shared_ptr<class Door>;
 
 #define Width 100
 #define Height 100
+
+// 비트연산
+#define LAYER_SHIFT(n) ((n) * 2)
+#define LAYER_MASK(n)  (0b11 << LAYER_SHIFT(n))

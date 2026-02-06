@@ -3,7 +3,7 @@
 
 Player::Player()
 {
-	_pos = { 5000, 5000, 100 };
+	_pos = { Width/2, Height/2, 0 };
 	_rotation = { 0, 0, 0 };
 }
 
