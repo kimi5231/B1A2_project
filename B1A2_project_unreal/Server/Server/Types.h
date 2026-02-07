@@ -6,6 +6,7 @@ using uint = unsigned int;
 enum class ObjectType
 {
 	Player,
+	Monster,
 };
 
 enum ObjectState
@@ -67,7 +68,7 @@ enum TileState : short
 // unordered map에 pair를 쓰기 위해 필요한 구조체
 struct PairHash
 {
-	std::size_t operator()(const std::pair<int, int>& p) const noexcept 
+	size_t operator()(const std::pair<int, int>& p) const noexcept 
 	{
 		// 두 값을 섞어서 Hash 생성
 		return std::hash<int>()(p.first) ^ (std::hash<int>()(p.second) << 1);

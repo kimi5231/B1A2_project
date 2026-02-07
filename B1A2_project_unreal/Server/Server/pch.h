@@ -12,6 +12,7 @@
 #include <filesystem>
 #include <numeric>
 #include <utility> 
+#include <functional>
 
 #include "Types.h"
 
@@ -25,6 +26,7 @@ using RoomRef = std::shared_ptr<class Room>;
 using GameRoomRef = std::shared_ptr<class GameRoom>;
 using GameObjectRef = std::shared_ptr<class GameObject>;
 using PlayerRef = std::shared_ptr<class Player>;
+using MonsterRef = std::shared_ptr<class Monster>;
 using DoorRef = std::shared_ptr<class Door>;
 
 #define Width 10000
