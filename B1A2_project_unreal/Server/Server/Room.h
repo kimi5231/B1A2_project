@@ -1,5 +1,6 @@
 #pragma once
 #include "Player.h"
+#include "Monster.h"
 
 class Door;
 
@@ -33,6 +34,7 @@ private:
 
 	std::vector<GameRoomRef> _gameRooms;
 	std::unordered_map<uint, PlayerRef> _players;
+	std::unordered_map<uint, MonsterRef> _monsters;
 
 	uint _playerCount{};
 
@@ -47,9 +49,7 @@ private:
 	std::unordered_map<Dir, std::vector<DoorRef>> _connectableDoors;
 
 	// 절차적으로 생성되는 방들이 기록되는 전체 공간
-	std::array<std::array<char, Width>, Height> _map;
-
-	std::unordered_map<std::pair<int, int>, short, PairHash> map;
+	std::unordered_map<std::pair<int, int>, short, PairHash> _map;
 
 	// 각 방향별로 방이 생성될 확률
 	std::unordered_map < Dir, float> _roomSpawnChance;

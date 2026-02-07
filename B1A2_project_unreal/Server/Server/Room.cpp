@@ -22,6 +22,9 @@ void Room::Update()
 {
 	for (const auto& item : _players)
 		item.second->Update();
+
+	for (const auto& item : _monsters)
+		item.second->Update(_map);
 }
 
 void Room::SetupGameRoomConditions()
@@ -147,7 +150,7 @@ void Room::CreateFactoryGameRooms()
 					for (int j = y; j < y + (info.size.y / 10); j++)
 					{
 						// 배치할 공간이 없음, 방 종류 변경 나중에 처리
-						if (map.find({ i, j }) != map.end())
+						if (_map.find({ i, j }) != _map.end())
 						{
 							isCreate = false;
 							break;
@@ -165,7 +168,7 @@ void Room::CreateFactoryGameRooms()
 					for (int j = y; j < y + (info.size.y / 10); j++)
 					{
 						// 배치할 공간이 없음, 방 종류 변경 나중에 처리
-						if (map.find({ j, i }) != map.end())
+						if (_map.find({ j, i }) != _map.end())
 						{
 							isCreate = false;
 							break;
@@ -247,9 +250,9 @@ void Room::CreateFactoryGameRooms()
 void Room::SetTileState(std::pair<int, int> index, TileState state, int layer)
 {
 	// 해당 층 비트 지우기
-	map[index] &= ~LAYER_MASK(layer);
+	_map[index] &= ~LAYER_MASK(layer);
 	// TileState 변경
-	map[index] |= (state << LAYER_SHIFT(layer));
+	_map[index] |= (state << LAYER_SHIFT(layer));
 }
 
 GameObjectRef Room::AddObject(ObjectType type)
