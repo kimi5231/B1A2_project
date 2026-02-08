@@ -336,9 +336,15 @@ void ServerFramework::ProcessAccept(SOCKET clientSocket)
 	SendCreateGameRoomPacket(_room->GetGameRooms(), false, newClient->socket);
 
 	// 새로 접속한 Client에게 Room에 있는 모든 Player 정보 송신
-	const std::unordered_map<UINT, PlayerRef>& players = _room->GetPlayers();
+	const std::unordered_map<uint, PlayerRef>& players = _room->GetPlayers();
 	for (const auto& item : players)
 		SendAddObjectPacket(item.second, false, newClient->socket);
+	const std::unordered_map<uint, MonsterRef>& monsters = _room->GetMonsters();
+	for (const auto& item : monsters)
+		SendAddObjectPacket(item.second, false, newClient->socket);
+
+	// 추후 삭제 예정
+	_room->AddObject(ObjectType::Monster);
 }
 
 void ServerFramework::ProcessDisconnect(ClientRef client)
