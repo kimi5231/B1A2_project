@@ -1,5 +1,5 @@
 #pragma once
-class GameObject
+class GameObject : public std::enable_shared_from_this<GameObject>
 {
 public:
 	GameObject();

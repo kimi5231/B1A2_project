@@ -3,6 +3,7 @@
 #include "Global.h"
 #include "GameRoom.h"
 #include "Door.h"
+#include <chrono>
 
 Room::Room()
 {
@@ -21,11 +22,24 @@ Room::~Room()
 
 void Room::Update()
 {
-	for (const auto& item : _players)
-		item.second->Update();
+	using namespace std::chrono;
 
-	for (const auto& item : _monsters)
-		item.second->Update(_map);
+	static auto lastUpdate = steady_clock::now();
+	const auto TICK = 50ms; // 20Hz, 50ms마다 실행
+
+	auto now = steady_clock::now();
+	if (now - lastUpdate >= TICK)
+	{
+		// 플레이어 업데이트
+		for (const auto& item : _players)
+			item.second->Update();
+
+		// 몬스터 업데이트
+		for (const auto& item : _monsters)
+			item.second->Update(_map);
+
+		lastUpdate = now;
+	}
 }
 
 void Room::SetupGameRoomConditions()

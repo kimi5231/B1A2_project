@@ -58,6 +58,9 @@ public:
 	void ProcessUpdateObjectStatePacket(C_UpdateObjectState_Packet packet);
 	void ProcessMovePacket(C_Move_Packet packet);
 
+public:
+	Room* GetRoom() { return _room; }
+
 private:
 	fd_set _readSet{};
 	fd_set _writeSet{};

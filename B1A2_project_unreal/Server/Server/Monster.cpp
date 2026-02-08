@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Monster.h"
 #include "Global.h"
+#include "Room.h"
 
 Monster::Monster()
 {
@@ -21,21 +22,23 @@ void Monster::Update(std::unordered_map<std::pair<int, int>, short, PairHash>& m
 
 	Vector pos = _pos;
 	// map 타일 한칸씩 이동
-	switch (dir)
+	/*switch (dir)
 	{
 	case Front:
-		pos.y -= 10;
+		pos.y -= 100;
 		break;
 	case Right:
-		pos.x += 10;
+		pos.x += 100;
 		break;
 	case Back:
-		pos.y += 10;
+		pos.y += 100;
 		break;
 	case Left:
-		pos.x -= 10;
+		pos.x -= 100;
 		break;
-	}
+	}*/
+
+	pos.x += 10;
 
 	// 해당 타일로 이동이 가능한지 확인
 	std::pair<int, int> index{ pos.x / 10, pos.y / 10 };
@@ -45,9 +48,12 @@ void Monster::Update(std::unordered_map<std::pair<int, int>, short, PairHash>& m
 	if (map.find({ x, y }) != map.end())
 	{
 		// 이동이 가능하면
-		if (map[index] == TileState::Passable)
+		if (g_framework->GetRoom()->GetTileState({x, y}, 3) == TileState::Passable)
+		{
 			_pos = pos;
-
+			g_framework->SendMovePacket(shared_from_this(), true);
+		}
+			
 		// 물체가 있다면
 	}
 }
