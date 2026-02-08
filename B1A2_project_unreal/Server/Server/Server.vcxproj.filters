@@ -57,7 +57,7 @@
       <Filter>소스 파일\Game\Object</Filter>
     </ClCompile>
     <ClCompile Include="Monster.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Game\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -94,6 +94,8 @@
     <ClInclude Include="Door.h">
       <Filter>소스 파일\Game\Object</Filter>
     </ClInclude>
-    <ClInclude Include="Monster.h" />
+    <ClInclude Include="Monster.h">
+      <Filter>소스 파일\Game\Object</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

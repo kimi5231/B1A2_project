@@ -235,7 +235,7 @@ std::vector<T> ServerFramework::DeserializeVector(const std::vector<char>& data)
 void ServerFramework::SendAddObjectPacket(GameObjectRef object, bool broadcast, SOCKET client)
 {
 	// Packet Data »ý¼º
-	S_AddObject_Packet packetData{ object->GetID(), object->GetPos(), object->GetRotation()};
+	S_AddObject_Packet packetData{ object->GetObjectType(), object->GetID(), object->GetPos(), object->GetRotation()};
 
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);

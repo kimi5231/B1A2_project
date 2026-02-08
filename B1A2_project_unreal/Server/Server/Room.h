@@ -31,6 +31,7 @@ public:
 private:
 	// 추후 로그인 기능 추가 후 ID로 대체할 것
 	uint _generatePlayerID{};
+	uint _generateMonsterID{};
 
 	std::vector<GameRoomRef> _gameRooms;
 	std::unordered_map<uint, PlayerRef> _players;
