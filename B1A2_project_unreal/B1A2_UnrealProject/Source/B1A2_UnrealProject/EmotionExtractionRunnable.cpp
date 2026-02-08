@@ -60,73 +60,75 @@ bool EmotionExtractionRunnable::Init()
 uint32 EmotionExtractionRunnable::Run()
 {
     cv::Mat frame, gray, faceROI;
+    
+    // FER2013 공식 레이블 순서
+    TArray<FString> FER2013_Labels = { TEXT("Angry"), TEXT("Disgust"), TEXT("Fear"), TEXT("Happy"), TEXT("Sad"), TEXT("Surprise"), TEXT("Neutral") };
 
     while (_running)
     {
-        // 카메라 프레임 읽기
         _videoCapture >> frame;
-        if (frame.empty())
-        {
+        if (frame.empty()) {
             FPlatformProcess::Sleep(0.1f);
             continue;
         }
 
-        // 흑백 변환
+        // 전처리
         cv::cvtColor(frame, gray, cv::COLOR_BGR2GRAY);
-        std::vector<cv::Rect> faces;
+        cv::equalizeHist(gray, gray);
 
-        // 얼굴 검출
+        std::vector<cv::Rect> faces;
         _faceDetector.detectMultiScale(gray, faces, 1.1, 5, 0, cv::Size(30, 30));
 
         if (faces.size() > 0)
         {
-            // 가장 영역이 큰 얼굴 추출
-            faceROI = gray(faces[0]);   
+            // 가장 큰 얼굴 선택
+            faceROI = gray(faces[0]);
 
-            // FER2013
-            cv::Mat blob = cv::dnn::blobFromImage(faceROI, 1.0 / 255.0, cv::Size(48, 48), cv::Scalar(0), false);
+            // 모델 입력 규격 맞추기 (48x48, 1/255 정규화)
+            cv::Mat blob = cv::dnn::blobFromImage(faceROI, 1.0 / 255.0, cv::Size(48, 48), cv::Scalar(0), false, false);
 
-            // 추론
             _emotionNet.setInput(blob);
-            cv::Mat prob = _emotionNet.forward();
+            cv::Mat output = _emotionNet.forward();
 
-            // 해석
-            prob = prob.reshape(1, 1);
+            // LogSoftmax를 확률로 변환
+            cv::Mat prob;
+            cv::exp(output, prob);
 
-            FString scoreLog = TEXT("[OpenCV] Emotion Scores: ");
             double MaxVal = 0;
-            int MaxIdx = 0;
+            cv::Point MaxLoc;
+            cv::minMaxLoc(prob, nullptr, &MaxVal, nullptr, &MaxLoc);
+            int MaxIdx = MaxLoc.x;
 
+            // 로그 출력
+            FString scoreLog = TEXT("[OpenCV] Emotion Probabilities: ");
             for (int i = 0; i < prob.cols; i++)
             {
-                // 모델 출력값 추출
-                float score = prob.at<float>(0, i);
-
-                if (Labels.IsValidIndex(i))
+                float s = prob.at<float>(0, i);
+                if (FER2013_Labels.IsValidIndex(i))
                 {
-                    scoreLog += FString::Printf(TEXT("[%s: %.2f] "), *Labels[i], score);
-                }
-
-                // 가장 높은 점수 찾음
-                if (score > MaxVal)
-                {
-                    MaxVal = score;
-                    MaxIdx = i;
+                    scoreLog += FString::Printf(TEXT("[%s: %.2f] "), *FER2013_Labels[i], s);
                 }
             }
 
-            // 모든 감정 점수 출력
             UE_LOG(LogTemp, Log, TEXT("%s"), *scoreLog);
+            UE_LOG(LogTemp, Warning, TEXT(">> Result: %s (%.1f%%)"), *FER2013_Labels[MaxIdx], MaxVal * 100.0f);
         }
 
-        // 1초마다 추출하도록 대기
         FPlatformProcess::Sleep(1.0f);
     }
-
     return 0;
 }
 
 void EmotionExtractionRunnable::Stop()
 {
     _running = false;
+}
+
+void EmotionExtractionRunnable::Exit()
+{
+    if (_videoCapture.isOpened())
+    {
+        _videoCapture.release();
+        UE_LOG(LogTemp, Log, TEXT("[OpenCV] Camera Released"));
+    }
 }

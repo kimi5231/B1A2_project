@@ -16,6 +16,30 @@ void UMain::Init()
 
 void UMain::Shutdown()
 {
+	// OpenCV 스레드
+	if (_emotionExtractionThread)
+	{
+		_emotionExtractionRunnable->Stop();
+		_emotionExtractionThread->WaitForCompletion();
+		delete _emotionExtractionThread;
+		_emotionExtractionThread = nullptr;
+	}
+
+	// GameNetwork
+	if (_gameNetwork)
+	{
+		_gameNetwork->~GameNetwork();
+	}
+	
+	// Recv 스레드
+	if (_recvThread)
+	{
+		_recvRunnable->Stop();
+		_recvThread->WaitForCompletion();
+		delete _recvThread;
+		_recvThread = nullptr;
+	}
+
 	Super::Shutdown();
 }
 
