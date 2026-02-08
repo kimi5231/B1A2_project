@@ -271,7 +271,7 @@ void ServerFramework::SendUpdateObjectStatePacket(GameObjectRef object, bool bro
 void ServerFramework::SendMovePacket(GameObjectRef object, bool broadcast, SOCKET client)
 {
 	// Packet Data »ý¼º
-	S_Move_Packet packetData{ object->GetID(), object->GetPos(), object->GetRotation(), object->GetState() };
+	S_Move_Packet packetData{ object->GetObjectType(), object->GetID(), object->GetPos(), object->GetRotation(), object->GetState() };
 
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);
@@ -348,7 +348,7 @@ void ServerFramework::ProcessDisconnect(ClientRef client)
 
 void ServerFramework::ProcessUpdateObjectStatePacket(C_UpdateObjectState_Packet packet)
 {
-	GameObjectRef object = _room->GetObject(packet.objectID);
+	GameObjectRef object = _room->GetObject(packet.type, packet.objectID);
 
 	object->SetState(packet.state);
 
@@ -362,7 +362,7 @@ void ServerFramework::ProcessUpdateObjectStatePacket(C_UpdateObjectState_Packet 
 
 void ServerFramework::ProcessMovePacket(C_Move_Packet packet)
 {
-	GameObjectRef object = _room->GetObject(packet.objectID);
+	GameObjectRef object = _room->GetObject(packet.type, packet.objectID);
 
 	if (object == nullptr)
 		return;

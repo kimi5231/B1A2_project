@@ -24,7 +24,7 @@ public:
 	GameObjectRef AddObject(ObjectType type);
 
 public:
-	GameObjectRef GetObject(uint id) { return _players[id]; }
+	GameObjectRef GetObject(ObjectType type, uint id);
 	const std::unordered_map<uint, PlayerRef>& GetPlayers() { return _players; }
 	const std::vector<GameRoomRef>& GetGameRooms() { return _gameRooms; }
 
