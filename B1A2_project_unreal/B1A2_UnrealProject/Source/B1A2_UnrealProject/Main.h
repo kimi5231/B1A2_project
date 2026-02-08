@@ -43,6 +43,8 @@ public:
 	void ProcessRecv();
 	
 	void RecvAddObject(S_AddObject_Packet packet);
+	void AddPlayer(S_AddObject_Packet packet);
+	void AddMonster(S_AddObject_Packet packet);
 	void RecvMovePlayer(S_Move_Packet packet);
 	void RecvUpdateObjectState(S_UpdateObjectState_Packet packet);
 	void RecvCreateGameRoom(S_CreateGameRoom_Packet packet);
@@ -93,6 +95,10 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AStaticMeshActor> 	FactoryRoomClass;
 
+	// 몬스터
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AStaticMeshActor> TestMonsterClass;
+
 private:
 	GameNetwork* _gameNetwork = nullptr;
 
@@ -114,6 +120,8 @@ private:
 
 	// 내 플레이어
 	AMyPlayer* _myPlayer;
-
 	int _myID{};
+
+	// 몬스터
+	TMap<uint64, AStaticMeshActor*> _monsters;
 };
