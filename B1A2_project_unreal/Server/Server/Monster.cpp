@@ -6,6 +6,7 @@ Monster::Monster()
 {
 	_pos = { Width / 2 * 10 + 100, Height / 2 * 10, 100 };
 	_rotation = { 0, 0, 0 };
+	_type = ObjectType::Monster;
 } 
 
 Monster::~Monster()

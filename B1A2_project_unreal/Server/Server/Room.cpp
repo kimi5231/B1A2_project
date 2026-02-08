@@ -7,6 +7,7 @@
 Room::Room()
 {
 	_generatePlayerID = 1;
+	_generateMonsterID = 1;
 
 	_currentDifficulty = Difficulty::Easy;
 	_detailDifficulty = Difficulty::Easy;
@@ -268,11 +269,16 @@ GameObjectRef Room::AddObject(ObjectType type)
 		Vector pos = object->GetPos();
 		pos.x += _playerCount * 100;
 		object->SetPos(pos);
+		object->SetID(_generatePlayerID++);
 		_playerCount++;
 		break;
+	// temp. 추후 Monster Type별로 나눌 예정
+	case ObjectType::Monster:
+		_monsters[_generateMonsterID] = std::make_shared<Monster>();
+		object = _monsters[_generateMonsterID];
+		object->SetID(_generateMonsterID++);
+		break;
 	}
-
-	object->SetID(_generatePlayerID++);
 
 	g_framework->SendAddObjectPacket(object, true);
 
