@@ -58,19 +58,22 @@ void Room::CreateFactoryGameRooms()
 		gameRoom->SetPos(pos);
 		gameRoom->SetDir(Front);
 
-		// index 계산 후 맵에 자치한 공간만큼 채우기
-		uint x = (pos.x - info.size.x / 2) / 10;
-		uint y = (pos.y - info.size.y / 2) / 10;
+		// index 계산 후 맵에 자치한 공간만큼 채우기(벽 제외)
+		uint x = (pos.x - info.size.x / 2) / 10 + 1;
+		uint y = (pos.y - info.size.y / 2) / 10 + 1;
 
-		for (int i = x; i < x + (info.size.x / 10); i++)
+		for (int i = x; i < x + (info.size.x / 10 - 2); i++)
 		{
-			for (int j = y; j < y + (info.size.y / 10); j++)
+			for (int j = y; j < y + (info.size.y / 10 - 2); j++)
 				SetTileState({ i, j }, Passable, 3);
 		}
 
 		std::vector<DoorRef>& doors = gameRoom->CreateDoors();
 		for (const DoorRef door : doors)
+		{
 			_connectableDoors[door->GetDir()].push_back(door);
+			// 
+		}
 
 		_gameRooms.push_back(gameRoom);
 	}
