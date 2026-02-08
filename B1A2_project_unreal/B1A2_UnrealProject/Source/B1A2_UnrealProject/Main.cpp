@@ -213,7 +213,7 @@ void UMain::RecvAddObject(S_AddObject_Packet packet)
 
 	// 다른 플레이어 Spawn
 	FVector spawnLocation(packet.pos.x, packet.pos.y, packet.pos.z);
-	FRotator spawnRotation(0, packet.rotation.yaw, 0);	// 일단 0으로 설정
+	FRotator spawnRotation(0, packet.rotation.yaw, 0);	
 	int id = packet.objectID;
 
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
@@ -291,25 +291,65 @@ void UMain::RecvCreateGameRoom(S_CreateGameRoom_Packet packet)
 			FActorSpawnParameters params;
 			params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-			if (packet.gameRooms[i].type == GameRoomType::MainEntranceRoom)
+			AStaticMeshActor* roomActor;
+			switch (packet.gameRooms[i].type)
 			{
-				AStaticMeshActor* roomActor = world->SpawnActor<AStaticMeshActor>(MainEntranceRoomClass, pos, rot, params);
+			case GameRoomType::MainEntranceRoom:
+				roomActor = world->SpawnActor<AStaticMeshActor>(MainEntranceRoomClass, pos, rot, params);
 				UE_LOG(LogTemp, Warning, TEXT("MainEntrance Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
-			}
-			if (packet.gameRooms[i].type == GameRoomType::GapRoom)
-			{
-				AStaticMeshActor* roomActor = world->SpawnActor<AStaticMeshActor>(GapRoomClass, pos, rot, params);
+				break;
+			case GameRoomType::GapRoom:
+				roomActor = world->SpawnActor<AStaticMeshActor>(GapRoomClass, pos, rot, params);
 				UE_LOG(LogTemp, Warning, TEXT("Gap Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
-			}
-			if (packet.gameRooms[i].type == GameRoomType::ApparatusRoom)
-			{
-				AStaticMeshActor* roomActor = world->SpawnActor<AStaticMeshActor>(ApparatusRoomClass, pos, rot, params);
-				UE_LOG(LogTemp, Warning, TEXT("Apparatus Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
-			}
-			if (packet.gameRooms[i].type == GameRoomType::ServerRoom)
-			{
-				AStaticMeshActor* roomActor = world->SpawnActor<AStaticMeshActor>(ServerRoomClass, pos, rot, params);
+				break;
+			case GameRoomType::ApparatusRoom:
+				roomActor = world->SpawnActor<AStaticMeshActor>(ApparatusRoomClass, pos, rot, params);
+				UE_LOG(LogTemp, Warning, TEXT("ApparatusRoom Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+				break;
+			case GameRoomType::ServerRoom:
+				roomActor = world->SpawnActor<AStaticMeshActor>(ServerRoomClass, pos, rot, params);
 				UE_LOG(LogTemp, Warning, TEXT("Server Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+				break;
+			case GameRoomType::CabinetRoom:
+				roomActor = world->SpawnActor<AStaticMeshActor>(CabinetRoomClass, pos, rot, params);
+				UE_LOG(LogTemp, Warning, TEXT("Cabinet Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+				break;
+			case GameRoomType::StorageRoom_Rect:
+				roomActor = world->SpawnActor<AStaticMeshActor>(StorageRoom_RectClass, pos, rot, params);
+				UE_LOG(LogTemp, Warning, TEXT("StorageRoom_Rect Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+				break;
+			case GameRoomType::StorageRoom_Corner:
+				roomActor = world->SpawnActor<AStaticMeshActor>(StorageRoom_ConerClass, pos, rot, params);
+				UE_LOG(LogTemp, Warning, TEXT("StorageRoom_Coner Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+				break;
+			case GameRoomType::StorageRoom_Step:
+				roomActor = world->SpawnActor<AStaticMeshActor>(StorageRoom_StepClass, pos, rot, params);
+				UE_LOG(LogTemp, Warning, TEXT("StorageRoom_Step Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+				break;
+			case GameRoomType::YellowOfficeRoom:
+				roomActor = world->SpawnActor<AStaticMeshActor>(YellowOfficeRoomClass, pos, rot, params);
+				UE_LOG(LogTemp, Warning, TEXT("YellowOffice Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+				break;
+			case GameRoomType::FactoryRoom:
+				roomActor = world->SpawnActor<AStaticMeshActor>(FactoryRoomClass, pos, rot, params);
+				UE_LOG(LogTemp, Warning, TEXT("Factory Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+				break;
+			case GameRoomType::RailCatwalk:
+				roomActor = world->SpawnActor<AStaticMeshActor>(RailCatwalkClass, pos, rot, params);
+				UE_LOG(LogTemp, Warning, TEXT("RailCatwalk Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+				break;
+			case GameRoomType::PipedHallways_Line:
+				roomActor = world->SpawnActor<AStaticMeshActor>(PipedHallways_LineClass, pos, rot, params);
+				UE_LOG(LogTemp, Warning, TEXT("PipedHallways_Line Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+				break;
+			case GameRoomType::PipedHallways_Grid:
+				roomActor = world->SpawnActor<AStaticMeshActor>(PipedHallways_GridClass, pos, rot, params);
+				UE_LOG(LogTemp, Warning, TEXT("PipedHallways_Grid Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+				break;
+			case GameRoomType::Staircase:
+				roomActor = world->SpawnActor<AStaticMeshActor>(StaircaseClass, pos, rot, params);
+				UE_LOG(LogTemp, Warning, TEXT("Staircase Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+				break;
 			}
 		}
 	});
