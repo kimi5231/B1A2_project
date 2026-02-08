@@ -105,6 +105,7 @@ struct C_UpdateObjectState_Packet
 
 struct C_Move_Packet
 {
+	ObjectType type;
 	int objectID;
 	Vector pos;
 	Rotation rotation;
@@ -136,6 +137,7 @@ struct S_UpdateObjectState_Packet
 
 struct S_Move_Packet
 {
+	ObjectType type;
 	int objectID;
 	Vector pos;
 	Rotation rotation;

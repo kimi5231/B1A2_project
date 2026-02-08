@@ -190,10 +190,10 @@ void GameNetwork::SendUpdateObjectStatePacket(int id, ObjectType type, ObjectSta
 	_sendEvents.push_back(event);
 }
 
-void GameNetwork::SendMovePacket(int id, Vector pos, Rotation rotation, ObjectState state)
+void GameNetwork::SendMovePacket(ObjectType type, int id, Vector pos, Rotation rotation, ObjectState state)
 {
 	// Packet Data »ý¼º
-	C_Move_Packet packetData{ id, pos, rotation, state };
+	C_Move_Packet packetData{ type, id, pos, rotation, state };
 
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);

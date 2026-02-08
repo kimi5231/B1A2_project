@@ -45,7 +45,11 @@ public:
 	void RecvAddObject(S_AddObject_Packet packet);
 	void AddPlayer(S_AddObject_Packet packet);
 	void AddMonster(S_AddObject_Packet packet);
+
+	void RecvMoveObject(S_Move_Packet packet);
 	void RecvMovePlayer(S_Move_Packet packet);
+	void RecvMoveMonster(S_Move_Packet packet);
+
 	void RecvUpdateObjectState(S_UpdateObjectState_Packet packet);
 	void RecvCreateGameRoom(S_CreateGameRoom_Packet packet);
 
