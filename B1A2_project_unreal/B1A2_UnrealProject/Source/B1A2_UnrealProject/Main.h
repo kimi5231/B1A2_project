@@ -62,6 +62,36 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AStaticMeshActor> ServerRoomClass;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AStaticMeshActor> CabinetRoomClass;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AStaticMeshActor> PipedHallways_GridClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AStaticMeshActor> PipedHallways_LineClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AStaticMeshActor> RailCatwalkClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AStaticMeshActor> StaircaseClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AStaticMeshActor> StorageRoom_ConerClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AStaticMeshActor> StorageRoom_RectClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AStaticMeshActor> StorageRoom_StepClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AStaticMeshActor> YellowOfficeRoomClass;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AStaticMeshActor> 	FactoryRoomClass;
 
 private:
 	GameNetwork* _gameNetwork = nullptr;
