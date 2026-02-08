@@ -89,6 +89,9 @@ void UMain::ProcessSend(PacketID id, const void* packetData, int dataSize)
 
 void UMain::SendLocalPosition()
 {
+	if (_myID == 0)
+		return;
+
 	UWorld* world = GetWorld();
 	if (!world) return;
 
@@ -132,7 +135,7 @@ void UMain::SendLocalPosition()
 			state = (Speed > 10.f) ? RUN : IDLE;
 		}
 
-		_gameNetwork->SendMovePacket(_myID, pos, rot, state);
+		_gameNetwork->SendMovePacket(ObjectType::Player, _myID, pos, rot, state);
 	}
 }
 
@@ -178,7 +181,7 @@ void UMain::ProcessRecv()
 		case S_Move:
 			S_Move_Packet movePacket;
 			FMemory::Memcpy(&movePacket, event->serializedPacketData.data(), sizeof(S_Move_Packet));
-			RecvMovePlayer(movePacket);
+			RecvMoveObject(movePacket);
 			event->isComplete = true;
 			break;
 		case S_CreateGameRoom:
@@ -200,6 +203,8 @@ void UMain::RecvAddObject(S_AddObject_Packet packet)
 
 void UMain::AddPlayer(S_AddObject_Packet packet)
 {
+	UE_LOG(LogTemp, Log, TEXT("AddObject Packet [%d], %f, %f, %f"), packet.objectID, packet.pos.x, packet.pos.y, packet.pos.z);
+
 	if (_myID == 0)
 	{
 		// 자신의 ID 설정
@@ -252,7 +257,7 @@ void UMain::AddPlayer(S_AddObject_Packet packet)
 	int id = packet.objectID;
 
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
-	{
+		{
 			UWorld* world = GetWorld();
 			if (!world || !OtherPlayerClass)
 				return;
@@ -269,7 +274,7 @@ void UMain::AddPlayer(S_AddObject_Packet packet)
 				_otherPlayers.Remove(id);
 				UE_LOG(LogTemp, Error, TEXT("Other Spawn Failed... ID [%d]"), id);
 			}
-	});
+		});
 }
 
 void UMain::AddMonster(S_AddObject_Packet packet)
@@ -306,6 +311,14 @@ void UMain::AddMonster(S_AddObject_Packet packet)
 }
 
 
+void UMain::RecvMoveObject(S_Move_Packet packet)
+{
+	if (packet.type == ObjectType::Player)
+		RecvMovePlayer(packet);
+	else if (packet.type == ObjectType::Monster)
+		RecvMoveMonster(packet);
+}
+
 void UMain::RecvMovePlayer(S_Move_Packet packet)
 {
 	if (packet.objectID == _myID)
@@ -334,6 +347,29 @@ void UMain::RecvMovePlayer(S_Move_Packet packet)
 		player->SetPlayerLocation(pos, rot);
 		player->SetPlayerState(packet.state);
 		//UE_LOG(LogTemp, Display, TEXT("Other Player [%d] SetPlayerLocation!!!"), id);
+	});
+}
+
+void UMain::RecvMoveMonster(S_Move_Packet packet)
+{
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		UWorld* world = GetWorld();
+		if (!world)
+			return;
+
+		AStaticMeshActor** findMonster = _monsters.Find(packet.objectID);
+		if (!findMonster)
+		{
+			UE_LOG(LogTemp, Error, TEXT("Monster [%d] not in _monsters"), packet.objectID);
+			return;
+		}
+
+		AStaticMeshActor* monster = (*findMonster);
+
+		FVector pos(packet.pos.x, packet.pos.y, packet.pos.z);
+		FRotator rot(0, packet.rotation.yaw, 0);
+		monster->SetActorLocationAndRotation(pos, rot);
 	});
 }
 
