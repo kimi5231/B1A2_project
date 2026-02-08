@@ -31,7 +31,6 @@ void Room::Update()
 void Room::SetupGameRoomConditions()
 {
 	// 방별 개수 초기화
-	
 }
 
 void Room::CreateFactoryGameRooms()
@@ -59,20 +58,42 @@ void Room::CreateFactoryGameRooms()
 		gameRoom->SetDir(Front);
 
 		// index 계산 후 맵에 자치한 공간만큼 채우기(벽 제외)
-		uint x = (pos.x - info.size.x / 2) / 10 + 1;
-		uint y = (pos.y - info.size.y / 2) / 10 + 1;
+		uint x = (pos.x - info.size.x / 2) / 10;
+		uint y = (pos.y - info.size.y / 2) / 10;
 
-		for (int i = x; i < x + (info.size.x / 10 - 2); i++)
+		for (int i = x; i < x + (info.size.x / 10); i++)
 		{
-			for (int j = y; j < y + (info.size.y / 10 - 2); j++)
-				SetTileState({ i, j }, Passable, 3);
+			for (int j = y; j < y + (info.size.y / 10); j++)
+			{
+				// 테두리는 벽으로 지정
+				if (i == x || i == x + (info.size.x / 10) - 1 || j == y || j == y + (info.size.y / 10) - 1)
+					SetTileState({ i, j }, Wall, 3);
+				else
+					SetTileState({ i, j }, Passable, 3);
+			}	
 		}
 
 		std::vector<DoorRef>& doors = gameRoom->CreateDoors();
 		for (const DoorRef door : doors)
 		{
 			_connectableDoors[door->GetDir()].push_back(door);
-			// 
+			
+			// 문이 있는 곳도 갈 수 있도록 처리 (추후 문 상태에 따라 다르게 처리할 예정)
+			Vector doorPos = door->GetPos();
+			std::pair<int, int> index{ door->GetPos().x / 10, door->GetPos().y / 10 };
+
+		    // 일부 방향은 인덱스 조정 필요
+			switch (door->GetDir())
+			{
+			case Right:
+				index.first -= 1;
+				break;
+			case Back:
+				index.second -= 1;
+				break;
+			}
+
+			SetTileState(index, Passable, 3);
 		}
 
 		_gameRooms.push_back(gameRoom);
@@ -204,7 +225,13 @@ void Room::CreateFactoryGameRooms()
 					for (int i = x; i < x + (info.size.x / 10); i++)
 					{
 						for (int j = y; j < y + (info.size.y / 10); j++)
-							SetTileState({ i, j }, Passable, 3);
+						{
+							// 테두리는 벽으로 지정
+							if (i == x || i == x + (info.size.x / 10) - 1 || j == y || j == y + (info.size.y / 10) - 1)
+								SetTileState({ i, j }, Wall, 3);
+							else
+								SetTileState({ i, j }, Passable, 3);
+						}
 					}
 					break;
 				case Right:
@@ -212,7 +239,13 @@ void Room::CreateFactoryGameRooms()
 					for (int i = x; i < x + (info.size.x / 10); i++)
 					{
 						for (int j = y; j < y + (info.size.y / 10); j++)
-							SetTileState({ j, i }, Passable, 3);
+						{
+							// 테두리는 벽으로 지정
+							if (i == x || i == x + (info.size.x / 10) - 1 || j == y || j == y + (info.size.y / 10) - 1)
+								SetTileState({ i, j }, Wall, 3);
+							else
+								SetTileState({ i, j }, Passable, 3);
+						}
 					}
 					break;
 				}
@@ -222,8 +255,27 @@ void Room::CreateFactoryGameRooms()
 				// 문 생성 후 기록
 				std::vector<DoorRef>& doors = gameRoom->CreateDoors();
 				for (const DoorRef door : doors)
+				{
 					_connectableDoors[door->GetDir()].push_back(door);
 				
+					// 문이 있는 곳도 갈 수 있도록 처리 (추후 문 상태에 따라 다르게 처리할 예정)
+					Vector doorPos = door->GetPos();
+					std::pair<int, int> index{ door->GetPos().x / 10, door->GetPos().y / 10 };
+
+					// 일부 방향은 인덱스 조정 필요
+					switch (door->GetDir())
+					{
+					case Right:
+						index.first -= 1;
+						break;
+					case Back:
+						index.second -= 1;
+						break;
+					}
+
+					SetTileState(index, Passable, 3);
+				}
+					
 				std::cout << "Create" << static_cast<int>(type) << std::endl;
 			}
 		}
@@ -237,10 +289,15 @@ void Room::CreateFactoryGameRooms()
 	{
 		for (int j = 0; j < Width; j++)
 		{
-			if (map.find({ i, j }) != map.end())
-				std::cout << "■";
+			if (_map.find({ j, i }) != _map.end())
+			{
+				if((GetTileState({j, i}, 3) == Wall))
+					std::cout << "■";
+				else if((GetTileState({ j, i }, 3) == Passable))
+					std::cout << "□";
+			}
 			else
-				std::cout << "□";
+				std::cout << "◇";
 		}
 		std::cout << std::endl;
 	}*/
@@ -257,6 +314,11 @@ void Room::SetTileState(std::pair<int, int> index, TileState state, int layer)
 	_map[index] &= ~LAYER_MASK(layer);
 	// TileState 변경
 	_map[index] |= (state << LAYER_SHIFT(layer));
+}
+
+short Room::GetTileState(std::pair<int, int> index, int layer)
+{
+	return (_map[index] & LAYER_MASK(layer)) >> LAYER_SHIFT(layer);
 }
 
 GameObjectRef Room::AddObject(ObjectType type)
