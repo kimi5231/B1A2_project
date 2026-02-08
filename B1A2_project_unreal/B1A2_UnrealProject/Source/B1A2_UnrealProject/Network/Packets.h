@@ -19,6 +19,7 @@ struct Rotation
 enum class ObjectType
 {
 	Player,
+	Monster,
 };
 
 enum class GameRoomType
@@ -113,6 +114,7 @@ struct C_Move_Packet
 // Server
 struct S_AddObject_Packet
 {
+	ObjectType type;
 	int objectID;
 	Vector pos;
 	Rotation rotation;
