@@ -43,7 +43,7 @@
             "f1DoorPos": [[350, -350, 0], [-350, -350, 0]],
             "f2DoorPos": [],
             "doorDir": [0, 0],
-            "enterDistance": -350
+            "enterDistance": 350
         },
         {
             "type": 3,
@@ -58,7 +58,7 @@
             "f1DoorPos": [[-350, -600, 0], [-350, 600, 0]],
             "f2DoorPos": [],
             "doorDir": [0, 2],
-            "enterDistance": -350
+            "enterDistance": 350
         },
         {
             "type": 4,
@@ -73,7 +73,7 @@
             "f1DoorPos": [[-300, -600, 500], [300, -600, 500],[-300, 600, 500], [300, 600, 500]],
             "f2DoorPos": [[-300, -600, 1000], [300, -600, 1000]],
             "doorDir": [0, 0, 2, 2, 0, 0],
-            "enterDistance": -300
+            "enterDistance": 300
         },
         {
             "type": 5,
@@ -133,7 +133,7 @@
             "f1DoorPos": [[-200, -400, 0]],
             "f2DoorPos": [],
             "doorDir": [0],
-            "enterDistance": -200
+            "enterDistance": 200
         },
         {
             "type": 9,
@@ -163,7 +163,7 @@
             "f1DoorPos": [],
             "f2DoorPos": [[-100, -600, 500], [300, -300, 500], [300, 300, 500], [-100, 600, 500]],
             "doorDir": [0, 1, 1, 2],
-            "enterDistance": -100
+            "enterDistance": 100
         },
         {
             "type": 11,
@@ -193,7 +193,7 @@
             "f1DoorPos": [[-300, -600, 0], [300, -600, 0], [600, -300, 0], [600, 300, 0], [300, 600, 0], [-300, 600, 0], [-600, 300, 0], [-600, -300, 0]],
             "f2DoorPos": [],
             "doorDir": [0, 0, 1, 1, 2, 2, 3, 3],
-            "enterDistance": -300
+            "enterDistance": 300
         },
         {
             "type": 13,
