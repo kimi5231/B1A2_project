@@ -287,3 +287,16 @@ GameObjectRef Room::AddObject(ObjectType type)
 
 	return object;
 }
+
+GameObjectRef Room::GetObject(ObjectType type, uint id)
+{
+	switch (type)
+	{
+	case ObjectType::Player:
+		return _players[id];
+		break;
+	case ObjectType::Monster:
+		return _monsters[id];
+		break;
+	}
+}
