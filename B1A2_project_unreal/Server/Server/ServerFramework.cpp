@@ -364,6 +364,9 @@ void ServerFramework::ProcessMovePacket(C_Move_Packet packet)
 {
 	GameObjectRef object = _room->GetObject(packet.objectID);
 
+	if (object == nullptr)
+		return;
+
 	object->SetPos(packet.pos);
 	object->SetRotation(packet.rotation);
 	object->SetState(packet.state);
