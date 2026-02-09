@@ -22,7 +22,7 @@ void Monster::Update(std::unordered_map<std::pair<int, int>, short, PairHash>& m
 
 	Vector pos = _pos;
 	// map 타일 한칸씩 이동
-	/*switch (dir)
+	switch (dir)
 	{
 	case Front:
 		pos.y -= 100;
@@ -36,9 +36,7 @@ void Monster::Update(std::unordered_map<std::pair<int, int>, short, PairHash>& m
 	case Left:
 		pos.x -= 100;
 		break;
-	}*/
-
-	pos.x += 10;
+	}
 
 	// 해당 타일로 이동이 가능한지 확인
 	std::pair<int, int> index{ pos.x / 10, pos.y / 10 };
