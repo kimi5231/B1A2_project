@@ -212,32 +212,32 @@ void UMain::AddPlayer(S_AddObject_Packet packet)
 
 		// Spawn
 		AsyncTask(ENamedThreads::GameThread, [=, this]()
-			{
-				UWorld* world = GetWorld();
-				if (!world) return;
+		{
+			UWorld* world = GetWorld();
+			if (!world) return;
 
-				FVector spawnLocation(packet.pos.x, packet.pos.y, packet.pos.z);
-				FRotator spawnRotation(0, packet.rotation.yaw, 0);
+			FVector spawnLocation(packet.pos.x, packet.pos.y, packet.pos.z);
+			FRotator spawnRotation(0, packet.rotation.yaw, 0);
 
-				auto playerController = UGameplayStatics::GetPlayerController(this, 0);
-				AMyPlayer* player = Cast<AMyPlayer>(playerController->GetPawn());
+			auto playerController = UGameplayStatics::GetPlayerController(this, 0);
+			AMyPlayer* player = Cast<AMyPlayer>(playerController->GetPawn());
 
-				if (!player)
-					return;
+			if (!player)
+				return;
 
-				// 서버에서 받은 위치로 수정
-				player->SetActorLocationAndRotation(
-					spawnLocation,
-					spawnRotation,
-					false,
-					nullptr,
-					ETeleportType::TeleportPhysics
-				);
+			// 서버에서 받은 위치로 수정
+			player->SetActorLocationAndRotation(
+				spawnLocation,
+				spawnRotation,
+				false,
+				nullptr,
+				ETeleportType::TeleportPhysics
+			);
 
-				_myPlayer = player;
+			_myPlayer = player;
 
-				UE_LOG(LogTemp, Log, TEXT("My Player Spawned! [%d], %f, %f, %f"), packet.objectID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
-			});
+			UE_LOG(LogTemp, Log, TEXT("My Player Spawned! [%d], %f, %f, %f"), packet.objectID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+		});
 		return;
 	}
 
@@ -257,24 +257,24 @@ void UMain::AddPlayer(S_AddObject_Packet packet)
 	int id = packet.objectID;
 
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		UWorld* world = GetWorld();
+		if (!world || !OtherPlayerClass)
+			return;
+
+		AOtherPlayer* player = world->SpawnActor<AOtherPlayer>(OtherPlayerClass, spawnLocation, spawnRotation);
+
+		if (player)
 		{
-			UWorld* world = GetWorld();
-			if (!world || !OtherPlayerClass)
-				return;
-
-			AOtherPlayer* player = world->SpawnActor<AOtherPlayer>(OtherPlayerClass, spawnLocation, spawnRotation);
-
-			if (player)
-			{
-				_otherPlayers.Add(id, player);
-				UE_LOG(LogTemp, Log, TEXT("Other Player Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
-			}
-			else
-			{
-				_otherPlayers.Remove(id);
-				UE_LOG(LogTemp, Error, TEXT("Other Spawn Failed... ID [%d]"), id);
-			}
-		});
+			_otherPlayers.Add(id, player);
+			UE_LOG(LogTemp, Log, TEXT("Other Player Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+		}
+		else
+		{
+			_otherPlayers.Remove(id);
+			UE_LOG(LogTemp, Error, TEXT("Other Spawn Failed... ID [%d]"), id);
+		}
+	});
 }
 
 void UMain::AddMonster(S_AddObject_Packet packet)
@@ -370,6 +370,7 @@ void UMain::RecvMoveMonster(S_Move_Packet packet)
 		FVector pos(packet.pos.x, packet.pos.y, packet.pos.z);
 		FRotator rot(0, packet.rotation.yaw, 0);
 		monster->SetActorLocationAndRotation(pos, rot);
+		UE_LOG(LogTemp, Error, TEXT("Monster [%d] Moved!!!, %f, %f, %f"), packet.objectID, packet.pos.x, packet.pos.y, packet.pos.z);
 	});
 }
 
