@@ -14,7 +14,7 @@ void UMain::Init()
 	Super::Init();
 
 	// 시작할 때 카메라 연결
-	//ConnectOpenCV();
+	ConnectOpenCV();
 }
 
 void UMain::Shutdown()
