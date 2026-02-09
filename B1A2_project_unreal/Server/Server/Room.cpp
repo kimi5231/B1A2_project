@@ -139,7 +139,7 @@ void Room::CreateFactoryGameRooms()
 		//if (prevRoom->GetGameRoomType() == GameRoomType::RailCatwalk || prevRoom->GetGameRoomType() == GameRoomType::PipedHallways_Line)
 		{
 			// GameRoomType º±≈√
-			std::uniform_int_distribution<int> selectGameRoomType(static_cast<int>(GameRoomType::ApparatusRoom), static_cast<int>(GameRoomType::ServerRoom));
+			std::uniform_int_distribution<int> selectGameRoomType(static_cast<int>(GameRoomType::GapRoom), static_cast<int>(GameRoomType::Staircase));
 			GameRoomType type = static_cast<GameRoomType>(selectGameRoomType(gen));
 			GameRoomInfo info = g_dataManager->GetGameRoomInfo(type);
 
