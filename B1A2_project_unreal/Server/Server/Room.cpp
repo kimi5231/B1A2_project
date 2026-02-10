@@ -3,12 +3,14 @@
 #include "Global.h"
 #include "GameRoom.h"
 #include "Door.h"
+#include "Item.h"
 #include <chrono>
 
 Room::Room()
 {
 	_generatePlayerID = 1;
 	_generateMonsterID = 1;
+	_generateItemID = 1;
 
 	_currentDifficulty = Difficulty::Easy;
 	_detailDifficulty = Difficulty::Easy;
@@ -356,6 +358,12 @@ GameObjectRef Room::AddObject(ObjectType type)
 		_monsters[_generateMonsterID] = std::make_shared<Monster>();
 		object = _monsters[_generateMonsterID];
 		object->SetID(_generateMonsterID++);
+		break;
+	case ObjectType::Item:
+		// ItemType 나중에 바꾸기
+		_items[_generateItemID] = std::make_shared<Item>(ItemType::ItemTypeCount);
+		object = _items[_generateItemID];
+		object->SetID(_generateItemID++);
 		break;
 	}
 
