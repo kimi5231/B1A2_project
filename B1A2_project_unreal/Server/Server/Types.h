@@ -7,6 +7,7 @@ enum class ObjectType
 {
 	Player,
 	Monster,
+	Item,
 };
 
 enum ObjectState

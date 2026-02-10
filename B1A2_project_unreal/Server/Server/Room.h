@@ -34,10 +34,12 @@ private:
 	// 추후 로그인 기능 추가 후 ID로 대체할 것
 	uint _generatePlayerID{};
 	uint _generateMonsterID{};
+	uint _generateItemID{};
 
 	std::vector<GameRoomRef> _gameRooms;
 	std::unordered_map<uint, PlayerRef> _players;
 	std::unordered_map<uint, MonsterRef> _monsters;
+	std::unordered_map<uint, ItemRef> _items;
 
 	uint _playerCount{};
 
