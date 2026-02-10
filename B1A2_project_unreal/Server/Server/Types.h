@@ -64,6 +64,12 @@ enum TileState : short
 	Occupied = 0b11  // 갈 수 있음 + 물체 있음
 };
 
+enum ItemType
+{
+
+	ItemTypeCount,
+};
+
 //------------------Struct------------------
 // unordered map에 pair를 쓰기 위해 필요한 구조체
 struct PairHash

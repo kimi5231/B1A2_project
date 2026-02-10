@@ -59,6 +59,9 @@
     <ClCompile Include="Monster.cpp">
       <Filter>소스 파일\Game\Object</Filter>
     </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>소스 파일\Game\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -97,8 +100,8 @@
     <ClInclude Include="Monster.h">
       <Filter>소스 파일\Game\Object</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="cpp.hint" />
+    <ClInclude Include="Item.h">
+      <Filter>소스 파일\Game\Object</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
