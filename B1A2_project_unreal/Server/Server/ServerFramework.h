@@ -45,6 +45,7 @@ private:
 public:
 	// Send
 	void SendAddObjectPacket(GameObjectRef object, bool broadcast, SOCKET client = 0);
+	void SendAddItemPacket(ItemRef item, bool broadcast, SOCKET client = 0);
 	void SendUpdateObjectStatePacket(GameObjectRef object, bool broadcast, SOCKET client = 0);
 	void SendMovePacket(GameObjectRef object, bool broadcast, SOCKET client = 0);
 	void SendCreateGameRoomPacket(const std::vector<GameRoomRef>& gameRooms, bool broadcast, SOCKET client = 0);

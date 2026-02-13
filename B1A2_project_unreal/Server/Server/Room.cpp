@@ -341,7 +341,8 @@ GameObjectRef Room::AddObject(ObjectType type)
 {
 	GameObjectRef object;
 
-	switch (type)
+	// 나중에 코드 정리하기
+	switch (type) 
 	{
 	case ObjectType::Player:
 		_players[_generatePlayerID] = std::make_shared<Player>();
@@ -352,22 +353,23 @@ GameObjectRef Room::AddObject(ObjectType type)
 		object->SetPos(pos);
 		object->SetID(_generatePlayerID++);
 		_playerCount++;
+		g_framework->SendAddObjectPacket(object, true);
 		break;
 	// temp. 추후 Monster Type별로 나눌 예정
 	case ObjectType::Monster:
 		_monsters[_generateMonsterID] = std::make_shared<Monster>();
 		object = _monsters[_generateMonsterID];
 		object->SetID(_generateMonsterID++);
+		g_framework->SendAddObjectPacket(object, true);
 		break;
 	case ObjectType::Item:
 		// ItemType 나중에 바꾸기
-		_items[_generateItemID] = std::make_shared<Item>(ItemType::ItemTypeCount);
+		_items[_generateItemID] = std::make_shared<Item>(ItemType::CardboardBox);
 		object = _items[_generateItemID];
-		object->SetID(_generateItemID++);
+		object->SetID(_generateItemID);
+		g_framework->SendAddItemPacket(_items[_generateItemID++], true);
 		break;
 	}
-
-	g_framework->SendAddObjectPacket(object, true);
 
 	return object;
 }

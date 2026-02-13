@@ -10,6 +10,9 @@ public:
 public:
 	virtual void Update();
 
+public:
+	ItemType GetItemType() { return _itemType; }
+
 private:
 	ItemType _itemType;
 };
