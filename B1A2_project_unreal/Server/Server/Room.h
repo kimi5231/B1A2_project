@@ -23,6 +23,7 @@ public:
 
 public:
 	GameObjectRef AddObject(ObjectType type);
+	void RemoveObject(ObjectType type, uint id);
 
 public:
 	GameObjectRef GetObject(ObjectType type, uint id);

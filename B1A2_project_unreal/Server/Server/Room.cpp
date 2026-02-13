@@ -374,6 +374,17 @@ GameObjectRef Room::AddObject(ObjectType type)
 	return object;
 }
 
+void Room::RemoveObject(ObjectType type, uint id)
+{
+	switch (type)
+	{
+	case ObjectType::Item:
+		_items.erase(id);
+		g_framework->SendRemoveObjectPacket(type, id, true);
+		break;
+	}
+}
+
 GameObjectRef Room::GetObject(ObjectType type, uint id)
 {
 	switch (type)

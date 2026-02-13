@@ -46,6 +46,7 @@ public:
 	// Send
 	void SendAddObjectPacket(GameObjectRef object, bool broadcast, SOCKET client = 0);
 	void SendAddItemPacket(ItemRef item, bool broadcast, SOCKET client = 0);
+	void SendRemoveObjectPacket(ObjectType objectType, uint objectID, bool broadcast, SOCKET client = 0);
 	void SendUpdateObjectStatePacket(GameObjectRef object, bool broadcast, SOCKET client = 0);
 	void SendMovePacket(GameObjectRef object, bool broadcast, SOCKET client = 0);
 	void SendCreateGameRoomPacket(const std::vector<GameRoomRef>& gameRooms, bool broadcast, SOCKET client = 0);
@@ -58,6 +59,7 @@ public:
 	void ProcessDisconnect(ClientRef client);
 	void ProcessUpdateObjectStatePacket(C_UpdateObjectState_Packet packet);
 	void ProcessMovePacket(C_Move_Packet packet);
+	void ProcessGetItemPacket(C_GetItem_Packet packet);
 
 public:
 	Room* GetRoom() { return _room; }
