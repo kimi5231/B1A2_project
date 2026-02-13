@@ -269,6 +269,24 @@ void ServerFramework::SendAddItemPacket(ItemRef item, bool broadcast, SOCKET cli
 	_sendEvents.push_back(event);
 }
 
+void ServerFramework::SendRemoveObjectPacket(ObjectType objectType, uint objectID, bool broadcast, SOCKET client)
+{
+	// Packet Data 생성
+	S_RemoveObject_Packet packetData{ objectType, objectID };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	// SendEvent 생성
+	SendEventRef event = std::make_shared<SendEvent>();
+	event->isBroadcast = broadcast;
+	event->clientSocket = client;
+	event->packetID = S_RemoveObject;
+	event->serializedPacketData = serializedPacketData;
+
+	_sendEvents.push_back(event);
+}
+
 void ServerFramework::SendUpdateObjectStatePacket(GameObjectRef object, bool broadcast, SOCKET client)
 {
 	// Packet Data 생성
@@ -403,4 +421,19 @@ void ServerFramework::ProcessMovePacket(C_Move_Packet packet)
 		if (client->player->GetID() != packet.objectID)
 			SendMovePacket(object, false, client->socket);
 	}
+}
+
+void ServerFramework::ProcessGetItemPacket(C_GetItem_Packet packet)
+{
+	// Player가 요청한 아이템이 얻을 수 있는 것인지 확인
+	GameObjectRef item = _room->GetObject(ObjectType::Item, packet.itemID);
+
+	// 얻을 수 없는 아이템이면 요청 거절
+	if (item == nullptr)
+		return;
+
+	// 얻을 수 있는 조건인지 확인하는 코드 추가 필요
+	
+	// 얻을 수 있는 아이템이라면 Player 인벤토리에 추가 후, 맵에서 Item 삭제
+	_room->RemoveObject(ObjectType::Item, packet.itemID);
 }

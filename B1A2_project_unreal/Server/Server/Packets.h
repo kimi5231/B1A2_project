@@ -7,10 +7,12 @@ enum PacketID
 	// Client
 	C_UpdateObjectState,
 	C_Move,
+	C_GetItem,
 
 	//Server
 	S_AddObject,
 	S_AddItem,
+	S_RemoveObject,
 	S_UpdateObjectState,
 	S_Move,
 	S_CreateGameRoom,
@@ -46,6 +48,12 @@ struct C_Move_Packet
 	ObjectState state;
 };
 
+struct C_GetItem_Packet
+{
+	int itemID;
+	int playerID;
+};
+
 // Server
 struct S_AddObject_Packet
 {
@@ -66,9 +74,8 @@ struct S_AddItem_Packet
 
 struct S_RemoveObject_Packet
 {
+	ObjectType objectType;
 	int objectID;
-	Vector pos;
-	Rotation rotaion;
 };
 
 struct S_UpdateObjectState_Packet
