@@ -69,6 +69,7 @@ enum PacketID
 
 	//Server
 	S_AddObject,
+	S_AddItem,
 	S_UpdateObjectState,
 	S_Move,
 	S_CreateGameRoom,
@@ -79,6 +80,13 @@ enum ObjectState
 	IDLE,
 	RUN,
 	JUMP,
+};
+
+enum ItemType
+{
+	CardboardBox,
+
+	ItemTypeCount,
 };
 
 // 언리얼 전용
@@ -120,6 +128,15 @@ struct S_AddObject_Packet
 	int objectID;
 	Vector pos;
 	Rotation rotation;
+};
+
+struct S_AddItem_Packet
+{
+	ObjectType objectType;
+	ItemType itemType;
+	int objectID;
+	Vector pos;
+	Rotation rotaion;
 };
 
 struct S_RemoveObject_Packet

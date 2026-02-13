@@ -172,6 +172,12 @@ void UMain::ProcessRecv()
 			RecvAddObject(addObjectPacket);
 			event->isComplete = true;
 			break;
+		case S_AddItem:
+			S_AddItem_Packet addItemPacket;
+			FMemory::Memcpy(&addItemPacket, event->serializedPacketData.data(), sizeof(S_AddItem_Packet));
+			RecvAddItem(addItemPacket);
+			event->isComplete = true;
+			break;
 		case S_UpdateObjectState:
 			S_UpdateObjectState_Packet updateObjectStatePacket;
 			FMemory::Memcpy(&updateObjectStatePacket, event->serializedPacketData.data(), sizeof(S_UpdateObjectState_Packet));
@@ -308,6 +314,10 @@ void UMain::AddMonster(S_AddObject_Packet packet)
 			UE_LOG(LogTemp, Error, TEXT("Monster Spawn Failed... ID [%d]"), id);
 		}
 	});
+}
+
+void UMain::RecvAddItem(S_AddItem_Packet packet)
+{
 }
 
 

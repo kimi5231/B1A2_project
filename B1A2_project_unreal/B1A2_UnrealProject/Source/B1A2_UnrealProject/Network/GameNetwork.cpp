@@ -118,6 +118,15 @@ void GameNetwork::ProcessRecv()
 		_recvEvents.push_back(event);
 		break;
 	}
+	case S_AddItem:
+	{
+		NetworkEventRef event = std::make_shared<NetworkEvent>();
+		event->packetID = header.id;
+		event->serializedPacketData.resize(sizeof(S_AddItem_Packet));
+		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), sizeof(S_AddObject_Packet));
+		_recvEvents.push_back(event);
+		break;
+	}
 	case S_UpdateObjectState:
 	{
 		NetworkEventRef event = std::make_shared<NetworkEvent>();
