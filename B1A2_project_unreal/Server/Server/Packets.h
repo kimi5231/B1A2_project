@@ -10,6 +10,7 @@ enum PacketID
 
 	//Server
 	S_AddObject,
+	S_AddItem,
 	S_UpdateObjectState,
 	S_Move,
 	S_CreateGameRoom,
@@ -49,6 +50,15 @@ struct C_Move_Packet
 struct S_AddObject_Packet
 {
 	ObjectType type;
+	int objectID;
+	Vector pos;
+	Rotation rotaion;
+};
+
+struct S_AddItem_Packet
+{
+	ObjectType objectType;
+	ItemType itemType;
 	int objectID;
 	Vector pos;
 	Rotation rotaion;

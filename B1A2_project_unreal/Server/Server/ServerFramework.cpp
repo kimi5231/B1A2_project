@@ -3,6 +3,7 @@
 #include "Room.h"
 #include "Player.h"
 #include "GameRoom.h"
+#include "Item.h"
 
 ServerFramework::ServerFramework()
 {
@@ -250,6 +251,24 @@ void ServerFramework::SendAddObjectPacket(GameObjectRef object, bool broadcast, 
 	_sendEvents.push_back(event);
 }
 
+void ServerFramework::SendAddItemPacket(ItemRef item, bool broadcast, SOCKET client)
+{
+	// Packet Data 积己
+	S_AddItem_Packet packetData{ item->GetObjectType(), item->GetItemType(), item->GetID(), item->GetPos(), item->GetRotation() };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	// SendEvent 积己
+	SendEventRef event = std::make_shared<SendEvent>();
+	event->isBroadcast = broadcast;
+	event->clientSocket = client;
+	event->packetID = S_AddItem;
+	event->serializedPacketData = serializedPacketData;
+
+	_sendEvents.push_back(event);
+}
+
 void ServerFramework::SendUpdateObjectStatePacket(GameObjectRef object, bool broadcast, SOCKET client)
 {
 	// Packet Data 积己
@@ -345,6 +364,7 @@ void ServerFramework::ProcessAccept(SOCKET clientSocket)
 
 	// 眠饶 昏力 抗沥
 	_room->AddObject(ObjectType::Monster);
+	_room->AddObject(ObjectType::Item);
 }
 
 void ServerFramework::ProcessDisconnect(ClientRef client)

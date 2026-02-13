@@ -67,6 +67,7 @@ enum TileState : short
 
 enum ItemType
 {
+	CardboardBox,
 
 	ItemTypeCount,
 };
