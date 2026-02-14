@@ -123,7 +123,16 @@ void GameNetwork::ProcessRecv()
 		NetworkEventRef event = std::make_shared<NetworkEvent>();
 		event->packetID = header.id;
 		event->serializedPacketData.resize(sizeof(S_AddItem_Packet));
-		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), sizeof(S_AddObject_Packet));
+		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), sizeof(S_AddItem_Packet));
+		_recvEvents.push_back(event);
+		break;
+	}
+	case S_RemoveObject:
+	{
+		NetworkEventRef event = std::make_shared<NetworkEvent>();
+		event->packetID = header.id;
+		event->serializedPacketData.resize(sizeof(S_RemoveObject_Packet));
+		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), sizeof(S_RemoveObject_Packet));
 		_recvEvents.push_back(event);
 		break;
 	}
@@ -210,6 +219,22 @@ void GameNetwork::SendMovePacket(ObjectType type, int id, Vector pos, Rotation r
 	// SendEvent 持失
 	NetworkEventRef event = std::make_shared<NetworkEvent>();
 	event->packetID = C_Move;
+	event->serializedPacketData = serializedPacketData;
+
+	_sendEvents.push_back(event);
+}
+
+void GameNetwork::SendGetItemPacket(int itemID, int playerID)
+{
+	// Packet Data 持失
+	C_GetItem_Packet packetData{ itemID, playerID };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	// SendEvent 持失
+	NetworkEventRef event = std::make_shared<NetworkEvent>();
+	event->packetID = C_GetItem;
 	event->serializedPacketData = serializedPacketData;
 
 	_sendEvents.push_back(event);

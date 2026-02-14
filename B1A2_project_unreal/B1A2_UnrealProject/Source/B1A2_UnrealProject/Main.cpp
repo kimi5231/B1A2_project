@@ -178,6 +178,12 @@ void UMain::ProcessRecv()
 			RecvAddItem(addItemPacket);
 			event->isComplete = true;
 			break;
+		case S_RemoveObject:
+			S_RemoveObject_Packet removeObjectPacket;
+			FMemory::Memcpy(&removeObjectPacket, event->serializedPacketData.data(), sizeof(S_RemoveObject_Packet));
+			RecvRemoveObject(removeObjectPacket);
+			event->isComplete = true;
+			break;
 		case S_UpdateObjectState:
 			S_UpdateObjectState_Packet updateObjectStatePacket;
 			FMemory::Memcpy(&updateObjectStatePacket, event->serializedPacketData.data(), sizeof(S_UpdateObjectState_Packet));
@@ -320,6 +326,9 @@ void UMain::RecvAddItem(S_AddItem_Packet packet)
 {
 }
 
+void UMain::RecvRemoveObject(S_RemoveObject_Packet packet)
+{
+}
 
 void UMain::RecvMoveObject(S_Move_Packet packet)
 {

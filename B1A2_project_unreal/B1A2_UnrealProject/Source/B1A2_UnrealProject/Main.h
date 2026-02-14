@@ -48,6 +48,8 @@ public:
 	void AddMonster(S_AddObject_Packet packet);
 
 	void RecvAddItem(S_AddItem_Packet packet);
+	
+	void RecvRemoveObject(S_RemoveObject_Packet packet);
 
 	void RecvMoveObject(S_Move_Packet packet);
 	void RecvMovePlayer(S_Move_Packet packet);
