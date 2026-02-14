@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Network/Packets.h"
+#include "Network/UnrealPackets.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "OtherPlayer.generated.h"
