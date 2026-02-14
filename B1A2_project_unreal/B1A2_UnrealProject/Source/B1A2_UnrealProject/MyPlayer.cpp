@@ -7,7 +7,6 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
-#include "Network/Packets.h"
 #include "Network/UnrealPackets.h"
 
 #include "Main.h"

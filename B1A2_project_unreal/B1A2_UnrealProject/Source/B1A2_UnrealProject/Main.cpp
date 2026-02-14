@@ -1,11 +1,11 @@
 ﻿#include "Main.h"
-#include "Network/GameNetwork.h"
 #include "NetworkRecvRunnable.h"
 #include "EmotionExtractionRunnable.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "MyPlayer.h"
 #include "OtherPlayer.h"
+#include "Network/GameNetwork.h"
 
 #define BUFSIZE	64
 
@@ -111,28 +111,28 @@ void UMain::SendLocalPosition()
 		rot.yaw = (float)playerPawn->GetActorRotation().Yaw;
 		rot.roll = (float)playerPawn->GetActorRotation().Roll;
 
-		// 상태
-		ObjectState state = IDLE;
+		// 상태 
+		ObjectState state = ObjectState::IDLE;
 		if (ACharacter* character = Cast<ACharacter>(playerPawn))
 		{
 			if (character->GetCharacterMovement()->IsFalling())
 			{
-				state = JUMP;
+				state = ObjectState::JUMP;
 			}
 			else
 			{
 				const float Speed = character->GetVelocity().Size();
 
 				if (Speed > 10.f)
-					state = RUN;
+					state = ObjectState::RUN;
 				else
-					state = IDLE;
+					state = ObjectState::IDLE;
 			}
 		}
 		else
 		{
 			const float Speed = playerPawn->GetVelocity().Size();
-			state = (Speed > 10.f) ? RUN : IDLE;
+			state = (Speed > 10.f) ? ObjectState::RUN : ObjectState::IDLE;
 		}
 
 		_gameNetwork->SendMovePacket(ObjectType::Player, _myID, pos, rot, state);
