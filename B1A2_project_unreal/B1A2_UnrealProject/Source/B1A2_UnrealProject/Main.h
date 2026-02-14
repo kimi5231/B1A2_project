@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "Network/Packets.h"
+#include "Network/UnrealPackets.h"
 #include "GameFramework/Character.h"
 #include "Engine/StaticMeshActor.h"
 

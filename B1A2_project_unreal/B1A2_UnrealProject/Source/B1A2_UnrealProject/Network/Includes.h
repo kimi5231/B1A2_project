@@ -10,6 +10,7 @@
 #include <memory> 
 
 #include "Packets.h"
+#include "UnrealPackets.h"
 
 // 매크로 충돌 방지
 #undef min
