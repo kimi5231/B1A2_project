@@ -108,6 +108,10 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AStaticMeshActor> TestMonsterClass;
 
+	// Item
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AStaticMeshActor> CardboardBoxClass;
+
 private:
 	GameNetwork* _gameNetwork = nullptr;
 
@@ -133,4 +137,7 @@ private:
 
 	// 몬스터
 	TMap<uint64, AStaticMeshActor*> _monsters;
+
+	// 아이템
+	TMap<uint64, AStaticMeshActor*> _items;
 };
