@@ -69,7 +69,7 @@ struct S_AddItem_Packet
 	ItemType itemType;
 	int objectID;
 	Vector pos;
-	Rotation rotaion;
+	Rotation rotation;
 };
 
 struct S_RemoveObject_Packet

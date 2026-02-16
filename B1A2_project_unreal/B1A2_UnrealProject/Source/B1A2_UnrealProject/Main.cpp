@@ -324,6 +324,30 @@ void UMain::AddMonster(S_AddObject_Packet packet)
 
 void UMain::RecvAddItem(S_AddItem_Packet packet)
 {
+	if (_items.Contains(packet.objectID))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Item already spawned... object ID: %d"), packet.objectID);
+		return;
+	}
+
+	FVector spawnLocation(packet.pos.x, packet.pos.y, packet.pos.z);
+	FRotator spawnRotation(0, packet.rotation.yaw, 0);
+	int id = packet.objectID;
+
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		UWorld* world = GetWorld();
+		if (!world)
+			return;
+
+		AStaticMeshActor* ItemActor;
+		switch (packet.itemType)
+		{
+		case ItemType::CardboardBox:
+			ItemActor = world->SpawnActor<AStaticMeshActor>(CardboardBoxClass, spawnLocation, spawnRotation);
+			UE_LOG(LogTemp, Log, TEXT("[Item] CardboardBox Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+		}
+	});
 }
 
 void UMain::RecvRemoveObject(S_RemoveObject_Packet packet)
