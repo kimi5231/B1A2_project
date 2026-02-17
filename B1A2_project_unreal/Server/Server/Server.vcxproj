@@ -133,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BoundingBox.h" />
     <ClInclude Include="DataManager.h" />
     <ClInclude Include="Door.h" />
     <ClInclude Include="Item.h" />
@@ -148,6 +149,7 @@
     <ClInclude Include="ServerFramework.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BoundingBox.cpp" />
     <ClCompile Include="DataManager.cpp" />
     <ClCompile Include="Door.cpp" />
     <ClCompile Include="GameRoom.cpp" />

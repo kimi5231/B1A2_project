@@ -4,7 +4,7 @@
 class Door : public GameObject
 {
 public:
-	Door(Vector pos, Dir dir, Dir roomDir);
+	Door(Vector pos, Dir dir, uint roomID, Dir roomDir);
 	~Door() {};
 
 public:
@@ -15,6 +15,7 @@ public:
 	void SetConnectable(bool isConnectable) { _isConnectable = isConnectable; }
 
 private:
+	uint _roomID{};
 	Dir _dir{};
 	bool _isConnectable;
 };

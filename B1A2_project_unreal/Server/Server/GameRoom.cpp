@@ -3,9 +3,26 @@
 #include "Door.h"
 #include "Global.h"
 
-GameRoom::GameRoom()
+GameRoom::GameRoom(Vector pos, Dir dir, GameRoomInfo info)
+	: _pos(pos), _dir(dir), _info(info)
 {
-	
+	Vector min{}, max{};
+
+	switch (_dir)
+	{
+	case Front:
+	case Back:
+		min = { _pos.x - _info.size.x / 2,  _pos.y - _info.size.y / 2,  _pos.z};
+		max = { _pos.x + _info.size.x / 2,  _pos.y + _info.size.y / 2, _pos.z + _info.size.z};
+		break;
+	case Right:
+	case Left:
+		min = { _pos.x - _info.size.y / 2,  _pos.y - _info.size.x / 2,  _pos.z };
+		max = { _pos.x + _info.size.y / 2,  _pos.y + _info.size.x / 2, _pos.z + _info.size.z };
+		break;
+	}
+
+	_box.SetRanges(min, max);
 }
 
 GameRoom::~GameRoom()
@@ -52,7 +69,7 @@ std::vector<DoorRef>& GameRoom::CreateDoors()
 				break;
 			}
 			
-			DoorRef door = std::make_shared<Door>(doorPos, _info.doorDir[i], _dir);
+			DoorRef door = std::make_shared<Door>(doorPos, _info.doorDir[i], _id, _dir);
 			_doors.push_back(door);
 			continue;
 		}
@@ -81,7 +98,7 @@ std::vector<DoorRef>& GameRoom::CreateDoors()
 				break;
 			}
 
-			DoorRef door = std::make_shared<Door>(doorPos, _info.doorDir[i], _dir);
+			DoorRef door = std::make_shared<Door>(doorPos, _info.doorDir[i], _id, _dir);
 			_doors.push_back(door);
 		}
 	}
