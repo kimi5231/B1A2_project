@@ -323,16 +323,18 @@ void ServerFramework::SendMovePacket(GameObjectRef object, bool broadcast, SOCKE
 	_sendEvents.push_back(event);
 }
 
-void ServerFramework::SendCreateGameRoomPacket(const std::vector<GameRoomRef>& gameRooms, bool broadcast, SOCKET client)
+void ServerFramework::SendCreateGameRoomPacket(const std::unordered_map<uint, GameRoomRef>& gameRooms, bool broadcast, SOCKET client)
 {
 	std::vector<GameRoomDTO> roomInfos;
 	roomInfos.resize(gameRooms.size());
 
-	for (int i : std::views::iota(0u, gameRooms.size()))
+	uint idx = 0;
+	for (const auto& gameRoom : gameRooms)
 	{
-		roomInfos[i].type = gameRooms[i]->GetGameRoomType();
-		roomInfos[i].pos = gameRooms[i]->GetPos();
-		roomInfos[i].dir = gameRooms[i]->GetDir();
+		roomInfos[idx].type = gameRoom.second->GetGameRoomType();
+		roomInfos[idx].pos = gameRoom.second->GetPos();
+		roomInfos[idx].dir = gameRoom.second->GetDir();
+		idx++;
 	}
 
 	// Packet Serialize

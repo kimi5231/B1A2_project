@@ -1,11 +1,12 @@
 #pragma once
+#include "BoundingBox.h"
 
 class Door;
 
 class GameRoom
 {
 public:
-	GameRoom();
+	GameRoom(Vector pos, Dir dir, GameRoomInfo info);
 	~GameRoom();
 
 public:
@@ -13,6 +14,7 @@ public:
 
 public:
 	std::vector<DoorRef>& CreateDoors();
+	bool CheckCollision(BoundingBox other) { return _box.CheckCollision(other.GetRanges()); };
 
 public:
 	void SetGameRoomInfo(GameRoomInfo info) { _info = info; }
@@ -25,11 +27,15 @@ public:
 	Vector GetPos() { return _pos; }
 	void SetDir(Dir dir) { _dir = dir; }
 	Dir GetDir() { return _dir; }
+	BoundingBox GetBoundingBox() { return _box; }
 
 private:
 	GameRoomInfo _info{};
+	uint _id{};
 	Vector _pos{};
 	Dir _dir{};
+	BoundingBox _box;
 
+	std::vector<GameRoomRef> _connetedRoom;
 	std::vector<DoorRef> _doors;
 };

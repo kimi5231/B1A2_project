@@ -4,7 +4,7 @@
 Item::Item(ItemType itemType)
 	: _itemType(itemType)
 {
-	_pos = { Width / 2 * 10 + 200, Height / 2 * 10, 100 };
+	_pos = { 0, 200, 10};
 	_rotation = { 0, 0, 0 };
 	_type = ObjectType::Item;
 }
