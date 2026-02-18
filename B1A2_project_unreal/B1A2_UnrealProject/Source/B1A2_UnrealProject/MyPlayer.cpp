@@ -9,7 +9,13 @@
 #include "InputActionValue.h"
 #include "Network/UnrealPackets.h"
 
+#include "Engine/EngineTypes.h"     
+#include "Engine/World.h"           
+#include "CollisionQueryParams.h"   
+#include "Engine/OverlapResult.h"
+
 #include "Main.h"
+#include "InteractableInterface.h"
 
 AMyPlayer::AMyPlayer()
 {
@@ -46,6 +52,7 @@ void AMyPlayer::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	_movePacketSendTimer -= DeltaTime;
+	_interactionTimer -= DeltaTime;
 
 	if (_movePacketSendTimer <= 0.f)
 	{
@@ -53,6 +60,13 @@ void AMyPlayer::Tick(float DeltaTime)
 
 		if (UMain* GameInstance = Cast<UMain>(GetGameInstance()))
 			GameInstance->SendLocalPosition();
+	}
+
+	if (_interactionTimer <= 0.f)
+	{
+		_interactionTimer = INTERACTION_DELAY;
+
+		CheckForInteractables();
 	}
 }
 
@@ -70,6 +84,9 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMyPlayer::Look);
 		EnhancedInputComponent->BindAction(MouseLookAction, ETriggerEvent::Triggered, this, &AMyPlayer::Look);
+
+		// Get Item
+		EnhancedInputComponent->BindAction(GetItemAction, ETriggerEvent::Started, this, &AMyPlayer::GetItemByEKey);
 	}
 }
 
@@ -104,5 +121,93 @@ void AMyPlayer::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+	}
+}
+
+void AMyPlayer::CheckForInteractables()
+{
+	float interactionRadius = 100.0f;
+	FVector playerLocation = GetActorLocation();
+	FVector forward = GetActorForwardVector();
+
+	TArray<FOverlapResult> overlapResults;
+	FCollisionQueryParams queryParams;
+	queryParams.AddIgnoredActor(this);
+
+	bool bHit = GetWorld()->OverlapMultiByChannel(
+		overlapResults,
+		playerLocation,
+		FQuat::Identity,
+		ECC_Visibility,
+		FCollisionShape::MakeSphere(interactionRadius),
+		queryParams
+	);
+
+	AActor* closestActor = nullptr;
+	float minDistance = interactionRadius;
+
+	// 검출된 총 액터 수 출력
+	if (bHit && overlapResults.Num() > 0)
+	{
+		UE_LOG(LogTemp, Log, TEXT("[Item] Overlap Count: %d"), overlapResults.Num());
+	}
+
+	for (auto& Result : overlapResults)
+	{
+		AActor* hitActor = Result.GetActor();
+		if (hitActor && hitActor->Implements<UInteractableInterface>())
+		{
+			FVector directionToItem = (hitActor->GetActorLocation() - playerLocation).GetSafeNormal();
+			float dotProduct = FVector::DotProduct(forward, directionToItem);
+
+			// 인터페이스를 가진 액터를 찾았을 때의 내적 값과 이름 출력
+			UE_LOG(LogTemp, Warning, TEXT("[Item] Found Interactable: %s, DotProduct: %f"), *hitActor->GetName(), dotProduct);
+
+			if (dotProduct > 0.0f)
+			{
+				float distance = GetDistanceTo(hitActor);
+				if (distance < minDistance)
+				{
+					minDistance = distance;
+					closestActor = hitActor;
+				}
+			}
+		}
+	}
+
+	if (CurrentInteractableItem != closestActor)
+	{
+		if (CurrentInteractableItem)
+		{
+			Cast<IInteractableInterface>(CurrentInteractableItem)->HideInteractionUI();
+		}
+
+		CurrentInteractableItem = closestActor;
+
+		if (CurrentInteractableItem)
+		{
+			// 최종 타겟이 확정
+			UE_LOG(LogTemp, Error, TEXT("[Item] Final Target Selected: %s"), *CurrentInteractableItem->GetName());
+			Cast<IInteractableInterface>(CurrentInteractableItem)->ShowInteractionUI();
+		}
+		else
+		{
+			// 범위 내에 아무것도 없을 때
+			UE_LOG(LogTemp, Log, TEXT("[Item] No Target in Range"));
+		}
+	}
+}
+
+void AMyPlayer::GetItemByEKey()
+{
+	if (CurrentInteractableItem)
+	{
+		IInteractableInterface* interface = Cast<IInteractableInterface>(CurrentInteractableItem);
+
+		if (interface)
+		{
+			// Get Item 패킷 보내기
+			CurrentInteractableItem = nullptr;	// 참조 제거
+		}
 	}
 }

@@ -49,6 +49,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* MouseLookAction;
 
+	// Get Item
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
+	UInputAction* GetItemAction;
+
 public:
 	AMyPlayer();
 
@@ -60,13 +64,24 @@ protected:
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 
+	void CheckForInteractables();	// 상호작용 객체가 있는지 확인(아이템, 문 등)
+	void GetItemByEKey();	//	E 키를 누르면 아이템 획득
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+protected:
+	UPROPERTY()
+	AActor* CurrentInteractableItem;
+
 private:
+	// 위치 정보 Send 타이머
 	float _movePacketSendTimer = 0.2f;	// 현재 남은 시간
 	const float MOVE_PACKET_SEND_DELAY = 0.2f;	// 전송 간격
+
+	// 상호작용 객체 확인 타이머
+	float _interactionTimer = 0.1f;		// 현재 남은 시간
+	const float INTERACTION_DELAY = 0.1f;	// 확인 간격
 };
