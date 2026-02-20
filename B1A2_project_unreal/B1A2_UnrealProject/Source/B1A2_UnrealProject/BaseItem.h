@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "InteractableInterface.h"
 #include "Components/WidgetComponent.h"
+#include "Components/SphereComponent.h"
 
 #include "BaseItem.generated.h"
 
@@ -26,13 +27,16 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void ShowInteractionUI() override;
-	virtual void HideInteractionUI() override;
-	virtual void Interact() override;
+	virtual void ShowInteractionUI_Implementation() override;
+	virtual void HideInteractionUI_Implementation() override;
+	virtual void Interact_Implementation() override;
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* ItemMesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USphereComponent* CollisionSphere;		// 플레이어와 충돌 처리
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UWidgetComponent* EWidget;

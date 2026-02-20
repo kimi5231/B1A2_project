@@ -14,6 +14,14 @@ ABaseItem::ABaseItem()
     ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMesh"));
     ItemMesh->SetupAttachment(RootComponent);
 
+    CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
+    CollisionSphere->SetupAttachment(RootComponent);
+    CollisionSphere->SetSphereRadius(150.f);
+
+    CollisionSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);   // 충돌 판정(물리 충돌 X)
+    CollisionSphere->SetCollisionResponseToAllChannels(ECR_Ignore);   // 다른 Collision Channel 만났을 때 무시
+    CollisionSphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);    // Pawn만 감지하도록
+
     EWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("InteractionWidget"));
     EWidget->SetupAttachment(RootComponent);
     EWidget->SetVisibility(false);
@@ -33,24 +41,26 @@ void ABaseItem::Tick(float DeltaTime)
 
 }
 
-void ABaseItem::ShowInteractionUI()
+void ABaseItem::ShowInteractionUI_Implementation()
 {
     if (EWidget)
     {
         EWidget->SetVisibility(true);
-        UE_LOG(LogTemp, Log, TEXT("[Item] Widget Show Called"), *GetName());
+        UE_LOG(LogTemp, Log, TEXT("[Item] Widget Show Called"));
     }
 }
 
-void ABaseItem::HideInteractionUI()
-{
-}
-
-void ABaseItem::Interact()
-{
+void ABaseItem::HideInteractionUI_Implementation()
+{  
     if (EWidget)
     {
         EWidget->SetVisibility(false);
+        UE_LOG(LogTemp, Log, TEXT("[Item] Widget Hide Called"));
     }
+}
+
+void ABaseItem::Interact_Implementation()
+{
+    UE_LOG(LogTemp, Log, TEXT("[Item] EButton Interact Called"));
 }
 
