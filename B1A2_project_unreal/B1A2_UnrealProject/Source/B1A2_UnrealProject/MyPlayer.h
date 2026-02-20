@@ -64,8 +64,6 @@ protected:
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 
-	void CheckForInteractables();	// 상호작용 객체가 있는지 확인(아이템, 문 등)
-	void GetItemByEKey();	//	E 키를 누르면 아이템 획득
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -74,9 +72,22 @@ public:
 
 protected:
 	UPROPERTY()
-	AActor* CurrentInteractableItem;
+	TSet<AActor*> _nearInteractables;
+
+	UPROPERTY()
+	AActor* _focusedItem;	// E 버튼을 띄울 아이템
 
 private:
+	// 아이템 상호작용
+	UFUNCTION()
+	void OnItemOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	void OnItemOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	void CheckItemTrace();
+	void SetFocusedItem(AActor* newItem);
+	void ClearFocusedItem();
+	bool LineTrace(FHitResult& outHit) const;
+
 	// 위치 정보 Send 타이머
 	float _movePacketSendTimer = 0.2f;	// 현재 남은 시간
 	const float MOVE_PACKET_SEND_DELAY = 0.2f;	// 전송 간격

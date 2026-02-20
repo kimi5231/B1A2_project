@@ -11,15 +11,17 @@ class UInteractableInterface : public UInterface  // U - 객체가 인터페이스를 가�
 	GENERATED_BODY()
 };
 
-class B1A2_UNREALPROJECT_API IInteractableInterface	 // I - 함수 직접 정의하는 클래스
+class B1A2_UNREALPROJECT_API IInteractableInterface
 {
 	GENERATED_BODY()
 
 public:
-	// UI 숨김 - 보여줌
-	virtual void ShowInteractionUI() = 0;
-	virtual void HideInteractionUI() = 0;
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void ShowInteractionUI();
 
-	// 상호작용
-	virtual void Interact() = 0;
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void HideInteractionUI();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void Interact();
 };
