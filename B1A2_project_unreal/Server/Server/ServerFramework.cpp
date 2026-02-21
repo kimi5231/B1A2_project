@@ -172,6 +172,11 @@ void ServerFramework::ProcessRecv(ClientRef client)
 		memcpy(&movePacket, packet.data() + sizeof(Header), sizeof(C_Move_Packet));
 		ProcessMovePacket(movePacket);
 		break;
+	case C_GetItem:
+		C_GetItem_Packet getItemPacket;
+		memcpy(&getItemPacket, packet.data() + sizeof(Header), sizeof(C_GetItem_Packet));
+		ProcessGetItemPacket(getItemPacket);
+		break;
 	}
 }
 

@@ -286,5 +286,8 @@ GameObjectRef Room::GetObject(ObjectType type, uint id)
 	case ObjectType::Monster:
 		return _monsters[id];
 		break;
+	case ObjectType::Item:
+		return _items[id];
+		break;
 	}
 }
