@@ -53,6 +53,10 @@ void Room::CreateFactoryGameRooms()
 {
 	// 난이도에 맞춰 조건 설정
 	GameRoomConditionInfo conditions = g_dataManager->GetGameRoomConditionInfo(_currentDifficulty, _detailDifficulty);
+
+	// 방별 개수 초기화
+	for (int i = 0; i < static_cast<int>(GameRoomType::GameRoomTypeCount); i++)
+		_currentGameRoomCount[static_cast<GameRoomType>(i)] = 0;
 	
 	// 나중에 json으로 불러올 예정
 	// array로 바꾸는 것도 고려할 것, 고정된 크기
@@ -64,8 +68,8 @@ void Room::CreateFactoryGameRooms()
 	uint currentFloor = selectFloor(gen);
 	 
 	// 층마다 플래그 켜서 이거 킬때 옆에꺼 켜져있는지 확인하고 개수만큼 킬것
-	_minFloor = F1;
-	_maxFloor = F1;
+	_minFloor = F1_Base;
+	_maxFloor = F1_Top;
 	for (int i = 0; i < currentFloor; i++)
 	{
 		std::discrete_distribution selectFloorDir({ 0.5, 0.5 });
@@ -134,8 +138,8 @@ void Room::CreateFactoryGameRooms()
 			GameRoomType type = static_cast<GameRoomType>(selectGameRoomType(gen));
 			GameRoomInfo info = g_dataManager->GetGameRoomInfo(type);
 
-			// 
-			if (_currentGameRoomCount[type] >= info.maxCreateCount[_currentDifficulty])
+			// 선택된 GameRoomType이 이미 최대치만큼 있으면 다시 뽑기
+			if (_currentGameRoomCount[type] == info.maxCreateCount[_currentDifficulty])
 				continue;
 
 			Vector pos{};
@@ -174,8 +178,12 @@ void Room::CreateFactoryGameRooms()
 				}
 			}
 
-			// 방 종류에 따라 최소/최대 층수를 넘기지 않는지 확인
+			// 최소/최대 층수를 넘기지 않는지 확인
+			if (static_cast<int>(_minFloor) * 500 > pos.y + info.size.y)
+				continue;
 
+			if (static_cast<int>(_maxFloor) * 500 < pos.y + info.size.y)
+				continue;
 			
 			// 자리가 있으면 배치
 			if (isCreate)
