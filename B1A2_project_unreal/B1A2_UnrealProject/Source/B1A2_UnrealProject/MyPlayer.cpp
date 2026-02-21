@@ -146,7 +146,10 @@ void AMyPlayer::OnItemOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAc
 	//UE_LOG(LogTemp, Log, TEXT("[Item] Overlap Begin! Added Nearby Item: %s (Count: %d)"), *OtherActor->GetName(), _nearInteractableItem.Num());
 
 	// 아이템 인식 중에 아이템이 삭제되는 경우 - 삭제될 때 호출(구독)
-	item->OnDestroyed.AddDynamic(this, &AMyPlayer::OnItemDestroyed);
+	if (item && !item->OnDestroyed.IsAlreadyBound(this, &AMyPlayer::OnItemDestroyed))
+	{
+		item->OnDestroyed.AddDynamic(this, &AMyPlayer::OnItemDestroyed);
+	}
 }
 
 void AMyPlayer::OnItemOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
