@@ -52,6 +52,9 @@ public:
 	void RecvAddItem(S_AddItem_Packet packet);
 	
 	void RecvRemoveObject(S_RemoveObject_Packet packet);
+	void RemovePlayer(S_RemoveObject_Packet packet);
+	void RemoveMonster(S_RemoveObject_Packet packet);
+	void RemoveItem(S_RemoveObject_Packet packet);
 
 	void RecvMoveObject(S_Move_Packet packet);
 	void RecvMovePlayer(S_Move_Packet packet);
@@ -144,5 +147,5 @@ private:
 	TMap<uint64, AStaticMeshActor*> _monsters;
 
 	// æ∆¿Ã≈€
-	TMap<uint64, AActor*> _items;
+	TMap<uint64, ABaseItem*> _items;
 };

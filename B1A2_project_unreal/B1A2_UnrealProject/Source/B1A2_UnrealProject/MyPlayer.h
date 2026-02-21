@@ -84,6 +84,8 @@ private:
 	void OnItemOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()
 	void OnItemOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	UFUNCTION()
+	void OnItemDestroyed(AActor* destroyedItem);
 	void CheckItemTrace();
 	void SetFocusedItem(ABaseItem* newItem);
 	void ClearFocusedItem();

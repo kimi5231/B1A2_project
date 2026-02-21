@@ -352,19 +352,73 @@ void UMain::RecvAddItem(S_AddItem_Packet packet)
 		if (!world)
 			return;
 
-		ABaseItem* item;
+		ABaseItem* item = nullptr;
 		switch (packet.itemType)
 		{
 		case ItemType::CardboardBox:
 			item = world->SpawnActor<ABaseItem>(CardboardBoxClass, spawnLocation, spawnRotation);
-			item->SetItemID(id);
 			UE_LOG(LogTemp, Log, TEXT("[Item] CardboardBox Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+			break;
 		}
+
+		item->SetItemID(id);
+		
+		// Spawn 후 Map에 등록
+		_items.Add(id, item);	
 	});
 }
 
 void UMain::RecvRemoveObject(S_RemoveObject_Packet packet)
 {
+	switch (packet.objectType)
+	{
+	case ObjectType::Player:
+		RemovePlayer(packet);
+		break;
+	case ObjectType::Monster:
+		RemoveMonster(packet);
+		break;
+	case ObjectType::Item:
+		RemoveItem(packet);
+	default:
+		break;
+	}
+}
+
+void UMain::RemovePlayer(S_RemoveObject_Packet packet)
+{
+}
+
+void UMain::RemoveMonster(S_RemoveObject_Packet packet)
+{
+}
+
+void UMain::RemoveItem(S_RemoveObject_Packet packet)
+{
+	int id = packet.objectID;
+
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		UWorld* world = GetWorld();
+		if (!world)
+			return;
+
+		ABaseItem** foundItem = _items.Find(id);
+		if (!foundItem || !(*foundItem))
+		{
+			UE_LOG(LogTemp, Log, TEXT("[Item] Remove Failed... ID %llu Not found"), id);
+			return;
+		}
+
+		ABaseItem* item = *foundItem;
+
+		// Map에서 제거
+		_items.Remove(id);
+		// 월드에서 제거
+		item->Destroy();
+
+		UE_LOG(LogTemp, Log, TEXT("[Item] Item Removed!!! ID %llu, Name %s"), id, *item->GetName());
+	});
 }
 
 void UMain::RecvMoveObject(S_Move_Packet packet)

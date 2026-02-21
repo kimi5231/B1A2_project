@@ -144,6 +144,9 @@ void AMyPlayer::OnItemOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAc
 	_nearInteractableItem.Add(item);
 
 	//UE_LOG(LogTemp, Log, TEXT("[Item] Overlap Begin! Added Nearby Item: %s (Count: %d)"), *OtherActor->GetName(), _nearInteractableItem.Num());
+
+	// 아이템 인식 중에 아이템이 삭제되는 경우 - 삭제될 때 호출(구독)
+	item->OnDestroyed.AddDynamic(this, &AMyPlayer::OnItemDestroyed);
 }
 
 void AMyPlayer::OnItemOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
@@ -155,12 +158,26 @@ void AMyPlayer::OnItemOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActo
 	_nearInteractableItem.Remove(item);
 	//UE_LOG(LogTemp, Log, TEXT("[Item] OverlapEnd! Removed Nearby Item: %s (Count: %d)"), *OtherActor->GetName(), _nearInteractableItem.Num());
 
-	// 충돌 끝나며, 보고 있던 아이템 포커스 해제하기
+	// 충돌 끝나면, 보고 있던 아이템 포커스 해제하기
 	if (_focusedItem == item)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("[Item] OverlapEnd! Focused item left range, clearing focus"));
 		ClearFocusedItem();
 	}
+}
+
+void AMyPlayer::OnItemDestroyed(AActor* destroyedItem)
+{
+	ABaseItem* item = Cast<ABaseItem>(destroyedItem);
+	if (item)
+		return;
+
+	_nearInteractableItem.Remove(item);
+
+	if (_focusedItem == item)
+		ClearFocusedItem();
+
+	UE_LOG(LogTemp, Log, TEXT("[Item] Item Destroyed in Player Reference"));
 }
 
 void AMyPlayer::CheckItemTrace()
