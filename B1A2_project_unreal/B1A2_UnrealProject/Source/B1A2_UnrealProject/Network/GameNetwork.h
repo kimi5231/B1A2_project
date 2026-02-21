@@ -23,7 +23,7 @@ public:
 	std::vector<char> SerializeVector(const std::vector<T>& vector);
 
 	template <class T>
-	std::vector<T> DeserializeVector(const std::vector<char>& data);
+	std::vector<T> DeserializeVector(std::vector<char>& data);
 
 public:
 	void SendUpdateObjectStatePacket(int id, ObjectType type, ObjectState state);
@@ -65,13 +65,15 @@ inline std::vector<char> GameNetwork::SerializeVector(const std::vector<T>& vect
 }
 
 template<class T>
-inline std::vector<T> GameNetwork::DeserializeVector(const std::vector<char>& data)
+inline std::vector<T> GameNetwork::DeserializeVector(std::vector<char>& data)
 {
 	int size;
 	memcpy(&size, data.data(), sizeof(int));
+	data.erase(data.begin(), data.begin() + sizeof(int));
 
 	std::vector<T> vector(size);
-	memcpy(vector.data(), data.data() + sizeof(int), size * sizeof(T));
+	memcpy(vector.data(), data.data(), size * sizeof(T));
+	data.erase(data.begin(), data.begin() + size * sizeof(T));
 
 	return vector;
 }

@@ -197,7 +197,7 @@ void UMain::ProcessRecv()
 			event->isComplete = true;
 			break;
 		case S_CreateGameRoom:
-			S_CreateGameRoom_Packet createGameRoomPacket{ _gameNetwork->DeserializeVector<GameRoomDTO>(event->serializedPacketData) };
+			S_CreateGameRoom_Packet createGameRoomPacket{ _gameNetwork->DeserializeVector<GameRoomDTO>(event->serializedPacketData), _gameNetwork->DeserializeVector<WallDTO>(event->serializedPacketData) };
 			RecvCreateGameRoom(createGameRoomPacket);
 			event->isComplete = true;
 			break;

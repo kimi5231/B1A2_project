@@ -31,6 +31,12 @@ struct GameRoomDTO
 	Dir dir;
 };
 
+struct WallDTO
+{
+	Vector pos;
+	Dir dir;
+};
+
 // Client
 struct C_UpdateObjectState_Packet
 {
@@ -97,4 +103,5 @@ struct S_Move_Packet
 struct S_CreateGameRoom_Packet
 {
 	std::vector<GameRoomDTO> gameRooms;
+	std::vector<WallDTO> walls;
 };

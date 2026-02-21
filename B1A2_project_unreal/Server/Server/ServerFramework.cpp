@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "GameRoom.h"
 #include "Item.h"
+#include "Door.h"
 
 ServerFramework::ServerFramework()
 {
@@ -329,16 +330,35 @@ void ServerFramework::SendCreateGameRoomPacket(const std::unordered_map<uint, Ga
 	roomInfos.resize(gameRooms.size());
 
 	uint idx = 0;
+	std::vector<DoorRef> walls;
 	for (const auto& gameRoom : gameRooms)
 	{
 		roomInfos[idx].type = gameRoom.second->GetGameRoomType();
 		roomInfos[idx].pos = gameRoom.second->GetPos();
 		roomInfos[idx].dir = gameRoom.second->GetDir();
+
+		walls.insert(walls.end(), gameRoom.second->GetWalls().begin(), gameRoom.second->GetWalls().end());
 		idx++;
 	}
 
+	std::vector<WallDTO> wallInfos;
+	wallInfos.resize(walls.size());
+	
+	idx = 0;
+	for (const DoorRef wall : walls)
+	{
+		wallInfos[idx].pos = wall->GetPos();
+		wallInfos[idx].dir = wall->GetDir();
+		idx++;
+	}
+	
 	// Packet Serialize
-	std::vector<char> serializedPacketData = SerializeVector(roomInfos);
+	std::vector<char> gameRoomData = SerializeVector(roomInfos);
+	std::vector<char> wallData = SerializeVector(wallInfos);
+	std::vector<char> serializedPacketData;
+
+	serializedPacketData.insert(serializedPacketData.end(), gameRoomData.begin(), gameRoomData.end());
+	serializedPacketData.insert(serializedPacketData.end(), wallData.begin(), wallData.end());
 
 	// SendEvent »ý¼º
 	SendEventRef event = std::make_shared<SendEvent>();
