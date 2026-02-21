@@ -59,4 +59,7 @@ private:
 
 	// 각 방향별로 방이 생성될 확률
 	std::unordered_map < Dir, float> _roomSpawnChance;
+
+	Floor _minFloor;
+	Floor _maxFloor;
 };
