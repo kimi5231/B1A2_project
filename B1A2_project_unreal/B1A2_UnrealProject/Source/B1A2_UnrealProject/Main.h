@@ -42,6 +42,7 @@ public:
 	void SendGetItem(int itemID, int playerID);
 
 	// Recv
+	UFUNCTION(BlueprintCallable)	// 멀티 스레드 제거용 임시!!!
 	void Update();
 	void ProcessRecv();
 	

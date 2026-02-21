@@ -21,13 +21,13 @@ void UMain::Init()
 void UMain::Shutdown()
 {
 	// OpenCV 스레드
-	if (_emotionExtractionThread)
+	/*if (_emotionExtractionThread)
 	{
 		_emotionExtractionRunnable->Stop();
 		_emotionExtractionThread->WaitForCompletion();
 		delete _emotionExtractionThread;
 		_emotionExtractionThread = nullptr;
-	}
+	}*/
 
 	// GameNetwork
 	if (_gameNetwork)
@@ -36,13 +36,13 @@ void UMain::Shutdown()
 	}
 	
 	// Recv 스레드
-	if (_recvThread)
+	/*if (_recvThread)
 	{
 		_recvRunnable->Stop();
 		_recvThread->WaitForCompletion();
 		delete _recvThread;
 		_recvThread = nullptr;
-	}
+	}*/
 
 	Super::Shutdown();
 }
@@ -51,8 +51,8 @@ void UMain::ConnectServer()
 {
 	_gameNetwork = new GameNetwork();
 
-	_recvRunnable = new NetworkRunnable(this);
-	_recvThread = FRunnableThread::Create(_recvRunnable, TEXT("RecvThread"));
+	//_recvRunnable = new NetworkRunnable(this);
+	//_recvThread = FRunnableThread::Create(_recvRunnable, TEXT("RecvThread"));
 }
 
 void UMain::ConnectOpenCV()
