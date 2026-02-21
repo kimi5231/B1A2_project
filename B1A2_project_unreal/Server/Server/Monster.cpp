@@ -5,7 +5,7 @@
 
 Monster::Monster()
 {
-	_pos = { Width / 2 * 10 + 100, Height / 2 * 10, 100 };
+	_pos = {0, 100, 10};
 	_rotation = { 0, 0, 0 };
 	_type = ObjectType::Monster;
 } 

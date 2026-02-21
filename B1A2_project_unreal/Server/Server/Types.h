@@ -46,6 +46,8 @@ enum class GameRoomType
 	PipedHallways_Grid,
 
 	Staircase,
+
+	GameRoomTypeCount,
 };
 
 enum Difficulty 
@@ -70,6 +72,16 @@ enum ItemType
 	CardboardBox,
 
 	ItemTypeCount,
+};
+
+enum Floor
+{
+	B2 = -2,
+	B1 = -1,
+	F1_Base = 0,
+	F1_Top = 1,
+	F2 = 2,
+	F3 = 3,
 };
 
 //------------------Struct------------------
