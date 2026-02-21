@@ -12,6 +12,7 @@ public:
 
 public:
 	Dir GetDir() { return _dir; }
+	uint GetRoomID() { return _roomID; }
 	void SetConnectable(bool isConnectable) { _isConnectable = isConnectable; }
 
 private:
