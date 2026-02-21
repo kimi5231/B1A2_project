@@ -151,16 +151,16 @@ void Room::CreateFactoryGameRooms()
 			switch (dir)
 			{
 			case Front:
-				pos = {doorPos.x + info.enterDistance, doorPos.y + info.size.y / 2, doorPos.z};
+				pos = {doorPos.x - info.enterDistance, doorPos.y + info.size.y / 2, doorPos.z};
 				break;
 			case Right:
-				pos = { doorPos.x - info.size.y / 2, doorPos.y + info.enterDistance, doorPos.z };
+				pos = { doorPos.x - info.size.y / 2, doorPos.y - info.enterDistance, doorPos.z };
 				break;
 			case Back:
-				pos = { doorPos.x - info.enterDistance, doorPos.y - info.size.y / 2, doorPos.z };
+				pos = { doorPos.x + info.enterDistance, doorPos.y - info.size.y / 2, doorPos.z };
 				break;
 			case Left:
-				pos = { doorPos.x + info.size.y / 2, doorPos.y - info.enterDistance, doorPos.z };
+				pos = { doorPos.x + info.size.y / 2, doorPos.y + info.enterDistance, doorPos.z };
 				break;
 			}
 
