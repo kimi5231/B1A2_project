@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "GameRoom.h"
 #include "Item.h"
+#include "Door.h"
 
 ServerFramework::ServerFramework()
 {
@@ -323,20 +324,41 @@ void ServerFramework::SendMovePacket(GameObjectRef object, bool broadcast, SOCKE
 	_sendEvents.push_back(event);
 }
 
-void ServerFramework::SendCreateGameRoomPacket(const std::vector<GameRoomRef>& gameRooms, bool broadcast, SOCKET client)
+void ServerFramework::SendCreateGameRoomPacket(const std::unordered_map<uint, GameRoomRef>& gameRooms, bool broadcast, SOCKET client)
 {
 	std::vector<GameRoomDTO> roomInfos;
 	roomInfos.resize(gameRooms.size());
 
-	for (int i : std::views::iota(0u, gameRooms.size()))
+	uint idx = 0;
+	std::vector<DoorRef> walls;
+	for (const auto& gameRoom : gameRooms)
 	{
-		roomInfos[i].type = gameRooms[i]->GetGameRoomType();
-		roomInfos[i].pos = gameRooms[i]->GetPos();
-		roomInfos[i].dir = gameRooms[i]->GetDir();
+		roomInfos[idx].type = gameRoom.second->GetGameRoomType();
+		roomInfos[idx].pos = gameRoom.second->GetPos();
+		roomInfos[idx].dir = gameRoom.second->GetDir();
+
+		walls.insert(walls.end(), gameRoom.second->GetWalls().begin(), gameRoom.second->GetWalls().end());
+		idx++;
 	}
 
+	std::vector<WallDTO> wallInfos;
+	wallInfos.resize(walls.size());
+	
+	idx = 0;
+	for (const DoorRef wall : walls)
+	{
+		wallInfos[idx].pos = wall->GetPos();
+		wallInfos[idx].dir = wall->GetDir();
+		idx++;
+	}
+	
 	// Packet Serialize
-	std::vector<char> serializedPacketData = SerializeVector(roomInfos);
+	std::vector<char> gameRoomData = SerializeVector(roomInfos);
+	std::vector<char> wallData = SerializeVector(wallInfos);
+	std::vector<char> serializedPacketData;
+
+	serializedPacketData.insert(serializedPacketData.end(), gameRoomData.begin(), gameRoomData.end());
+	serializedPacketData.insert(serializedPacketData.end(), wallData.begin(), wallData.end());
 
 	// SendEvent »ý¼º
 	SendEventRef event = std::make_shared<SendEvent>();

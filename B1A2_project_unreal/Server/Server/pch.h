@@ -30,9 +30,6 @@ using MonsterRef = std::shared_ptr<class Monster>;
 using ItemRef = std::shared_ptr<class Item>;
 using DoorRef = std::shared_ptr<class Door>;
 
-#define Width 10000
-#define Height 10000
-
 // 비트연산
 #define LAYER_SHIFT(n) ((n) * 2)
 #define LAYER_MASK(n)  (0b11 << LAYER_SHIFT(n))

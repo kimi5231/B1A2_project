@@ -46,7 +46,7 @@ void Room::Update()
 
 void Room::SetupGameRoomConditions()
 {
-	// 방별 개수 초기화
+	
 }
 
 void Room::CreateFactoryGameRooms()
@@ -54,65 +54,58 @@ void Room::CreateFactoryGameRooms()
 	// 난이도에 맞춰 조건 설정
 	GameRoomConditionInfo conditions = g_dataManager->GetGameRoomConditionInfo(_currentDifficulty, _detailDifficulty);
 
+	// 방별 개수 초기화
+	for (int i = 0; i < static_cast<int>(GameRoomType::GameRoomTypeCount); i++)
+		_currentGameRoomCount[static_cast<GameRoomType>(i)] = 0;
+	
 	// 나중에 json으로 불러올 예정
 	// array로 바꾸는 것도 고려할 것, 고정된 크기
 	for (int i = 0; i < DirCount; i++)
 		_roomSpawnChance[static_cast<Dir>(i)] = 0.25;
+
+	// 층수 정하기
+	std::uniform_int_distribution<int> selectFloor(conditions.floor.first, conditions.floor.second);
+	uint currentFloor = selectFloor(gen);
+	 
+	// 층마다 플래그 켜서 이거 킬때 옆에꺼 켜져있는지 확인하고 개수만큼 킬것
+	_minFloor = F1_Base;
+	_maxFloor = F1_Top;
+	for (int i = 0; i < currentFloor; i++)
+	{
+		std::discrete_distribution selectFloorDir({ 0.5, 0.5 });
+		
+		// 나중에 정해진 범위를 넘어가지 않도록 처리 필요
+		switch (selectFloorDir(gen))
+		{
+		case 0:
+			// 위로 층수 증가
+			_maxFloor = static_cast<Floor>(static_cast<int>(_maxFloor) + 1);
+			break;
+		case 1:
+			// 아래로 층수 증가
+			_minFloor = static_cast<Floor>(static_cast<int>(_minFloor) - 1);
+			break;
+		}
+	}
+
+	uint generateGameRoomID = 1;
 
 	// 방 생성(문은 방 안에서 생성 + 비상구)
 	// MainEntranceRoom 생성
 	{
 		GameRoomInfo info = g_dataManager->GetGameRoomInfo(GameRoomType::MainEntranceRoom);
 
-		GameRoomRef gameRoom = std::make_shared<GameRoom>();
-		gameRoom->SetGameRoomInfo(info);
-		
-		// 0층 맵 한 가운데에 배치
-		// map은 10cm 단위이기 때문에 pos 1cm 단위로 변환
-		Vector pos{ Width / 2 * 10, Height / 2 * 10, 0 };
-		gameRoom->SetPos(pos);
-		gameRoom->SetDir(Front);
+		// 0층 중앙에 배치
+		Vector pos{};
 
-		// index 계산 후 맵에 자치한 공간만큼 채우기(벽 제외)
-		uint x = (pos.x - info.size.x / 2) / 10;
-		uint y = (pos.y - info.size.y / 2) / 10;
-
-		for (int i = x; i < x + (info.size.x / 10); i++)
-		{
-			for (int j = y; j < y + (info.size.y / 10); j++)
-			{
-				// 테두리는 벽으로 지정
-				if (i == x || i == x + (info.size.x / 10) - 1 || j == y || j == y + (info.size.y / 10) - 1)
-					SetTileState({ i, j }, Wall, 3);
-				else
-					SetTileState({ i, j }, Passable, 3);
-			}	
-		}
+		GameRoomRef gameRoom = std::make_shared<GameRoom>(pos, Front, info);
 
 		std::vector<DoorRef>& doors = gameRoom->CreateDoors();
 		for (const DoorRef door : doors)
-		{
 			_connectableDoors[door->GetDir()].push_back(door);
-			
-			// 문이 있는 곳도 갈 수 있도록 처리 (추후 문 상태에 따라 다르게 처리할 예정)
-			Vector doorPos = door->GetPos();
-			std::pair<int, int> index{ door->GetPos().x / 10, door->GetPos().y / 10 };
 
-		    // 일부 방향은 인덱스 조정 필요
-			switch (door->GetDir())
-			{
-			case Right:
-				index.first -= 1;
-				break;
-			case Back:
-				index.second -= 1;
-				break;
-			}
-
-			SetTileState(index, Passable, 3);
-		}
-
-		_gameRooms.push_back(gameRoom);
+		_gameRooms[generateGameRoomID++] = gameRoom;
+		_currentGameRoomCount[GameRoomType::MainEntranceRoom]++;
 	}
 
 	// 이후 방 절차적 생성
@@ -145,10 +138,10 @@ void Room::CreateFactoryGameRooms()
 			GameRoomType type = static_cast<GameRoomType>(selectGameRoomType(gen));
 			GameRoomInfo info = g_dataManager->GetGameRoomInfo(type);
 
-			// 나중에 개수 따지기
-			//if (_currentGameRoomCount[info.type] < info.maxCreateCount[_currentDifficulty])
+			// 선택된 GameRoomType이 이미 최대치만큼 있으면 다시 뽑기
+			if (_currentGameRoomCount[type] == info.maxCreateCount[_currentDifficulty])
+				continue;
 
-			uint x{}, y{};
 			Vector pos{};
 			Vector doorPos = door->GetPos();
 			// 방의 방향은 문과 반대
@@ -159,138 +152,53 @@ void Room::CreateFactoryGameRooms()
 			{
 			case Front:
 				pos = {doorPos.x + info.enterDistance, doorPos.y + info.size.y / 2, doorPos.z};
-				x = (pos.x - info.size.x / 2) / 10;
-				y = (pos.y - info.size.y / 2) / 10;
 				break;
 			case Right:
 				pos = { doorPos.x - info.size.y / 2, doorPos.y + info.enterDistance, doorPos.z };
-				x = (pos.x - info.size.y / 2) / 10;
-				y = (pos.y - info.size.x / 2) / 10;
 				break;
 			case Back:
 				pos = { doorPos.x - info.enterDistance, doorPos.y - info.size.y / 2, doorPos.z };
-				x = (pos.x - info.size.x / 2) / 10;
-				y = (pos.y - info.size.y / 2) / 10;
 				break;
 			case Left:
 				pos = { doorPos.x + info.size.y / 2, doorPos.y - info.enterDistance, doorPos.z };
-				x = (pos.x - info.size.y / 2) / 10;
-				y = (pos.y - info.size.x / 2) / 10;
 				break;
 			}
+
+			GameRoomRef newRoom = std::make_shared<GameRoom>(pos, dir, info);
 
 			// 방을 배치할 자리가 있는지 확인
 			bool isCreate = true;
-
-			switch (dir)
+			for (const auto& gameRoom : _gameRooms)
 			{
-			case Front:
-			case Back:
-				for (int i = x; i < x + (info.size.x / 10); i++)
+				// 배치하려는 곳에 이미 방이 있으면 생성X
+				if (gameRoom.second->CheckCollision(newRoom->GetBoundingBox()))
 				{
-					for (int j = y; j < y + (info.size.y / 10); j++)
-					{
-						// 배치할 공간이 없음, 방 종류 변경 나중에 처리
-						if (_map.find({ i, j }) != _map.end())
-						{
-							isCreate = false;
-							break;
-						}
-					}
-					
-					if (!isCreate)
-						break;
+					isCreate = false;
+					break;
 				}
-				break;
-			case Right:
-			case Left:
-				for (int i = x; i < x + (info.size.x / 10); i++)
-				{
-					for (int j = y; j < y + (info.size.y / 10); j++)
-					{
-						// 배치할 공간이 없음, 방 종류 변경 나중에 처리
-						if (_map.find({ j, i }) != _map.end())
-						{
-							isCreate = false;
-							break;
-						}
-					}
-
-					if (!isCreate)
-						break;
-				}
-				break;
 			}
 
-			// 배치 가능하면 방 생성 후 기록
+			// 최소/최대 층수를 넘기지 않는지 확인
+			if (static_cast<int>(_minFloor) * 500 > pos.y + info.size.y)
+				continue;
+
+			if (static_cast<int>(_maxFloor) * 500 < pos.y + info.size.y)
+				continue;
+			
+			// 자리가 있으면 배치
 			if (isCreate)
 			{
-				GameRoomRef gameRoom = std::make_shared<GameRoom>();
-				gameRoom->SetGameRoomInfo(info);
-				gameRoom->SetPos(pos);
-				gameRoom->SetDir(dir);
-
-				// 방과 연결된 문은 제외
+				// 방과 연결된 문은 삭제
 				door->SetConnectable(false);
 				_connectableDoors[connectDir].erase(std::remove(_connectableDoors[connectDir].begin(), _connectableDoors[connectDir].end(), door), _connectableDoors[connectDir].end());
-
-				switch (dir)
-				{
-				case Front:
-				case Back:
-					for (int i = x; i < x + (info.size.x / 10); i++)
-					{
-						for (int j = y; j < y + (info.size.y / 10); j++)
-						{
-							// 테두리는 벽으로 지정
-							if (i == x || i == x + (info.size.x / 10) - 1 || j == y || j == y + (info.size.y / 10) - 1)
-								SetTileState({ i, j }, Wall, 3);
-							else
-								SetTileState({ i, j }, Passable, 3);
-						}
-					}
-					break;
-				case Right:
-				case Left:
-					for (int i = x; i < x + (info.size.x / 10); i++)
-					{
-						for (int j = y; j < y + (info.size.y / 10); j++)
-						{
-							// 테두리는 벽으로 지정
-							if (i == x || i == x + (info.size.x / 10) - 1 || j == y || j == y + (info.size.y / 10) - 1)
-								SetTileState({ i, j }, Wall, 3);
-							else
-								SetTileState({ i, j }, Passable, 3);
-						}
-					}
-					break;
-				}
-
-				_gameRooms.push_back(gameRoom);
-
-				// 문 생성 후 기록
-				std::vector<DoorRef>& doors = gameRoom->CreateDoors();
-				for (const DoorRef door : doors)
-				{
-					_connectableDoors[door->GetDir()].push_back(door);
 				
-					// 문이 있는 곳도 갈 수 있도록 처리 (추후 문 상태에 따라 다르게 처리할 예정)
-					Vector doorPos = door->GetPos();
-					std::pair<int, int> index{ door->GetPos().x / 10, door->GetPos().y / 10 };
+				_gameRooms[generateGameRoomID++] = newRoom;
+				_currentGameRoomCount[type]++;
 
-					// 일부 방향은 인덱스 조정 필요
-					switch (door->GetDir())
-					{
-					case Right:
-						index.first -= 1;
-						break;
-					case Back:
-						index.second -= 1;
-						break;
-					}
-
-					SetTileState(index, Passable, 3);
-				}
+				// 문 생성
+				std::vector<DoorRef>& doors = newRoom->CreateDoors();
+				for (const DoorRef door : doors)
+					_connectableDoors[door->GetDir()].push_back(door);
 					
 				std::cout << "Create" << static_cast<int>(type) << std::endl;
 			}
@@ -300,23 +208,6 @@ void Room::CreateFactoryGameRooms()
 	}
 
 	std::cout << "Success Create GameRooms" << std::endl;
-
-	/*for (int i = 0; i < Height; i++)
-	{
-		for (int j = 0; j < Width; j++)
-		{
-			if (_map.find({ j, i }) != _map.end())
-			{
-				if((GetTileState({j, i}, 3) == Wall))
-					std::cout << "■";
-				else if((GetTileState({ j, i }, 3) == Passable))
-					std::cout << "□";
-			}
-			else
-				std::cout << "◇";
-		}
-		std::cout << std::endl;
-	}*/
 
 	// 아이템 생성
 

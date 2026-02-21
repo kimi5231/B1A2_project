@@ -29,7 +29,7 @@ public:
 	GameObjectRef GetObject(ObjectType type, uint id);
 	const std::unordered_map<uint, PlayerRef>& GetPlayers() { return _players; }
 	const std::unordered_map<uint, MonsterRef>& GetMonsters() { return _monsters; }
-	const std::vector<GameRoomRef>& GetGameRooms() { return _gameRooms; }
+	const std::unordered_map<uint, GameRoomRef>& GetGameRooms() { return _gameRooms; }
 
 private:
 	// 추후 로그인 기능 추가 후 ID로 대체할 것
@@ -37,7 +37,7 @@ private:
 	uint _generateMonsterID{};
 	uint _generateItemID{};
 
-	std::vector<GameRoomRef> _gameRooms;
+	std::unordered_map<uint, GameRoomRef> _gameRooms;
 	std::unordered_map<uint, PlayerRef> _players;
 	std::unordered_map<uint, MonsterRef> _monsters;
 	std::unordered_map<uint, ItemRef> _items;
@@ -59,4 +59,7 @@ private:
 
 	// 각 방향별로 방이 생성될 확률
 	std::unordered_map < Dir, float> _roomSpawnChance;
+
+	Floor _minFloor;
+	Floor _maxFloor;
 };
