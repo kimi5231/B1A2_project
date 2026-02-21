@@ -99,6 +99,7 @@ void Room::CreateFactoryGameRooms()
 		Vector pos{};
 
 		GameRoomRef gameRoom = std::make_shared<GameRoom>(pos, Front, info);
+		gameRoom->SetID(generateGameRoomID);
 
 		std::vector<DoorRef>& doors = gameRoom->CreateDoors();
 		for (const DoorRef door : doors)
@@ -109,7 +110,6 @@ void Room::CreateFactoryGameRooms()
 	}
 
 	// 이후 방 절차적 생성
-	// 방별 최대 최소 개수 고려 아직X
 	//while(conditions.totalGameRoomCount != _gameRooms.size())
 	for (int i : std::views::iota(1u, conditions.totalGameRoomCount))
 	{
@@ -127,84 +127,102 @@ void Room::CreateFactoryGameRooms()
 		std::uniform_int_distribution<int> selectDoor(0, _connectableDoors[connectDir].size() - 1);
 		DoorRef door = _connectableDoors[connectDir][selectDoor(gen)];
 
-		// 이전 방이 계단
-		//if (prevRoom->GetGameRoomType() == GameRoomType::Staircase)
-		
-		// 이전 방이 난간 통로 or 복도 => 모든 방 가능
-		//if (prevRoom->GetGameRoomType() == GameRoomType::RailCatwalk || prevRoom->GetGameRoomType() == GameRoomType::PipedHallways_Line)
+		// GameRoomType 선택
+		// 연결할 방의 타입에 따라 가능한 방 타입 다르게 설정
+		GameRoomType type;
+		GameRoomType prevRoomType = _gameRooms[door->GetRoomID()]->GetGameRoomType();
+		switch (prevRoomType)
 		{
-			// GameRoomType 선택
+		case GameRoomType::Staircase:
+		{
+			// 연결할 방이 계단 => 방, 난간 통로, 복도 가능
+			std::uniform_int_distribution<int> selectGameRoomType(static_cast<int>(GameRoomType::GapRoom), static_cast<int>(GameRoomType::PipedHallways_Grid));
+			type = static_cast<GameRoomType>(selectGameRoomType(gen));
+			break;
+		}
+		case GameRoomType::RailCatwalk:
+		case GameRoomType::PipedHallways_Line:
+		{
+			// 연결할 방이 난간 통로 or 복도 => 모든 방 가능
 			std::uniform_int_distribution<int> selectGameRoomType(static_cast<int>(GameRoomType::GapRoom), static_cast<int>(GameRoomType::Staircase));
-			GameRoomType type = static_cast<GameRoomType>(selectGameRoomType(gen));
-			GameRoomInfo info = g_dataManager->GetGameRoomInfo(type);
+			type = static_cast<GameRoomType>(selectGameRoomType(gen));
+			break;
+		}
+		default:
+		{
+			// 연결할 방이 일반 방 => 계단, 난간 통로, 복도 가능
+			std::uniform_int_distribution<int> selectGameRoomType(static_cast<int>(GameRoomType::RailCatwalk), static_cast<int>(GameRoomType::Staircase));
+			type = static_cast<GameRoomType>(selectGameRoomType(gen));
+			break;
+		}
+		}
 
-			// 선택된 GameRoomType이 이미 최대치만큼 있으면 다시 뽑기
-			if (_currentGameRoomCount[type] == info.maxCreateCount[_currentDifficulty])
-				continue;
+		GameRoomInfo info = g_dataManager->GetGameRoomInfo(type);
 
-			Vector pos{};
-			Vector doorPos = door->GetPos();
-			// 방의 방향은 문과 반대
-			Dir dir = static_cast<Dir>((connectDir + 2) % 4);
+		// 선택된 GameRoomType이 이미 최대치만큼 있으면 다시 뽑기
+		if (_currentGameRoomCount[type] == info.maxCreateCount[_currentDifficulty])
+			continue;
 
-			// 방의 방향에 맞춰 좌표 설정
-			switch (dir)
+		Vector pos{};
+		Vector doorPos = door->GetPos();
+		// 방의 방향은 문과 반대
+		Dir dir = static_cast<Dir>((connectDir + 2) % 4);
+
+		// 방의 방향에 맞춰 좌표 설정
+		switch (dir)
+		{
+		case Front:
+			pos = { doorPos.x - info.enterDistance, doorPos.y + info.size.y / 2, doorPos.z };
+			break;
+		case Right:
+			pos = { doorPos.x - info.size.y / 2, doorPos.y - info.enterDistance, doorPos.z };
+			break;
+		case Back:
+			pos = { doorPos.x + info.enterDistance, doorPos.y - info.size.y / 2, doorPos.z };
+			break;
+		case Left:
+			pos = { doorPos.x + info.size.y / 2, doorPos.y + info.enterDistance, doorPos.z };
+			break;
+		}
+
+		GameRoomRef newRoom = std::make_shared<GameRoom>(pos, dir, info);
+		newRoom->SetID(generateGameRoomID);
+
+		// 방을 배치할 자리가 있는지 확인
+		bool isCreate = true;
+		for (const auto& gameRoom : _gameRooms)
+		{
+			// 배치하려는 곳에 이미 방이 있으면 생성X
+			if (gameRoom.second->CheckCollision(newRoom->GetBoundingBox()))
 			{
-			case Front:
-				pos = {doorPos.x - info.enterDistance, doorPos.y + info.size.y / 2, doorPos.z};
+				isCreate = false;
 				break;
-			case Right:
-				pos = { doorPos.x - info.size.y / 2, doorPos.y - info.enterDistance, doorPos.z };
-				break;
-			case Back:
-				pos = { doorPos.x + info.enterDistance, doorPos.y - info.size.y / 2, doorPos.z };
-				break;
-			case Left:
-				pos = { doorPos.x + info.size.y / 2, doorPos.y + info.enterDistance, doorPos.z };
-				break;
-			}
-
-			GameRoomRef newRoom = std::make_shared<GameRoom>(pos, dir, info);
-
-			// 방을 배치할 자리가 있는지 확인
-			bool isCreate = true;
-			for (const auto& gameRoom : _gameRooms)
-			{
-				// 배치하려는 곳에 이미 방이 있으면 생성X
-				if (gameRoom.second->CheckCollision(newRoom->GetBoundingBox()))
-				{
-					isCreate = false;
-					break;
-				}
-			}
-
-			// 최소/최대 층수를 넘기지 않는지 확인
-			if (static_cast<int>(_minFloor) * 500 > pos.y + info.size.y)
-				continue;
-
-			if (static_cast<int>(_maxFloor) * 500 < pos.y + info.size.y)
-				continue;
-			
-			// 자리가 있으면 배치
-			if (isCreate)
-			{
-				// 방과 연결된 문은 삭제
-				door->SetConnectable(false);
-				_connectableDoors[connectDir].erase(std::remove(_connectableDoors[connectDir].begin(), _connectableDoors[connectDir].end(), door), _connectableDoors[connectDir].end());
-				
-				_gameRooms[generateGameRoomID++] = newRoom;
-				_currentGameRoomCount[type]++;
-
-				// 문 생성
-				std::vector<DoorRef>& doors = newRoom->CreateDoors();
-				for (const DoorRef door : doors)
-					_connectableDoors[door->GetDir()].push_back(door);
-					
-				std::cout << "Create" << static_cast<int>(type) << std::endl;
 			}
 		}
 
-		// 그 외
+		// 최소/최대 층수를 넘기지 않는지 확인
+		if (static_cast<int>(_minFloor) * 500 > pos.y + info.size.y)
+			continue;
+		if (static_cast<int>(_maxFloor) * 500 < pos.y + info.size.y)
+			continue;
+
+		// 자리가 있으면 배치
+		if (isCreate)
+		{
+			// 방과 연결된 문은 삭제
+			door->SetConnectable(false);
+			_connectableDoors[connectDir].erase(std::remove(_connectableDoors[connectDir].begin(), _connectableDoors[connectDir].end(), door), _connectableDoors[connectDir].end());
+
+			_gameRooms[generateGameRoomID++] = newRoom;
+			_currentGameRoomCount[type]++;
+
+			// 문 생성
+			std::vector<DoorRef>& doors = newRoom->CreateDoors();
+			for (const DoorRef door : doors)
+				_connectableDoors[door->GetDir()].push_back(door);
+
+			std::cout << "Create" << static_cast<int>(type) << std::endl;
+		}
 	}
 
 	std::cout << "Success Create GameRooms" << std::endl;
