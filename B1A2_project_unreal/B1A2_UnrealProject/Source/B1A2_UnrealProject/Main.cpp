@@ -6,6 +6,7 @@
 #include "MyPlayer.h"
 #include "OtherPlayer.h"
 #include "Network/GameNetwork.h"
+#include "BaseItem.h"
 
 #define BUFSIZE	64
 
@@ -137,6 +138,17 @@ void UMain::SendLocalPosition()
 
 		_gameNetwork->SendMovePacket(ObjectType::Player, _myID, pos, rot, state);
 	}
+}
+
+void UMain::SendGetItem(int itemID, int playerID)
+{
+	if (_myID == 0 || itemID == 0)
+		return;
+
+	UWorld* world = GetWorld();
+	if (!world) return;
+
+	_gameNetwork->SendGetItemPacket(itemID, playerID);
 }
 
 void UMain::Update()
@@ -340,11 +352,12 @@ void UMain::RecvAddItem(S_AddItem_Packet packet)
 		if (!world)
 			return;
 
-		AStaticMeshActor* ItemActor;
+		ABaseItem* item;
 		switch (packet.itemType)
 		{
 		case ItemType::CardboardBox:
-			ItemActor = world->SpawnActor<AStaticMeshActor>(CardboardBoxClass, spawnLocation, spawnRotation);
+			item = world->SpawnActor<ABaseItem>(CardboardBoxClass, spawnLocation, spawnRotation);
+			item->SetItemID(id);
 			UE_LOG(LogTemp, Log, TEXT("[Item] CardboardBox Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
 		}
 	});
