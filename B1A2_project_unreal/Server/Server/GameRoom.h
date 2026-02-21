@@ -29,6 +29,7 @@ public:
 	Dir GetDir() { return _dir; }
 	BoundingBox GetBoundingBox() { return _box; }
 	std::vector<DoorRef>& GetWalls() { return _walls; }
+	void SetID(uint id) { _id = id; }
 
 private:
 	GameRoomInfo _info{};
