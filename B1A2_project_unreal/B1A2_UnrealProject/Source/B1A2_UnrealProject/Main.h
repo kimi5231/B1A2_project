@@ -112,6 +112,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Room")
 	TSubclassOf<AStaticMeshActor> 	FactoryRoomClass;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Room")
+	TSubclassOf<AStaticMeshActor> 	Wall_FillerClass;
+
 	// ∏ÛΩ∫≈Õ
 	UPROPERTY(EditDefaultsOnly, Category = "Monster")
 	TSubclassOf<AStaticMeshActor> TestMonsterClass;
