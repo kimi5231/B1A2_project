@@ -46,18 +46,43 @@ void Room::Update()
 
 void Room::SetupGameRoomConditions()
 {
-	// 방별 개수 초기화
+	
 }
 
 void Room::CreateFactoryGameRooms()
 {
 	// 난이도에 맞춰 조건 설정
 	GameRoomConditionInfo conditions = g_dataManager->GetGameRoomConditionInfo(_currentDifficulty, _detailDifficulty);
-
+	
 	// 나중에 json으로 불러올 예정
 	// array로 바꾸는 것도 고려할 것, 고정된 크기
 	for (int i = 0; i < DirCount; i++)
 		_roomSpawnChance[static_cast<Dir>(i)] = 0.25;
+
+	// 층수 정하기
+	std::uniform_int_distribution<int> selectFloor(conditions.floor.first, conditions.floor.second);
+	uint currentFloor = selectFloor(gen);
+	 
+	// 층마다 플래그 켜서 이거 킬때 옆에꺼 켜져있는지 확인하고 개수만큼 킬것
+	_minFloor = F1;
+	_maxFloor = F1;
+	for (int i = 0; i < currentFloor; i++)
+	{
+		std::discrete_distribution selectFloorDir({ 0.5, 0.5 });
+		
+		// 나중에 정해진 범위를 넘어가지 않도록 처리 필요
+		switch (selectFloorDir(gen))
+		{
+		case 0:
+			// 위로 층수 증가
+			_maxFloor = static_cast<Floor>(static_cast<int>(_maxFloor) + 1);
+			break;
+		case 1:
+			// 아래로 층수 증가
+			_minFloor = static_cast<Floor>(static_cast<int>(_minFloor) - 1);
+			break;
+		}
+	}
 
 	uint generateGameRoomID = 1;
 
@@ -76,6 +101,7 @@ void Room::CreateFactoryGameRooms()
 			_connectableDoors[door->GetDir()].push_back(door);
 
 		_gameRooms[generateGameRoomID++] = gameRoom;
+		_currentGameRoomCount[GameRoomType::MainEntranceRoom]++;
 	}
 
 	// 이후 방 절차적 생성
@@ -108,8 +134,9 @@ void Room::CreateFactoryGameRooms()
 			GameRoomType type = static_cast<GameRoomType>(selectGameRoomType(gen));
 			GameRoomInfo info = g_dataManager->GetGameRoomInfo(type);
 
-			// 나중에 개수 따지기
-			//if (_currentGameRoomCount[info.type] < info.maxCreateCount[_currentDifficulty])
+			// 
+			if (_currentGameRoomCount[type] >= info.maxCreateCount[_currentDifficulty])
+				continue;
 
 			Vector pos{};
 			Vector doorPos = door->GetPos();
@@ -146,6 +173,9 @@ void Room::CreateFactoryGameRooms()
 					break;
 				}
 			}
+
+			// 방 종류에 따라 최소/최대 층수를 넘기지 않는지 확인
+
 			
 			// 자리가 있으면 배치
 			if (isCreate)
@@ -155,6 +185,7 @@ void Room::CreateFactoryGameRooms()
 				_connectableDoors[connectDir].erase(std::remove(_connectableDoors[connectDir].begin(), _connectableDoors[connectDir].end(), door), _connectableDoors[connectDir].end());
 				
 				_gameRooms[generateGameRoomID++] = newRoom;
+				_currentGameRoomCount[type]++;
 
 				// 문 생성
 				std::vector<DoorRef>& doors = newRoom->CreateDoors();

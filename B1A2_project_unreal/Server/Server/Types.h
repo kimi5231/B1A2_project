@@ -72,6 +72,15 @@ enum ItemType
 	ItemTypeCount,
 };
 
+enum Floor
+{
+	B2 = -2,
+	B1 = -1,
+	F1 = 0,
+	F2 = 1,
+	F3 = 2,
+};
+
 //------------------Struct------------------
 // unordered map에 pair를 쓰기 위해 필요한 구조체
 struct PairHash
