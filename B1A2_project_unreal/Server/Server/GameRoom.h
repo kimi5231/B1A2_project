@@ -28,6 +28,7 @@ public:
 	void SetDir(Dir dir) { _dir = dir; }
 	Dir GetDir() { return _dir; }
 	BoundingBox GetBoundingBox() { return _box; }
+	std::vector<DoorRef>& GetWalls() { return _walls; }
 
 private:
 	GameRoomInfo _info{};
@@ -38,4 +39,5 @@ private:
 
 	std::vector<GameRoomRef> _connetedRoom;
 	std::vector<DoorRef> _doors;
+	std::vector<DoorRef> _walls;
 };
