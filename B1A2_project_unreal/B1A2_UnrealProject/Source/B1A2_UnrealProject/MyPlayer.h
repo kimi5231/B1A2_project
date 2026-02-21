@@ -12,6 +12,7 @@ class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
 class UMain;
+class ABaseItem;
 
 /**
  * 
@@ -72,10 +73,10 @@ public:
 
 protected:
 	UPROPERTY()
-	TSet<AActor*> _nearInteractables;
+	TSet<ABaseItem*> _nearInteractableItem;
 
 	UPROPERTY()
-	AActor* _focusedItem;	// E 버튼을 띄울 아이템
+	ABaseItem* _focusedItem;	// E 버튼을 띄울 아이템
 
 private:
 	// 아이템 상호작용
@@ -84,9 +85,10 @@ private:
 	UFUNCTION()
 	void OnItemOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	void CheckItemTrace();
-	void SetFocusedItem(AActor* newItem);
+	void SetFocusedItem(ABaseItem* newItem);
 	void ClearFocusedItem();
 	bool LineTrace(FHitResult& outHit) const;
+	void GetItemByEKey();
 
 	// 위치 정보 Send 타이머
 	float _movePacketSendTimer = 0.2f;	// 현재 남은 시간

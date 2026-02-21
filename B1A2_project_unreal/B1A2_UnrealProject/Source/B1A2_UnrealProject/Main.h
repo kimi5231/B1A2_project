@@ -16,6 +16,7 @@ class FRunnableThread;
 
 class AOtherPlayer;
 class AMyPlayer;
+class ABaseItem;
 
 UCLASS()
 class B1A2_UNREALPROJECT_API UMain : public UGameInstance
@@ -38,6 +39,7 @@ public:
 	void ProcessSend(PacketID id, const void* packetData, int dataSize);
 
 	void SendLocalPosition();
+	void SendGetItem(int itemID, int playerID);
 
 	// Recv
 	void Update();
@@ -60,57 +62,60 @@ public:
 
 	FRotator DirToRotation(Dir dir);
 
+	// ID
+	int GetMyID() { return _myID; }
+
 public:
 	// Room Box Class
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Room")
 	TSubclassOf<AStaticMeshActor> MainEntranceRoomClass;
 	
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Room")
 	TSubclassOf<AStaticMeshActor> GapRoomClass;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Room")
 	TSubclassOf<AStaticMeshActor> ApparatusRoomClass;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Room")
 	TSubclassOf<AStaticMeshActor> ServerRoomClass;
 	
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Room")
 	TSubclassOf<AStaticMeshActor> CabinetRoomClass;
 	
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Room")
 	TSubclassOf<AStaticMeshActor> PipedHallways_GridClass;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Room")
 	TSubclassOf<AStaticMeshActor> PipedHallways_LineClass;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Room")
 	TSubclassOf<AStaticMeshActor> RailCatwalkClass;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Room")
 	TSubclassOf<AStaticMeshActor> StaircaseClass;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Room")
 	TSubclassOf<AStaticMeshActor> StorageRoom_ConerClass;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Room")
 	TSubclassOf<AStaticMeshActor> StorageRoom_RectClass;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Room")
 	TSubclassOf<AStaticMeshActor> StorageRoom_StepClass;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Room")
 	TSubclassOf<AStaticMeshActor> YellowOfficeRoomClass;
 	
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Room")
 	TSubclassOf<AStaticMeshActor> 	FactoryRoomClass;
 
 	// 몬스터
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Monster")
 	TSubclassOf<AStaticMeshActor> TestMonsterClass;
 
 	// Item
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<AStaticMeshActor> CardboardBoxClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	TSubclassOf<class ABaseItem> CardboardBoxClass;
 
 private:
 	GameNetwork* _gameNetwork = nullptr;
@@ -139,5 +144,5 @@ private:
 	TMap<uint64, AStaticMeshActor*> _monsters;
 
 	// 아이템
-	TMap<uint64, AStaticMeshActor*> _items;
+	TMap<uint64, AActor*> _items;
 };

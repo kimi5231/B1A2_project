@@ -31,6 +31,9 @@ public:
 	virtual void HideInteractionUI_Implementation() override;
 	virtual void Interact_Implementation() override;
 
+	void SetItemID(int itemID) { _itemID = itemID; }
+	int GetItemID() { return _itemID; }
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* ItemMesh;
@@ -40,4 +43,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UWidgetComponent* EWidget;
+
+private:
+	int _itemID = {};
 };

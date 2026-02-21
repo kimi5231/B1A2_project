@@ -18,6 +18,7 @@
 
 #include "Main.h"
 #include "InteractableInterface.h"
+#include "BaseItem.h"
 
 AMyPlayer::AMyPlayer()
 {
@@ -48,6 +49,7 @@ void AMyPlayer::BeginPlay()
 		}
 	}
 
+	// 아이템 캡슐과 충돌
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AMyPlayer::OnItemOverlapBegin);
 	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AMyPlayer::OnItemOverlapEnd);
 }
@@ -71,7 +73,11 @@ void AMyPlayer::Tick(float DeltaTime)
 	{
 		_interactionTimer = INTERACTION_DELAY;
 
-		CheckItemTrace();
+		// 아이템이 근처에 있을 때만 Line Trace
+		if (_nearInteractableItem.Num() > 0)
+			CheckItemTrace();
+		else
+			ClearFocusedItem();
 	}
 }
 
@@ -91,7 +97,7 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(MouseLookAction, ETriggerEvent::Triggered, this, &AMyPlayer::Look);
 
 		// Get Item
-		//EnhancedInputComponent->BindAction(GetItemAction, ETriggerEvent::Started, this, &AMyPlayer::GetItemByEKey);
+		EnhancedInputComponent->BindAction(GetItemAction, ETriggerEvent::Started, this, &AMyPlayer::GetItemByEKey);
 	}
 }
 
@@ -131,31 +137,29 @@ void AMyPlayer::Look(const FInputActionValue& Value)
 
 void AMyPlayer::OnItemOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor && OtherActor->Implements<UInteractableInterface>())
-	{
-		_nearInteractables.Add(OtherActor);
+	ABaseItem* item = Cast<ABaseItem>(OtherActor);
+	if (!item)
+		return;
 
-		UE_LOG(LogTemp, Log,
-			TEXT("[Item] Overlap Begin! Added Nearby Item: %s (Count: %d)"),
-			*OtherActor->GetName(),
-			_nearInteractables.Num());
-	}
+	_nearInteractableItem.Add(item);
+
+	//UE_LOG(LogTemp, Log, TEXT("[Item] Overlap Begin! Added Nearby Item: %s (Count: %d)"), *OtherActor->GetName(), _nearInteractableItem.Num());
 }
 
 void AMyPlayer::OnItemOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (OtherActor)
+	ABaseItem* item = Cast<ABaseItem>(OtherActor);
+	if (!item)
+		return;
+
+	_nearInteractableItem.Remove(item);
+	//UE_LOG(LogTemp, Log, TEXT("[Item] OverlapEnd! Removed Nearby Item: %s (Count: %d)"), *OtherActor->GetName(), _nearInteractableItem.Num());
+
+	// 충돌 끝나며, 보고 있던 아이템 포커스 해제하기
+	if (_focusedItem == item)
 	{
-		_nearInteractables.Remove(OtherActor);
-
-		UE_LOG(LogTemp, Log, TEXT("[Item] OverlapEnd! Removed Nearby Item: %s (Count: %d)"), *OtherActor->GetName(), _nearInteractables.Num());
-
-		// 나가면서 보고 있던 아이템이면 즉시 포커스 해제
-		if (_focusedItem == OtherActor)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("[Item] OverlapEnd! Focused item left range, clearing focus"));
-			ClearFocusedItem();
-		}
+		//UE_LOG(LogTemp, Warning, TEXT("[Item] OverlapEnd! Focused item left range, clearing focus"));
+		ClearFocusedItem();
 	}
 }
 
@@ -164,24 +168,29 @@ void AMyPlayer::CheckItemTrace()
 	FHitResult hit;
 	if (!LineTrace(hit)) 
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[Item] Trace, No hit"));
+		//UE_LOG(LogTemp, Warning, TEXT("[Item] Trace, No hit"));
 		return;
 	}
 
-	AActor* hitActor = hit.GetActor();
-	UE_LOG(LogTemp, Warning, TEXT("[Item] Hit Actor: %s"), hitActor ? *hitActor->GetName() : TEXT("None"));
-
-	if (hitActor && _nearInteractables.Contains(hitActor) && hitActor->Implements<UInteractableInterface>())
+	ABaseItem* hitItem = Cast<ABaseItem>(hit.GetActor());
+	if (!hitItem)
 	{
-		UE_LOG(LogTemp, Log, TEXT("[Trace] Valid Interactable Focus: %s"), *hitActor->GetName());
-		SetFocusedItem(hitActor);
+		ClearFocusedItem();
+		return;
+	}
+	
+	//UE_LOG(LogTemp, Warning, TEXT("[Item] Hit Actor: %s"), *hitItem->GetName());
+
+	if (_nearInteractableItem.Contains(hitItem))
+	{
+		SetFocusedItem(hitItem);
 		return;
 	}
 
 	ClearFocusedItem();
 }
 
-void AMyPlayer::SetFocusedItem(AActor* newItem)
+void AMyPlayer::SetFocusedItem(ABaseItem* newItem)
 {
 	if (_focusedItem == newItem)
 		return;
@@ -193,7 +202,6 @@ void AMyPlayer::SetFocusedItem(AActor* newItem)
 
 	if (_focusedItem)
 		IInteractableInterface::Execute_ShowInteractionUI(_focusedItem);
-
 }
 
 void AMyPlayer::ClearFocusedItem()
@@ -215,27 +223,25 @@ bool AMyPlayer::LineTrace(FHitResult& outHit) const
 
 	bool bHit = GetWorld()->LineTraceSingleByChannel(outHit, start, end, ECC_Visibility, Params);
 
-	DrawDebugLine(GetWorld(), start, end, bHit ? FColor::Green : FColor::Red, false, 0.1f, 0, 2.f);
-
-	// 히트 지점 표시
+	// 디버깅용
+	/*DrawDebugLine(GetWorld(), start, end, bHit ? FColor::Green : FColor::Red, false, 0.1f, 0, 2.f);
 	if (bHit)
 	{
 		DrawDebugSphere(GetWorld(),	outHit.ImpactPoint, 8.f, 12, FColor::Blue, false, 0.1f);
-	}
+	}*/
 
 	return bHit;
 }
 
-//void AMyPlayer::GetItemByEKey()
-//{
-//	if (CurrentInteractableItem)
-//	{
-//		IInteractableInterface* interface = Cast<IInteractableInterface>(CurrentInteractableItem);
-//
-//		if (interface)
-//		{
-//			// Get Item 패킷 보내기
-//			CurrentInteractableItem = nullptr;	// 참조 제거
-//		}
-//	}
-//}
+void AMyPlayer::GetItemByEKey()
+{
+	if (!_focusedItem)
+	{
+		UE_LOG(LogTemp, Log, TEXT("[Item] E Key Pressed, but no focused Item"));
+		return;
+	}
+
+	if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
+		gameInstance->SendGetItem(_focusedItem->GetItemID(), gameInstance->GetMyID());
+	UE_LOG(LogTemp, Log, TEXT("[Item] E Key Pressed, Send Item and Player ID!!!"));
+}
