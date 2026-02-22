@@ -186,7 +186,6 @@ void Room::CreateFactoryGameRooms()
 		}
 
 		GameRoomRef newRoom = std::make_shared<GameRoom>(pos, dir, info);
-		newRoom->SetID(generateGameRoomID);
 
 		// 방을 배치할 자리가 있는지 확인
 		bool isCreate = true;
@@ -212,6 +211,13 @@ void Room::CreateFactoryGameRooms()
 			// 방과 연결된 문은 삭제
 			door->SetConnectable(false);
 			_connectableDoors[connectDir].erase(std::remove(_connectableDoors[connectDir].begin(), _connectableDoors[connectDir].end(), door), _connectableDoors[connectDir].end());
+
+			// ID 부여
+			newRoom->SetID(generateGameRoomID);
+
+			// 연결된 방끼리 서로 기록
+			newRoom->AddConnectedRoom(_gameRooms[door->GetRoomID()]);
+			_gameRooms[door->GetRoomID()]->AddConnectedRoom(newRoom);
 
 			_gameRooms[generateGameRoomID++] = newRoom;
 			_currentGameRoomCount[type]++;
