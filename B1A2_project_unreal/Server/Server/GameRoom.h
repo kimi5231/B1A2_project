@@ -16,6 +16,8 @@ public:
 	std::vector<DoorRef>& CreateDoors();
 	bool CheckCollision(BoundingBox other) { return _box.CheckCollision(other.GetRanges()); };
 
+	void AddConnectedRoom(GameRoomRef gameRoom) { _connetedRoom.push_back(gameRoom); }
+
 public:
 	void SetGameRoomInfo(GameRoomInfo info) { _info = info; }
 	GameRoomInfo GetGameRoomInfo() { return _info; }
@@ -38,7 +40,8 @@ private:
 	Dir _dir{};
 	BoundingBox _box;
 
-	std::vector<GameRoomRef> _connetedRoom;
+	// 순환참조 방지
+	std::vector<std::weak_ptr<GameRoom>> _connetedRoom;
 	std::vector<DoorRef> _doors;
 	std::vector<DoorRef> _walls;
 };
