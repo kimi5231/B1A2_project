@@ -1,0 +1,28 @@
+{
+    "tilemaps": [
+        {
+            "type" : 0,
+            "tileCount" : [24, 24, 20],
+            "tilemap" : [
+            {
+               "layer" : [
+                    { "pattern" : [[1, 24]], "repeatY" :  24 }
+               ], "repeatZ" : 20
+            }
+            ]
+        },
+        {
+            "type" : 3,
+            "tileCount" : [52, 48, 20],
+            "tilemap" : [
+            {
+               "layer" : [
+                    { "pattern" : [[1, 24], [0, 28]], "repeatY" :  13 },
+                    { "pattern" : [[1, 52]], "repeatY" :  22 },
+                    { "pattern" : [[1, 24], [0, 28]], "repeatY" :  13 }
+               ], "repeatZ" : 20
+            }
+            ]
+        }
+    ]
+}

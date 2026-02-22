@@ -9,6 +9,7 @@ public:
 public:
 	void LoadGameRoomConditionInfos();
 	void LoadGameRoomInfos();
+	void LoadGameRoomTilemaps();
 
 public:
 	const GameRoomConditionInfo& GetGameRoomConditionInfo(Difficulty current, Difficulty detail) { return _gameRoomconditionInfos[{current, detail}]; }
@@ -19,4 +20,5 @@ private:
 
 	std::map<std::pair<Difficulty, Difficulty>, GameRoomConditionInfo> _gameRoomconditionInfos;
 	std::unordered_map<GameRoomType, GameRoomInfo> _gameRoomInfos;
+	std::unordered_map<GameRoomType, std::vector<std::vector<std::vector<short>>>> _gameRoomTilemaps;
 };
