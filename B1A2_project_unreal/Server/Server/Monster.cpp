@@ -5,9 +5,10 @@
 
 Monster::Monster()
 {
-	_pos = {0, 100, 10};
+	_pos = {0, 200, 10};
 	_rotation = { 0, 0, 0 };
 	_type = ObjectType::Monster;
+	_box.SetRanges({ _pos.x - 40,  _pos.y - 40,  _pos.z }, { _pos.x + 40,  _pos.y + 40,  _pos.z + 80 });
 } 
 
 Monster::~Monster()

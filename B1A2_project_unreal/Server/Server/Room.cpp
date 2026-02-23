@@ -40,6 +40,16 @@ void Room::Update()
 		for (const auto& item : _monsters)
 			item.second->Update(_map);
 
+		// 플레이어, 몬스터 충돌 처리
+		for (const auto& playerItem : _players)
+		{
+			for (const auto& monsterItem : _monsters)
+			{
+				if (playerItem.second->CheckCollision(monsterItem.second->GetBoundingBox()))
+					g_framework->SendRemoveObjectPacket(monsterItem.second->GetObjectType(), monsterItem.second->GetID(), true);
+			}
+		}
+
 		lastUpdate = now;
 	}
 }

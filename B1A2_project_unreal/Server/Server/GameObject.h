@@ -1,4 +1,6 @@
 #pragma once
+#include "BoundingBox.h"
+
 class GameObject : public std::enable_shared_from_this<GameObject>
 {
 public:
@@ -7,6 +9,8 @@ public:
 
 public:
 	virtual void Update();
+
+	bool CheckCollision(BoundingBox other) { return _box.CheckCollision(other.GetRanges()); };
 
 public:
 	void SetID(UINT id) { _id = id; }
@@ -19,6 +23,7 @@ public:
 	Rotation GetRotation() { return _rotation; }
 	void SetState(ObjectState state) { _state = state; }
 	ObjectState GetState() { return _state; }
+	BoundingBox GetBoundingBox() { return _box; }
 
 protected:
 	UINT _id{};
@@ -26,5 +31,6 @@ protected:
 	Vector _pos{};
 	Rotation _rotation{};
 	ObjectState _state{};
+	BoundingBox _box;
 };
 
