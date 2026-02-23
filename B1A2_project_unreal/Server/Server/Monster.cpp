@@ -44,15 +44,4 @@ void Monster::Update(std::unordered_map<std::pair<int, int>, short, PairHash>& m
 	int x = pos.x / 10;
 	int y = pos.y / 10;
 	 
-	if (map.find({ x, y }) != map.end())
-	{
-		// 이동이 가능하면
-		if (g_framework->GetRoom()->GetTileState({x, y}, 3) == TileState::Passable)
-		{
-			_pos = pos;
-			g_framework->SendMovePacket(shared_from_this(), true);
-		}
-			
-		// 물체가 있다면
-	}
 }

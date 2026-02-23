@@ -249,19 +249,6 @@ void Room::CreateFactoryGameRooms()
 	//g_framework->SendCreateGameRoomPacket(_gameRooms, true);
 }
 
-void Room::SetTileState(std::pair<int, int> index, TileState state, int layer)
-{
-	// 해당 층 비트 지우기
-	_map[index] &= ~LAYER_MASK(layer);
-	// TileState 변경
-	_map[index] |= (state << LAYER_SHIFT(layer));
-}
-
-short Room::GetTileState(std::pair<int, int> index, int layer)
-{
-	return (_map[index] & LAYER_MASK(layer)) >> LAYER_SHIFT(layer);
-}
-
 GameObjectRef Room::AddObject(ObjectType type)
 {
 	GameObjectRef object;
