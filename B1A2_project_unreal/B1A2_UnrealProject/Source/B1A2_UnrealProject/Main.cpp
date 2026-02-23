@@ -387,10 +387,58 @@ void UMain::RecvRemoveObject(S_RemoveObject_Packet packet)
 
 void UMain::RemovePlayer(S_RemoveObject_Packet packet)
 {
+	int id = packet.objectID;
+
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		UWorld* world = GetWorld();
+		if (!world)
+			return;
+
+		AOtherPlayer** foundPlayer = _otherPlayers.Find(id);
+		if (!foundPlayer || !(*foundPlayer))
+		{
+			UE_LOG(LogTemp, Log, TEXT("[Item] Remove Failed... ID %llu Not found"), id);
+			return;
+		}
+
+		AOtherPlayer* player = *foundPlayer;
+
+		// Map에서 제거
+		_otherPlayers.Remove(id);
+		// 월드에서 제거
+		player->Destroy();
+
+		UE_LOG(LogTemp, Log, TEXT("[Player] Player Removed!!! ID %llu, Name %s"), id, *player->GetName());
+	});
 }
 
 void UMain::RemoveMonster(S_RemoveObject_Packet packet)
 {
+	int id = packet.objectID;
+
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		UWorld* world = GetWorld();
+		if (!world)
+			return;
+
+		AStaticMeshActor** foundMonster = _monsters.Find(id);
+		if (!foundMonster || !(*foundMonster))
+		{
+			UE_LOG(LogTemp, Log, TEXT("[Item] Remove Failed... ID %llu Not found"), id);
+			return;
+		}
+
+		AStaticMeshActor* monster = *foundMonster;
+
+		// Map에서 제거
+		_monsters.Remove(id);
+		// 월드에서 제거
+		monster->Destroy();
+
+		UE_LOG(LogTemp, Log, TEXT("[Monster] Monster Removed!!! ID %llu, Name %s"), id, *monster->GetName());
+	});
 }
 
 void UMain::RemoveItem(S_RemoveObject_Packet packet)
