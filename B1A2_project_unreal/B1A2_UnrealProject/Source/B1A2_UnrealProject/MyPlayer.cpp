@@ -235,8 +235,16 @@ void AMyPlayer::ClearFocusedItem()
 
 bool AMyPlayer::LineTrace(FHitResult& outHit) const
 {
-	FVector start = FollowCamera->GetComponentLocation();
-	FVector end = start + (FollowCamera->GetForwardVector() * 300.f);
+	FVector start = GetActorLocation();
+	start.Z += GetCapsuleComponent()->GetScaledCapsuleHalfHeight() * 0.3f;	// 몸통
+
+	// 방향 설정
+	FVector forward = GetActorForwardVector(); // 플레이어가 바라보는 앞방향
+	FVector down = FVector::DownVector;	// 아래방향
+	FVector traceDir = (forward + down).GetSafeNormal();
+
+	float distance = 500.f;
+	FVector end = start + (traceDir * distance);
 
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
@@ -244,11 +252,11 @@ bool AMyPlayer::LineTrace(FHitResult& outHit) const
 	bool bHit = GetWorld()->LineTraceSingleByChannel(outHit, start, end, ECC_Visibility, Params);
 
 	// 디버깅용
-	/*DrawDebugLine(GetWorld(), start, end, bHit ? FColor::Green : FColor::Red, false, 0.1f, 0, 2.f);
+	DrawDebugLine(GetWorld(), start, end, bHit ? FColor::Green : FColor::Red, false, 0.1f, 0, 2.f);
 	if (bHit)
 	{
 		DrawDebugSphere(GetWorld(),	outHit.ImpactPoint, 8.f, 12, FColor::Blue, false, 0.1f);
-	}*/
+	}
 
 	return bHit;
 }
