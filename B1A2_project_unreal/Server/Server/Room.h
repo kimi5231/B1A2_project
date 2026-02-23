@@ -18,9 +18,6 @@ public:
 	void SetupGameRoomConditions();
 	void CreateFactoryGameRooms();
 
-	void SetTileState(std::pair<int, int> index, TileState state, int layer);
-	short GetTileState(std::pair<int, int> index, int layer);
-
 public:
 	GameObjectRef AddObject(ObjectType type);
 	void RemoveObject(ObjectType type, uint id);
