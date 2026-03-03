@@ -17,7 +17,7 @@
         },
          {
             "type": 1,
-            "size": [1200, 600, 1000],
+            "size": [1300, 650, 1200],
             "isCreateItem": true,
             "isCreateExit": true,
             "minCreateCount": [2, 2, 2],
@@ -26,7 +26,7 @@
             "f1DoorCount": {"min": 0, "max": 0}, 
             "f2DoorCount": {"min": 3, "max": 5},
             "f1DoorPos": [],
-            "f2DoorPos": [[-600, 0, 500], [-300, 300, 500], [300, 300, 500], [600, 0, 500], [-300, -300, 500]],
+            "f2DoorPos": [[-650, 0, 600], [-400, 325, 500], [400, 325, 500], [650, 0, 500], [-400, -325, 500]],
             "doorDir": [3, 2, 2, 1, 0],
             "enterDistance": 300
         },
