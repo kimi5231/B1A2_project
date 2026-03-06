@@ -6,14 +6,18 @@ public:
 	~BoundingBox();
 
 public:
-	bool CheckCollision(const std::pair<Vector, Vector>& other);
+	bool CheckCollision(const AABB& other);
+	bool CheckInclude(const AABB& other);
 
 public:
-	void SetRanges(Vector min, Vector max) { _ranges = {min, max}; }
-	const std::pair<Vector, Vector>& GetRanges() { return _ranges; }
+	void SetBounds(Vector pos, Vector size, Dir dir);
+	const AABB& GetBounds() { return _bounds; }
+	void SetOwnerPos(Vector pos, Dir dir);
+	const std::array<Vector, ConerCount> GetConers();
 
 private:
-	// min - max
-	std::pair<Vector, Vector> _ranges;
+	Vector _ownerPos;
+	Vector _ownerSize;
+	AABB _bounds;
 };
 

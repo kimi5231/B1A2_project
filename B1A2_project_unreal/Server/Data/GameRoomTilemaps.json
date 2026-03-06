@@ -2,12 +2,33 @@
     "tilemaps": [
         {
             "type" : 0,
-            "tileCount" : [24, 24, 20],
+            "tileCount" : [26, 26, 24],
             "tilemap" : [
             {
                "layer" : [
-                    { "pattern" : [[1, 24]], "repeatY" :  24 }
-               ], "repeatZ" : 20
+                    { "pattern" : [[0, 26]], "repeatY" :  26 }
+               ], "repeatZ" : 1
+            },
+            {
+               "layer" : [
+                    { "pattern" : [[0, 26]], "repeatY" :  1 },
+                    { "pattern" : [[0, 1], [1, 24], [0, 1]], "repeatY" :  9 },
+                    { "pattern" : [[1, 26]], "repeatY" :  6 },
+                    { "pattern" : [[0, 1], [1, 24], [0, 1]], "repeatY" :  9 },
+                    { "pattern" : [[0, 10], [1, 6], [0, 10]], "repeatY" :  1 }
+               ], "repeatZ" : 10
+            },
+            {
+               "layer" : [
+                    { "pattern" : [[0, 24]], "repeatY" :  1 },
+                    { "pattern" : [[0, 1], [1, 24], [0, 1]], "repeatY" :  24 },
+                    { "pattern" : [[0, 24]], "repeatY" :  1 }
+               ], "repeatZ" : 12
+            },
+            {
+               "layer" : [
+                    { "pattern" : [[0, 26]], "repeatY" :  26 }
+               ], "repeatZ" : 1
             }
             ]
         },

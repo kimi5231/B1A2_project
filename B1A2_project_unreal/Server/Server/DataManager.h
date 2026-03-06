@@ -14,6 +14,7 @@ public:
 public:
 	const GameRoomConditionInfo& GetGameRoomConditionInfo(Difficulty current, Difficulty detail) { return _gameRoomconditionInfos[{current, detail}]; }
 	const GameRoomInfo& GetGameRoomInfo(GameRoomType type) { return _gameRoomInfos[type]; }
+	const std::vector<std::vector<std::vector<short>>>& GetTilemap(GameRoomType type) { return _gameRoomTilemaps[type]; }
 
 private:
 	std::filesystem::path _dataPath;

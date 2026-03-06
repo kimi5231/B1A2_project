@@ -9,9 +9,57 @@ BoundingBox::~BoundingBox()
 {
 }
 
-bool BoundingBox::CheckCollision(const std::pair<Vector, Vector>& other)
+bool BoundingBox::CheckCollision(const AABB& other)
 {
-	return  (_ranges.first.x < other.second.x && _ranges.second.x > other.first.x)
-        && (_ranges.first.y < other.second.y && _ranges.second.y > other.first.y)
-        && (_ranges.first.z < other.second.z && _ranges.second.z > other.first.z);
+	return  (_bounds.min.x < other.max.x && _bounds.max.x > other.min.x)
+        && (_bounds.min.y < other.max.y && _bounds.max.y > other.min.y)
+        && (_bounds.min.z < other.max.z && _bounds.max.z > other.min.z);
+}
+
+bool BoundingBox::CheckInclude(const AABB& other)
+{
+    return  (_bounds.min.x < other.min.x && other.max.x < _bounds.max.x)
+        && (_bounds.min.y < other.min.y && other.max.y < _bounds.max.y)
+        && (_bounds.min.z < other.min.z && other.max.z < _bounds.max.z);
+}
+
+void BoundingBox::SetBounds(Vector pos, Vector size, Dir dir)
+{
+    _ownerSize = size;
+    SetOwnerPos(pos, dir);
+}
+
+void BoundingBox::SetOwnerPos(Vector pos, Dir dir)
+{
+    _ownerPos = pos;
+
+    switch (dir)
+    {
+    case Front:
+    case Back:
+        _bounds.min = { pos.x - _ownerSize.x / 2,  pos.y - _ownerSize.y / 2,  pos.z };
+        _bounds.max = { pos.x + _ownerSize.x / 2,  pos.y + _ownerSize.y / 2, pos.z + _ownerSize.z };
+        break;
+    case Right:
+    case Left:
+        _bounds.min = { pos.x - _ownerSize.y / 2,  pos.y - _ownerSize.x / 2,  pos.z };
+        _bounds.max = { pos.x + _ownerSize.y / 2,  pos.y + _ownerSize.x / 2, pos.z + _ownerSize.z };
+        break;
+    }
+}
+
+const std::array<Vector, ConerCount> BoundingBox::GetConers()
+{
+    std::array<Vector, ConerCount> coners;
+
+    coners[LeftFrontBottom] = _bounds.min;
+    coners[LeftFrontTop] = { _bounds.min.x, _bounds.min.y, _bounds.max.z };
+    coners[LeftBackBottom] = { _bounds.min.x, _bounds.max.y, _bounds.min.z };
+    coners[LeftBackTop] = { _bounds.min.x, _bounds.max.y, _bounds.max.z };
+    coners[RightFrontBottom] = { _bounds.max.x, _bounds.min.y, _bounds.min.z };
+    coners[RightFrontTop] = { _bounds.max.x, _bounds.min.y, _bounds.max.z };
+    coners[RightBackBottom] = { _bounds.max.x, _bounds.max.y, _bounds.min.z };
+    coners[RightBackTop] = _bounds.max;
+
+    return coners;
 }

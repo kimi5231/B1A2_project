@@ -84,6 +84,20 @@ enum Floor
 	F3 = 3,
 };
 
+enum Coner
+{
+	LeftFrontBottom,
+	LeftFrontTop,
+	LeftBackBottom,
+	LeftBackTop,
+	RightFrontBottom,
+	RightFrontTop,
+	RightBackBottom,
+	RightBackTop,
+
+	ConerCount
+};
+
 //------------------Struct------------------
 // unordered map에 pair를 쓰기 위해 필요한 구조체
 struct PairHash
@@ -105,6 +119,22 @@ struct Vector
 	{
 		return {other.x + x, other.y + y, other.z + z};
 	}
+
+	Vector operator-(const Vector& other) const
+	{
+		return { x - other.x, y - other.y, z - other.z };
+	}
+
+	Vector operator/(const int value) const
+	{
+		return { x/ value, y/ value, z/ value };
+	}
+};
+
+struct AABB
+{
+	Vector min;
+	Vector max;
 };
 
 struct Rotation

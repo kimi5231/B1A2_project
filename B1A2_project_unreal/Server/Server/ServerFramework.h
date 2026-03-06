@@ -49,7 +49,7 @@ public:
 	void SendRemoveObjectPacket(ObjectType objectType, uint objectID, bool broadcast, SOCKET client = 0);
 	void SendUpdateObjectStatePacket(GameObjectRef object, bool broadcast, SOCKET client = 0);
 	void SendMovePacket(GameObjectRef object, bool broadcast, SOCKET client = 0);
-	void SendCreateGameRoomPacket(const std::unordered_map<uint, GameRoomRef>& gameRooms, bool broadcast, SOCKET client = 0);
+	void SendCreateGameRoomPacket(const std::vector<GameRoomRef>& gameRooms, bool broadcast, SOCKET client = 0);
 
 	void Broadcast(PacketID id, const std::vector<char>& packetData);
 

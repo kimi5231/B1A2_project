@@ -8,5 +8,5 @@ public:
 	~Monster();
 
 public:
-	void Update(std::unordered_map<std::pair<int, int>, short, PairHash>& map);
+	void Update(const std::vector<GameRoomRef>& gameRooms);
 };

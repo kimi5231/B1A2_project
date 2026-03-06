@@ -38,7 +38,7 @@ void Room::Update()
 
 		// 몬스터 업데이트
 		for (const auto& item : _monsters)
-			item.second->Update(_map);
+			item.second->Update(_gameRooms);
 
 		// 플레이어, 몬스터 충돌 처리
 		for (const auto& playerItem : _players)
@@ -98,7 +98,7 @@ void Room::CreateFactoryGameRooms()
 		}
 	}
 
-	uint generateGameRoomID = 1;
+	uint generateGameRoomID = 0;
 
 	// 방 생성(문은 방 안에서 생성 + 비상구)
 	// MainEntranceRoom 생성
@@ -109,13 +109,13 @@ void Room::CreateFactoryGameRooms()
 		Vector pos{};
 
 		GameRoomRef gameRoom = std::make_shared<GameRoom>(pos, Front, info);
-		gameRoom->SetID(generateGameRoomID);
+		gameRoom->SetID(generateGameRoomID++);
 
 		std::vector<DoorRef>& doors = gameRoom->CreateDoors();
 		for (const DoorRef door : doors)
 			_connectableDoors[door->GetDir()].push_back(door);
 
-		_gameRooms[generateGameRoomID++] = gameRoom;
+		_gameRooms.push_back(gameRoom);
 		_currentGameRoomCount[GameRoomType::MainEntranceRoom]++;
 	}
 
@@ -199,10 +199,10 @@ void Room::CreateFactoryGameRooms()
 
 		// 방을 배치할 자리가 있는지 확인
 		bool isCreate = true;
-		for (const auto& gameRoom : _gameRooms)
+		for (const GameRoomRef gameRoom : _gameRooms)
 		{
 			// 배치하려는 곳에 이미 방이 있으면 생성X
-			if (gameRoom.second->CheckCollision(newRoom->GetBoundingBox()))
+			if (gameRoom->CheckCollision(newRoom->GetBoundingBox()))
 			{
 				isCreate = false;
 				break;
@@ -223,13 +223,13 @@ void Room::CreateFactoryGameRooms()
 			_connectableDoors[connectDir].erase(std::remove(_connectableDoors[connectDir].begin(), _connectableDoors[connectDir].end(), door), _connectableDoors[connectDir].end());
 
 			// ID 부여
-			newRoom->SetID(generateGameRoomID);
+			newRoom->SetID(generateGameRoomID++);
 
 			// 연결된 방끼리 서로 기록
 			newRoom->AddConnectedRoom(_gameRooms[door->GetRoomID()]);
 			_gameRooms[door->GetRoomID()]->AddConnectedRoom(newRoom);
 
-			_gameRooms[generateGameRoomID++] = newRoom;
+			_gameRooms.push_back(newRoom);
 			_currentGameRoomCount[type]++;
 
 			// 문 생성

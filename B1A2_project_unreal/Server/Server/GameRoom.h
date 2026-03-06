@@ -14,7 +14,8 @@ public:
 
 public:
 	std::vector<DoorRef>& CreateDoors();
-	bool CheckCollision(BoundingBox other) { return _box.CheckCollision(other.GetRanges()); };
+	bool CheckCollision(BoundingBox other) { return _box.CheckCollision(other.GetBounds()); };
+	bool CheckInclude(BoundingBox other) { return _box.CheckInclude(other.GetBounds()); }
 
 	void AddConnectedRoom(GameRoomRef gameRoom) { _connetedRoom.push_back(gameRoom); }
 

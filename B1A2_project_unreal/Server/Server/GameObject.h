@@ -10,7 +10,7 @@ public:
 public:
 	virtual void Update();
 
-	bool CheckCollision(BoundingBox other) { return _box.CheckCollision(other.GetRanges()); };
+	bool CheckCollision(BoundingBox other) { return _box.CheckCollision(other.GetBounds()); };
 
 public:
 	void SetID(UINT id) { _id = id; }
@@ -29,6 +29,7 @@ protected:
 	UINT _id{};
 	ObjectType _type{};
 	Vector _pos{};
+	Vector _size{};
 	Rotation _rotation{};
 	ObjectState _state{};
 	BoundingBox _box;

@@ -6,7 +6,7 @@ Player::Player()
 	_pos = { 0, 0, 100 };
 	_rotation = {0, 0, 0};
 	_type = ObjectType::Player;
-	_box.SetRanges({ _pos.x - 30,  _pos.y - 30,  _pos.z }, { _pos.x + 30,  _pos.y + 30,  _pos.z + 180 });
+	_box.SetBounds(_pos, {60, 30, 180}, Front);
 }
 
 Player::~Player()

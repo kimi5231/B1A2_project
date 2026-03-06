@@ -329,20 +329,20 @@ void ServerFramework::SendMovePacket(GameObjectRef object, bool broadcast, SOCKE
 	_sendEvents.push_back(event);
 }
 
-void ServerFramework::SendCreateGameRoomPacket(const std::unordered_map<uint, GameRoomRef>& gameRooms, bool broadcast, SOCKET client)
+void ServerFramework::SendCreateGameRoomPacket(const std::vector<GameRoomRef>& gameRooms, bool broadcast, SOCKET client)
 {
 	std::vector<GameRoomDTO> roomInfos;
 	roomInfos.resize(gameRooms.size());
 
 	uint idx = 0;
 	std::vector<DoorRef> walls;
-	for (const auto& gameRoom : gameRooms)
+	for (const GameRoomRef gameRoom : gameRooms)
 	{
-		roomInfos[idx].type = gameRoom.second->GetGameRoomType();
-		roomInfos[idx].pos = gameRoom.second->GetPos();
-		roomInfos[idx].dir = gameRoom.second->GetDir();
+		roomInfos[idx].type = gameRoom->GetGameRoomType();
+		roomInfos[idx].pos = gameRoom->GetPos();
+		roomInfos[idx].dir = gameRoom->GetDir();
 
-		walls.insert(walls.end(), gameRoom.second->GetWalls().begin(), gameRoom.second->GetWalls().end());
+		walls.insert(walls.end(), gameRoom->GetWalls().begin(), gameRoom->GetWalls().end());
 		idx++;
 	}
 
