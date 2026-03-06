@@ -167,7 +167,7 @@
         },
         {
             "type": 11,
-            "size": [300, 600, 500],
+            "size": [350, 600, 600],
             "isCreateItem": false,
             "isCreateExit": false,
             "minCreateCount": [15, 30, 35],
