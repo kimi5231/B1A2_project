@@ -15,6 +15,19 @@ enum ObjectState
 	IDLE,
 	RUN,
 	JUMP,
+	CROUCHED,
+
+	// Interaction
+	OPEN_DOOR,
+	CLOSE_DOOR,
+
+	// Tool
+	SLASH,
+	SHOOT,
+
+	// Etc
+	HIT,
+	DIE,
 };
 
 enum Dir

@@ -97,7 +97,10 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(MouseLookAction, ETriggerEvent::Triggered, this, &AMyPlayer::Look);
 
 		// Get Item
-		EnhancedInputComponent->BindAction(GetItemAction, ETriggerEvent::Started, this, &AMyPlayer::GetItemByEKey);
+		EnhancedInputComponent->BindAction(GetItemAction, ETriggerEvent::Started, this, &AMyPlayer::Interact);
+
+		// Use Tool
+		EnhancedInputComponent->BindAction(UseToolAction, ETriggerEvent::Triggered, this, &AMyPlayer::UseTool);
 	}
 }
 
@@ -261,8 +264,11 @@ bool AMyPlayer::LineTrace(FHitResult& outHit) const
 	return bHit;
 }
 
-void AMyPlayer::GetItemByEKey()
+void AMyPlayer::Interact()
 {
+	if (IsBusy)	// 다른 몽타주 실행 중이면 무시
+		return;
+
 	if (!_focusedItem)
 	{
 		UE_LOG(LogTemp, Log, TEXT("[Item] E Key Pressed, but no focused Item"));
@@ -272,4 +278,22 @@ void AMyPlayer::GetItemByEKey()
 	if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
 		gameInstance->SendGetItem(_focusedItem->GetItemID(), gameInstance->GetMyID());
 	UE_LOG(LogTemp, Log, TEXT("[Item] E Key Pressed, Send Item and Player ID!!!"));
+}
+
+void AMyPlayer::UseTool()
+{
+	if (IsBusy || _currentTool == EToolType::None)
+		return;
+	
+	switch (_currentTool)
+	{
+	case EToolType::Sword:
+		float duration = PlayAnimMontage(ComboMontage, 1.0f, FName("Slash"));
+		if (duration > 0.f)
+		{
+			FTimerHandle timerHandle;
+			GetWorldTimerManager().SetTimer(timerHandle, [this]() {IsBusy = false; }, duration, false);
+		}
+		break;
+	}
 }

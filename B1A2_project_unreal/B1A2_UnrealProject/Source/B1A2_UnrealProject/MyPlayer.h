@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "OtherPlayer.h"
+#include "Animation/AnimMontage.h"
+
 #include "MyPlayer.generated.h"
 
 class USpringArmComponent;
@@ -13,6 +15,15 @@ class UInputAction;
 struct FInputActionValue;
 class UMain;
 class ABaseItem;
+
+UENUM(BlueprintType)
+enum class EToolType : uint8
+{
+	None,
+	Sword,
+	Gun,
+	HandLight
+};
 
 /**
  * 
@@ -54,6 +65,20 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
 	UInputAction* GetItemAction;
 
+	// Use Tool
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
+	UInputAction* UseToolAction;
+
+
+protected:
+	// Montage
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
+	UAnimMontage* ComboMontage;
+
+	// 몽타주 재생시 움직임 금지
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
+	bool IsBusy;
+
 public:
 	AMyPlayer();
 
@@ -78,6 +103,9 @@ protected:
 	UPROPERTY()
 	ABaseItem* _focusedItem;	// E 버튼을 띄울 아이템
 
+	UPROPERTY(VisibleAnywhere, Category = "Combat")
+	EToolType _currentTool = EToolType::None;	// 현재 소지한 도구
+
 private:
 	// 아이템 상호작용
 	UFUNCTION()
@@ -90,7 +118,8 @@ private:
 	void SetFocusedItem(ABaseItem* newItem);
 	void ClearFocusedItem();
 	bool LineTrace(FHitResult& outHit) const;
-	void GetItemByEKey();
+	void Interact();
+	void UseTool();
 
 	// 위치 정보 Send 타이머
 	float _movePacketSendTimer = 0.2f;	// 현재 남은 시간
@@ -99,4 +128,5 @@ private:
 	// 상호작용 객체 확인 타이머
 	float _interactionTimer = 0.1f;		// 현재 남은 시간
 	const float INTERACTION_DELAY = 0.1f;	// 확인 간격
+
 };
