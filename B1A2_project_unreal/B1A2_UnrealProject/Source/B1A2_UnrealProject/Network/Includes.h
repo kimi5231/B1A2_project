@@ -7,7 +7,8 @@
 #include <vector>
 #include <unordered_map>
 #include <variant>
-#include <memory> 
+#include <memory>
+#include <mutex>
 
 #include "../../../../Server/Server/Packets.h"
 #include "UnrealPackets.h"

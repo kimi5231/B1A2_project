@@ -65,6 +65,7 @@ void GameNetwork::Update()
 	// send가 가능할 때마다 true
 	if (FD_ISSET(_clientSocket, &_writeSet))
 	{
+		std::lock_guard<std::mutex> lock(_sendMutex);
 		for (NetworkEventRef event : _sendEvents)
 		{
 			ProcessSend(event->packetID, event->serializedPacketData);
@@ -78,6 +79,7 @@ void GameNetwork::Update()
 	}
 
 	// 처리된 Recv 이벤트 삭제
+	std::lock_guard<std::mutex> lock(_recvMutex);
 	_recvEvents.erase(std::remove_if(_recvEvents.begin(), _recvEvents.end(),
 		[](NetworkEventRef event) {
 			return event->isComplete;
@@ -115,6 +117,7 @@ void GameNetwork::ProcessRecv()
 		event->packetID = header.id;
 		event->serializedPacketData.resize(sizeof(S_AddObject_Packet));
 		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), sizeof(S_AddObject_Packet));
+		std::lock_guard<std::mutex> lock(_recvMutex);
 		_recvEvents.push_back(event);
 		break;
 	}
@@ -124,6 +127,7 @@ void GameNetwork::ProcessRecv()
 		event->packetID = header.id;
 		event->serializedPacketData.resize(sizeof(S_AddItem_Packet));
 		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), sizeof(S_AddItem_Packet));
+		std::lock_guard<std::mutex> lock(_recvMutex);
 		_recvEvents.push_back(event);
 		break;
 	}
@@ -133,6 +137,7 @@ void GameNetwork::ProcessRecv()
 		event->packetID = header.id;
 		event->serializedPacketData.resize(sizeof(S_RemoveObject_Packet));
 		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), sizeof(S_RemoveObject_Packet));
+		std::lock_guard<std::mutex> lock(_recvMutex);
 		_recvEvents.push_back(event);
 		break;
 	}
@@ -142,6 +147,7 @@ void GameNetwork::ProcessRecv()
 		event->packetID = header.id;
 		event->serializedPacketData.resize(sizeof(S_UpdateObjectState_Packet));
 		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), sizeof(S_UpdateObjectState_Packet));
+		std::lock_guard<std::mutex> lock(_recvMutex);
 		_recvEvents.push_back(event);
 		break;
 	}
@@ -151,6 +157,7 @@ void GameNetwork::ProcessRecv()
 		event->packetID = header.id;
 		event->serializedPacketData.resize(sizeof(S_Move_Packet));
 		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), sizeof(S_Move_Packet));
+		std::lock_guard<std::mutex> lock(_recvMutex);
 		_recvEvents.push_back(event);
 		break;
 	}
@@ -160,6 +167,7 @@ void GameNetwork::ProcessRecv()
 		event->packetID = header.id;
 		event->serializedPacketData.resize(packet.size() - sizeof(Header));
 		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), packet.size() - sizeof(Header));
+		std::lock_guard<std::mutex> lock(_recvMutex);
 		_recvEvents.push_back(event);
 		break;
 	}
@@ -205,6 +213,7 @@ void GameNetwork::SendUpdateObjectStatePacket(int id, ObjectType type, ObjectSta
 	event->packetID = C_UpdateObjectState;
 	event->serializedPacketData = serializedPacketData;
 
+	std::lock_guard<std::mutex> lock(_sendMutex);
 	_sendEvents.push_back(event);
 }
 
@@ -221,6 +230,7 @@ void GameNetwork::SendMovePacket(ObjectType type, int id, Vector pos, Rotation r
 	event->packetID = C_Move;
 	event->serializedPacketData = serializedPacketData;
 
+	std::lock_guard<std::mutex> lock(_sendMutex);
 	_sendEvents.push_back(event);
 }
 
@@ -237,5 +247,6 @@ void GameNetwork::SendGetItemPacket(int itemID, int playerID)
 	event->packetID = C_GetItem;
 	event->serializedPacketData = serializedPacketData;
 
+	std::lock_guard<std::mutex> lock(_sendMutex);
 	_sendEvents.push_back(event);
 }

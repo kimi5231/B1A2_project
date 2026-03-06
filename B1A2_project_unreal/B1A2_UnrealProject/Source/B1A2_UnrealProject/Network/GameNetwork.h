@@ -41,6 +41,9 @@ private:
 
 	std::vector<NetworkEventRef> _recvEvents;
 	std::vector<NetworkEventRef> _sendEvents;
+
+	std::mutex _recvMutex;
+	std::mutex _sendMutex;
 };
 
 template<class T>
