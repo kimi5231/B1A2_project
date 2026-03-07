@@ -80,6 +80,36 @@
             }
             ]
          },
+         {
+            "type" : 2,
+            "tileCount" : [52, 26, 24],
+            "tilemap" : [
+            {
+               "layer" : [
+                    { "pattern" : [[0, 52]], "repeatY" :  26 }
+               ], "repeatZ" : 1
+            },
+            {
+               "layer" : [
+                    { "pattern" : [[0, 10], [1, 6], [0, 20], [1, 6], [0, 10]], "repeatY" :  1 },
+                    { "pattern" : [[0, 1], [1, 50], [0, 1]], "repeatY" :  24 },
+                    { "pattern" : [[0, 52]], "repeatY" :  1 }
+               ], "repeatZ" : 11
+            },
+            {
+               "layer" : [
+                    { "pattern" : [[0, 52]], "repeatY" :  1 },
+                    { "pattern" : [[0, 1], [1, 50], [0, 1]], "repeatY" :  24 },
+                    { "pattern" : [[0, 52]], "repeatY" :  1 }
+               ], "repeatZ" : 11
+            },
+            {
+               "layer" : [
+                    { "pattern" : [[0, 52]], "repeatY" :  26 }
+               ], "repeatZ" : 1
+            }
+            ]
+         },
         {
             "type" : 3,
             "tileCount" : [52, 48, 20],
