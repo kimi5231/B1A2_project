@@ -57,4 +57,7 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 	float CalculatedAngle;		// 계산된 각도(ABP 사용)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	bool IsAirborne;
 };

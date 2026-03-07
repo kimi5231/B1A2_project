@@ -58,35 +58,29 @@ void AOtherPlayer::Tick(float DeltaTime)
 
 	SetActorLocationAndRotation(newLocation, newRotation, false, nullptr, ETeleportType::TeleportPhysics);
 
-	// 순간 속도 계산
-	FVector DeltaMove = (newLocation - oldLocation);
-	float InstantSpeed = DeltaMove.Size() / DeltaTime; 
+	// 이동 벡터 계산
+	FVector deltaMove = (newLocation - oldLocation);
 
-	float TargetAngle = 0.f;
+	// 수평(XY) 속도와 수직(Z) 속도 분리! - 점프할 때 달리기 애니메이션 나오면 안 됨
+	FVector horizonDelta = FVector(deltaMove.X, deltaMove.Y, 0.f);
+	float horizonInstantSpeed = horizonDelta.Size() / DeltaTime;
+	float verticalInstantSpeed = deltaMove.Z / DeltaTime;
 
-	if (InstantSpeed > 5.f)
-	{
-		FVector LocalMove = GetActorTransform().InverseTransformVectorNoScale(DeltaMove);
-		TargetAngle = FRotationMatrix::MakeFromX(LocalMove).Rotator().Yaw;
-	}
-	else	// 속도가 너무 작으면 방향 계산 X
-	{
-		TargetAngle = 0.f;
-	}
-
-	// 최종 애니메이션 값 보간 
-	_currentAnimSpeed = FMath::FInterpTo(_currentAnimSpeed, InstantSpeed, DeltaTime, AnimSmoothingSpeed);
+	// 애니메이션용 변수 적용
+	float targetSpeed = (FVector::DistSquared(newLocation, _destPos) < 1.f) ? 0.f : horizonInstantSpeed;
+	_currentAnimSpeed = FMath::FInterpTo(_currentAnimSpeed, targetSpeed, DeltaTime, AnimSmoothingSpeed);
 	CalculatedSpeed = _currentAnimSpeed;
 
-	_currentAnimAngle = FMath::FInterpTo(_currentAnimAngle, TargetAngle, DeltaTime, AnimSmoothingSpeed);
-	CalculatedAngle = _currentAnimAngle;
-
-	// 목적지 도착
-	if (FVector::DistSquared(newLocation, _destPos) < 1.f)
+	if (horizonInstantSpeed > 5.f)
 	{
-		_currentAnimSpeed = FMath::FInterpTo(_currentAnimSpeed, 0.f, DeltaTime, AnimSmoothingSpeed);
-		CalculatedSpeed = _currentAnimSpeed;
+		FVector LocalMove = GetActorTransform().InverseTransformVectorNoScale(horizonDelta);
+		float TargetAngle = FRotationMatrix::MakeFromX(LocalMove).Rotator().Yaw;
+		_currentAnimAngle = FMath::FInterpTo(_currentAnimAngle, TargetAngle, DeltaTime, AnimSmoothingSpeed);
+		CalculatedAngle = _currentAnimAngle;
 	}
+
+	// Z축으로 10.f 이상 움직이면 공중으로 판단함
+	IsAirborne = FMath::Abs(verticalInstantSpeed) > 10.f;
 }
 
 void AOtherPlayer::SetPlayerLocation(FVector location, FRotator rotation)

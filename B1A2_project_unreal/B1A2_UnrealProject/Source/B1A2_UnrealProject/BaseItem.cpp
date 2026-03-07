@@ -13,6 +13,7 @@ ABaseItem::ABaseItem()
 
     ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMesh"));
     ItemMesh->SetupAttachment(RootComponent);
+    ItemMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);  // 메쉬 통과
 
     CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
     CollisionSphere->SetupAttachment(RootComponent);
