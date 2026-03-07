@@ -71,10 +71,19 @@ void Monster::Update(const std::vector<GameRoomRef>& gameRooms)
 	const std::array<Vector, ConerCount>& coners = _box.GetConers();
 	for (const auto& coner : coners)
 	{
+		Vector max{ tilemap[0][0].size(), tilemap[0].size(), tilemap.size() };
 		Vector index = (coner - start) / 25;
+		if (index < Vector{0, 0, 0} || index > max)
+		{
+			_pos = pos;
+			_box.SetOwnerPos(_pos, Front);
+			return;
+		}
+
 		if (tilemap[index.z][index.y][index.x] == 0)
 		{
 			_pos = pos;
+			_box.SetOwnerPos(_pos, Front);
 			return;
 		}
 	}
