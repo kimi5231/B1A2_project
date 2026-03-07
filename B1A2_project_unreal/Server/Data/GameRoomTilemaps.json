@@ -1,6 +1,6 @@
 {
     "tilemaps": [
-        {
+         {
             "type" : 0,
             "tileCount" : [26, 26, 24],
             "tilemap" : [
@@ -31,7 +31,55 @@
                ], "repeatZ" : 1
             }
             ]
-        },
+         },
+         {
+            "type" : 1,
+            "tileCount" : [52, 26, 48],
+            "tilemap" : [
+            {
+               "layer" : [
+                    { "pattern" : [[0, 52]], "repeatY" :  26 }
+               ], "repeatZ" : 1
+            },
+            {
+               "layer" : [
+                    { "pattern" : [[0, 52]], "repeatY" :  1 },
+                    { "pattern" : [[0, 1], [1, 50], [0, 1]], "repeatY" :  24 },
+                    { "pattern" : [[0, 52]], "repeatY" :  1 }
+               ], "repeatZ" : 23
+            },
+            {
+               "layer" : [
+                    { "pattern" : [[0, 52]], "repeatY" :  1 },
+                    { "pattern" : [[0, 1], [1, 5], [0, 8], [1, 24], [0, 8], [1, 5], [0, 1]], "repeatY" :  8 },
+                    { "pattern" : [[0, 14], [1, 24], [0, 14]], "repeatY" :  8 },
+                    { "pattern" : [[0, 1], [1, 5], [0, 8], [1, 24], [0, 8], [1, 5], [0, 1]], "repeatY" :  8 },
+                    { "pattern" : [[0, 52]], "repeatY" :  1 }
+               ], "repeatZ" : 1
+            },
+            {
+               "layer" : [
+                    { "pattern" : [[0, 7], [1, 6], [0, 26], [1, 6], [0, 7]], "repeatY" :  1 },
+                    { "pattern" : [[0, 1], [1, 50], [0, 1]], "repeatY" :  9 },
+                    { "pattern" : [[1, 52]], "repeatY" :  6 },
+                    { "pattern" : [[0, 1], [1, 50], [0, 1]], "repeatY" :  9 },
+                    { "pattern" : [[0, 7], [1, 6], [0, 26], [1, 6], [0, 7]], "repeatY" :  1 }
+               ], "repeatZ" : 11
+            },
+            {
+               "layer" : [
+                    { "pattern" : [[0, 52]], "repeatY" :  1 },
+                    { "pattern" : [[0, 1], [1, 50], [0, 1]], "repeatY" :  24 },
+                    { "pattern" : [[0, 52]], "repeatY" :  1 }
+               ], "repeatZ" : 11
+            },
+            {
+               "layer" : [
+                    { "pattern" : [[0, 52]], "repeatY" :  26 }
+               ], "repeatZ" : 1
+            }
+            ]
+         },
         {
             "type" : 3,
             "tileCount" : [52, 48, 20],
