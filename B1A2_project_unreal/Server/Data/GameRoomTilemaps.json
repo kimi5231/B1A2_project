@@ -16,14 +16,14 @@
                     { "pattern" : [[1, 26]], "repeatY" :  6 },
                     { "pattern" : [[0, 1], [1, 24], [0, 1]], "repeatY" :  9 },
                     { "pattern" : [[0, 10], [1, 6], [0, 10]], "repeatY" :  1 }
-               ], "repeatZ" : 10
+               ], "repeatZ" : 11
             },
             {
                "layer" : [
                     { "pattern" : [[0, 24]], "repeatY" :  1 },
                     { "pattern" : [[0, 1], [1, 24], [0, 1]], "repeatY" :  24 },
                     { "pattern" : [[0, 24]], "repeatY" :  1 }
-               ], "repeatZ" : 12
+               ], "repeatZ" : 11
             },
             {
                "layer" : [
