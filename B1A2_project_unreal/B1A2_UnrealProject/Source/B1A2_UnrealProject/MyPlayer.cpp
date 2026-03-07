@@ -282,18 +282,27 @@ void AMyPlayer::Interact()
 
 void AMyPlayer::UseTool()
 {
-	if (IsBusy || _currentTool == EToolType::None)
-		return;
-	
-	switch (_currentTool)
+	// 아직 Tool 생성이 안 돼서 테스트용으로 애니메이션 넣음
+	float duration = PlayAnimMontage(ComboMontage, 1.0f, FName("Slash"));
+	if (duration > 0.f)
 	{
-	case EToolType::Sword:
-		float duration = PlayAnimMontage(ComboMontage, 1.0f, FName("Slash"));
-		if (duration > 0.f)
-		{
-			FTimerHandle timerHandle;
-			GetWorldTimerManager().SetTimer(timerHandle, [this]() {IsBusy = false; }, duration, false);
-		}
-		break;
+		FTimerHandle timerHandle;
+		GetWorldTimerManager().SetTimer(timerHandle, [this]() {IsBusy = false; }, duration, false);
 	}
+
+	//if (IsBusy || _currentTool == EToolType::None)
+	//	return;
+	//
+	//switch (_currentTool)
+	//{
+	//case EToolType::None:	// Test
+	//case EToolType::Sword:
+	//	float duration = PlayAnimMontage(ComboMontage, 1.0f, FName("Slash"));
+	//	if (duration > 0.f)
+	//	{
+	//		FTimerHandle timerHandle;
+	//		GetWorldTimerManager().SetTimer(timerHandle, [this]() {IsBusy = false; }, duration, false);
+	//	}
+	//	break;
+	//}
 }
