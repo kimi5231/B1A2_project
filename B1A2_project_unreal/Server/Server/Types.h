@@ -20,6 +20,7 @@ enum ObjectState
 	// Interaction
 	OPEN_DOOR,
 	CLOSE_DOOR,
+	GET_ITEM,
 
 	// Tool
 	SLASH,

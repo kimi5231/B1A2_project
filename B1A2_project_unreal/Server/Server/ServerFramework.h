@@ -50,6 +50,7 @@ public:
 	void SendUpdateObjectStatePacket(GameObjectRef object, bool broadcast, SOCKET client = 0);
 	void SendMovePacket(GameObjectRef object, bool broadcast, SOCKET client = 0);
 	void SendCreateGameRoomPacket(const std::vector<GameRoomRef>& gameRooms, bool broadcast, SOCKET client = 0);
+	void SendAddItemToInventoryPacket(int itemID, int playerID, bool broadcast, SOCKET client = 0);
 
 	void Broadcast(PacketID id, const std::vector<char>& packetData);
 

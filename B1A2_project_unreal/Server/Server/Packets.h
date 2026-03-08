@@ -16,6 +16,7 @@ enum PacketID
 	S_UpdateObjectState,
 	S_Move,
 	S_CreateGameRoom,
+	S_AddItemToInventory
 };
 
 struct Header
@@ -104,4 +105,10 @@ struct S_CreateGameRoom_Packet
 {
 	std::vector<GameRoomDTO> gameRooms;
 	std::vector<WallDTO> walls;
+};
+
+struct S_AddItemToInventory_Packet
+{
+	int itemID;
+	int playerID;
 };

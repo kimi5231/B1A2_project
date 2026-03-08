@@ -62,6 +62,7 @@ public:
 
 	void RecvUpdateObjectState(S_UpdateObjectState_Packet packet);
 	void RecvCreateGameRoom(S_CreateGameRoom_Packet packet);
+	void RecvAddItemToInventory(S_AddItemToInventory_Packet packet);
 
 	FRotator DirToRotation(Dir dir);
 

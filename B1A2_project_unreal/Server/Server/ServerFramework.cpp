@@ -375,6 +375,24 @@ void ServerFramework::SendCreateGameRoomPacket(const std::vector<GameRoomRef>& g
 	_sendEvents.push_back(event);
 }
 
+void ServerFramework::SendAddItemToInventoryPacket(int itemID, int playerID, bool broadcast, SOCKET client)
+{
+	// Packet Data 생성
+	S_AddItemToInventory_Packet packetData{ itemID, playerID };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	// SendEvent 생성
+	SendEventRef event = std::make_shared<SendEvent>();
+	event->isBroadcast = broadcast;
+	event->clientSocket = client;
+	event->packetID = S_AddItemToInventory;
+	event->serializedPacketData = serializedPacketData;
+
+	_sendEvents.push_back(event);
+}
+
 void ServerFramework::Broadcast(PacketID id, const std::vector<char>& packetData)
 {
 	// Room에 있는 모든 Client에게 Packet 송신
@@ -462,5 +480,6 @@ void ServerFramework::ProcessGetItemPacket(C_GetItem_Packet packet)
 	// 얻을 수 있는 조건인지 확인하는 코드 추가 필요
 	
 	// 얻을 수 있는 아이템이라면 Player 인벤토리에 추가 후, 맵에서 Item 삭제
+	SendAddItemToInventoryPacket(packet.itemID, packet.playerID, true);
 	_room->RemoveObject(ObjectType::Item, packet.itemID);
 }

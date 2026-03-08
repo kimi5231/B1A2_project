@@ -208,6 +208,12 @@ void UMain::ProcessRecv()
 			RecvMoveObject(movePacket);
 			event->isComplete = true;
 			break;
+		case S_AddItemToInventory:
+			S_AddItemToInventory_Packet addItemToInventoryPacket;
+			FMemory::Memcpy(&addItemToInventoryPacket, event->serializedPacketData.data(), sizeof(S_AddItemToInventory_Packet));
+			RecvAddItemToInventory(addItemToInventoryPacket);
+			event->isComplete = true;
+			break;
 		case S_CreateGameRoom:
 			S_CreateGameRoom_Packet createGameRoomPacket{ _gameNetwork->DeserializeVector<GameRoomDTO>(event->serializedPacketData), _gameNetwork->DeserializeVector<WallDTO>(event->serializedPacketData) };
 			RecvCreateGameRoom(createGameRoomPacket);
@@ -632,6 +638,10 @@ void UMain::RecvCreateGameRoom(S_CreateGameRoom_Packet packet)
 			UE_LOG(LogTemp, Log, TEXT("[Room] Wall Spawned [%d] pos = %f, %f, %f, dir = %d"), i, wall.pos.x, wall.pos.y, wall.pos.z, wall.dir);
 		}
 	});
+}
+
+void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
+{
 }
 
 FRotator UMain::DirToRotation(Dir dir)
