@@ -16,15 +16,6 @@ struct FInputActionValue;
 class UMain;
 class ABaseItem;
 
-UENUM(BlueprintType)
-enum class EToolType : uint8
-{
-	None,
-	Sword,
-	Gun,
-	HandLight
-};
-
 /**
  * 
  */
@@ -69,16 +60,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
 	UInputAction* UseToolAction;
 
-
-protected:
-	// Montage
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
-	UAnimMontage* ComboMontage;
-
-	// 몽타주 재생시 움직임 금지
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
-	bool IsBusy;
-
 public:
 	AMyPlayer();
 
@@ -102,9 +83,6 @@ protected:
 
 	UPROPERTY()
 	ABaseItem* _focusedItem;	// E 버튼을 띄울 아이템
-
-	UPROPERTY(VisibleAnywhere, Category = "Combat")
-	EToolType _currentTool = EToolType::None;	// 현재 소지한 도구
 
 private:
 	// 아이템 상호작용
