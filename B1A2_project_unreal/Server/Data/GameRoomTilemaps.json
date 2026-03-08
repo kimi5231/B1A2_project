@@ -372,5 +372,143 @@
             }
             ]
          },
+         {
+            "type" : 7 ,
+            "tileCount" : [48, 40, 48],
+            "tilemap" : [
+            {
+               "layer" : [
+                     { "pattern" : [[0, 48]], "repeatY" :  40 }
+               ], "repeatZ" : 1
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 48]], "repeatY" :  31 },
+                     { "pattern" : [[0, 20], [2, 8], [0, 20]], "repeatY" :  1 },
+                     { "pattern" : [[0, 20], [1, 8], [0, 20]], "repeatY" :  7 },
+                     { "pattern" : [[0, 21], [1, 6], [0, 21]], "repeatY" :  1 }
+               ], "repeatZ" : 1
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 48]], "repeatY" :  30 },
+                     { "pattern" : [[0, 20], [2, 8], [0, 20]], "repeatY" :  1 },
+                     { "pattern" : [[0, 20], [1, 8], [0, 20]], "repeatY" :  8 },
+                     { "pattern" : [[0, 21], [1, 6], [0, 21]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 48]], "repeatY" :  29 },
+                     { "pattern" : [[0, 20], [2, 8], [0, 20]], "repeatY" :  1 },
+                     { "pattern" : [[0, 20], [1, 8], [0, 20]], "repeatY" :  9 },
+                     { "pattern" : [[0, 21], [1, 6], [0, 21]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 48]], "repeatY" :  28 },
+                     { "pattern" : [[0, 20], [2, 8], [0, 20]], "repeatY" :  1 },
+                     { "pattern" : [[0, 20], [1, 8], [0, 20]], "repeatY" :  10 },
+                     { "pattern" : [[0, 21], [1, 6], [0, 21]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 48]], "repeatY" :  27 },
+                     { "pattern" : [[0, 20], [2, 8], [0, 20]], "repeatY" :  1 },
+                     { "pattern" : [[0, 20], [1, 8], [0, 20]], "repeatY" :  11 },
+                     { "pattern" : [[0, 21], [1, 6], [0, 21]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 48]], "repeatY" :  26 },
+                     { "pattern" : [[0, 20], [2, 8], [0, 20]], "repeatY" :  1 },
+                     { "pattern" : [[0, 20], [1, 8], [0, 20]], "repeatY" :  12 },
+                     { "pattern" : [[0, 21], [1, 6], [0, 21]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 48]], "repeatY" :  25 },
+                     { "pattern" : [[0, 20], [2, 8], [0, 20]], "repeatY" :  1 },
+                     { "pattern" : [[0, 20], [1, 8], [0, 20]], "repeatY" :  13 },
+                     { "pattern" : [[0, 48]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 48]], "repeatY" :  24 },
+                     { "pattern" : [[0, 20], [2, 8], [0, 20]], "repeatY" :  1 },
+                     { "pattern" : [[0, 20], [1, 8], [0, 20]], "repeatY" :  14 },
+                     { "pattern" : [[0, 48]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 48]], "repeatY" :  23 },
+                     { "pattern" : [[0, 20], [2, 8], [0, 20]], "repeatY" :  1 },
+                     { "pattern" : [[0, 20], [1, 8], [0, 20]], "repeatY" :  15 },
+                     { "pattern" : [[0, 48]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 48]], "repeatY" :  22 },
+                     { "pattern" : [[0, 20], [2, 8], [0, 20]], "repeatY" :  1 },
+                     { "pattern" : [[0, 20], [1, 8], [0, 20]], "repeatY" :  16 },
+                     { "pattern" : [[0, 48]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 48]], "repeatY" :  21 },
+                     { "pattern" : [[0, 20], [2, 8], [0, 20]], "repeatY" :  1 },
+                     { "pattern" : [[0, 20], [1, 8], [0, 20]], "repeatY" :  17 },
+                     { "pattern" : [[0, 48]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 48]], "repeatY" :  20 },
+                     { "pattern" : [[0, 20], [2, 8], [0, 20]], "repeatY" :  1 },
+                     { "pattern" : [[0, 20], [1, 8], [0, 20]], "repeatY" :  18 },
+                     { "pattern" : [[0, 48]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 48]], "repeatY" :  8 },
+                     { "pattern" : [[0, 20], [1, 8], [0, 20]], "repeatY" :  31 },
+                     { "pattern" : [[0, 48]], "repeatY" :  1 }
+               ], "repeatZ" : 1
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 7], [1, 6], [0, 35]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 46], [0, 1]], "repeatY" :  4 },
+                     { "pattern" : [[0, 1], [1, 47]], "repeatY" :  6 },
+                     { "pattern" : [[0, 1], [1, 46], [0, 1]], "repeatY" :  12 },
+                     { "pattern" : [[0, 7], [1, 6], [0, 7], [1, 27], [0, 1]], "repeatY" :  1 },
+                     { "pattern" : [[0, 20], [1, 27], [0, 1]], "repeatY" :  15 },
+                     { "pattern" : [[0, 48]], "repeatY" :  1 }
+               ], "repeatZ" : 11
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 48]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 46], [0, 1]], "repeatY" :  22 },
+                     { "pattern" : [[0, 20], [1, 27], [0, 1]], "repeatY" :  16 },
+                     { "pattern" : [[0, 48]], "repeatY" :  1 }
+               ], "repeatZ" : 11
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 48]], "repeatY" :  40 }
+               ], "repeatZ" : 1
+            }
+            ]
+         },
     ]
 }
