@@ -123,22 +123,15 @@ void AOtherPlayer::PlayPickUpAnimation(ABaseItem* item)
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	if (AnimInstance)
 	{
-		// 재생
-		float Duration = PlayAnimMontage(ComboMontage, 1.0f, FName("TakeItem"));
+		// 아이템 파괴 시점 - Notify 연결
+		AnimInstance->OnPlayMontageNotifyBegin.AddDynamic(this, &AOtherPlayer::PickUpNotifyReached);
 
-		if (Duration > 0.f)
-		{
-			IsBusy = true;
-			_currentPickingUpItem = item;
+		// 몽타주 애니메이션 종료되면 IsBusy 설정
+		FOnMontageEnded EndDelegate;
+		EndDelegate.BindUObject(this, &AOtherPlayer::PickUpMontageEnded);
+		AnimInstance->Montage_SetEndDelegate(EndDelegate, ComboMontage);
 
-			// 아이템 파괴 Notify 연결
-			AnimInstance->OnPlayMontageNotifyBegin.AddDynamic(this, &AOtherPlayer::PickUpNotifyReached);
-
-			// 종료 델리게이트 설정 (애니메이션 재생 후 이동 가능하도록 설정)
-			FOnMontageEnded EndDelegate;
-			EndDelegate.BindUObject(this, &AOtherPlayer::PickUpMontageEnded);
-			AnimInstance->Montage_SetEndDelegate(EndDelegate, ComboMontage);
-		}
+		PlayAnimMontage(ComboMontage, 1.0f, FName("TakeItem"));
 	}
 
 	// 인벤토리에 넣기!!!
@@ -165,6 +158,6 @@ void AOtherPlayer::PickUpNotifyReached(FName NotifyName, const FBranchingPointNo
 
 void AOtherPlayer::PickUpMontageEnded(UAnimMontage* montage, bool bIntererrupted)
 {
-	IsBusy = false;
-	UE_LOG(LogTemp, Log, TEXT("Montage Finished! Player is now free."));
+	if (montage == ComboMontage)
+		IsBusy = false;
 }
