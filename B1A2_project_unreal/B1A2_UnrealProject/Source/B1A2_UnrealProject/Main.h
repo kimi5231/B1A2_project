@@ -33,8 +33,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ConnectOpenCV();
 
-	TArray<uint8> CreatePacket(PacketID id, const void* packetData, int dataSize);
-
 	// Send
 	void ProcessSend(PacketID id, const void* packetData, int dataSize);
 
@@ -54,7 +52,7 @@ public:
 	void RecvRemoveObject(S_RemoveObject_Packet packet);
 	void RemovePlayer(S_RemoveObject_Packet packet);
 	void RemoveMonster(S_RemoveObject_Packet packet);
-	void RemoveItem(S_RemoveObject_Packet packet);
+	//void RemoveItem(S_RemoveObject_Packet packet);
 
 	void RecvMoveObject(S_Move_Packet packet);
 	void RecvMovePlayer(S_Move_Packet packet);

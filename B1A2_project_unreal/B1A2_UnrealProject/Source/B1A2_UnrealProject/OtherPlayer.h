@@ -6,7 +6,10 @@
 #include "Network/UnrealPackets.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "BaseItem.h"
+
 #include "OtherPlayer.generated.h"
+
 
 UCLASS()
 class B1A2_UNREALPROJECT_API AOtherPlayer : public ACharacter
@@ -27,6 +30,10 @@ public:
 
 	void SetPlayerLocation(FVector location, FRotator rotation);
 	void SetPlayerState(ObjectState state);
+
+	// 아이템 줍기
+	void PickUpItem();
+	void PlayPickUpAnimation(ABaseItem* item);
 
 private:
 	FVector _prevPos;
@@ -60,4 +67,15 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 	bool IsAirborne;
+
+	UPROPERTY()
+	class ABaseItem* _currentPickingUpItem;		// 현재 줍는 중인 아이템 or 도구
+
+	// Montage
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
+	UAnimMontage* ComboMontage;
+
+	// 몽타주 재생시 움직임 금지
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
+	bool IsBusy;
 };

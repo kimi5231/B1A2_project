@@ -4,6 +4,8 @@
 #include "OtherPlayer.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "BaseItem.h"
+#include "Main.h"
 
 // Sets default values
 AOtherPlayer::AOtherPlayer()
@@ -108,5 +110,39 @@ void AOtherPlayer::SetPlayerState(ObjectState state)
 		break;
 	default:
 		break;
+	}
+}
+
+void AOtherPlayer::PickUpItem()
+{
+	if (!_currentPickingUpItem)
+		return;
+
+	// ¼ÒÄÏ¿¡ ºÎÂø
+	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
+	_currentPickingUpItem->AttachToComponent(GetMesh(), AttachmentRules, TEXT("RightHandSocket"));
+
+	//switch (_currentPickingUpItem->ItemType)
+	//{
+	//case EItemType::InInventory:
+	//	_currentPickingUpItem->SetActorHiddenInGame(true);
+	//	break;
+	//case EItemType::Tool:
+	//	break;
+	//}
+}
+
+void AOtherPlayer::PlayPickUpAnimation(ABaseItem* item)
+{
+	if (!item)
+		return;
+
+	_currentPickingUpItem = item;
+
+	float duration = PlayAnimMontage(ComboMontage, 1.0f, FName("TakeItem"));
+	if (duration > 0.f)
+	{
+		FTimerHandle timerHandle;
+		GetWorldTimerManager().SetTimer(timerHandle, [this]() {IsBusy = false;}, duration, false);
 	}
 }

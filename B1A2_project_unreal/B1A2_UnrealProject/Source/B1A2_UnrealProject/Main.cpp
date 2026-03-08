@@ -63,27 +63,6 @@ void UMain::ConnectOpenCV()
 	_emotionExtractionRunnable->Init();
 }
 
-TArray<uint8> UMain::CreatePacket(PacketID id, const void* packetData, int dataSize)
-{
-	TArray<uint8> retPacket;
-
-	// 헤더
-	Header header;
-	header.id = id;
-	header.dataSize = (int16)dataSize;
-
-	// 전체 패킷 크기 계산
-	int32 totalSize = sizeof(Header) + dataSize;
-
-	retPacket.SetNumUninitialized(totalSize);
-	
-	// 패킷에 데이터 넣기
-	FMemory::Memcpy(retPacket.GetData(), &header, sizeof(Header));
-	FMemory::Memcpy(retPacket.GetData() + sizeof(Header), packetData, dataSize);
-
-	return retPacket;
-}
-
 void UMain::ProcessSend(PacketID id, const void* packetData, int dataSize)
 {
 }
@@ -384,8 +363,6 @@ void UMain::RecvRemoveObject(S_RemoveObject_Packet packet)
 	case ObjectType::Monster:
 		RemoveMonster(packet);
 		break;
-	case ObjectType::Item:
-		RemoveItem(packet);
 	default:
 		break;
 	}
@@ -404,7 +381,7 @@ void UMain::RemovePlayer(S_RemoveObject_Packet packet)
 		AOtherPlayer** foundPlayer = _otherPlayers.Find(id);
 		if (!foundPlayer || !(*foundPlayer))
 		{
-			UE_LOG(LogTemp, Log, TEXT("[Item] Remove Failed... ID %llu Not found"), id);
+			UE_LOG(LogTemp, Log, TEXT("[Player] Remove Failed... ID %llu Not found"), id);
 			return;
 		}
 
@@ -447,33 +424,33 @@ void UMain::RemoveMonster(S_RemoveObject_Packet packet)
 	});
 }
 
-void UMain::RemoveItem(S_RemoveObject_Packet packet)
-{
-	int id = packet.objectID;
-
-	AsyncTask(ENamedThreads::GameThread, [=, this]()
-	{
-		UWorld* world = GetWorld();
-		if (!world)
-			return;
-
-		ABaseItem** foundItem = _items.Find(id);
-		if (!foundItem || !(*foundItem))
-		{
-			UE_LOG(LogTemp, Log, TEXT("[Item] Remove Failed... ID %llu Not found"), id);
-			return;
-		}
-
-		ABaseItem* item = *foundItem;
-
-		// Map에서 제거
-		_items.Remove(id);
-		// 월드에서 제거
-		item->Destroy();
-
-		UE_LOG(LogTemp, Log, TEXT("[Item] Item Removed!!! ID %llu, Name %s"), id, *item->GetName());
-	});
-}
+//void UMain::RemoveItem(S_RemoveObject_Packet packet)
+//{
+//	int id = packet.objectID;
+//
+//	AsyncTask(ENamedThreads::GameThread, [=, this]()
+//	{
+//		UWorld* world = GetWorld();
+//		if (!world)
+//			return;
+//
+//		ABaseItem** foundItem = _items.Find(id);
+//		if (!foundItem || !(*foundItem))
+//		{
+//			UE_LOG(LogTemp, Log, TEXT("[Item] Remove Failed... ID %llu Not found"), id);
+//			return;
+//		}
+//
+//		ABaseItem* item = *foundItem;
+//
+//		// Map에서 제거
+//		_items.Remove(id);
+//		// 월드에서 제거
+//		item->Destroy();
+//
+//		UE_LOG(LogTemp, Log, TEXT("[Item] Item Removed!!! ID %llu, Name %s"), id, *item->GetName());
+//	});
+//}
 
 void UMain::RecvMoveObject(S_Move_Packet packet)
 {
@@ -642,6 +619,46 @@ void UMain::RecvCreateGameRoom(S_CreateGameRoom_Packet packet)
 
 void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 {
+	int playerID = packet.playerID;
+	int itemID = packet.itemID;
+
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		UWorld* world = GetWorld();
+		if (!world)
+			return;
+
+		ABaseItem** foundItem = _items.Find(itemID);
+		if (!foundItem || !(*foundItem))
+		{
+			UE_LOG(LogTemp, Log, TEXT("[Item] Remove Failed... ID %llu Not found"), itemID);
+			return;
+		}
+
+		ABaseItem* item = *foundItem;
+
+		// Map에서 제거
+		_items.Remove(itemID);
+		
+		// 월드에서 제거
+		//item->Destroy();
+
+		// 아이템 줍기 애니메이션 재생
+		if (playerID == _myID)
+			_myPlayer->PlayPickUpAnimation(item);
+		else
+		{
+			AOtherPlayer** foundPlayer = _otherPlayers.Find(playerID);
+
+			if (foundPlayer && *foundPlayer)
+			{
+				(*foundPlayer)->PlayPickUpAnimation(item);
+				UE_LOG(LogTemp, Warning, TEXT("[Item] OtherPlayer ID %llu Item PickUp Animation!"), playerID);
+			}
+			else
+				UE_LOG(LogTemp, Warning, TEXT("[Item] OtherPlayer ID %llu not found in map!"), playerID);
+		}
+	});
 }
 
 FRotator UMain::DirToRotation(Dir dir)
