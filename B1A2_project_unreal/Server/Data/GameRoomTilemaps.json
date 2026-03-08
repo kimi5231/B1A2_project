@@ -303,6 +303,38 @@
                ], "repeatZ" : 1
             }
             ]
-        }
+        },
+        {
+            "type" : 5,
+            "tileCount" : [56, 32, 24],
+            "tilemap" : [
+            {
+               "layer" : [
+                     { "pattern" : [[0, 56]], "repeatY" :  32 }
+               ], "repeatZ" : 1
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 39], [1, 6], [0, 11]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 54], [0, 1]], "repeatY" :  12 },
+                     { "pattern" : [[1, 56]], "repeatY" :  6 },
+                     { "pattern" : [[0, 1], [1, 54], [0, 1]], "repeatY" :  12 },
+                     { "pattern" : [[0, 11], [1, 6], [0, 22], [1, 6], [0, 11]], "repeatY" :  1 }
+               ], "repeatZ" : 11
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 56]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 54], [0, 1]], "repeatY" :  30 },
+                     { "pattern" : [[0, 56]], "repeatY" :  1 }
+               ], "repeatZ" : 11
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 56]], "repeatY" :  32 }
+               ], "repeatZ" : 1
+            }
+            ]
+         },
     ]
 }
