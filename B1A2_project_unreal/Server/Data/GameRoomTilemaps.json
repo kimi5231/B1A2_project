@@ -143,6 +143,166 @@
                ], "repeatZ" : 1
             }
             ]
+        },
+        {
+            "type" : 4,
+            "tileCount" : [52, 52, 72],
+            "tilemap" : [
+            {
+               "layer" : [
+                     { "pattern" : [[0, 52]], "repeatY" :  52 }
+               ], "repeatZ" : 1
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 52]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 50], [0, 1]], "repeatY" :  50 },
+                     { "pattern" : [[0, 52]], "repeatY" :  1 }
+               ], "repeatZ" : 23
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 52]], "repeatY" :  20 },
+                     { "pattern" : [[0, 20], [1, 12], [0, 20]], "repeatY" :  12 },
+                     { "pattern" : [[0, 52]], "repeatY" :  20 }
+               ], "repeatZ" : 1
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 10], [1, 6], [0, 20], [1, 6], [0, 10]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 42], [0, 9]], "repeatY" :  30 },
+                     { "pattern" : [[0, 1], [1, 42], [2, 8], [0, 1]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 50], [0, 1]], "repeatY" :  19 },
+                     { "pattern" : [[0, 10], [1, 6], [0, 20], [1, 6], [0, 10]], "repeatY" :  1 }
+               ], "repeatZ" : 1
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 10], [1, 6], [0, 20], [1, 6], [0, 10]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 42], [0, 9]], "repeatY" :  29 },
+                     { "pattern" : [[0, 1], [1, 42], [2, 8], [0, 1]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 50], [0, 1]], "repeatY" :  20 },
+                     { "pattern" : [[0, 10], [1, 6], [0, 20], [1, 6], [0, 10]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 10], [1, 6], [0, 20], [1, 6], [0, 10]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 42], [0, 9]], "repeatY" :  28 },
+                     { "pattern" : [[0, 1], [1, 42], [2, 8], [0, 1]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 50], [0, 1]], "repeatY" :  21 },
+                     { "pattern" : [[0, 10], [1, 6], [0, 20], [1, 6], [0, 10]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 10], [1, 6], [0, 20], [1, 6], [0, 10]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 42], [0, 9]], "repeatY" :  27 },
+                     { "pattern" : [[0, 1], [1, 42], [2, 8], [0, 1]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 50], [0, 1]], "repeatY" :  22 },
+                     { "pattern" : [[0, 10], [1, 6], [0, 20], [1, 6], [0, 10]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 10], [1, 6], [0, 20], [1, 6], [0, 10]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 42], [0, 9]], "repeatY" :  26 },
+                     { "pattern" : [[0, 1], [1, 42], [2, 8], [0, 1]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 50], [0, 1]], "repeatY" :  23 },
+                     { "pattern" : [[0, 10], [1, 6], [0, 20], [1, 6], [0, 10]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 10], [1, 6], [0, 20], [1, 6], [0, 10]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 42], [0, 9]], "repeatY" :  25 },
+                     { "pattern" : [[0, 1], [1, 42], [2, 8], [0, 1]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 50], [0, 1]], "repeatY" :  24 },
+                     { "pattern" : [[0, 10], [1, 6], [0, 20], [1, 6], [0, 10]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 52]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 42], [0, 9]], "repeatY" :  24 },
+                     { "pattern" : [[0, 1], [1, 42], [2, 8], [0, 1]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 50], [0, 1]], "repeatY" :  25 },
+                     { "pattern" : [[0, 52]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 52]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 42], [0, 9]], "repeatY" :  23 },
+                     { "pattern" : [[0, 1], [1, 42], [2, 8], [0, 1]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 50], [0, 1]], "repeatY" :  26 },
+                     { "pattern" : [[0, 52]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 52]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 42], [0, 9]], "repeatY" :  22 },
+                     { "pattern" : [[0, 1], [1, 42], [2, 8], [0, 1]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 50], [0, 1]], "repeatY" :  27 },
+                     { "pattern" : [[0, 52]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 52]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 42], [0, 9]], "repeatY" :  21 },
+                     { "pattern" : [[0, 1], [1, 42], [2, 8], [0, 1]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 50], [0, 1]], "repeatY" :  28 },
+                     { "pattern" : [[0, 52]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 52]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 42], [0, 9]], "repeatY" :  20 },
+                     { "pattern" : [[0, 1], [1, 42], [2, 8], [0, 1]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 50], [0, 1]], "repeatY" :  29 },
+                     { "pattern" : [[0, 52]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 52]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 42], [0, 9]], "repeatY" :  19 },
+                     { "pattern" : [[0, 1], [1, 42], [2, 8], [0, 1]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 50], [0, 1]], "repeatY" :  30 },
+                     { "pattern" : [[0, 52]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 52]], "repeatY" :  7 },
+                     { "pattern" : [[0, 43], [2, 8], [0, 1]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 50], [0, 1]], "repeatY" :  43 },
+                     { "pattern" : [[0, 52]], "repeatY" :  1 }
+               ], "repeatZ" : 1
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 10], [1, 6], [0, 20], [1, 6], [0, 10]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 50], [0, 1]], "repeatY" :  50 },
+                     { "pattern" : [[0, 52]], "repeatY" :  1 }
+               ], "repeatZ" : 11
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 52]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 50], [0, 1]], "repeatY" :  50 },
+                     { "pattern" : [[0, 52]], "repeatY" :  1 }
+               ], "repeatZ" : 11
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 52]], "repeatY" :  52 }
+               ], "repeatZ" : 1
+            }
+            ]
         }
     ]
 }
