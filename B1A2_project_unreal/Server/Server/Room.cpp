@@ -210,10 +210,10 @@ void Room::CreateFactoryGameRooms()
 		}
 
 		// 최소/최대 층수를 넘기지 않는지 확인
-		if (static_cast<int>(_minFloor) * 500 > pos.y + info.size.y)
+		/*if (static_cast<int>(_minFloor) * 500 > pos.y + info.size.y)
 			continue;
 		if (static_cast<int>(_maxFloor) * 500 < pos.y + info.size.y)
-			continue;
+			continue;*/
 
 		// 자리가 있으면 배치
 		if (isCreate)

@@ -98,7 +98,7 @@ enum Floor
 	F3 = 3,
 };
 
-enum Coner
+enum Corner
 {
 	LeftFrontBottom,
 	LeftFrontTop,
@@ -109,7 +109,7 @@ enum Coner
 	RightBackBottom,
 	RightBackTop,
 
-	ConerCount
+	CornerCount
 };
 
 //------------------Struct------------------

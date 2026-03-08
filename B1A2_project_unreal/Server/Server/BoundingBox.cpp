@@ -23,6 +23,13 @@ bool BoundingBox::CheckInclude(const AABB& other)
         && (_bounds.min.z < other.min.z && other.max.z < _bounds.max.z);
 }
 
+bool BoundingBox::CheckInclude(const Vector pos)
+{
+    return  (_bounds.min.x < pos.x && pos.x < _bounds.max.x)
+        && (_bounds.min.y < pos.y && pos.y < _bounds.max.y)
+        && (_bounds.min.z < pos.z && pos.z < _bounds.max.z);
+}
+
 void BoundingBox::SetBounds(Vector pos, Vector size, Dir dir)
 {
     _ownerSize = size;
@@ -48,9 +55,9 @@ void BoundingBox::SetOwnerPos(Vector pos, Dir dir)
     }
 }
 
-const std::array<Vector, ConerCount> BoundingBox::GetConers()
+const std::array<Vector, CornerCount> BoundingBox::GetCorners()
 {
-    std::array<Vector, ConerCount> coners;
+    std::array<Vector, CornerCount> coners;
 
     coners[LeftFrontBottom] = _bounds.min;
     coners[LeftFrontTop] = { _bounds.min.x, _bounds.min.y, _bounds.max.z };
