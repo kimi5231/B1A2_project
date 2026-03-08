@@ -73,6 +73,21 @@ void Monster::Update(const std::vector<GameRoomRef>& gameRooms)
 	{
 		Vector max{ tilemap[0][0].size(), tilemap[0].size(), tilemap.size() };
 		Vector index = (corner - start) / 25;
+
+		// Cube 방향에 따라 인덱스 변환
+		switch (currentCube->GetDir())
+		{
+		case Right:
+			index = { index.y, max.x - 1 - index.x, index.z };
+			break;
+		case Back:
+			index = { max.x - 1 - index.x, max.y - 1 - index.y, index.z };
+			break;
+		case Left:
+			index = { max.y - 1 - index.y, index.x, index.z };
+			break;
+		}
+
 		if (index < Vector{0, 0, 0} || index > max)
 		{
 			SetPos(pos);
