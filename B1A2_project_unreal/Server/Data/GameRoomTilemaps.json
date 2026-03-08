@@ -540,5 +540,17 @@
             }
             ]
          },
+         {
+            "type" : 9,
+            "tileCount" : [40, 32, 24],
+            "tilemap" : [
+            {
+               "layer" : [
+                    { "pattern" : [[0, 40]], "repeatY" :  32 }
+               ], "repeatZ" : 1
+            }
+            ]
+         },
+         
     ]
 }
