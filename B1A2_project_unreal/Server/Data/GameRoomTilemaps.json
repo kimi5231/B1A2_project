@@ -336,5 +336,41 @@
             }
             ]
          },
+         {
+            "type" : 6,
+            "tileCount" : [40, 40, 24],
+            "tilemap" : [
+            {
+               "layer" : [
+                     { "pattern" : [[0, 40]], "repeatY" :  40 }
+               ], "repeatZ" : 1
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 7], [1, 6], [0, 14], [1, 6], [0, 7]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 38], [0, 1]], "repeatY" :  6 },
+                     { "pattern" : [[1, 40]], "repeatY" :  6 },
+                     { "pattern" : [[0, 1], [1, 38], [0, 1]], "repeatY" :  6 },
+                     { "pattern" : [[0, 21], [1, 18], [0, 1]], "repeatY" :  8 },
+                     { "pattern" : [[0, 21], [1, 19]], "repeatY" :  6 },
+                     { "pattern" : [[0, 21], [1, 18], [0, 1]], "repeatY" :  6 },
+                     { "pattern" : [[0, 27], [1, 6], [0, 7]], "repeatY" :  1 }
+               ], "repeatZ" : 11
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 40]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 38], [0, 1]], "repeatY" :  18 },
+                     { "pattern" : [[0, 20], [1, 19], [0, 1]], "repeatY" :  20 },
+                     { "pattern" : [[0, 40]], "repeatY" :  1 }
+               ], "repeatZ" : 11
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 40]], "repeatY" :  40 }
+               ], "repeatZ" : 1
+            }
+            ]
+         },
     ]
 }
