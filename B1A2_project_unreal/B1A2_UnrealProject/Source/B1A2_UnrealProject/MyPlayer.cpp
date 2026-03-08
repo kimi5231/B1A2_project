@@ -23,15 +23,17 @@
 AMyPlayer::AMyPlayer()
 {
 	// Create a camera boom (pulls in towards the player if there is a collision)
-	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 400.0f; // The camera follows at this distance behind the character	
-	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
+	//CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	//CameraBoom->SetupAttachment(RootComponent);
+	//CameraBoom->TargetArmLength = 400.0f; // The camera follows at this distance behind the character	
+	//CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
+	//FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
+	//FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
-	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+	FollowCamera->SetupAttachment(GetMesh(), FName("head"));
+	FollowCamera->bUsePawnControlRotation = true;
 
 	_isInterpolation = false;
 }
@@ -84,7 +86,6 @@ void AMyPlayer::Tick(float DeltaTime)
 void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
-
 		//Jumping
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
@@ -106,6 +107,8 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AMyPlayer::Move(const FInputActionValue& Value)
 {
+	if (IsBusy) return;
+
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
 	if (Controller != nullptr)
@@ -128,6 +131,8 @@ void AMyPlayer::Move(const FInputActionValue& Value)
 
 void AMyPlayer::Look(const FInputActionValue& Value)
 {
+	if (IsBusy) return;
+
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 
 	if (Controller != nullptr)
@@ -282,12 +287,21 @@ void AMyPlayer::Interact()
 
 void AMyPlayer::UseTool()
 {
+	if (IsBusy)
+		return;
+
+	IsBusy = true;
+
 	// 아직 Tool 생성이 안 돼서 테스트용으로 애니메이션 넣음
 	float duration = PlayAnimMontage(ComboMontage, 1.0f, FName("Slash"));
 	if (duration > 0.f)
 	{
 		FTimerHandle timerHandle;
 		GetWorldTimerManager().SetTimer(timerHandle, [this]() {IsBusy = false; }, duration, false);
+	}
+	else
+	{
+		IsBusy = false;
 	}
 
 	//if (IsBusy || _currentTool == EToolType::None)

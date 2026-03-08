@@ -113,36 +113,58 @@ void AOtherPlayer::SetPlayerState(ObjectState state)
 	}
 }
 
-void AOtherPlayer::PickUpItem()
-{
-	if (!_currentPickingUpItem)
-		return;
-
-	// 소켓에 부착
-	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
-	_currentPickingUpItem->AttachToComponent(GetMesh(), AttachmentRules, TEXT("RightHandSocket"));
-
-	//switch (_currentPickingUpItem->ItemType)
-	//{
-	//case EItemType::InInventory:
-	//	_currentPickingUpItem->SetActorHiddenInGame(true);
-	//	break;
-	//case EItemType::Tool:
-	//	break;
-	//}
-}
-
 void AOtherPlayer::PlayPickUpAnimation(ABaseItem* item)
 {
-	if (!item)
-		return;
+	if (!item || !ComboMontage) return;
 
+	IsBusy = true;
 	_currentPickingUpItem = item;
 
-	float duration = PlayAnimMontage(ComboMontage, 1.0f, FName("TakeItem"));
-	if (duration > 0.f)
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance)
 	{
-		FTimerHandle timerHandle;
-		GetWorldTimerManager().SetTimer(timerHandle, [this]() {IsBusy = false;}, duration, false);
+		// 재생
+		float Duration = PlayAnimMontage(ComboMontage, 1.0f, FName("TakeItem"));
+
+		if (Duration > 0.f)
+		{
+			IsBusy = true;
+			_currentPickingUpItem = item;
+
+			// 아이템 파괴 Notify 연결
+			AnimInstance->OnPlayMontageNotifyBegin.AddDynamic(this, &AOtherPlayer::PickUpNotifyReached);
+
+			// 종료 델리게이트 설정 (애니메이션 재생 후 이동 가능하도록 설정)
+			FOnMontageEnded EndDelegate;
+			EndDelegate.BindUObject(this, &AOtherPlayer::PickUpMontageEnded);
+			AnimInstance->Montage_SetEndDelegate(EndDelegate, ComboMontage);
+		}
 	}
+
+	// 인벤토리에 넣기!!!
+	// ...
+}
+
+void AOtherPlayer::PickUpNotifyReached(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload)
+{
+	if (NotifyName == FName("DestroyItem"))
+	{
+		if (_currentPickingUpItem)
+		{
+			_currentPickingUpItem->Destroy();
+			_currentPickingUpItem = nullptr;
+		}
+
+		// 델리게이트 해제
+		if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+		{
+			AnimInstance->OnPlayMontageNotifyBegin.RemoveDynamic(this, &AOtherPlayer::PickUpNotifyReached);
+		}
+	}
+}
+
+void AOtherPlayer::PickUpMontageEnded(UAnimMontage* montage, bool bIntererrupted)
+{
+	IsBusy = false;
+	UE_LOG(LogTemp, Log, TEXT("Montage Finished! Player is now free."));
 }

@@ -32,8 +32,12 @@ public:
 	void SetPlayerState(ObjectState state);
 
 	// 아이템 줍기
-	void PickUpItem();
 	void PlayPickUpAnimation(ABaseItem* item);
+	// 몽타주의 Notify에 도달하면 아이템 삭제
+	UFUNCTION()
+	void PickUpNotifyReached(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
+	UFUNCTION()
+	void PickUpMontageEnded(UAnimMontage* montage, bool bIntererrupted);
 
 private:
 	FVector _prevPos;
@@ -77,5 +81,5 @@ protected:
 
 	// 몽타주 재생시 움직임 금지
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
-	bool IsBusy;
+	bool IsBusy = false;
 };

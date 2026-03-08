@@ -639,11 +639,8 @@ void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 
 		// Map에서 제거
 		_items.Remove(itemID);
-		
-		// 월드에서 제거
-		//item->Destroy();
 
-		// 아이템 줍기 애니메이션 재생
+		// 아이템 줍기 애니메이션 재생(+ 월드에서 아이템 삭제)
 		if (playerID == _myID)
 			_myPlayer->PlayPickUpAnimation(item);
 		else
