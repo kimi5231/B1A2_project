@@ -33,6 +33,7 @@ public:
 	BoundingBox GetBoundingBox() { return _box; }
 	std::vector<DoorRef>& GetWalls() { return _walls; }
 	void SetID(uint id) { _id = id; }
+	std::vector<std::weak_ptr<GameRoom>>& GetConnectedCubes() { return _connetedRoom; }
 
 private:
 	GameRoomInfo _info{};

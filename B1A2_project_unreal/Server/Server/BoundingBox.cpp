@@ -25,9 +25,9 @@ bool BoundingBox::CheckInclude(const AABB& other)
 
 bool BoundingBox::CheckInclude(const Vector pos)
 {
-    return  (_bounds.min.x < pos.x && pos.x < _bounds.max.x)
-        && (_bounds.min.y < pos.y && pos.y < _bounds.max.y)
-        && (_bounds.min.z < pos.z && pos.z < _bounds.max.z);
+    return  (_bounds.min.x <= pos.x && pos.x <= _bounds.max.x)
+        && (_bounds.min.y <= pos.y && pos.y <= _bounds.max.y)
+        && (_bounds.min.z <= pos.z && pos.z <= _bounds.max.z);
 }
 
 void BoundingBox::SetBounds(Vector pos, Vector size, Dir dir)

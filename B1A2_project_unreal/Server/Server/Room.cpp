@@ -161,7 +161,7 @@ void Room::CreateFactoryGameRooms()
 		default:
 		{
 			// 연결할 방이 일반 방 => 계단, 난간 통로, 복도 가능
-			std::uniform_int_distribution<int> selectGameRoomType(static_cast<int>(GameRoomType::RailCatwalk), static_cast<int>(GameRoomType::Staircase));
+			std::uniform_int_distribution<int> selectGameRoomType(static_cast<int>(GameRoomType::PipedHallways_Line), static_cast<int>(GameRoomType::PipedHallways_Line));
 			type = static_cast<GameRoomType>(selectGameRoomType(gen));
 			break;
 		}
