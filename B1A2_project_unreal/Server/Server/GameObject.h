@@ -17,7 +17,7 @@ public:
 	UINT GetID() { return _id; }
 	void SetObjectType(ObjectType type) { _type = type; }
 	ObjectType GetObjectType() { return _type; }
-	void SetPos(Vector pos) { _pos = pos; }
+	void SetPos(Vector pos);
 	Vector GetPos() { return _pos; }
 	void SetRotation(Rotation rotation) { _rotation = rotation; }
 	Rotation GetRotation() { return _rotation; }

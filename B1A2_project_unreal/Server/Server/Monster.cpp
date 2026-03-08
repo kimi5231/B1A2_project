@@ -25,7 +25,7 @@ void Monster::Update(const std::vector<GameRoomRef>& gameRooms)
 	GameRoomRef currentCube;
 	for (const GameRoomRef gameRoom : gameRooms)
 	{
-		if (gameRoom->CheckInclude(_box))
+		if (gameRoom->GetBoundingBox().CheckInclude(_pos))
 		{
 			currentCube = gameRoom;
 			break;
@@ -34,11 +34,11 @@ void Monster::Update(const std::vector<GameRoomRef>& gameRooms)
 
 	// 현재 위치한 방의 타일맵 가져오기
 	const std::vector<std::vector<std::vector<short>>>& tilemap = g_dataManager->GetTilemap(currentCube->GetGameRoomType());
-	// 
+	
+	// 타일맵의 시작점 계산(FrontLeftButtom)
+	// CubeType에 따라 계산 다를수도
 	Vector cubePos = currentCube->GetPos();
 	Vector cubeSize = currentCube->GetSize();
-	// CubeType에 따라 계산 다를수도
-	// FrontLeftButtom
 	Vector start{ cubePos.x - cubeSize.x / 2, cubePos.y - cubeSize.y / 2, cubePos.z };
 
 	// 일단은 랜덤한 방향으로 이동하도록, 추후 수정
@@ -64,26 +64,24 @@ void Monster::Update(const std::vector<GameRoomRef>& gameRooms)
 		break;
 	}
 
-	_box.SetOwnerPos(_pos, Front);
+	SetPos(_pos);
 
 	// 해당 타일로 이동이 가능한지 확인
 	// 몬스터 바운딩 박스 꼭짓점 인덱스 계산 및 확인
-	const std::array<Vector, ConerCount>& coners = _box.GetConers();
-	for (const auto& coner : coners)
+	const std::array<Vector, CornerCount>& corners = _box.GetCorners();
+	for (const auto& corner : corners)
 	{
 		Vector max{ tilemap[0][0].size(), tilemap[0].size(), tilemap.size() };
-		Vector index = (coner - start) / 25;
+		Vector index = (corner - start) / 25;
 		if (index < Vector{0, 0, 0} || index > max)
 		{
-			_pos = pos;
-			_box.SetOwnerPos(_pos, Front);
+			SetPos(pos);
 			return;
 		}
 
 		if (tilemap[index.z][index.y][index.x] == 0)
 		{
-			_pos = pos;
-			_box.SetOwnerPos(_pos, Front);
+			SetPos(pos);
 			return;
 		}
 	}
