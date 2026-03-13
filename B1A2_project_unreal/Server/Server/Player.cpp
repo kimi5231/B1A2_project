@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Player.h"
+#include "Item.h"
 
 Player::Player()
 {
@@ -16,4 +17,18 @@ Player::~Player()
 void Player::Update()
 {
 
+}
+
+void Player::AddItemToInventory(ItemRef item, bool isTool)
+{
+	if (isTool)
+	{
+		// 도구 인벤토리에 넣기
+	}
+	else
+	{
+		// 아이템 인벤토리에 넣기
+	}
+
+	SetState(ObjectState::GET_ITEM);
 }

@@ -175,7 +175,7 @@ void ServerFramework::ProcessRecv(ClientRef client)
 	case C_GetItem:
 		C_GetItem_Packet getItemPacket;
 		memcpy(&getItemPacket, packet.data() + sizeof(Header), sizeof(C_GetItem_Packet));
-		ProcessGetItemPacket(getItemPacket);
+		ProcessGetItemPacket(client->socket, getItemPacket);
 		break;
 	}
 }
@@ -375,10 +375,11 @@ void ServerFramework::SendCreateGameRoomPacket(const std::vector<GameRoomRef>& g
 	_sendEvents.push_back(event);
 }
 
-void ServerFramework::SendAddItemToInventoryPacket(int itemID, int playerID, bool broadcast, SOCKET client)
+void ServerFramework::SendAddItemToInventoryPacket(ItemRef item, bool isTool, bool broadcast, SOCKET client)
 {
 	// Packet Data 생성
-	S_AddItemToInventory_Packet packetData{ itemID, playerID };
+	// 나중에 도구인지 아이템인지 구분하기(Casting)
+	S_AddItemToInventory_Packet packetData{ isTool, item->GetItemType(), item->GetID(), item->GetWeight()};
 
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);
@@ -468,18 +469,22 @@ void ServerFramework::ProcessMovePacket(C_Move_Packet packet)
 	}
 }
 
-void ServerFramework::ProcessGetItemPacket(C_GetItem_Packet packet)
+void ServerFramework::ProcessGetItemPacket(SOCKET clientSocket, C_GetItem_Packet packet)
 {
 	// Player가 요청한 아이템이 얻을 수 있는 것인지 확인
-	GameObjectRef item = _room->GetObject(ObjectType::Item, packet.itemID);
+	ItemRef item = std::dynamic_pointer_cast<Item>(_room->GetObject(ObjectType::Item, packet.itemID));
 
-	// 얻을 수 없는 아이템이면 요청 거절
+	// 존재하지 않는 아이템이면 요청 거절
 	if (item == nullptr)
 		return;
 
-	// 얻을 수 있는 조건인지 확인하는 코드 추가 필요
+	// 아이템을 얻을 수 있는 조건인지 확인(거리)
 	
-	// 얻을 수 있는 아이템이라면 Player 인벤토리에 추가 후, 맵에서 Item 삭제
-	SendAddItemToInventoryPacket(packet.itemID, packet.playerID, true);
+	// 얻을 수 있는 아이템이라면 Player 인벤토리에 추가
+	PlayerRef player = std::dynamic_pointer_cast<Player>(_room->GetObject(ObjectType::Player, packet.playerID));
+	player->AddItemToInventory(item, packet.isTool);
+	SendAddItemToInventoryPacket(item, false, clientSocket);
+
+	// 획득한 아이템은 맵에서 삭제
 	_room->RemoveObject(ObjectType::Item, packet.itemID);
 }

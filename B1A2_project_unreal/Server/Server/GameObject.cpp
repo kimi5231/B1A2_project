@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "GameObject.h"
+#include "Global.h"
 
 GameObject::GameObject()
 {
@@ -19,4 +20,11 @@ void GameObject::SetPos(Vector pos)
 	_pos = pos;
 	// 방향 나중에 바꾸기
 	_box.SetOwnerPos(pos, Front);
+}
+
+void GameObject::SetState(ObjectState state)
+{
+	_state = state;
+
+	g_framework->SendUpdateObjectStatePacket(shared_from_this(), true);
 }

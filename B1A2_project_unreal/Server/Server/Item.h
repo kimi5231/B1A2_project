@@ -12,7 +12,9 @@ public:
 
 public:
 	ItemType GetItemType() { return _itemType; }
+	float GetWeight() { return _weight; }
 
 private:
 	ItemType _itemType;
+	float _weight;
 };

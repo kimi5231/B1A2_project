@@ -57,8 +57,28 @@ struct C_Move_Packet
 
 struct C_GetItem_Packet
 {
-	int itemID;
 	int playerID;
+	bool isTool;
+	int itemID;
+};
+
+struct C_ChangeTool_Packet
+{
+	int playerID;
+	int toolID;
+};
+
+struct C_UseTool_Pacekt
+{
+	int playerID;
+	int toolID;
+};
+
+struct C_DropItem_Packet
+{
+	int playerID;
+	bool isTool;
+	int itemID;
 };
 
 // Server
@@ -109,6 +129,8 @@ struct S_CreateGameRoom_Packet
 
 struct S_AddItemToInventory_Packet
 {
+	bool isTool;
+	ItemType itemType;
 	int itemID;
-	int playerID;
+	float itemWeight;
 };

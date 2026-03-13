@@ -8,6 +8,7 @@ enum class ObjectType
 	Player,
 	Monster,
 	Item,
+	Tool,
 };
 
 enum ObjectState
@@ -84,6 +85,20 @@ enum TileState : short
 enum ItemType
 {
 	CardboardBox,
+	GoldBar,
+	RubberDuck,
+	PlasticCrate,
+	Screw,
+	PirateHat,
+	HardHat,
+	EngineCore,
+	ScrapMetal,
+	EmptyCan,
+
+	// Tool
+	Cutlass,
+	Blaster,
+	Key,
 
 	ItemTypeCount,
 };

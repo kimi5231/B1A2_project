@@ -28,7 +28,7 @@ public:
 public:
 	void SendUpdateObjectStatePacket(int id, ObjectType type, ObjectState state);
 	void SendMovePacket(ObjectType type, int id, Vector pos, Rotation rotation, ObjectState state);
-	void SendGetItemPacket(int itemID, int playerID);
+	void SendGetItemPacket(int itemID, bool isTool, int playerID);
 
 public:
 	std::vector<NetworkEventRef>& GetRecvEvents() { return _recvEvents; }

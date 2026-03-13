@@ -127,7 +127,7 @@ void UMain::SendGetItem(int itemID, int playerID)
 	UWorld* world = GetWorld();
 	if (!world) return;
 
-	_gameNetwork->SendGetItemPacket(itemID, playerID);
+	_gameNetwork->SendGetItemPacket(itemID, false, playerID);
 }
 
 void UMain::Update()
@@ -619,7 +619,7 @@ void UMain::RecvCreateGameRoom(S_CreateGameRoom_Packet packet)
 
 void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 {
-	int playerID = packet.playerID;
+	//int playerID = packet.playerID;
 	int itemID = packet.itemID;
 
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
@@ -638,12 +638,12 @@ void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 		ABaseItem* item = *foundItem;
 
 		// Map에서 제거
-		_items.Remove(itemID);
+		//_items.Remove(itemID);
 
 		// 아이템 줍기 애니메이션 재생(+ 월드에서 아이템 삭제)
-		if (playerID == _myID)
+		//if (playerID == _myID)
 			_myPlayer->PlayPickUpAnimation(item);
-		else
+		/*else
 		{
 			AOtherPlayer** foundPlayer = _otherPlayers.Find(playerID);
 
@@ -654,7 +654,7 @@ void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 			}
 			else
 				UE_LOG(LogTemp, Warning, TEXT("[Item] OtherPlayer ID %llu not found in map!"), playerID);
-		}
+		}*/
 	});
 }
 

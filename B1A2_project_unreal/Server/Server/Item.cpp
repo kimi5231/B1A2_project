@@ -7,6 +7,7 @@ Item::Item(ItemType itemType)
 	_pos = { 0, -100, 10};
 	_rotation = { 0, 0, 0 };
 	_type = ObjectType::Item;
+	_weight = 0.1;
 }
 
 Item::~Item()
