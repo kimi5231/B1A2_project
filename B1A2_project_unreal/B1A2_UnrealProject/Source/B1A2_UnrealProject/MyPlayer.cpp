@@ -54,6 +54,15 @@ void AMyPlayer::BeginPlay()
 	// ¾ÆÀÌÅÛ Ä¸½¶°ú Ãæµ¹
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AMyPlayer::OnItemOverlapBegin);
 	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AMyPlayer::OnItemOverlapEnd);
+
+	// Tool Bar À§Á¬ ¶ç¿ì±â
+	if (_toolBarWidgetClass)
+	{
+		_toolBarWidgetInstance = CreateWidget<UUserWidget>(GetWorld(), _toolBarWidgetClass);
+
+		if (_toolBarWidgetInstance)
+			_toolBarWidgetInstance->AddToViewport();
+	}
 }
 
 void AMyPlayer::Tick(float DeltaTime)
@@ -102,6 +111,9 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 		// Use Tool
 		EnhancedInputComponent->BindAction(UseToolAction, ETriggerEvent::Triggered, this, &AMyPlayer::UseTool);
+
+		// Inventory
+		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AMyPlayer::ToggleInventory);
 	}
 }
 
@@ -140,6 +152,25 @@ void AMyPlayer::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(-LookAxisVector.Y);
+	}
+}
+
+void AMyPlayer::ToggleInventory()
+{
+	if (!_inventoryWidgetInstance)
+		_inventoryWidgetInstance = CreateWidget<UUserWidget>(GetWorld(), _inventoryWidgetClass);
+
+	if (!_inventoryWidgetInstance)
+		return;
+	
+	// À§Á¬ ÄÑÁ®ÀÖÀ¸¸é ²û, ²¨Á®ÀÖÀ¸¸é Å´
+	if (_inventoryWidgetInstance->IsInViewport())
+	{
+		_inventoryWidgetInstance->RemoveFromParent();
+	}
+	else
+	{
+		_inventoryWidgetInstance->AddToViewport();
 	}
 }
 

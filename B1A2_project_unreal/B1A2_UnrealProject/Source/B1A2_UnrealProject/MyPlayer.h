@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "OtherPlayer.h"
 #include "Animation/AnimMontage.h"
+#include "Blueprint/UserWidget.h"
 
 #include "MyPlayer.generated.h"
 
@@ -60,6 +61,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
 	UInputAction* UseToolAction;
 
+	// Inventory
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
+	UInputAction* InventoryAction;
+
 public:
 	AMyPlayer();
 
@@ -83,6 +88,23 @@ protected:
 
 	UPROPERTY()
 	ABaseItem* _focusedItem;	// E 버튼을 띄울 아이템
+
+
+	// 위젯
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<UUserWidget> _inventoryWidgetClass;
+
+	UPROPERTY()
+	UUserWidget* _inventoryWidgetInstance;
+
+	void ToggleInventory();
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<UUserWidget> _toolBarWidgetClass;
+
+	UPROPERTY()
+	UUserWidget* _toolBarWidgetInstance;
+
 
 private:
 	// 아이템 상호작용
