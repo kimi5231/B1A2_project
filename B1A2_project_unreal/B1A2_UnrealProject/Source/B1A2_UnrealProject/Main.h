@@ -48,7 +48,8 @@ public:
 	void AddMonster(S_AddObject_Packet packet);
 
 	void RecvAddItem(S_AddItem_Packet packet);
-	
+	void RecvAddTool(S_AddItem_Packet packet);
+
 	void RecvRemoveObject(S_RemoveObject_Packet packet);
 	void RemovePlayer(S_RemoveObject_Packet packet);
 	void RemoveMonster(S_RemoveObject_Packet packet);
@@ -121,6 +122,32 @@ public:
 	// Item
 	UPROPERTY(EditDefaultsOnly, Category = "Item")
 	TSubclassOf<class ABaseItem> CardboardBoxClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	TSubclassOf<class ABaseItem> GoldBarClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	TSubclassOf<class ABaseItem> RubberDuckClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	TSubclassOf<class ABaseItem> PlasticCrateClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	TSubclassOf<class ABaseItem> ScrewClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	TSubclassOf<class ABaseItem> PirateHatClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	TSubclassOf<class ABaseItem> HardHatClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	TSubclassOf<class ABaseItem> EngineCoreClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	TSubclassOf<class ABaseItem> ScrapMetalClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	TSubclassOf<class ABaseItem> EmptyCanClass;
+
+	// Tool
+	UPROPERTY(EditDefaultsOnly, Category = "Tool")
+	TSubclassOf<class ABaseItem> CutlassClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Tool")
+	TSubclassOf<class ABaseItem> BlasterClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Tool")
+	TSubclassOf<class ABaseItem> KeyClass;
 
 private:
 	GameNetwork* _gameNetwork = nullptr;
@@ -150,4 +177,6 @@ private:
 
 	// 아이템
 	TMap<uint64, ABaseItem*> _items;
+	// 장비
+	TMap<uint64, ABaseItem*> _tools;
 };

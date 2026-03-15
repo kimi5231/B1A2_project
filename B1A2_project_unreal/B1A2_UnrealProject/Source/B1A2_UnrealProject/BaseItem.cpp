@@ -17,7 +17,7 @@ ABaseItem::ABaseItem()
 
     CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
     CollisionSphere->SetupAttachment(RootComponent);
-    CollisionSphere->SetSphereRadius(150.f);
+    CollisionSphere->SetSphereRadius(100.f);
 
     CollisionSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);   // 충돌 판정(물리 충돌 X)
     CollisionSphere->SetCollisionResponseToAllChannels(ECR_Ignore);   // 다른 Collision Channel 만났을 때 무시

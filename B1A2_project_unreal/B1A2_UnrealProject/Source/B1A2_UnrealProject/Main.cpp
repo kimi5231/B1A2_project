@@ -166,7 +166,10 @@ void UMain::ProcessRecv()
 		case S_AddItem:
 			S_AddItem_Packet addItemPacket;
 			FMemory::Memcpy(&addItemPacket, event->serializedPacketData.data(), sizeof(S_AddItem_Packet));
-			RecvAddItem(addItemPacket);
+			if (addItemPacket.objectType == ObjectType::Item)
+				RecvAddItem(addItemPacket);
+			else if (addItemPacket.objectType == ObjectType::Tool)
+				RecvAddTool(addItemPacket);
 			event->isComplete = true;
 			break;
 		case S_RemoveObject:
@@ -344,12 +347,90 @@ void UMain::RecvAddItem(S_AddItem_Packet packet)
 			item = world->SpawnActor<ABaseItem>(CardboardBoxClass, spawnLocation, spawnRotation);
 			UE_LOG(LogTemp, Log, TEXT("[Item] CardboardBox Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
 			break;
+		case ItemType::GoldBar:
+			item = world->SpawnActor<ABaseItem>(GoldBarClass, spawnLocation, spawnRotation);
+			UE_LOG(LogTemp, Log, TEXT("[Item] GoldBar Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+			break;
+		case ItemType::RubberDuck:
+			item = world->SpawnActor<ABaseItem>(RubberDuckClass, spawnLocation, spawnRotation);
+			UE_LOG(LogTemp, Log, TEXT("[Item] RubberDuck Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+			break;
+		case ItemType::PlasticCrate:
+			item = world->SpawnActor<ABaseItem>(PlasticCrateClass, spawnLocation, spawnRotation);
+			UE_LOG(LogTemp, Log, TEXT("[Item] PlasticCrate Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+			break;
+		case ItemType::Screw:
+			item = world->SpawnActor<ABaseItem>(ScrewClass, spawnLocation, spawnRotation);
+			UE_LOG(LogTemp, Log, TEXT("[Item] Screw Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+			break;
+		case ItemType::PirateHat:
+			item = world->SpawnActor<ABaseItem>(PirateHatClass, spawnLocation, spawnRotation);
+			UE_LOG(LogTemp, Log, TEXT("[Item] PirateHat Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+			break;
+		case ItemType::HardHat:
+			item = world->SpawnActor<ABaseItem>(HardHatClass, spawnLocation, spawnRotation);
+			UE_LOG(LogTemp, Log, TEXT("[Item] HardHat Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+			break;
+		case ItemType::EngineCore:
+			item = world->SpawnActor<ABaseItem>(EngineCoreClass, spawnLocation, spawnRotation);
+			UE_LOG(LogTemp, Log, TEXT("[Item] EngineCore Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+			break;
+		case ItemType::ScrapMetal:
+			item = world->SpawnActor<ABaseItem>(ScrapMetalClass, spawnLocation, spawnRotation);
+			UE_LOG(LogTemp, Log, TEXT("[Item] ScrapMetal Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+			break;
+		case ItemType::EmptyCan:
+			item = world->SpawnActor<ABaseItem>(EmptyCanClass, spawnLocation, spawnRotation);
+			UE_LOG(LogTemp, Log, TEXT("[Item] EmptyCan Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+			break;
 		}
 
 		item->SetItemID(id);
 		
 		// Spawn 후 Map에 등록
 		_items.Add(id, item);	
+	});
+}
+
+void UMain::RecvAddTool(S_AddItem_Packet packet)
+{
+	if (_tools.Contains(packet.objectID))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Tool already spawned... object ID: %d"), packet.objectID);
+		return;
+	}
+
+	FVector spawnLocation(packet.pos.x, packet.pos.y, packet.pos.z);
+	FRotator spawnRotation(0, packet.rotation.yaw, 0);
+	int id = packet.objectID;
+
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		UWorld* world = GetWorld();
+		if (!world)
+			return;
+
+		ABaseItem* tool = nullptr;
+		switch (packet.itemType)
+		{
+		case ItemType::Cutlass:
+			tool = world->SpawnActor<ABaseItem>(CardboardBoxClass, spawnLocation, spawnRotation);
+			UE_LOG(LogTemp, Log, TEXT("[Tool] Cutlass Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+			break;
+		case ItemType::Blaster:
+			tool = world->SpawnActor<ABaseItem>(BlasterClass, spawnLocation, spawnRotation);
+			UE_LOG(LogTemp, Log, TEXT("[Tool] Blaster Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+			break;
+		case ItemType::Key:
+			tool = world->SpawnActor<ABaseItem>(KeyClass, spawnLocation, spawnRotation);
+			UE_LOG(LogTemp, Log, TEXT("[Tool] Key Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+			break;
+		}
+
+		tool->SetItemID(id);
+
+		// Spawn 후 Map에 등록
+		_tools.Add(id, tool);
 	});
 }
 

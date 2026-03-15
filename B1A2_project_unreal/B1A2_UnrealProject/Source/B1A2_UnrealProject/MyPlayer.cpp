@@ -80,15 +80,12 @@ void AMyPlayer::Tick(float DeltaTime)
 			GameInstance->SendLocalPosition();
 	}
 
+	// 아이템 상호작용
 	if (_interactionTimer <= 0.f)
 	{
 		_interactionTimer = INTERACTION_DELAY;
 
-		// 아이템이 근처에 있을 때만 Line Trace
-		if (_nearInteractableItem.Num() > 0)
-			CheckItemTrace();
-		else
-			ClearFocusedItem();
+		UpdateBestInteractableItem();
 	}
 }
 
@@ -222,33 +219,6 @@ void AMyPlayer::OnItemDestroyed(AActor* destroyedItem)
 	UE_LOG(LogTemp, Log, TEXT("[Item] Item Destroyed in Player Reference"));
 }
 
-void AMyPlayer::CheckItemTrace()
-{
-	FHitResult hit;
-	if (!LineTrace(hit)) 
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("[Item] Trace, No hit"));
-		return;
-	}
-
-	ABaseItem* hitItem = Cast<ABaseItem>(hit.GetActor());
-	if (!hitItem)
-	{
-		ClearFocusedItem();
-		return;
-	}
-	
-	//UE_LOG(LogTemp, Warning, TEXT("[Item] Hit Actor: %s"), *hitItem->GetName());
-
-	if (_nearInteractableItem.Contains(hitItem))
-	{
-		SetFocusedItem(hitItem);
-		return;
-	}
-
-	ClearFocusedItem();
-}
-
 void AMyPlayer::SetFocusedItem(ABaseItem* newItem)
 {
 	if (_focusedItem == newItem)
@@ -272,32 +242,36 @@ void AMyPlayer::ClearFocusedItem()
 	_focusedItem = nullptr;
 }
 
-bool AMyPlayer::LineTrace(FHitResult& outHit) const
+void AMyPlayer::UpdateBestInteractableItem()
 {
-	FVector start = GetActorLocation();
-	start.Z += GetCapsuleComponent()->GetScaledCapsuleHalfHeight() * 0.3f;	// 몸통
-
-	// 방향 설정
-	FVector forward = GetActorForwardVector(); // 플레이어가 바라보는 앞방향
-	FVector down = FVector::DownVector;	// 아래방향
-	FVector traceDir = (forward + down).GetSafeNormal();
-
-	float distance = 500.f;
-	FVector end = start + (traceDir * distance);
-
-	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(this);
-
-	bool bHit = GetWorld()->LineTraceSingleByChannel(outHit, start, end, ECC_Visibility, Params);
-
-	// 디버깅용
-	DrawDebugLine(GetWorld(), start, end, bHit ? FColor::Green : FColor::Red, false, 0.1f, 0, 2.f);
-	if (bHit)
+	// 겹쳐 있는 아이템이 없으면 포커스 해제
+	if (_nearInteractableItem.Num() == 0)
 	{
-		DrawDebugSphere(GetWorld(),	outHit.ImpactPoint, 8.f, 12, FColor::Blue, false, 0.1f);
+		ClearFocusedItem();
+		return;
 	}
 
-	return bHit;
+	ABaseItem* closestItem = nullptr;
+	float minDistance = TNumericLimits<float>::Max();
+	FVector playerLocation = GetActorLocation();
+
+	// 가장 가까운 아이템 찾기
+	for (ABaseItem* item : _nearInteractableItem)
+	{
+		if (!item)
+			continue;
+
+		float dist = FVector::DistSquared(playerLocation, item->GetActorLocation());
+		if (dist < minDistance)
+		{
+			minDistance = dist;
+			closestItem = item;
+		}
+	}
+
+	// 가장 가까운 아이템 포커스
+	if (closestItem)
+		SetFocusedItem(closestItem);
 }
 
 void AMyPlayer::Interact()
