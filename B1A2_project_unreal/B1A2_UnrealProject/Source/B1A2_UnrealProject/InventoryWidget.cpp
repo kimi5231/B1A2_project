@@ -6,26 +6,41 @@
 #include "Components/UniformGridPanel.h"
 #include "Components/UniformGridSlot.h"
 
-void UInventoryWidget::NativeConstruct()
+void UInventoryWidget::NativeOnInitialized()
 {
-	Super::NativeConstruct();
+	Super::NativeOnInitialized();
 
-	if (!SlotWidgetClass || !SlotGrid)
+	InitializeSlots();	// À§Á¬ÀÌ »ý¼ºµÇ¸é ¹Ù·Î ½½·Ô »ý¼º
+}
+
+void UInventoryWidget::AddItem(int id, ItemType type, float weight)
+{
+	// ºó ½½·Ô Ã£±â
+	for (UInventorySlotWidget* slot : SlotArray)
+	{
+		if (slot && slot->isEmpty)
+		{
+			slot->SetSlotInfo(id, type, weight);
+			return;
+		}
+	}
+}
+
+void UInventoryWidget::InitializeSlots()
+{
+	if (SlotArray.Num() > 0) 
+		return;
+
+	if (!SlotWidgetClass || !SlotGrid) 
 		return;
 
 	SlotGrid->ClearChildren();
-	SlotArray.Empty();
-
 	for (int32 i = 0; i < 49; ++i)
 	{
 		UInventorySlotWidget* slot = CreateWidget<UInventorySlotWidget>(this, SlotWidgetClass);
-
 		if (slot)
 		{
-			int32 row = i / 7;
-			int32 col = i % 7;
-
-			SlotGrid->AddChildToUniformGrid(slot, row, col);
+			SlotGrid->AddChildToUniformGrid(slot, i / 7, i % 7);
 			SlotArray.Add(slot);
 		}
 	}

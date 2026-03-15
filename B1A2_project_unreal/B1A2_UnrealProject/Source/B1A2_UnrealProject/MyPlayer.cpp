@@ -20,6 +20,10 @@
 #include "InteractableInterface.h"
 #include "BaseItem.h"
 
+#include "InventoryWidget.h" 
+#include "ToolBarWidget.h" 
+#include "Blueprint/UserWidget.h"
+
 AMyPlayer::AMyPlayer()
 {
 	// Create a camera boom (pulls in towards the player if there is a collision)
@@ -62,6 +66,11 @@ void AMyPlayer::BeginPlay()
 
 		if (_toolBarWidgetInstance)
 			_toolBarWidgetInstance->AddToViewport();
+	}
+	// Inventory À§Á¬ »ý¼º
+	if (_inventoryWidgetClass)
+	{
+		_inventoryWidgetInstance = CreateWidget<UUserWidget>(GetWorld(), _inventoryWidgetClass);
 	}
 }
 
@@ -152,11 +161,36 @@ void AMyPlayer::Look(const FInputActionValue& Value)
 	}
 }
 
+void AMyPlayer::AddItemToInventory(ItemType type, int id, float weight)
+{
+	if (_inventoryWidgetInstance == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("[Inventory] _inventoryWidgetInstance is NULL!"));
+		return;
+	}
+
+	UInventoryWidget* inventory = Cast<UInventoryWidget>(_inventoryWidgetInstance);
+	if (inventory)
+	{
+		inventory->AddItem(id, type, weight);
+		UE_LOG(LogTemp, Display, TEXT("[Inventory] Add Item Success!"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("[Inventory] Cast to UInventoryWidget Failed!"));
+	}
+}
+
+void AMyPlayer::AddToolToToolBar(ItemType type, int id)
+{
+	if (UToolBarWidget* toolBar = Cast<UToolBarWidget>(_toolBarWidgetInstance))
+	{
+
+	}
+}
+
 void AMyPlayer::ToggleInventory()
 {
-	if (!_inventoryWidgetInstance)
-		_inventoryWidgetInstance = CreateWidget<UUserWidget>(GetWorld(), _inventoryWidgetClass);
-
 	if (!_inventoryWidgetInstance)
 		return;
 	

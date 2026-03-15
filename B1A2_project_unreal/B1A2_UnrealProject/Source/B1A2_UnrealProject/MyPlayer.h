@@ -82,6 +82,10 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+public:
+	void AddItemToInventory(ItemType type, int id, float weight);
+	void AddToolToToolBar(ItemType type, int id);
+
 protected:
 	UPROPERTY()
 	TSet<ABaseItem*> _nearInteractableItem;

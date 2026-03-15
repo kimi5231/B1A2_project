@@ -53,7 +53,8 @@ public:
 	void RecvRemoveObject(S_RemoveObject_Packet packet);
 	void RemovePlayer(S_RemoveObject_Packet packet);
 	void RemoveMonster(S_RemoveObject_Packet packet);
-	//void RemoveItem(S_RemoveObject_Packet packet);
+	void RemoveItem(S_RemoveObject_Packet packet);
+	void RemoveTool(S_RemoveObject_Packet packet);
 
 	void RecvMoveObject(S_Move_Packet packet);
 	void RecvMovePlayer(S_Move_Packet packet);

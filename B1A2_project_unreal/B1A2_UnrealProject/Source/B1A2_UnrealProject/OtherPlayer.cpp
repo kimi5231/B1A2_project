@@ -140,9 +140,6 @@ void AOtherPlayer::PlayPickUpAnimation(ABaseItem* item)
 			AnimInstance->Montage_SetEndDelegate(EndDelegate, ComboMontage);
 		}
 	}
-
-	// 인벤토리에 넣기!!!
-	// ...
 }
 
 void AOtherPlayer::PickUpNotifyReached(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload)

@@ -190,7 +190,7 @@ void UMain::ProcessRecv()
 			RecvMoveObject(movePacket);
 			event->isComplete = true;
 			break;
-		case S_AddItemToInventory:
+		case S_AddItemToInventory:	// MyPlayer의 아이템과 장비를 인벤과 툴바에 넣음 (OtherPlayer는 UpdateObjectState)
 			S_AddItemToInventory_Packet addItemToInventoryPacket;
 			FMemory::Memcpy(&addItemToInventoryPacket, event->serializedPacketData.data(), sizeof(S_AddItemToInventory_Packet));
 			RecvAddItemToInventory(addItemToInventoryPacket);
@@ -444,6 +444,10 @@ void UMain::RecvRemoveObject(S_RemoveObject_Packet packet)
 	case ObjectType::Monster:
 		RemoveMonster(packet);
 		break;
+	case ObjectType::Item:
+		RemoveItem(packet);
+	case ObjectType::Tool:
+		RemoveTool(packet);
 	default:
 		break;
 	}
@@ -490,7 +494,7 @@ void UMain::RemoveMonster(S_RemoveObject_Packet packet)
 		AStaticMeshActor** foundMonster = _monsters.Find(id);
 		if (!foundMonster || !(*foundMonster))
 		{
-			UE_LOG(LogTemp, Log, TEXT("[Item] Remove Failed... ID %llu Not found"), id);
+			UE_LOG(LogTemp, Log, TEXT("[Monster] Remove Failed... ID %llu Not found"), id);
 			return;
 		}
 
@@ -503,6 +507,18 @@ void UMain::RemoveMonster(S_RemoveObject_Packet packet)
 
 		UE_LOG(LogTemp, Log, TEXT("[Monster] Monster Removed!!! ID %llu, Name %s"), id, *monster->GetName());
 	});
+}
+
+void UMain::RemoveItem(S_RemoveObject_Packet packet)
+{
+	// Map에서 제거 (월드에서는 애니메이션 중간에 지움)
+	//_items.Remove(packet.objectID);
+}
+
+void UMain::RemoveTool(S_RemoveObject_Packet packet)
+{
+	// Map에서 제거
+	//_tools.Remove(packet.objectID);
 }
 
 //void UMain::RemoveItem(S_RemoveObject_Packet packet)
@@ -700,7 +716,6 @@ void UMain::RecvCreateGameRoom(S_CreateGameRoom_Packet packet)
 
 void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 {
-	//int playerID = packet.playerID;
 	int itemID = packet.itemID;
 
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
@@ -712,18 +727,21 @@ void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 		ABaseItem** foundItem = _items.Find(itemID);
 		if (!foundItem || !(*foundItem))
 		{
-			UE_LOG(LogTemp, Log, TEXT("[Item] Remove Failed... ID %llu Not found"), itemID);
+			UE_LOG(LogTemp, Log, TEXT("[Item] item not found... ID %llu Not found"), itemID);
 			return;
 		}
 
 		ABaseItem* item = *foundItem;
 
-		// Map에서 제거
-		//_items.Remove(itemID);
+		// 아이템 or 장비 줍기 애니메이션 재생 + 월드에서 아이템 삭제
+		_myPlayer->PlayPickUpAnimation(item);
 
-		// 아이템 줍기 애니메이션 재생(+ 월드에서 아이템 삭제)
-		//if (playerID == _myID)
-			_myPlayer->PlayPickUpAnimation(item);
+		// 인벤토리 or 툴바에 넣기
+		if (packet.isTool)
+			_myPlayer->AddToolToToolBar(packet.itemType, itemID);
+		else
+			_myPlayer->AddItemToInventory(packet.itemType, itemID, packet.itemWeight);
+
 		/*else
 		{
 			AOtherPlayer** foundPlayer = _otherPlayers.Find(playerID);
