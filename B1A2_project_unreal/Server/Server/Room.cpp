@@ -4,7 +4,7 @@
 #include "GameRoom.h"
 #include "Door.h"
 #include "Item.h"
-#include <chrono>
+#include "Tool.h"
 
 Room::Room()
 {
@@ -265,25 +265,41 @@ GameObjectRef Room::AddObject(ObjectType type)
 		object->SetPos(pos);
 		object->SetID(_generatePlayerID++);
 		_playerCount++;
-		g_framework->SendAddObjectPacket(object, true);
 		break;
 	// temp. 추후 Monster Type별로 나눌 예정
 	case ObjectType::Monster:
 		_monsters[_generateMonsterID] = std::make_shared<Monster>();
 		object = _monsters[_generateMonsterID];
 		object->SetID(_generateMonsterID++);
-		g_framework->SendAddObjectPacket(object, true);
-		break;
-	case ObjectType::Item:
-		// ItemType 나중에 바꾸기
-		_items[_generateItemID] = std::make_shared<Item>(ItemType::CardboardBox);
-		object = _items[_generateItemID];
-		object->SetID(_generateItemID);
-		g_framework->SendAddItemPacket(_items[_generateItemID++], true);
 		break;
 	}
 
+	g_framework->SendAddObjectPacket(object, true);
+
 	return object;
+}
+
+ItemRef Room::AddItem(ObjectType type, ItemType itemType, Vector pos)
+{
+	ItemRef item;
+
+	switch (type)
+	{
+	case ObjectType::Item:
+		item = std::make_shared<Item>(itemType);
+		break;
+	case ObjectType::Tool:
+		item = std::make_shared<Tool>(itemType);
+		break;
+	}
+
+	item->SetID(_generateItemID);
+	item->SetPos(pos);
+	_items[_generateItemID++] = item;
+
+	g_framework->SendAddItemPacket(item, true);
+
+	return item;
 }
 
 void Room::RemoveObject(ObjectType type, uint id)

@@ -94,7 +94,7 @@ struct S_AddItem_Packet
 {
 	ObjectType objectType;
 	ItemType itemType;
-	int objectID;
+	uint objectID;
 	Vector pos;
 	Rotation rotation;
 };

@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "GameRoom.h"
 #include "Item.h"
+#include "Tool.h"
 #include "Door.h"
 
 ServerFramework::ServerFramework()
@@ -378,7 +379,6 @@ void ServerFramework::SendCreateGameRoomPacket(const std::vector<GameRoomRef>& g
 void ServerFramework::SendAddItemToInventoryPacket(ItemRef item, bool isTool, bool broadcast, SOCKET client)
 {
 	// Packet Data 생성
-	// 나중에 도구인지 아이템인지 구분하기(Casting)
 	S_AddItemToInventory_Packet packetData{ isTool, item->GetItemType(), item->GetID(), item->GetWeight()};
 
 	// Packet Serialize
@@ -418,17 +418,24 @@ void ServerFramework::ProcessAccept(SOCKET clientSocket)
 	// GameRoom 정보 송신
 	SendCreateGameRoomPacket(_room->GetGameRooms(), false, newClient->socket);
 
-	// 새로 접속한 Client에게 Room에 있는 모든 Player 정보 송신
+	// 새로 접속한 Client에게 Room에 있는 모든 Object 정보 송신
 	const std::unordered_map<uint, PlayerRef>& players = _room->GetPlayers();
 	for (const auto& item : players)
 		SendAddObjectPacket(item.second, false, newClient->socket);
 	const std::unordered_map<uint, MonsterRef>& monsters = _room->GetMonsters();
 	for (const auto& item : monsters)
 		SendAddObjectPacket(item.second, false, newClient->socket);
+	const std::unordered_map<uint, ItemRef>& items = _room->GetItems();
+	for (const auto& item : items)
+		SendAddItemPacket(item.second, false, newClient->socket);
 
 	// 추후 삭제 예정
-	_room->AddObject(ObjectType::Monster);
-	_room->AddObject(ObjectType::Item);
+	if (players.size() == 1)
+	{
+		_room->AddObject(ObjectType::Monster);
+		_room->AddItem(ObjectType::Item, ItemType::CardboardBox, {0, -100, 10});
+		_room->AddItem(ObjectType::Tool, ItemType::Cutlass, { 0, -200, 10 });
+	}
 }
 
 void ServerFramework::ProcessDisconnect(ClientRef client)

@@ -3,7 +3,7 @@
 using uint = unsigned int;
 
 //------------------Enums------------------
-enum class ObjectType
+enum class ObjectType : char
 {
 	Player,
 	Monster,

@@ -27,6 +27,9 @@
     <Filter Include="소스 파일\Game\Collision">
       <UniqueIdentifier>{d8221c34-9f59-42d4-b0b5-0a12671743aa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Game\Object\Item">
+      <UniqueIdentifier>{fd7e806f-670e-4eac-b469-c748ee1e63df}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -62,11 +65,14 @@
     <ClCompile Include="Monster.cpp">
       <Filter>소스 파일\Game\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Item.cpp">
-      <Filter>소스 파일\Game\Object</Filter>
-    </ClCompile>
     <ClCompile Include="BoundingBox.cpp">
       <Filter>소스 파일\Game\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>소스 파일\Game\Object\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Tool.cpp">
+      <Filter>소스 파일\Game\Object\Item</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -106,11 +112,14 @@
     <ClInclude Include="Monster.h">
       <Filter>소스 파일\Game\Object</Filter>
     </ClInclude>
-    <ClInclude Include="Item.h">
-      <Filter>소스 파일\Game\Object</Filter>
-    </ClInclude>
     <ClInclude Include="BoundingBox.h">
       <Filter>소스 파일\Game\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>소스 파일\Game\Object\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Tool.h">
+      <Filter>소스 파일\Game\Object\Item</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

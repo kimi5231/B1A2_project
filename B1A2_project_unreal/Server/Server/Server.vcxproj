@@ -139,6 +139,7 @@
     <ClInclude Include="Item.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="Packets.h" />
+    <ClInclude Include="Tool.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="GameRoom.h" />
     <ClInclude Include="Global.h" />
@@ -165,6 +166,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="ServerFramework.cpp" />
+    <ClCompile Include="Tool.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
