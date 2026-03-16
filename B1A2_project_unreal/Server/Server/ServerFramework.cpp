@@ -433,8 +433,8 @@ void ServerFramework::ProcessAccept(SOCKET clientSocket)
 	if (players.size() == 1)
 	{
 		_room->AddObject(ObjectType::Monster);
-		_room->AddItem(ObjectType::Item, ItemType::CardboardBox, {0, -100, 10});
-		_room->AddItem(ObjectType::Tool, ItemType::Cutlass, { 0, -200, 10 });
+		_room->AddItem(ObjectType::Item, ItemType::CardboardBox, {0, -100, 25});
+		_room->AddItem(ObjectType::Tool, ItemType::Cutlass, { 0, -200, 25 });
 	}
 }
 
