@@ -376,10 +376,10 @@ void ServerFramework::SendCreateGameRoomPacket(const std::vector<GameRoomRef>& g
 	_sendEvents.push_back(event);
 }
 
-void ServerFramework::SendAddItemToInventoryPacket(ItemRef item, bool isTool, bool broadcast, SOCKET client)
+void ServerFramework::SendAddItemToInventoryPacket(ItemRef item, bool broadcast, SOCKET client)
 {
 	// Packet Data 생성
-	S_AddItemToInventory_Packet packetData{ isTool, item->GetItemType(), item->GetID(), item->GetWeight()};
+	S_AddItemToInventory_Packet packetData{ item->GetObjectType(), item->GetItemType(), item->GetID(), item->GetWeight()};
 
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);
@@ -389,6 +389,24 @@ void ServerFramework::SendAddItemToInventoryPacket(ItemRef item, bool isTool, bo
 	event->isBroadcast = broadcast;
 	event->clientSocket = client;
 	event->packetID = S_AddItemToInventory;
+	event->serializedPacketData = serializedPacketData;
+
+	_sendEvents.push_back(event);
+}
+
+void ServerFramework::SendItemPickupNotifyPacket(ItemRef item, uint playerID, bool broadcast, SOCKET client)
+{
+	// Packet Data 생성
+	S_ItemPickupNotify_Packet packetData{ item->GetObjectType(), item->GetItemType(), item->GetID(), playerID };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	// SendEvent 생성
+	SendEventRef event = std::make_shared<SendEvent>();
+	event->isBroadcast = broadcast;
+	event->clientSocket = client;
+	event->packetID = S_ItemPickupNotify;
 	event->serializedPacketData = serializedPacketData;
 
 	_sendEvents.push_back(event);
@@ -491,6 +509,13 @@ void ServerFramework::ProcessGetItemPacket(SOCKET clientSocket, C_GetItem_Packet
 	PlayerRef player = std::dynamic_pointer_cast<Player>(_room->GetObject(ObjectType::Player, packet.playerID));
 	player->AddItemToInventory(item, packet.isTool);
 	SendAddItemToInventoryPacket(item, false, clientSocket);
+
+	// 다른 Client에게도 알리기
+	for (ClientRef client : _clients)
+	{
+		if (client->socket != clientSocket)
+			SendItemPickupNotifyPacket(item, player->GetID(), false, client->socket);
+	}
 
 	// 획득한 아이템은 맵에서 삭제
 	_room->RemoveObject(ObjectType::Item, packet.itemID);

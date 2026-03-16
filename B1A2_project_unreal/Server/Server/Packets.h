@@ -16,7 +16,8 @@ enum PacketID
 	S_UpdateObjectState,
 	S_Move,
 	S_CreateGameRoom,
-	S_AddItemToInventory
+	S_AddItemToInventory,
+	S_ItemPickupNotify,
 };
 
 struct Header
@@ -129,8 +130,16 @@ struct S_CreateGameRoom_Packet
 
 struct S_AddItemToInventory_Packet
 {
-	bool isTool;
+	ObjectType objectType;
 	ItemType itemType;
-	int itemID;
+	uint itemID;
 	float itemWeight;
+};
+
+struct S_ItemPickupNotify_Packet
+{
+	ObjectType objectType;
+	ItemType itemType;
+	uint itemID;
+	uint playerID;
 };

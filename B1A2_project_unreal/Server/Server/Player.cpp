@@ -30,5 +30,5 @@ void Player::AddItemToInventory(ItemRef item, bool isTool)
 		// 아이템 인벤토리에 넣기
 	}
 
-	SetState(ObjectState::GET_ITEM);
+	//SetState(ObjectState::GET_ITEM);
 }

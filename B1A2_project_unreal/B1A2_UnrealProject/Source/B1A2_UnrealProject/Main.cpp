@@ -196,6 +196,12 @@ void UMain::ProcessRecv()
 			RecvAddItemToInventory(addItemToInventoryPacket);
 			event->isComplete = true;
 			break;
+		case S_ItemPickupNotify:
+			S_ItemPickupNotify_Packet itemPickupNotifyPacket;
+			FMemory::Memcpy(&itemPickupNotifyPacket, event->serializedPacketData.data(), sizeof(S_ItemPickupNotify_Packet));
+			RecvItemPickupNotify(itemPickupNotifyPacket);
+			event->isComplete = true;
+			break;
 		case S_CreateGameRoom:
 			S_CreateGameRoom_Packet createGameRoomPacket{ _gameNetwork->DeserializeVector<GameRoomDTO>(event->serializedPacketData), _gameNetwork->DeserializeVector<WallDTO>(event->serializedPacketData) };
 			RecvCreateGameRoom(createGameRoomPacket);
@@ -737,7 +743,7 @@ void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 		_myPlayer->PlayPickUpAnimation(item);
 
 		// 인벤토리 or 툴바에 넣기
-		if (packet.isTool)
+		if (packet.objectType == ObjectType::Tool)
 			_myPlayer->AddToolToToolBar(packet.itemType, itemID);
 		else
 			_myPlayer->AddItemToInventory(packet.itemType, itemID, packet.itemWeight);
@@ -755,6 +761,10 @@ void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 				UE_LOG(LogTemp, Warning, TEXT("[Item] OtherPlayer ID %llu not found in map!"), playerID);
 		}*/
 	});
+}
+
+void UMain::RecvItemPickupNotify(S_ItemPickupNotify_Packet packet)
+{
 }
 
 FRotator UMain::DirToRotation(Dir dir)
