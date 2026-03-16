@@ -119,7 +119,7 @@ void UMain::SendLocalPosition()
 	}
 }
 
-void UMain::SendGetItem(int itemID, int playerID)
+void UMain::SendGetItem(int itemID, bool isTool, int playerID)
 {
 	if (_myID == 0 || itemID == 0)
 		return;
@@ -127,7 +127,7 @@ void UMain::SendGetItem(int itemID, int playerID)
 	UWorld* world = GetWorld();
 	if (!world) return;
 
-	_gameNetwork->SendGetItemPacket(itemID, false, playerID);
+	_gameNetwork->SendGetItemPacket(itemID, isTool, playerID);
 }
 
 void UMain::Update()
@@ -347,6 +347,7 @@ void UMain::RecvAddItem(S_AddItem_Packet packet)
 			return;
 
 		ABaseItem* item = nullptr;
+		//item->SetIsTool(false);	// 오류 나서 일단 주석 처리
 		switch (packet.itemType)
 		{
 		case ItemType::CardboardBox:
@@ -417,11 +418,12 @@ void UMain::RecvAddTool(S_AddItem_Packet packet)
 			return;
 
 		ABaseItem* tool = nullptr;
+		//tool->SetIsTool(true);
 		switch (packet.itemType)
 		{
 		case ItemType::Cutlass:
-			tool = world->SpawnActor<ABaseItem>(CardboardBoxClass, spawnLocation, spawnRotation);
-			UE_LOG(LogTemp, Log, TEXT("[Tool] Cutlass Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+			tool = world->SpawnActor<ABaseItem>(CutlassClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);	// 임시 위치 보정
+			UE_LOG(LogTemp, Log, TEXT("[Tool] Cutlass Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 20);
 			break;
 		case ItemType::Blaster:
 			tool = world->SpawnActor<ABaseItem>(BlasterClass, spawnLocation, spawnRotation);

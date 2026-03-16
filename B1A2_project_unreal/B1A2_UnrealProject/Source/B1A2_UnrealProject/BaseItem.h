@@ -10,13 +10,6 @@
 
 #include "BaseItem.generated.h"
 
-UENUM(BLueprintType)
-enum class EItemType : uint8
-{
-	InInventory,	// 드는 동작 후 인벤토리로 들어감(메쉬 삭제)
-	Tool	// 계속 손에 쥐고 있음
-};
-
 UCLASS()
 class B1A2_UNREALPROJECT_API ABaseItem : public AActor, public IInteractableInterface
 {
@@ -41,6 +34,9 @@ public:
 	void SetItemID(int itemID) { _itemID = itemID; }
 	int GetItemID() { return _itemID; }
 
+	void SetIsTool(bool isTool) { _isTool = isTool; }
+	bool GetIsTool() { return _isTool; }
+
 	void PickUp(USceneComponent* mesh, FName socketName);
 
 protected:
@@ -53,10 +49,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UWidgetComponent* EWidget;
 
-public:
-	UPROPERTY(EditAnywhere, Category = "Item Setting")
-	EItemType ItemType;
-
 private:
 	int _itemID = {};
+	bool _isTool = false;
 };

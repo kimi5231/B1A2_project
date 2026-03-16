@@ -320,7 +320,9 @@ void AMyPlayer::Interact()
 	}
 
 	if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
-		gameInstance->SendGetItem(_focusedItem->GetItemID(), gameInstance->GetMyID());
+	{
+		gameInstance->SendGetItem(_focusedItem->GetItemID(), _focusedItem->GetIsTool() /*SetIsTool 호출하면 오류나서 일단은 Tool도 false로 감..*/, gameInstance->GetMyID());
+	}
 	UE_LOG(LogTemp, Log, TEXT("[Item] E Key Pressed, Send Item and Player ID!!!"));
 }
 

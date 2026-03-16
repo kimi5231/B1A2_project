@@ -51,6 +51,7 @@ void UInventorySlotWidget::SetSlotInfo(int32 id, ItemType type, float weight)
 	{
 		ItemIcon->SetBrushFromTexture(texture);
 		ItemIcon->SetRenderOpacity(1.0f);
+		ItemIcon->SetVisibility(ESlateVisibility::Visible);
 		UE_LOG(LogTemp, Warning, TEXT("[Inventory] Success! Slot updated with ID: %d"), id);
 	}
 

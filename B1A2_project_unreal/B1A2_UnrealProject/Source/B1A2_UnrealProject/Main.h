@@ -37,7 +37,7 @@ public:
 	void ProcessSend(PacketID id, const void* packetData, int dataSize);
 
 	void SendLocalPosition();
-	void SendGetItem(int itemID, int playerID);
+	void SendGetItem(int itemID, bool isTool, int playerID);
 
 	// Recv
 	void Update();
