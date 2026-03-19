@@ -917,6 +917,158 @@
                ], "repeatZ" : 1
             }
             ]
+         },
+         {
+            "type" : 13,
+            "tileCount" : [32, 32, 48],
+            "tilemap" : [
+            {
+               "layer" : [
+                     { "pattern" : [[0, 32]], "repeatY" :  32 }
+               ], "repeatZ" : 1
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 13], [1, 6], [0, 13]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 22], [0, 9]], "repeatY" :  7 },
+                     { "pattern" : [[0, 1], [2, 8], [1, 14], [0, 9]], "repeatY" :  2 },
+                     { "pattern" : [[0, 9], [1, 14], [0, 9]], "repeatY" :  21 },
+                     { "pattern" : [[0, 13], [1, 6], [0, 13]], "repeatY" :  1 }
+               ], "repeatZ" : 1
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 13], [1, 6], [0, 13]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 22], [0, 9]], "repeatY" :  9 },
+                     { "pattern" : [[0, 1], [2, 8], [1, 14], [0, 9]], "repeatY" :  2 },
+                     { "pattern" : [[0, 9], [1, 14], [0, 9]], "repeatY" :  19 },
+                     { "pattern" : [[0, 13], [1, 6], [0, 13]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 13], [1, 6], [0, 13]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 22], [0, 9]], "repeatY" :  11 },
+                     { "pattern" : [[0, 1], [2, 8], [1, 14], [0, 9]], "repeatY" :  2 },
+                     { "pattern" : [[0, 9], [1, 14], [0, 9]], "repeatY" :  17 },
+                     { "pattern" : [[0, 13], [1, 6], [0, 13]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 13], [1, 6], [0, 13]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 22], [0, 9]], "repeatY" :  13 },
+                     { "pattern" : [[0, 1], [2, 8], [1, 14], [0, 9]], "repeatY" :  2 },
+                     { "pattern" : [[0, 9], [1, 14], [0, 9]], "repeatY" :  15 },
+                     { "pattern" : [[0, 13], [1, 6], [0, 13]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 13], [1, 6], [0, 13]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 22], [0, 9]], "repeatY" :  15 },
+                     { "pattern" : [[0, 1], [2, 8], [1, 14], [0, 9]], "repeatY" :  2 },
+                     { "pattern" : [[0, 9], [1, 14], [0, 9]], "repeatY" :  13 },
+                     { "pattern" : [[0, 13], [1, 6], [0, 13]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 13], [1, 6], [0, 13]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 22], [0, 9]], "repeatY" :  17 },
+                     { "pattern" : [[0, 1], [2, 8], [1, 14], [0, 9]], "repeatY" :  2 },
+                     { "pattern" : [[0, 9], [1, 14], [0, 9]], "repeatY" :  11 },
+                     { "pattern" : [[0, 13], [1, 6], [0, 13]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 32]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 22], [0, 9]], "repeatY" :  19 },
+                     { "pattern" : [[0, 32]], "repeatY" :  12 }
+               ], "repeatZ" : 1
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 32]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 22], [0, 9]], "repeatY" :  17 },
+                     { "pattern" : [[0, 1], [1, 22], [2, 8], [0, 1]], "repeatY" :  2 },
+                     { "pattern" : [[0, 1], [1, 30], [0, 1]], "repeatY" :  11 },
+                     { "pattern" : [[0, 32]], "repeatY" :  1 }
+               ], "repeatZ" : 1
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 32]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 22], [0, 9]], "repeatY" :  15 },
+                     { "pattern" : [[0, 1], [1, 22], [2, 8], [0, 1]], "repeatY" :  2 },
+                     { "pattern" : [[0, 1], [1, 30], [0, 1]], "repeatY" :  13 },
+                     { "pattern" : [[0, 32]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 32]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 22], [0, 9]], "repeatY" :  13 },
+                     { "pattern" : [[0, 1], [1, 22], [2, 8], [0, 1]], "repeatY" :  2 },
+                     { "pattern" : [[0, 1], [1, 30], [0, 1]], "repeatY" :  15 },
+                     { "pattern" : [[0, 32]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 32]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 22], [0, 9]], "repeatY" :  11 },
+                     { "pattern" : [[0, 1], [1, 22], [2, 8], [0, 1]], "repeatY" :  2 },
+                     { "pattern" : [[0, 1], [1, 30], [0, 1]], "repeatY" :  17 },
+                     { "pattern" : [[0, 32]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 32]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 22], [0, 9]], "repeatY" :  9 },
+                     { "pattern" : [[0, 1], [1, 22], [2, 8], [0, 1]], "repeatY" :  2 },
+                     { "pattern" : [[0, 1], [1, 30], [0, 1]], "repeatY" :  19 },
+                     { "pattern" : [[0, 32]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 32]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 22], [0, 9]], "repeatY" :  7 },
+                     { "pattern" : [[0, 1], [1, 22], [2, 8], [0, 1]], "repeatY" :  2 },
+                     { "pattern" : [[0, 1], [1, 30], [0, 1]], "repeatY" :  21 },
+                     { "pattern" : [[0, 32]], "repeatY" :  1 }
+               ], "repeatZ" : 2
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 32]], "repeatY" :  8 },
+                     { "pattern" : [[0, 8], [1, 23], [0, 1]], "repeatY" :  16 },
+                     { "pattern" : [[0, 32]], "repeatY" :  8 }
+               ], "repeatZ" : 1
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 13], [1, 6], [0, 13]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 30], [0, 1]], "repeatY" :  30 },
+                     { "pattern" : [[0, 13], [1, 6], [0, 13]], "repeatY" :  1 }
+               ], "repeatZ" : 11
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 32]], "repeatY" :  1 },
+                     { "pattern" : [[0, 1], [1, 30], [0, 1]], "repeatY" :  30 },
+                     { "pattern" : [[0, 32]], "repeatY" :  1 }
+               ], "repeatZ" : 11
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 32]], "repeatY" :  32 }
+               ], "repeatZ" : 1
+            }
+            ]
          }
     ]
 }
