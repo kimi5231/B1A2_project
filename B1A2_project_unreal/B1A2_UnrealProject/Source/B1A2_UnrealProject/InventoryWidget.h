@@ -27,6 +27,13 @@ public:
 	void AddItem(int id, ItemType type, float weight);
 	void InitializeSlots();
 
+	// 버튼 입력 시 슬롯 이동
+	void SlectNextSlot();	// Input C
+	
+	// 위젯을 열 때 선택된 슬롯 처음 위치로 초기화
+	void ResetSelectSlot();
+
+protected:
 	UPROPERTY(meta = (BindWidget))
 	class UUniformGridPanel* SlotGrid;
 
@@ -35,4 +42,7 @@ public:
 
 	UPROPERTY()
 	TArray<UInventorySlotWidget*> SlotArray;
+
+private:
+	int32 _currentSelectedIndex = 0;
 };

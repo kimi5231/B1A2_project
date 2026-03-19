@@ -35,13 +35,44 @@ void UInventoryWidget::InitializeSlots()
 		return;
 
 	SlotGrid->ClearChildren();
-	for (int32 i = 0; i < 49; ++i)
+	for (int32 i = 0; i < 25; ++i)
 	{
 		UInventorySlotWidget* slot = CreateWidget<UInventorySlotWidget>(this, SlotWidgetClass);
 		if (slot)
 		{
-			SlotGrid->AddChildToUniformGrid(slot, i / 7, i % 7);
+			SlotGrid->AddChildToUniformGrid(slot, i / 5, i % 5);
 			SlotArray.Add(slot);
 		}
+	}
+}
+
+void UInventoryWidget::SlectNextSlot()
+{
+	// 이전 선택 해제하기
+	if (SlotArray.IsValidIndex(_currentSelectedIndex))
+		SlotArray[_currentSelectedIndex]->SetSelected(false);
+
+	// 인덱스 계산
+	_currentSelectedIndex = (_currentSelectedIndex + 1) % SlotArray.Num();	// 0 ~ 25
+
+	// 새 슬롯 선택하기
+	UInventorySlotWidget* slot = SlotArray[_currentSelectedIndex];
+	if (slot)
+	{
+		slot->SetSelected(true);
+	}
+}
+
+void UInventoryWidget::ResetSelectSlot()
+{
+	// 기존 선택 슬롯 해제
+	if (SlotArray.IsValidIndex(_currentSelectedIndex))
+		SlotArray[_currentSelectedIndex]->SetSelected(false);
+
+	_currentSelectedIndex = 0;
+
+	if (SlotArray.IsValidIndex(_currentSelectedIndex))
+	{
+		SlotArray[_currentSelectedIndex]->SetSelected(true);
 	}
 }

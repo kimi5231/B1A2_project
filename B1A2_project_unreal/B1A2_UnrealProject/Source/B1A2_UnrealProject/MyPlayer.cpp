@@ -120,6 +120,7 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 		// Inventory
 		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AMyPlayer::ToggleInventory);
+		EnhancedInputComponent->BindAction(InventoryItemSelectAction, ETriggerEvent::Started, this, &AMyPlayer::InventoryItemSelectForward);
 	}
 }
 
@@ -202,6 +203,25 @@ void AMyPlayer::ToggleInventory()
 	else
 	{
 		_inventoryWidgetInstance->AddToViewport();
+
+		// 선택된 슬롯을 처음으로 초기화
+		UInventoryWidget* widget = Cast<UInventoryWidget>(_inventoryWidgetInstance);
+		if (widget)
+			widget->ResetSelectSlot();
+	}
+}
+
+void AMyPlayer::InventoryItemSelectForward()
+{
+	if (!_inventoryWidgetInstance)
+		return;
+
+	if (_inventoryWidgetInstance->IsInViewport())
+	{
+		UInventoryWidget* widget = Cast<UInventoryWidget>(_inventoryWidgetInstance);
+		
+		if (widget)
+			widget->SlectNextSlot();
 	}
 }
 

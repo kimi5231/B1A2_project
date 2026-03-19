@@ -65,6 +65,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
 	UInputAction* InventoryAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
+	UInputAction* InventoryItemSelectAction;
+
 public:
 	AMyPlayer();
 
@@ -102,13 +105,13 @@ protected:
 	UUserWidget* _inventoryWidgetInstance;
 
 	void ToggleInventory();
+	void InventoryItemSelectForward();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<UUserWidget> _toolBarWidgetClass;
 
 	UPROPERTY()
 	UUserWidget* _toolBarWidgetInstance;
-
 
 private:
 	// 아이템 상호작용

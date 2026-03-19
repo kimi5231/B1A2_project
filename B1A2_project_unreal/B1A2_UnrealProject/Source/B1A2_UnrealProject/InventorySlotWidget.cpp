@@ -64,3 +64,14 @@ void UInventorySlotWidget::SetSlotInfo(int32 id, ItemType type, float weight)
 
 	isEmpty = false;
 }
+
+void UInventorySlotWidget::SetSelected(bool isSelected)
+{
+	if (!SelectionHighlight)
+		return;
+
+	if (isSelected)
+		SelectionHighlight->SetVisibility(ESlateVisibility::Visible);
+	else
+		SelectionHighlight->SetVisibility(ESlateVisibility::Hidden);
+}

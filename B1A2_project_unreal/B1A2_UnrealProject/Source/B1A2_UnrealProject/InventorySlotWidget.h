@@ -22,6 +22,7 @@ class B1A2_UNREALPROJECT_API UInventorySlotWidget : public UUserWidget
 	
 public:
 	void SetSlotInfo(int32 id, ItemType type, float weight);
+	void SetSelected(bool isSelected);
 
 public:
 	bool isEmpty = true;
@@ -54,4 +55,8 @@ protected:
 	UTexture2D* ScrapMetalIcon;
 	UPROPERTY(EditDefaultsOnly, Category = "UI|Icons")
 	UTexture2D* EmptyCanIcon;
+
+	// 선택됐을 때 표시하는 이미지
+	UPROPERTY(meta = (BindWidget))
+	UImage* SelectionHighlight;
 };
