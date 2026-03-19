@@ -875,6 +875,48 @@
                ], "repeatZ" : 1
             }
             ]
+         },
+         {
+            "type" : 12,
+            "tileCount" : [56, 56, 24],
+            "tilemap" : [
+            {
+               "layer" : [
+                     { "pattern" : [[0, 56]], "repeatY" :  56 }
+               ], "repeatZ" : 1
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 11], [1, 6], [0, 22], [1, 6], [0, 11]], "repeatY" :  1 },
+                     { "pattern" : [[0, 8], [1, 8], [0, 16], [1, 8], [0, 8]], "repeatY" :  7 },
+                     { "pattern" : [[0, 1], [1, 54], [0, 1]], "repeatY" :  3 },
+                     { "pattern" : [[1, 56]], "repeatY" :  6 },
+                     { "pattern" : [[0, 1], [1, 54], [0, 1]], "repeatY" :  3 },
+                     { "pattern" : [[0, 8], [1, 8], [0, 16], [1, 8], [0, 8]], "repeatY" :  16 },
+                     { "pattern" : [[0, 1], [1, 54], [0, 1]], "repeatY" :  3 },
+                     { "pattern" : [[1, 56]], "repeatY" :  6 },
+                     { "pattern" : [[0, 1], [1, 54], [0, 1]], "repeatY" :  3 },
+                     { "pattern" : [[0, 8], [1, 8], [0, 16], [1, 8], [0, 8]], "repeatY" :  7 },
+                     { "pattern" : [[0, 11], [1, 6], [0, 22], [1, 6], [0, 11]], "repeatY" :  1 }
+               ], "repeatZ" : 11
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 56]], "repeatY" :  1 },
+                     { "pattern" : [[0, 8], [1, 8], [0, 16], [1, 8], [0, 8]], "repeatY" :  7 },
+                     { "pattern" : [[0, 1], [1, 54], [0, 1]], "repeatY" :  12 },
+                     { "pattern" : [[0, 8], [1, 8], [0, 16], [1, 8], [0, 8]], "repeatY" :  16 },
+                     { "pattern" : [[0, 1], [1, 54], [0, 1]], "repeatY" :  12 },
+                     { "pattern" : [[0, 8], [1, 8], [0, 16], [1, 8], [0, 8]], "repeatY" :  7 },
+                     { "pattern" : [[0, 56]], "repeatY" :  1 }
+               ], "repeatZ" : 11
+            },
+            {
+               "layer" : [
+                     { "pattern" : [[0, 56]], "repeatY" :  56 }
+               ], "repeatZ" : 1
+            }
+            ]
          }
     ]
 }
