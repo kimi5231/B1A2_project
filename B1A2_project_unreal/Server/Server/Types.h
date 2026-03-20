@@ -168,6 +168,11 @@ struct Vector
 	{
 		return (x > other.x || y > other.y || z > other.z);
 	}
+
+	bool operator>=(const Vector& other) const
+	{
+		return (x >= other.x || y >= other.y || z >= other.z);
+	}
 };
 
 struct AABB

@@ -34,3 +34,5 @@ using DoorRef = std::shared_ptr<class Door>;
 // 비트연산
 #define LAYER_SHIFT(n) ((n) * 2)
 #define LAYER_MASK(n)  (0b11 << LAYER_SHIFT(n))
+
+#define TileSize 25
