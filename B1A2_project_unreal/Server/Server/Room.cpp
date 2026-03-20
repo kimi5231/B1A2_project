@@ -41,14 +41,14 @@ void Room::Update()
 			item.second->Update(_gameRooms);
 
 		// 플레이어, 몬스터 충돌 처리
-		for (const auto& playerItem : _players)
+		/*for (const auto& playerItem : _players)
 		{
 			for (const auto& monsterItem : _monsters)
 			{
 				if (playerItem.second->CheckCollision(monsterItem.second->GetBoundingBox()))
 					g_framework->SendRemoveObjectPacket(monsterItem.second->GetObjectType(), monsterItem.second->GetID(), true);
 			}
-		}
+		}*/
 
 		lastUpdate = now;
 	}
@@ -161,7 +161,7 @@ void Room::CreateFactoryGameRooms()
 		default:
 		{
 			// 연결할 방이 일반 방 => 계단, 난간 통로, 복도 가능
-			std::uniform_int_distribution<int> selectGameRoomType(static_cast<int>(GameRoomType::PipedHallways_Line), static_cast<int>(GameRoomType::PipedHallways_Line));
+			std::uniform_int_distribution<int> selectGameRoomType(static_cast<int>(GameRoomType::RailCatwalk), static_cast<int>(GameRoomType::Staircase));
 			type = static_cast<GameRoomType>(selectGameRoomType(gen));
 			break;
 		}

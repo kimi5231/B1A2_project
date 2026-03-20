@@ -348,7 +348,7 @@ void ServerFramework::SendCreateGameRoomPacket(const std::vector<GameRoomRef>& g
 	}
 
 	std::vector<WallDTO> wallInfos;
-	wallInfos.resize(walls.size());
+	/*wallInfos.resize(walls.size());
 	
 	idx = 0;
 	for (const DoorRef wall : walls)
@@ -356,7 +356,7 @@ void ServerFramework::SendCreateGameRoomPacket(const std::vector<GameRoomRef>& g
 		wallInfos[idx].pos = wall->GetPos();
 		wallInfos[idx].dir = wall->GetDir();
 		idx++;
-	}
+	}*/
 	
 	// Packet Serialize
 	std::vector<char> gameRoomData = SerializeVector(roomInfos);
