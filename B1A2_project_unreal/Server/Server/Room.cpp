@@ -302,15 +302,17 @@ ItemRef Room::AddItem(ObjectType type, ItemType itemType, Vector pos)
 	return item;
 }
 
-void Room::RemoveObject(ObjectType type, uint id)
+void Room::RemoveObject(ObjectType type, uint id, bool isSend)
 {
 	switch (type)
 	{
 	case ObjectType::Item:
 		_items.erase(id);
-		g_framework->SendRemoveObjectPacket(type, id, true);
 		break;
 	}
+
+	if(isSend)
+		g_framework->SendRemoveObjectPacket(type, id, true);
 }
 
 GameObjectRef Room::GetObject(ObjectType type, uint id)

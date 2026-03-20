@@ -517,6 +517,6 @@ void ServerFramework::ProcessGetItemPacket(SOCKET clientSocket, C_GetItem_Packet
 			SendItemPickupNotifyPacket(item, player->GetID(), false, client->socket);
 	}
 
-	// 획득한 아이템은 맵에서 삭제
-	_room->RemoveObject(ObjectType::Item, packet.itemID);
+	// 획득한 아이템 맵에서 삭제 및 패킷은 따로 보내지 않도록 설정
+	_room->RemoveObject(ObjectType::Item, packet.itemID, false);
 }

@@ -21,7 +21,7 @@ public:
 public:
 	GameObjectRef AddObject(ObjectType type);
 	ItemRef AddItem(ObjectType type, ItemType itemType, Vector pos);
-	void RemoveObject(ObjectType type, uint id);
+	void RemoveObject(ObjectType type, uint id, bool isSend);
 
 public:
 	GameObjectRef GetObject(ObjectType type, uint id);

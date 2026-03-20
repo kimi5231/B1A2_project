@@ -32,6 +32,9 @@ void Monster::Update(const std::vector<GameRoomRef>& gameRooms)
 		}
 	}
 
+	if (!currentCube)
+		return;
+
 	// 현재 위치한 방의 타일맵 가져오기
 	const std::vector<std::vector<std::vector<short>>>& tilemap = g_dataManager->GetTilemap(currentCube->GetGameRoomType());
 	
