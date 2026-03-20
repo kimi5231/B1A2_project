@@ -44,7 +44,7 @@ struct WallDTO
 // Client
 struct C_UpdateObjectState_Packet
 {
-	int objectID;
+	uint objectID;
 	ObjectType type;
 	ObjectState state;
 };
@@ -52,7 +52,7 @@ struct C_UpdateObjectState_Packet
 struct C_Move_Packet
 {
 	ObjectType type;
-	int objectID;
+	uint objectID;
 	Vector pos;
 	Rotation rotation;
 	ObjectState state;
@@ -60,36 +60,53 @@ struct C_Move_Packet
 
 struct C_GetItem_Packet
 {
-	int playerID;
+	uint playerID;
 	bool isTool;
-	int itemID;
+	uint itemID;
 };
 
 struct C_DropItem_Packet
 {
-	int playerID;
+	uint playerID;
 	ObjectType objectType;
-	int itemID;
+	uint itemID;
 };
 
 struct C_ChangeTool_Packet
 {
-	int playerID;
-	int toolID;
+	uint playerID;
+	uint toolID;
 };
 
 struct C_UseTool_Pacekt
 {
-	int playerID;
-	int toolID;
+	uint playerID;
+	uint toolID;
 	Rotation rotation;
+};
+
+struct C_InteractDoor_Pacekt
+{
+	uint playerID;
+	uint doorID;
+};
+
+struct C_Emotion_Pacekt
+{
+	float angry;
+	float disgust;
+	float fear;
+	float happy;
+	float sad;
+	float surprise;
+	float neutral;
 };
 
 // Server
 struct S_AddObject_Packet
 {
 	ObjectType type;
-	int objectID;
+	uint objectID;
 	Vector pos;
 	Rotation rotation;
 };
@@ -106,12 +123,12 @@ struct S_AddItem_Packet
 struct S_RemoveObject_Packet
 {
 	ObjectType objectType;
-	int objectID;
+	uint objectID;
 };
 
 struct S_UpdateObjectState_Packet
 {
-	int objectID;
+	uint objectID;
 	ObjectType type;
 	ObjectState state;
 };
@@ -119,7 +136,7 @@ struct S_UpdateObjectState_Packet
 struct S_Move_Packet
 {
 	ObjectType type;
-	int objectID;
+	uint objectID;
 	Vector pos;
 	Rotation rotation;
 	ObjectState state;
@@ -149,9 +166,28 @@ struct S_ItemPickupNotify_Packet
 
 struct S_DropItem_Packet
 {
-	int playerID;
+	uint playerID;
 	ObjectType itemObjectType;
 	ItemType itemType;
-	int itemID;
+	uint itemID;
 	Vector itemPos;
+};
+
+struct S_UpdateCurrentTool_Packet
+{
+	uint playerID;
+	uint itemID;
+	ItemType itemType;
+};
+
+struct S_SpawnParticle_Packet
+{
+	Vector pos;
+};
+
+struct S_InteractDoorNotify_Packet
+{
+	uint playerID;
+	uint doorID;
+	ObjectState doorState;
 };
