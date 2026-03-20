@@ -8,6 +8,7 @@ enum PacketID
 	C_UpdateObjectState,
 	C_Move,
 	C_GetItem,
+	C_DropItem,
 
 	//Server
 	S_AddObject,
@@ -18,6 +19,7 @@ enum PacketID
 	S_CreateGameRoom,
 	S_AddItemToInventory,
 	S_ItemPickupNotify,
+	S_DropItem,
 };
 
 struct Header
@@ -63,6 +65,13 @@ struct C_GetItem_Packet
 	int itemID;
 };
 
+struct C_DropItem_Packet
+{
+	int playerID;
+	ObjectType objectType;
+	int itemID;
+};
+
 struct C_ChangeTool_Packet
 {
 	int playerID;
@@ -73,13 +82,7 @@ struct C_UseTool_Pacekt
 {
 	int playerID;
 	int toolID;
-};
-
-struct C_DropItem_Packet
-{
-	int playerID;
-	bool isTool;
-	int itemID;
+	Rotation rotation;
 };
 
 // Server
@@ -142,4 +145,13 @@ struct S_ItemPickupNotify_Packet
 	ItemType itemType;
 	uint itemID;
 	uint playerID;
+};
+
+struct S_DropItem_Packet
+{
+	int playerID;
+	ObjectType itemObjectType;
+	ItemType itemType;
+	int itemID;
+	Vector itemPos;
 };
