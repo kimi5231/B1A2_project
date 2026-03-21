@@ -132,7 +132,7 @@ void UMain::SendGetItem(int itemID, bool isTool, int playerID)
 
 void UMain::SendDropItem(int playerID, bool isTool, int itemID)
 {
-	if (_myID == 0 || itemID == 0)
+	if (_myID == 0 || itemID == -1)
 		return;
 
 	UWorld* world = GetWorld();
@@ -140,7 +140,7 @@ void UMain::SendDropItem(int playerID, bool isTool, int itemID)
 		return;
 
 	// 함수 구현되면 풀기!!!!
-	// _gameNetwork->SendDropItemPacket(playerID, type, itemID);
+	_gameNetwork->SendDropItemPacket(itemID, isTool, playerID);
 }
 
 void UMain::Update()

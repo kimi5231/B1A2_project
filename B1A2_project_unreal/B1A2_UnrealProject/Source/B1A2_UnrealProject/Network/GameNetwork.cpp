@@ -191,6 +191,16 @@ void GameNetwork::ProcessRecv()
 		_recvEvents.push_back(event);
 		break;
 	}
+	case S_DropItem:
+	{
+		NetworkEventRef event = std::make_shared<NetworkEvent>();
+		event->packetID = header.id;
+		event->serializedPacketData.resize(packet.size() - sizeof(Header));
+		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), packet.size() - sizeof(Header));
+		std::lock_guard<std::mutex> lock(_recvMutex);
+		_recvEvents.push_back(event);
+		break;
+	}
 	}
 }
 
@@ -265,6 +275,23 @@ void GameNetwork::SendGetItemPacket(int itemID, bool isTool, int playerID)
 	// SendEvent 持失
 	NetworkEventRef event = std::make_shared<NetworkEvent>();
 	event->packetID = C_GetItem;
+	event->serializedPacketData = serializedPacketData;
+
+	std::lock_guard<std::mutex> lock(_sendMutex);
+	_sendEvents.push_back(event);
+}
+
+void GameNetwork::SendDropItemPacket(int itemID, bool isTool, int playerID)
+{
+	// Packet Data 持失
+	C_DropItem_Packet packetData{ playerID, isTool, itemID };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	// SendEvent 持失
+	NetworkEventRef event = std::make_shared<NetworkEvent>();
+	event->packetID = C_DropItem;
 	event->serializedPacketData = serializedPacketData;
 
 	std::lock_guard<std::mutex> lock(_sendMutex);
