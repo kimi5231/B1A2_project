@@ -38,7 +38,7 @@ public:
 
 	void SendLocalPosition();
 	void SendGetItem(int itemID, bool isTool, int playerID);
-	void SendDropItem(int playerID, ObjectType type, int itemID);
+	void SendDropItem(int playerID, bool isTool, int itemID);
 
 	// Recv
 	void Update();

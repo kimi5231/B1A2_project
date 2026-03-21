@@ -294,7 +294,7 @@ void AMyPlayer::ItemOrToolDrop()
 			// 패킷 보내기
 			if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
 			{
-				gameInstance->SendDropItem(gameInstance->GetMyID(), ObjectType::Item, info.itemID);
+				gameInstance->SendDropItem(gameInstance->GetMyID(), false, info.itemID);
 				UE_LOG(LogTemp, Display, TEXT("[Item] Item Drop Packet Send! ItemID: %d"), info.itemID);
 			}
 		}
@@ -310,7 +310,7 @@ void AMyPlayer::ItemOrToolDrop()
 			// 패킷 보내기
 			if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
 			{
-				gameInstance->SendDropItem(gameInstance->GetMyID(), ObjectType::Tool, info.itemID);				
+				gameInstance->SendDropItem(gameInstance->GetMyID(), true, info.itemID);				
 				UE_LOG(LogTemp, Display, TEXT("[Tool] Tool Drop Packet Send! ToolID: %d"), info.itemID);
 			}
 		}

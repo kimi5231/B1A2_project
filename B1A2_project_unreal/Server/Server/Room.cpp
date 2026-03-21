@@ -23,11 +23,11 @@ Room::Room()
 	scrap->SetPos({ 0, -100, 25 });
 	scrap->SetObjectPoolState(ObjectPoolState::InWorld);
 	_items.push_back(scrap);
-	/*ItemRef tool = std::make_shared<Tool>(ItemType::Cutlass);
+	ItemRef tool = std::make_shared<Tool>(ItemType::Cutlass);
 	tool->SetID(_generateItemID++);
 	tool->SetPos({ 0, -200, 25 });
 	tool->SetObjectPoolState(ObjectPoolState::InWorld);
-	_items.push_back(tool);*/
+	_items.push_back(tool);
 }
 
 Room::~Room()

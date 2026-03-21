@@ -467,9 +467,17 @@ void ServerFramework::ProcessAccept(SOCKET clientSocket)
 	for (const auto& item : monsters)
 		SendAddObjectPacket(item.second, false, newClient->socket);
 	const std::vector<ItemRef>& items = _room->GetItems();
-	for (auto& item : items)
-		SendAddItemPacket(item, false, newClient->socket);
-
+	for (const auto& item : items)
+	{
+		if (item->GetObjectPoolState() == ObjectPoolState::InWorld)
+		{
+			if (std::dynamic_pointer_cast<Tool>(item))
+				SendAddItemPacket(item, true, newClient->socket);
+			else
+				SendAddItemPacket(item, false, newClient->socket);
+		}
+	}
+		
 	// 추후 삭제 예정
 	if (players.size() == 1)
 	{
