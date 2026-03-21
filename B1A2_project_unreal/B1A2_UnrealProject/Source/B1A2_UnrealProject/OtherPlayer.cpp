@@ -81,8 +81,16 @@ void AOtherPlayer::Tick(float DeltaTime)
 		CalculatedAngle = _currentAnimAngle;
 	}
 
-	// Z축으로 10.f 이상 움직이면 공중으로 판단함
-	IsAirborne = FMath::Abs(verticalInstantSpeed) > 10.f;
+
+	// Z축 - 공중인지 판단
+	if (GetCharacterMovement())
+	{
+		IsAirborne = GetCharacterMovement()->IsFalling();
+	}
+	else
+	{
+		IsAirborne = FMath::Abs(verticalInstantSpeed) > 150.f;
+	}
 }
 
 void AOtherPlayer::SetPlayerLocation(FVector location, FRotator rotation)

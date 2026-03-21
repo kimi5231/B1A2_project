@@ -42,6 +42,7 @@ void UToolBarWidget::AddTool(int id, ItemType type)
 	{
 		if (slot && slot->isEmpty)
 		{
+			UE_LOG(LogTemp, Display, TEXT("[Tool] Add Tool to ToolBar SUCCESS!!! ID: %d, Type: %d"), id, static_cast<int32>(type));
 			slot->SetSlotInfo(id, type);
 			return;
 		}

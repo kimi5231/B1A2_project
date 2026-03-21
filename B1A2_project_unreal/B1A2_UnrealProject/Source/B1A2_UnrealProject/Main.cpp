@@ -420,7 +420,6 @@ void UMain::RecvAddTool(S_AddItem_Packet packet)
 
 		ABaseItem* tool = nullptr;
 
-
 		switch (packet.itemType)
 		{
 		case ItemType::Cutlass:
@@ -700,6 +699,7 @@ void UMain::RecvCreateGameRoom(S_CreateGameRoom_Packet packet)
 void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 {
 	int itemID = packet.itemID;
+	UE_LOG(LogTemp, Log, TEXT("[RecvAddItemToInventory] ID: %d"), itemID);
 
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
@@ -707,24 +707,43 @@ void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 		if (!world)
 			return;
 
-		ABaseItem** foundItem = _items.Find(itemID);
-		if (!foundItem || !(*foundItem))
+		if (packet.objectType == ObjectType::Item)
 		{
-			UE_LOG(LogTemp, Log, TEXT("[Item] item not found... ID %llu Not found"), itemID);
-			return;
+			ABaseItem** foundItem = _items.Find(itemID);
+			if (!foundItem || !(*foundItem))
+			{
+				UE_LOG(LogTemp, Log, TEXT("[Item] item not found... ID %llu Not found"), itemID);
+				return;
+			}
+
+			ABaseItem* item = *foundItem;
+
+			// 아이템 줍기 애니메이션 재생 + 월드에서 아이템 삭제
+			_myPlayer->PlayPickUpAnimation(item);
+			// 인벤에 넣기
+			_myPlayer->AddItemToInventory(packet.itemType, itemID, packet.itemWeight);
+
+			UE_LOG(LogTemp, Display, TEXT("[RecvAddItemToInventory] Item PickedUp and To Inventory"));
+		}
+		else if (packet.objectType == ObjectType::Tool)
+		{
+			ABaseItem** foundTool = _tools.Find(itemID);
+			if (!foundTool || !(*foundTool))
+			{
+				UE_LOG(LogTemp, Log, TEXT("[Tool] item not found... ID %llu Not found"), itemID);
+				return;
+			}
+
+			ABaseItem* tool = *foundTool;
+
+			// 장비 줍기 애니메이션 재생 + 월드에서 장비 삭제
+			_myPlayer->PlayPickUpAnimation(tool);
+			// 툴바에 넣기
+			_myPlayer->AddToolToToolBar(packet.itemType, itemID);
+
+			UE_LOG(LogTemp, Display, TEXT("[RecvAddItemToInventory] Tool PickedUp and To ToolBar"));
 		}
 
-		ABaseItem* item = *foundItem;
-
-		// 아이템 or 장비 줍기 애니메이션 재생 + 월드에서 아이템 삭제
-		_myPlayer->PlayPickUpAnimation(item);
-
-		// 인벤토리 or 툴바에 넣기
-		if (packet.objectType == ObjectType::Tool)
-			_myPlayer->AddToolToToolBar(packet.itemType, itemID);
-		else
-			_myPlayer->AddItemToInventory(packet.itemType, itemID, packet.itemWeight);
-		
 		// _items에서 제거??
 		// ...
 	});

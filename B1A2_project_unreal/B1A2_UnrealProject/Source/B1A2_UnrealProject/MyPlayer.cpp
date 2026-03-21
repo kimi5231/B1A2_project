@@ -392,9 +392,11 @@ void AMyPlayer::Interact()
 
 	if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
 	{
+		UE_LOG(LogTemp, Display, TEXT("[Item/Tool] E Key Pressed, Sending GetItem Request - ID: %d, IsTool: %s, PlayerID: %d"),
+			_focusedItem->GetItemID(), _focusedItem->GetIsTool() ? TEXT("True") : TEXT("False"), gameInstance->GetMyID());
+
 		gameInstance->SendGetItem(_focusedItem->GetItemID(), _focusedItem->GetIsTool(), gameInstance->GetMyID());
 	}
-	UE_LOG(LogTemp, Log, TEXT("[Item] E Key Pressed, Send Item and Player ID!!!"));
 }
 
 void AMyPlayer::UseTool()
