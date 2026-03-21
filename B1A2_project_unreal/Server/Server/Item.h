@@ -15,7 +15,7 @@ public:
 	ItemType GetItemType() { return _itemType; }
 	float GetWeight() { return _weight; }
 
-private:
+protected:
 	ItemType _itemType;
 	float _weight;
 };

@@ -188,6 +188,11 @@ void ServerFramework::ProcessRecv(ClientRef client)
 		memcpy(&changeToolPacket, packet.data() + sizeof(Header), sizeof(C_ChangeTool_Packet));
 		ProcessChangeToolPacket(changeToolPacket);
 		break;
+	case C_UseTool:
+		C_UseTool_Packet useToolPacket;
+		memcpy(&useToolPacket, packet.data() + sizeof(Header), sizeof(C_UseTool_Packet));
+		ProcessUseToolPacket(useToolPacket);
+		break;
 	}
 }
 
@@ -458,6 +463,10 @@ void ServerFramework::SendUpdateCurrentToolPacket(uint playerID, uint itemID, It
 	_sendEvents.push_back(event);
 }
 
+void ServerFramework::SendUseToolPacket(uint playerID, ItemType type, bool broadcast, SOCKET client)
+{
+}
+
 void ServerFramework::Broadcast(PacketID id, const std::vector<char>& packetData)
 {
 	// Room에 있는 모든 Client에게 Packet 송신
@@ -601,5 +610,20 @@ void ServerFramework::ProcessChangeToolPacket(C_ChangeTool_Packet packet)
 
 		ItemRef item = std::dynamic_pointer_cast<Item>(_room->GetObject(ObjectType::Item, packet.toolID));
 		SendUpdateCurrentToolPacket(packet.playerID, packet.toolID, item->GetItemType(), true);
+	}
+}
+
+void ServerFramework::ProcessUseToolPacket(C_UseTool_Packet packet)
+{
+	// 요청된 도구가 Player가 들고 있는 도구가 맞는지 확인
+	PlayerRef player = dynamic_pointer_cast<Player>(_room->GetObject(ObjectType::Player, packet.playerID));
+	if (player->GetCurrentTool() == packet.toolID)
+	{
+		// 도구 사용 처리
+		ToolRef tool = std::dynamic_pointer_cast<Tool>(_room->GetObject(ObjectType::Item, packet.toolID));
+		tool->UseTool();
+
+		// 도구 사용 알리기
+		SendUseToolPacket(packet.playerID, tool->GetItemType(), true);
 	}
 }

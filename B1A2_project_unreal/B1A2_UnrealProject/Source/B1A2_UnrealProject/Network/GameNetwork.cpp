@@ -324,3 +324,20 @@ void GameNetwork::SendChangeTool(int playerID, int toolID)
 	std::lock_guard<std::mutex> lock(_sendMutex);
 	_sendEvents.push_back(event);
 }
+
+void GameNetwork::SendUseTool(int playerID, int toolID, Rotation playerRotation)
+{
+	// Packet Data 持失
+	C_UseTool_Packet packetData{ playerID, toolID, playerRotation };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	// SendEvent 持失
+	NetworkEventRef event = std::make_shared<NetworkEvent>();
+	event->packetID = C_UseTool;
+	event->serializedPacketData = serializedPacketData;
+
+	std::lock_guard<std::mutex> lock(_sendMutex);
+	_sendEvents.push_back(event);
+}

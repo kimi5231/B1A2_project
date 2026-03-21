@@ -10,6 +10,7 @@ enum PacketID
 	C_GetItem,
 	C_DropItem,
 	C_ChangeTool,
+	C_UseTool,
 
 	//Server
 	S_AddObject,
@@ -80,20 +81,20 @@ struct C_ChangeTool_Packet
 	uint toolID;
 };
 
-struct C_UseTool_Pacekt
+struct C_UseTool_Packet
 {
 	uint playerID;
 	uint toolID;
-	Rotation rotation;
+	Rotation playerRotation;
 };
 
-struct C_InteractDoor_Pacekt
+struct C_InteractDoor_Packet
 {
 	uint playerID;
 	uint doorID;
 };
 
-struct C_Emotion_Pacekt
+struct C_Emotion_Packet
 {
 	float angry;
 	float disgust;
@@ -192,4 +193,10 @@ struct S_InteractDoorNotify_Packet
 	uint playerID;
 	uint doorID;
 	ObjectState doorState;
+};
+
+struct S_UseTool_Packet
+{
+	uint playerID;
+	ItemType toolType;
 };
