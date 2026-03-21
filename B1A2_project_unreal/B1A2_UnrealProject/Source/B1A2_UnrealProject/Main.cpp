@@ -121,7 +121,7 @@ void UMain::SendLocalPosition()
 
 void UMain::SendGetItem(int itemID, bool isTool, int playerID)
 {
-	if (_myID == 0 || itemID == 0)
+	if (_myID == 0 || itemID == -1)
 		return;
 
 	UWorld* world = GetWorld();
@@ -166,10 +166,10 @@ void UMain::ProcessRecv()
 		case S_AddItem:
 			S_AddItem_Packet addItemPacket;
 			FMemory::Memcpy(&addItemPacket, event->serializedPacketData.data(), sizeof(S_AddItem_Packet));
-			if (addItemPacket.objectType == ObjectType::Item)
-				RecvAddItem(addItemPacket);
-			else if (addItemPacket.objectType == ObjectType::Tool)
+			if (addItemPacket.isTool)
 				RecvAddTool(addItemPacket);
+			else
+				RecvAddItem(addItemPacket);
 			event->isComplete = true;
 			break;
 		case S_RemoveObject:
@@ -454,8 +454,8 @@ void UMain::RecvRemoveObject(S_RemoveObject_Packet packet)
 		break;
 	case ObjectType::Item:
 		RemoveItem(packet);
-	case ObjectType::Tool:
-		RemoveTool(packet);
+	//case ObjectType::Tool:
+	//	RemoveTool(packet);
 	default:
 		break;
 	}
@@ -745,7 +745,7 @@ void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 		_myPlayer->PlayPickUpAnimation(item);
 
 		// 인벤토리 or 툴바에 넣기
-		if (packet.objectType == ObjectType::Tool)
+		if (packet.isTool)
 			_myPlayer->AddToolToToolBar(packet.itemType, itemID);
 		else
 			_myPlayer->AddItemToInventory(packet.itemType, itemID, packet.itemWeight);

@@ -24,14 +24,17 @@ public:
 	void SetState(ObjectState state);
 	ObjectState GetState() { return _state; }
 	BoundingBox GetBoundingBox() { return _box; }
+	void SetObjectPoolState(ObjectPoolState objectPoolState) { _objectPoolState = objectPoolState; }
+	ObjectPoolState GetObjectPoolState() { return _objectPoolState; }
 
 protected:
-	UINT _id{};
+	uint _id{};
 	ObjectType _type{};
 	Vector _pos{};
 	Vector _size{};
 	Rotation _rotation{};
 	ObjectState _state{};
 	BoundingBox _box;
+	ObjectPoolState _objectPoolState;
 };
 

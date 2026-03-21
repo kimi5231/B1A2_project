@@ -74,6 +74,9 @@
     <ClCompile Include="Tool.cpp">
       <Filter>소스 파일\Game\Object\Item</Filter>
     </ClCompile>
+    <ClCompile Include="Inventory.cpp">
+      <Filter>소스 파일\Game\Object\Item</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -119,6 +122,9 @@
       <Filter>소스 파일\Game\Object\Item</Filter>
     </ClInclude>
     <ClInclude Include="Tool.h">
+      <Filter>소스 파일\Game\Object\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Inventory.h">
       <Filter>소스 파일\Game\Object\Item</Filter>
     </ClInclude>
   </ItemGroup>

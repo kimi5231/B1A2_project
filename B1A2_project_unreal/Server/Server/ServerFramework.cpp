@@ -178,6 +178,11 @@ void ServerFramework::ProcessRecv(ClientRef client)
 		memcpy(&getItemPacket, packet.data() + sizeof(Header), sizeof(C_GetItem_Packet));
 		ProcessGetItemPacket(client->socket, getItemPacket);
 		break;
+	case C_DropItem:
+		C_DropItem_Packet dropItemPacket;
+		memcpy(&dropItemPacket, packet.data() + sizeof(Header), sizeof(C_DropItem_Packet));
+		ProcessDropItemPacket(dropItemPacket);
+		break;
 	}
 }
 
@@ -258,10 +263,10 @@ void ServerFramework::SendAddObjectPacket(GameObjectRef object, bool broadcast, 
 	_sendEvents.push_back(event);
 }
 
-void ServerFramework::SendAddItemPacket(ItemRef item, bool broadcast, SOCKET client)
+void ServerFramework::SendAddItemPacket(ItemRef item, bool isTool, bool broadcast, SOCKET client)
 {
 	// Packet Data 생성
-	S_AddItem_Packet packetData{ item->GetObjectType(), item->GetItemType(), item->GetID(), item->GetPos(), item->GetRotation() };
+	S_AddItem_Packet packetData{ isTool, item->GetItemType(), item->GetID(), item->GetPos(), item->GetRotation() };
 
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);
@@ -376,10 +381,10 @@ void ServerFramework::SendCreateGameRoomPacket(const std::vector<GameRoomRef>& g
 	_sendEvents.push_back(event);
 }
 
-void ServerFramework::SendAddItemToInventoryPacket(ItemRef item, bool broadcast, SOCKET client)
+void ServerFramework::SendAddItemToInventoryPacket(ItemRef item, bool isTool, bool broadcast, SOCKET client)
 {
 	// Packet Data 생성
-	S_AddItemToInventory_Packet packetData{ item->GetObjectType(), item->GetItemType(), item->GetID(), item->GetWeight()};
+	S_AddItemToInventory_Packet packetData{ isTool, item->GetItemType(), item->GetID(), item->GetWeight()};
 
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);
@@ -394,10 +399,10 @@ void ServerFramework::SendAddItemToInventoryPacket(ItemRef item, bool broadcast,
 	_sendEvents.push_back(event);
 }
 
-void ServerFramework::SendItemPickupNotifyPacket(ItemRef item, uint playerID, bool broadcast, SOCKET client)
+void ServerFramework::SendItemPickupNotifyPacket(ItemRef item, uint playerID, bool isTool, bool broadcast, SOCKET client)
 {
 	// Packet Data 생성
-	S_ItemPickupNotify_Packet packetData{ item->GetObjectType(), item->GetItemType(), item->GetID(), playerID };
+	S_ItemPickupNotify_Packet packetData{ isTool, item->GetItemType(), item->GetID(), playerID };
 
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);
@@ -407,6 +412,24 @@ void ServerFramework::SendItemPickupNotifyPacket(ItemRef item, uint playerID, bo
 	event->isBroadcast = broadcast;
 	event->clientSocket = client;
 	event->packetID = S_ItemPickupNotify;
+	event->serializedPacketData = serializedPacketData;
+
+	_sendEvents.push_back(event);
+}
+
+void ServerFramework::SendDropItemPacket(ItemRef item, PlayerRef player, bool isTool, bool broadcast, SOCKET client)
+{
+	// Packet Data 생성
+	S_DropItem_Packet packetData{ player->GetID(), isTool, item->GetItemType(), item->GetID(), player->GetPos() };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	// SendEvent 생성
+	SendEventRef event = std::make_shared<SendEvent>();
+	event->isBroadcast = broadcast;
+	event->clientSocket = client;
+	event->packetID = S_DropItem;
 	event->serializedPacketData = serializedPacketData;
 
 	_sendEvents.push_back(event);
@@ -443,16 +466,14 @@ void ServerFramework::ProcessAccept(SOCKET clientSocket)
 	const std::unordered_map<uint, MonsterRef>& monsters = _room->GetMonsters();
 	for (const auto& item : monsters)
 		SendAddObjectPacket(item.second, false, newClient->socket);
-	const std::unordered_map<uint, ItemRef>& items = _room->GetItems();
-	for (const auto& item : items)
-		SendAddItemPacket(item.second, false, newClient->socket);
+	const std::vector<ItemRef>& items = _room->GetItems();
+	for (auto& item : items)
+		SendAddItemPacket(item, false, newClient->socket);
 
 	// 추후 삭제 예정
 	if (players.size() == 1)
 	{
 		_room->AddObject(ObjectType::Monster);
-		_room->AddItem(ObjectType::Item, ItemType::CardboardBox, {0, -100, 25});
-		_room->AddItem(ObjectType::Tool, ItemType::Cutlass, { 0, -200, 25 });
 	}
 }
 
@@ -498,25 +519,42 @@ void ServerFramework::ProcessGetItemPacket(SOCKET clientSocket, C_GetItem_Packet
 {
 	// Player가 요청한 아이템이 얻을 수 있는 것인지 확인
 	ItemRef item = std::dynamic_pointer_cast<Item>(_room->GetObject(ObjectType::Item, packet.itemID));
-
-	// 존재하지 않는 아이템이면 요청 거절
-	if (item == nullptr)
+	if (item->GetObjectPoolState() != ObjectPoolState::InWorld)
 		return;
 
 	// 아이템을 얻을 수 있는 조건인지 확인(거리)
 	
 	// 얻을 수 있는 아이템이라면 Player 인벤토리에 추가
 	PlayerRef player = std::dynamic_pointer_cast<Player>(_room->GetObject(ObjectType::Player, packet.playerID));
-	player->AddItemToInventory(item, packet.isTool);
-	SendAddItemToInventoryPacket(item, false, clientSocket);
-
-	// 다른 Client에게도 알리기
-	for (ClientRef client : _clients)
+	// 아이템이 제대로 추가되었다면
+	if (player->AddItemToInventory(packet.isTool, packet.itemID))
 	{
-		if (client->socket != clientSocket)
-			SendItemPickupNotifyPacket(item, player->GetID(), false, client->socket);
-	}
+		// 획득한 아이템 ObjectPoolState 변경
+		item->SetObjectPoolState(ObjectPoolState::InInventory);
 
-	// 획득한 아이템 맵에서 삭제 및 패킷은 따로 보내지 않도록 설정
-	_room->RemoveObject(ObjectType::Item, packet.itemID, false);
+		// 해당 Client에게 알리기
+		SendAddItemToInventoryPacket(item, packet.isTool, false, clientSocket);
+
+		// 다른 Client에게도 알리기
+		for (ClientRef client : _clients)
+		{
+			if (client->socket != clientSocket)
+				SendItemPickupNotifyPacket(item, player->GetID(), packet.isTool, false, client->socket);
+		}
+	}
+}
+
+void ServerFramework::ProcessDropItemPacket(C_DropItem_Packet packet)
+{
+	// Player 인벤토리에서 아이템 제거
+	PlayerRef player = dynamic_pointer_cast<Player>(_room->GetObject(ObjectType::Player, packet.playerID));
+	// 아이템이 제대로 제거되었다면
+	if (player->RemoveItemFromInventory(packet.isTool, packet.itemID))
+	{
+		// 떨어뜨린 아이템 ObjectPoolState 변경
+		ItemRef item = std::dynamic_pointer_cast<Item>(_room->GetObject(ObjectType::Item, packet.itemID));
+		item->SetObjectPoolState(ObjectPoolState::InWorld);
+
+		SendDropItemPacket(item, player, packet.isTool, true);
+	}
 }

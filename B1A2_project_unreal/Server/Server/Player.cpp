@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Player.h"
 #include "Item.h"
+#include "Inventory.h"
 
 Player::Player()
 {
@@ -8,6 +9,7 @@ Player::Player()
 	_rotation = {0, 0, 0};
 	_type = ObjectType::Player;
 	_box.SetBounds(_pos, {60, 30, 180}, Front);
+	_inventory = new Inventory();
 }
 
 Player::~Player()
@@ -19,16 +21,12 @@ void Player::Update()
 
 }
 
-void Player::AddItemToInventory(ItemRef item, bool isTool)
+bool Player::AddItemToInventory(bool isTool, uint id)
 {
-	if (isTool)
-	{
-		// 도구 인벤토리에 넣기
-	}
-	else
-	{
-		// 아이템 인벤토리에 넣기
-	}
+	return _inventory->AddItem(isTool, id);
+}
 
-	//SetState(ObjectState::GET_ITEM);
+bool Player::RemoveItemFromInventory(bool isTool, uint id)
+{
+	return _inventory->RemoveItem(isTool, id);
 }

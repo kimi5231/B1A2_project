@@ -1,6 +1,8 @@
 #pragma once
 #include "GameObject.h"
 
+class Inventory;
+
 class Player : public GameObject
 {
 public: 
@@ -11,8 +13,9 @@ public:
 	virtual void Update();
 
 public:
-	void AddItemToInventory(ItemRef item, bool isTool);
+	bool AddItemToInventory(bool isTool, uint id);
+	bool RemoveItemFromInventory(bool isTool, uint id);
 
 private:
-
+	Inventory* _inventory;
 };

@@ -68,7 +68,7 @@ struct C_GetItem_Packet
 struct C_DropItem_Packet
 {
 	uint playerID;
-	ObjectType objectType;
+	bool isTool;
 	uint itemID;
 };
 
@@ -113,7 +113,7 @@ struct S_AddObject_Packet
 
 struct S_AddItem_Packet
 {
-	ObjectType objectType;
+	bool isTool;
 	ItemType itemType;
 	uint objectID;
 	Vector pos;
@@ -150,7 +150,7 @@ struct S_CreateGameRoom_Packet
 
 struct S_AddItemToInventory_Packet
 {
-	ObjectType objectType;
+	bool isTool;
 	ItemType itemType;
 	uint itemID;
 	float itemWeight;
@@ -158,7 +158,7 @@ struct S_AddItemToInventory_Packet
 
 struct S_ItemPickupNotify_Packet
 {
-	ObjectType objectType;
+	bool isTool;
 	ItemType itemType;
 	uint itemID;
 	uint playerID;
@@ -167,7 +167,7 @@ struct S_ItemPickupNotify_Packet
 struct S_DropItem_Packet
 {
 	uint playerID;
-	ObjectType itemObjectType;
+	bool isTool;
 	ItemType itemType;
 	uint itemID;
 	Vector itemPos;

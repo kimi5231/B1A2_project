@@ -8,7 +8,6 @@ enum class ObjectType : char
 	Player,
 	Monster,
 	Item,
-	Tool,
 };
 
 enum ObjectState
@@ -29,7 +28,14 @@ enum ObjectState
 
 	// Etc
 	HIT,
-	DIE,
+	DEAD,
+};
+
+enum class ObjectPoolState 
+{
+	InWorld, 
+	InInventory,
+	Reusable,
 };
 
 enum Dir

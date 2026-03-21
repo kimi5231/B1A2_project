@@ -4,7 +4,7 @@
 Tool::Tool(ItemType itemType)
 	:Item(itemType)
 {
-	_type = ObjectType::Tool;
+
 }
 
 Tool::~Tool()

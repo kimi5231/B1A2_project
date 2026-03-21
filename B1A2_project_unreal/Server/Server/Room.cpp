@@ -10,12 +10,24 @@ Room::Room()
 {
 	_generatePlayerID = 1;
 	_generateMonsterID = 1;
-	_generateItemID = 1;
+	_generateItemID = 0;
 
 	_currentDifficulty = Difficulty::Easy;
 	_detailDifficulty = Difficulty::Easy;
 
 	CreateFactoryGameRooms();
+
+	// 테스트용 아이템 생성
+	ItemRef scrap = std::make_shared<Item>(ItemType::CardboardBox);
+	scrap->SetID(_generateItemID++);
+	scrap->SetPos({ 0, -100, 25 });
+	scrap->SetObjectPoolState(ObjectPoolState::InWorld);
+	_items.push_back(scrap);
+	/*ItemRef tool = std::make_shared<Tool>(ItemType::Cutlass);
+	tool->SetID(_generateItemID++);
+	tool->SetPos({ 0, -200, 25 });
+	tool->SetObjectPoolState(ObjectPoolState::InWorld);
+	_items.push_back(tool);*/
 }
 
 Room::~Room()
@@ -279,27 +291,26 @@ GameObjectRef Room::AddObject(ObjectType type)
 	return object;
 }
 
-ItemRef Room::AddItem(ObjectType type, ItemType itemType, Vector pos)
+ItemRef Room::AddItem(bool isTool, ItemType itemType, Vector pos, bool isSend)
 {
-	ItemRef item;
-
-	switch (type)
+	for (auto& item : _items)
 	{
-	case ObjectType::Item:
-		item = std::make_shared<Item>(itemType);
-		break;
-	case ObjectType::Tool:
-		item = std::make_shared<Tool>(itemType);
-		break;
+		// 재사용 가능한 아이템 찾기
+		if (item->GetObjectPoolState() == ObjectPoolState::Reusable && isTool == (dynamic_pointer_cast<Tool>(item) != nullptr))
+		{
+			// 재사용이 가능하면, 정보 재설정
+			item->SetPos(pos);
+			item->SetItemType(itemType);
+
+			// ObjectPoolState 변경
+			item->SetObjectPoolState(ObjectPoolState::InWorld);
+
+			if (isSend)
+				g_framework->SendAddItemPacket(item, isTool, true);
+
+			return item;
+		}
 	}
-
-	item->SetID(_generateItemID);
-	item->SetPos(pos);
-	_items[_generateItemID++] = item;
-
-	g_framework->SendAddItemPacket(item, true);
-
-	return item;
 }
 
 void Room::RemoveObject(ObjectType type, uint id, bool isSend)
@@ -307,7 +318,7 @@ void Room::RemoveObject(ObjectType type, uint id, bool isSend)
 	switch (type)
 	{
 	case ObjectType::Item:
-		_items.erase(id);
+		_items[id]->SetObjectPoolState(ObjectPoolState::Reusable);
 		break;
 	}
 

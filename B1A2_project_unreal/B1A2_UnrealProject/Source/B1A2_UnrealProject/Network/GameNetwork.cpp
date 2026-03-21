@@ -257,7 +257,7 @@ void GameNetwork::SendMovePacket(ObjectType type, int id, Vector pos, Rotation r
 void GameNetwork::SendGetItemPacket(int itemID, bool isTool, int playerID)
 {
 	// Packet Data »ý¼º
-	C_GetItem_Packet packetData{ itemID, isTool, playerID };
+	C_GetItem_Packet packetData{ playerID, isTool, itemID };
 
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);

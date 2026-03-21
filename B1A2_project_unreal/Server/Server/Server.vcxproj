@@ -136,6 +136,7 @@
     <ClInclude Include="BoundingBox.h" />
     <ClInclude Include="DataManager.h" />
     <ClInclude Include="Door.h" />
+    <ClInclude Include="Inventory.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="Packets.h" />
@@ -155,6 +156,7 @@
     <ClCompile Include="Door.cpp" />
     <ClCompile Include="GameRoom.cpp" />
     <ClCompile Include="Global.cpp" />
+    <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="GameObject.cpp" />

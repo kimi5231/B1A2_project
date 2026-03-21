@@ -20,14 +20,14 @@ public:
 
 public:
 	GameObjectRef AddObject(ObjectType type);
-	ItemRef AddItem(ObjectType type, ItemType itemType, Vector pos);
+	ItemRef AddItem(bool isTool, ItemType itemType, Vector pos, bool isSend);
 	void RemoveObject(ObjectType type, uint id, bool isSend);
 
 public:
 	GameObjectRef GetObject(ObjectType type, uint id);
 	const std::unordered_map<uint, PlayerRef>& GetPlayers() { return _players; }
 	const std::unordered_map<uint, MonsterRef>& GetMonsters() { return _monsters; }
-	const std::unordered_map<uint, ItemRef>& GetItems() { return _items; }
+	const std::vector<ItemRef>& GetItems() { return _items; }
 	const std::vector<GameRoomRef>& GetGameRooms() { return _gameRooms; }
 
 private:
@@ -39,7 +39,7 @@ private:
 	std::vector<GameRoomRef> _gameRooms;
 	std::unordered_map<uint, PlayerRef> _players;
 	std::unordered_map<uint, MonsterRef> _monsters;
-	std::unordered_map<uint, ItemRef> _items;
+	std::vector<ItemRef> _items;
 
 	uint _playerCount{};
 

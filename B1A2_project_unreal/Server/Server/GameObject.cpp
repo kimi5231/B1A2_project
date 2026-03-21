@@ -4,6 +4,7 @@
 
 GameObject::GameObject()
 {
+	_objectPoolState = ObjectPoolState::Reusable;
 }
 
 GameObject::~GameObject()

@@ -11,6 +11,7 @@ public:
 	virtual void Update();
 
 public:
+	void SetItemType(ItemType type);
 	ItemType GetItemType() { return _itemType; }
 	float GetWeight() { return _weight; }
 
