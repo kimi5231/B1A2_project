@@ -9,6 +9,7 @@ enum PacketID
 	C_Move,
 	C_GetItem,
 	C_DropItem,
+	C_ChangeTool,
 
 	//Server
 	S_AddObject,
@@ -20,6 +21,7 @@ enum PacketID
 	S_AddItemToInventory,
 	S_ItemPickupNotify,
 	S_DropItem,
+	S_UpdateCurrentTool,
 };
 
 struct Header

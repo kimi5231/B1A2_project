@@ -15,7 +15,13 @@ public:
 public:
 	bool AddItemToInventory(bool isTool, uint id);
 	bool RemoveItemFromInventory(bool isTool, uint id);
+	bool ExistItem(bool isTool, uint id);
+
+public:
+	void SetCurrentTool(uint toolID) { _currentTool = toolID; }
+	uint GetCurrentTool() { return _currentTool; }
 
 private:
-	Inventory* _inventory;
+	Inventory* _inventory{};
+	uint _currentTool{};
 };

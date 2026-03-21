@@ -9,7 +9,6 @@ Player::Player()
 	_rotation = {0, 0, 0};
 	_type = ObjectType::Player;
 	_box.SetBounds(_pos, {60, 30, 180}, Front);
-	_inventory = new Inventory();
 }
 
 Player::~Player()
@@ -29,4 +28,9 @@ bool Player::AddItemToInventory(bool isTool, uint id)
 bool Player::RemoveItemFromInventory(bool isTool, uint id)
 {
 	return _inventory->RemoveItem(isTool, id);
+}
+
+bool Player::ExistItem(bool isTool, uint id)
+{
+	return _inventory->ExistItem(isTool, id);
 }

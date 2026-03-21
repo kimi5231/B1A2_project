@@ -50,3 +50,17 @@ bool Inventory::RemoveItem(bool isTool, uint id)
 
 	return false;
 }
+
+bool Inventory::ExistItem(bool isTool, uint id)
+{
+	if (isTool)
+	{
+		auto it = std::find(_tools.begin(), _tools.end(), id);
+		return it != _tools.end();
+	}
+	else
+	{
+		auto it = std::find(_scraps.begin(), _scraps.end(), id);
+		return it != _tools.end();
+	}
+}

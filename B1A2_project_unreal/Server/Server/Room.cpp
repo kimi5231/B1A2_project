@@ -10,7 +10,7 @@ Room::Room()
 {
 	_generatePlayerID = 1;
 	_generateMonsterID = 1;
-	_generateItemID = 0;
+	_generateItemID = 1;
 
 	_currentDifficulty = Difficulty::Easy;
 	_detailDifficulty = Difficulty::Easy;
@@ -337,7 +337,7 @@ GameObjectRef Room::GetObject(ObjectType type, uint id)
 		return _monsters[id];
 		break;
 	case ObjectType::Item:
-		return _items[id];
+		return _items[id - 1];
 		break;
 	}
 }

@@ -53,6 +53,7 @@ public:
 	void SendAddItemToInventoryPacket(ItemRef item, bool isTool, bool broadcast, SOCKET client = 0);
 	void SendItemPickupNotifyPacket(ItemRef item, uint playerID, bool isTool, bool broadcast, SOCKET client = 0);
 	void SendDropItemPacket(ItemRef item, PlayerRef player, bool isTool, bool broadcast, SOCKET client = 0);
+	void SendUpdateCurrentToolPacket(uint playerID, uint itemID, ItemType type, bool broadcast, SOCKET client = 0);
 	void Broadcast(PacketID id, const std::vector<char>& packetData);
 
 public:
@@ -63,6 +64,7 @@ public:
 	void ProcessMovePacket(C_Move_Packet packet);
 	void ProcessGetItemPacket(SOCKET clientSocket, C_GetItem_Packet packet);
 	void ProcessDropItemPacket(C_DropItem_Packet packet);
+	void ProcessChangeToolPacket(C_ChangeTool_Packet packet);
 
 public:
 	Room* GetRoom() { return _room; }

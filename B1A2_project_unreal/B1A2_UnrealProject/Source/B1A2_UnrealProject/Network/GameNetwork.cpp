@@ -297,3 +297,20 @@ void GameNetwork::SendDropItemPacket(int itemID, bool isTool, int playerID)
 	std::lock_guard<std::mutex> lock(_sendMutex);
 	_sendEvents.push_back(event);
 }
+
+void GameNetwork::SendChangeTool(int playerID, int toolID)
+{
+	// Packet Data 持失
+	C_ChangeTool_Packet packetData{ playerID, toolID };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	// SendEvent 持失
+	NetworkEventRef event = std::make_shared<NetworkEvent>();
+	event->packetID = C_ChangeTool;
+	event->serializedPacketData = serializedPacketData;
+
+	std::lock_guard<std::mutex> lock(_sendMutex);
+	_sendEvents.push_back(event);
+}

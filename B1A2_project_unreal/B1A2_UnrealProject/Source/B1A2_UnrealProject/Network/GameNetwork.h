@@ -30,6 +30,7 @@ public:
 	void SendMovePacket(ObjectType type, int id, Vector pos, Rotation rotation, ObjectState state);
 	void SendGetItemPacket(int itemID, bool isTool, int playerID);
 	void SendDropItemPacket(int itemID, bool isTool, int playerID);
+	void SendChangeTool(int playerID, int toolID);
 
 public:
 	std::vector<NetworkEventRef>& GetRecvEvents() { return _recvEvents; }

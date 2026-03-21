@@ -183,6 +183,11 @@ void ServerFramework::ProcessRecv(ClientRef client)
 		memcpy(&dropItemPacket, packet.data() + sizeof(Header), sizeof(C_DropItem_Packet));
 		ProcessDropItemPacket(dropItemPacket);
 		break;
+	case C_ChangeTool:
+		C_ChangeTool_Packet changeToolPacket;
+		memcpy(&changeToolPacket, packet.data() + sizeof(Header), sizeof(C_ChangeTool_Packet));
+		ProcessChangeToolPacket(changeToolPacket);
+		break;
 	}
 }
 
@@ -435,6 +440,10 @@ void ServerFramework::SendDropItemPacket(ItemRef item, PlayerRef player, bool is
 	_sendEvents.push_back(event);
 }
 
+void ServerFramework::SendUpdateCurrentToolPacket(uint playerID, uint itemID, ItemType type, bool broadcast, SOCKET client)
+{
+}
+
 void ServerFramework::Broadcast(PacketID id, const std::vector<char>& packetData)
 {
 	// Room에 있는 모든 Client에게 Packet 송신
@@ -564,5 +573,19 @@ void ServerFramework::ProcessDropItemPacket(C_DropItem_Packet packet)
 		item->SetObjectPoolState(ObjectPoolState::InWorld);
 
 		SendDropItemPacket(item, player, packet.isTool, true);
+	}
+}
+
+void ServerFramework::ProcessChangeToolPacket(C_ChangeTool_Packet packet)
+{
+	// Player 인벤토리에 해당 도구가 존재하는지 확인
+	PlayerRef player = dynamic_pointer_cast<Player>(_room->GetObject(ObjectType::Player, packet.playerID));
+	if (player->ExistItem(true, packet.toolID))
+	{
+		// 도구가 존재하면 해당 도구를 들도록 설정
+		player->SetCurrentTool(packet.toolID);
+
+		ItemRef item = std::dynamic_pointer_cast<Item>(_room->GetObject(ObjectType::Item, packet.toolID));
+		SendUpdateCurrentToolPacket(packet.playerID, packet.toolID, item->GetItemType(), true);
 	}
 }

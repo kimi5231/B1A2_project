@@ -121,7 +121,7 @@ void UMain::SendLocalPosition()
 
 void UMain::SendGetItem(int itemID, bool isTool, int playerID)
 {
-	if (_myID == 0 || itemID == -1)
+	if (_myID == 0 || itemID == 0)
 		return;
 
 	UWorld* world = GetWorld();
@@ -132,7 +132,7 @@ void UMain::SendGetItem(int itemID, bool isTool, int playerID)
 
 void UMain::SendDropItem(int playerID, bool isTool, int itemID)
 {
-	if (_myID == 0 || itemID == -1)
+	if (_myID == 0 || itemID == 0)
 		return;
 
 	UWorld* world = GetWorld();
