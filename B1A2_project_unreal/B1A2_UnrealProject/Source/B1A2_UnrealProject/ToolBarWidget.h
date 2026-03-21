@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Network/Includes.h"
+
 #include "ToolBarWidget.generated.h"
 
 class UVerticalBox;
@@ -22,6 +24,7 @@ protected:
 	virtual void NativeConstruct() override;
 
 public:
+	void AddTool(int id, ItemType type);
 	void ChangeSelection(bool forward);		// 휠 방향에 따라 변경
 
 protected:

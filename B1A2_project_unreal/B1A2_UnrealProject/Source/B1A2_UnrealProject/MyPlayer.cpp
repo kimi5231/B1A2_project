@@ -14,7 +14,6 @@
 #include "CollisionQueryParams.h"   
 #include "Engine/OverlapResult.h"
 #include "Components/CapsuleComponent.h"
-#include "DrawDebugHelpers.h"	// 라인 트레이스 디버깅용
 
 #include "Main.h"
 #include "InteractableInterface.h"
@@ -118,9 +117,14 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		// Use Tool
 		EnhancedInputComponent->BindAction(UseToolAction, ETriggerEvent::Triggered, this, &AMyPlayer::UseTool);
 
+		// Tool Bar
+		EnhancedInputComponent->BindAction(ToolSlotUpAction, ETriggerEvent::Started, this, &AMyPlayer::ToolSelectUp);
+		EnhancedInputComponent->BindAction(ToolSlotDownAction, ETriggerEvent::Started, this, &AMyPlayer::ToolSelectDown);
+
 		// Inventory
-		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AMyPlayer::ToggleInventory);
-		EnhancedInputComponent->BindAction(InventoryItemSelectAction, ETriggerEvent::Started, this, &AMyPlayer::InventoryItemSelectForward);
+		EnhancedInputComponent->BindAction(InventoryTurnOnAndOffAction, ETriggerEvent::Started, this, &AMyPlayer::ToggleInventory);
+		EnhancedInputComponent->BindAction(InventoryItemSelectForwardAction, ETriggerEvent::Started, this, &AMyPlayer::InventoryItemSelectForward);
+		EnhancedInputComponent->BindAction(InventoryItemSelectBackwardAction, ETriggerEvent::Started, this, &AMyPlayer::InventoryItemSelectBackward);
 	}
 }
 
@@ -184,9 +188,16 @@ void AMyPlayer::AddItemToInventory(ItemType type, int id, float weight)
 
 void AMyPlayer::AddToolToToolBar(ItemType type, int id)
 {
-	if (UToolBarWidget* toolBar = Cast<UToolBarWidget>(_toolBarWidgetInstance))
+	if (_toolBarWidgetInstance == nullptr)
 	{
+		UE_LOG(LogTemp, Error, TEXT("[ToolBar] _toolBarWidgetInstance is NULL!"));
+		return;
+	}
 
+	UToolBarWidget* toolBar = Cast<UToolBarWidget>(_toolBarWidgetInstance);
+	if (toolBar)
+	{
+		toolBar->AddTool(id, type);
 	}
 }
 
@@ -221,7 +232,47 @@ void AMyPlayer::InventoryItemSelectForward()
 		UInventoryWidget* widget = Cast<UInventoryWidget>(_inventoryWidgetInstance);
 		
 		if (widget)
-			widget->SlectNextSlot();
+			widget->SelectNextSlot();
+	}
+}
+
+void AMyPlayer::InventoryItemSelectBackward()
+{
+	if (!_inventoryWidgetInstance)
+		return;
+
+	if (_inventoryWidgetInstance->IsInViewport())
+	{
+		UInventoryWidget* widget = Cast<UInventoryWidget>(_inventoryWidgetInstance);
+
+		if (widget)
+			widget->SelectPrevSlot();
+	}
+}
+
+void AMyPlayer::ToolSelectUp()
+{
+	if (_toolBarWidgetInstance)
+	{
+		UToolBarWidget* widget = Cast<UToolBarWidget>(_toolBarWidgetInstance);
+
+		if (widget)
+			widget->ChangeSelection(true);
+
+		UE_LOG(LogTemp, Display, TEXT("[Input] Mouse Wheel Up"));
+	}
+}
+
+void AMyPlayer::ToolSelectDown()
+{
+	if (_toolBarWidgetInstance)
+	{
+		UToolBarWidget* widget = Cast<UToolBarWidget>(_toolBarWidgetInstance);
+
+		if (widget)
+			widget->ChangeSelection(false);
+
+		UE_LOG(LogTemp, Display, TEXT("[Input] Mouse Wheel Up"));
 	}
 }
 
@@ -341,7 +392,7 @@ void AMyPlayer::Interact()
 
 	if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
 	{
-		gameInstance->SendGetItem(_focusedItem->GetItemID(), _focusedItem->GetIsTool() /*SetIsTool 호출하면 오류나서 일단은 Tool도 false로 감..*/, gameInstance->GetMyID());
+		gameInstance->SendGetItem(_focusedItem->GetItemID(), _focusedItem->GetIsTool(), gameInstance->GetMyID());
 	}
 	UE_LOG(LogTemp, Log, TEXT("[Item] E Key Pressed, Send Item and Player ID!!!"));
 }

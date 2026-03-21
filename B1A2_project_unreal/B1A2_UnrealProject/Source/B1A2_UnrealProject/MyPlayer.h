@@ -63,10 +63,20 @@ protected:
 
 	// Inventory
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
-	UInputAction* InventoryAction;
+	UInputAction* InventoryTurnOnAndOffAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
-	UInputAction* InventoryItemSelectAction;
+	UInputAction* InventoryItemSelectForwardAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
+	UInputAction* InventoryItemSelectBackwardAction;
+
+	// Tool
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
+	UInputAction* ToolSlotUpAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
+	UInputAction* ToolSlotDownAction;
 
 public:
 	AMyPlayer();
@@ -104,8 +114,14 @@ protected:
 	UPROPERTY()
 	UUserWidget* _inventoryWidgetInstance;
 
+	// Inventory 입력
 	void ToggleInventory();
 	void InventoryItemSelectForward();
+	void InventoryItemSelectBackward();
+
+	// Tool Bar 입력
+	void ToolSelectUp();
+	void ToolSelectDown();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<UUserWidget> _toolBarWidgetClass;

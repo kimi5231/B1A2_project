@@ -35,7 +35,39 @@ void UToolBarWidget::NativeConstruct()
 	ToolSlots[0]->SetSelected(true);	// 첫 번째 슬롯 기본 선택
 }
 
-void UToolBarWidget::ChangeSelection(bool forward)
+void UToolBarWidget::AddTool(int id, ItemType type)
 {
+	// 빈 슬롯 찾기
+	for (UToolSlotWidget* slot : ToolSlots)
+	{
+		if (slot && slot->isEmpty)
+		{
+			slot->SetSlotInfo(id, type);
+			return;
+		}
+	}
 }
 
+void UToolBarWidget::ChangeSelection(bool forward)
+{
+	if (ToolSlots.Num() == 0)
+		return;
+
+	// 기존 하이라이트 끔
+	if (ToolSlots.IsValidIndex(_currentSelectedIndex))
+		ToolSlots[_currentSelectedIndex]->SetSelected(false);
+
+	// 인덱스 계산
+	if (forward)
+		_currentSelectedIndex = (_currentSelectedIndex + 1) % ToolSlots.Num();
+	else
+		_currentSelectedIndex = (_currentSelectedIndex - 1 + ToolSlots.Num()) % ToolSlots.Num();
+
+	// 선택된 슬롯 하이라이트 켬
+	if (ToolSlots.IsValidIndex(_currentSelectedIndex))
+	{
+		ToolSlots[_currentSelectedIndex]->SetSelected(true);
+
+		UE_LOG(LogTemp, Display, TEXT("[ToolBar] Highlight!"));
+	}
+}

@@ -347,7 +347,7 @@ void UMain::RecvAddItem(S_AddItem_Packet packet)
 			return;
 
 		ABaseItem* item = nullptr;
-		//item->SetIsTool(false);	// 오류 나서 일단 주석 처리
+		
 		switch (packet.itemType)
 		{
 		case ItemType::CardboardBox:
@@ -393,7 +393,8 @@ void UMain::RecvAddItem(S_AddItem_Packet packet)
 		}
 
 		item->SetItemID(id);
-		
+		item->SetIsTool(false);
+
 		// Spawn 후 Map에 등록
 		_items.Add(id, item);	
 	});
@@ -418,7 +419,8 @@ void UMain::RecvAddTool(S_AddItem_Packet packet)
 			return;
 
 		ABaseItem* tool = nullptr;
-		//tool->SetIsTool(true);
+
+
 		switch (packet.itemType)
 		{
 		case ItemType::Cutlass:
@@ -436,6 +438,7 @@ void UMain::RecvAddTool(S_AddItem_Packet packet)
 		}
 
 		tool->SetItemID(id);
+		tool->SetIsTool(true);
 
 		// Spawn 후 Map에 등록
 		_tools.Add(id, tool);
@@ -528,34 +531,6 @@ void UMain::RemoveTool(S_RemoveObject_Packet packet)
 	// Map에서 제거
 	//_tools.Remove(packet.objectID);
 }
-
-//void UMain::RemoveItem(S_RemoveObject_Packet packet)
-//{
-//	int id = packet.objectID;
-//
-//	AsyncTask(ENamedThreads::GameThread, [=, this]()
-//	{
-//		UWorld* world = GetWorld();
-//		if (!world)
-//			return;
-//
-//		ABaseItem** foundItem = _items.Find(id);
-//		if (!foundItem || !(*foundItem))
-//		{
-//			UE_LOG(LogTemp, Log, TEXT("[Item] Remove Failed... ID %llu Not found"), id);
-//			return;
-//		}
-//
-//		ABaseItem* item = *foundItem;
-//
-//		// Map에서 제거
-//		_items.Remove(id);
-//		// 월드에서 제거
-//		item->Destroy();
-//
-//		UE_LOG(LogTemp, Log, TEXT("[Item] Item Removed!!! ID %llu, Name %s"), id, *item->GetName());
-//	});
-//}
 
 void UMain::RecvMoveObject(S_Move_Packet packet)
 {
@@ -749,24 +724,46 @@ void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 			_myPlayer->AddToolToToolBar(packet.itemType, itemID);
 		else
 			_myPlayer->AddItemToInventory(packet.itemType, itemID, packet.itemWeight);
-
-		/*else
-		{
-			AOtherPlayer** foundPlayer = _otherPlayers.Find(playerID);
-
-			if (foundPlayer && *foundPlayer)
-			{
-				(*foundPlayer)->PlayPickUpAnimation(item);
-				UE_LOG(LogTemp, Warning, TEXT("[Item] OtherPlayer ID %llu Item PickUp Animation!"), playerID);
-			}
-			else
-				UE_LOG(LogTemp, Warning, TEXT("[Item] OtherPlayer ID %llu not found in map!"), playerID);
-		}*/
+		
+		// _items에서 제거??
+		// ...
 	});
 }
 
 void UMain::RecvItemPickupNotify(S_ItemPickupNotify_Packet packet)
 {
+	int itemID = packet.itemID;
+	int playerID = packet.playerID;
+	
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		UWorld* world = GetWorld();
+		if (!world)
+			return;
+
+		// Item
+		ABaseItem** foundItem = _items.Find(itemID);
+		if (!foundItem || !(*foundItem))
+		{
+			UE_LOG(LogTemp, Log, TEXT("[Item] item not found... ID %llu Not found"), itemID);
+			return;
+		}
+
+		ABaseItem* item = *foundItem;
+
+		// Player
+		AOtherPlayer** foundPlayer = _otherPlayers.Find(playerID);
+		if (foundPlayer && *foundPlayer)
+		{
+			(*foundPlayer)->PlayPickUpAnimation(item);
+			UE_LOG(LogTemp, Warning, TEXT("[Item] OtherPlayer ID %llu Item PickUp Animation!"), playerID);
+		}
+		else
+			UE_LOG(LogTemp, Warning, TEXT("[Item] OtherPlayer ID %llu not found in map!"), playerID);
+
+		// _items에서 제거??
+	// ...
+	});
 }
 
 FRotator UMain::DirToRotation(Dir dir)

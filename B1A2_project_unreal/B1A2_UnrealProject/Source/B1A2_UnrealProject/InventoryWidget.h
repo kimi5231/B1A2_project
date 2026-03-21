@@ -28,7 +28,8 @@ public:
 	void InitializeSlots();
 
 	// 버튼 입력 시 슬롯 이동
-	void SlectNextSlot();	// Input C
+	void SelectNextSlot();	// Input C
+	void SelectPrevSlot();	// Input X
 	
 	// 위젯을 열 때 선택된 슬롯 처음 위치로 초기화
 	void ResetSelectSlot();

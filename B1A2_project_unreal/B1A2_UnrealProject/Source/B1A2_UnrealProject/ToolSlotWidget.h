@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Image.h"
+#include "Network/Includes.h"
 
 #include "ToolSlotWidget.generated.h"
 
@@ -19,12 +20,26 @@ class B1A2_UNREALPROJECT_API UToolSlotWidget : public UUserWidget
 	GENERATED_BODY()
 	
 public:
+	void SetSlotInfo(int32 id, ItemType type);
 	void SetSelected(bool isSelected);
 
-	UPROPERTY(meta = (BindWidget))
-	UImage* ItemIcon;
+public:
+	bool isEmpty = true;
 
-	// 선택됐을 때 보여주는 아이콘(진하게)
 	UPROPERTY(meta = (BindWidget))
-	UImage* SelectionItemIcon;
+	UImage* ToolIcon;
+
+	// 아이콘
+	UPROPERTY(EditDefaultsOnly, Category = "UI|Icons")
+	UTexture2D* CutlassIcon;
+	UPROPERTY(EditDefaultsOnly, Category = "UI|Icons")
+	UTexture2D* BlasterIcon;
+	UPROPERTY(EditDefaultsOnly, Category = "UI|Icons")
+	UTexture2D* KeyIcon;
+	UPROPERTY(EditDefaultsOnly, Category = "UI|Icons")
+	UTexture2D* LanternIcon;
+
+	// 선택됐을 때 표시하는 이미지
+	UPROPERTY(meta = (BindWidget))
+	UImage* SelectionHighlight;
 };
