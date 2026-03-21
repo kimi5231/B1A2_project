@@ -233,6 +233,12 @@ void UMain::ProcessRecv()
 			RecvUseTool(useToolPacket);
 			event->isComplete = true;
 			break;
+		case S_SpawnParticle:
+			S_SpawnParticle_Packet spawnParticlePacket;
+			FMemory::Memcpy(&spawnParticlePacket, event->serializedPacketData.data(), sizeof(S_SpawnParticle_Packet));
+			RecvSpawnParticle(spawnParticlePacket);
+			event->isComplete = true;
+			break;
 		case S_CreateGameRoom:
 			S_CreateGameRoom_Packet createGameRoomPacket{ _gameNetwork->DeserializeVector<GameRoomDTO>(event->serializedPacketData), _gameNetwork->DeserializeVector<WallDTO>(event->serializedPacketData) };
 			RecvCreateGameRoom(createGameRoomPacket);
@@ -978,6 +984,10 @@ void UMain::RecvUpdateCurrentTool(S_UpdateCurrentTool_Packet packet)
 }
 
 void UMain::RecvUseTool(S_UseTool_Packet packet)
+{
+}
+
+void UMain::RecvSpawnParticle(S_SpawnParticle_Packet packet)
 {
 }
 

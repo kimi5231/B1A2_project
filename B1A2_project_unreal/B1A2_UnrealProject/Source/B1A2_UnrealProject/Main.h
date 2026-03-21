@@ -68,6 +68,7 @@ public:
 	void RecvItemPickupNotify(S_ItemPickupNotify_Packet packet);
 	void RecvUpdateCurrentTool(S_UpdateCurrentTool_Packet packet);
 	void RecvUseTool(S_UseTool_Packet packet);
+	void RecvSpawnParticle(S_SpawnParticle_Packet packet);
 
 	FRotator DirToRotation(Dir dir);
 

@@ -481,6 +481,24 @@ void ServerFramework::SendUseToolPacket(uint playerID, ItemType type, bool broad
 	_sendEvents.push_back(event);
 }
 
+void ServerFramework::SendSpawnParticlePacket(Vector pos, bool broadcast, SOCKET client)
+{
+	// Packet Data 생성
+	S_SpawnParticle_Packet packetData{ pos };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	// SendEvent 생성
+	SendEventRef event = std::make_shared<SendEvent>();
+	event->isBroadcast = broadcast;
+	event->clientSocket = client;
+	event->packetID = S_SpawnParticle;
+	event->serializedPacketData = serializedPacketData;
+
+	_sendEvents.push_back(event);
+}
+
 void ServerFramework::Broadcast(PacketID id, const std::vector<char>& packetData)
 {
 	// Room에 있는 모든 Client에게 Packet 송신

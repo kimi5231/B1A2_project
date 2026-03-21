@@ -24,6 +24,7 @@ enum PacketID
 	S_DropItem,
 	S_UpdateCurrentTool,
 	S_UseTool,
+	S_SpawnParticle,
 };
 
 struct Header

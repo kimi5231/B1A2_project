@@ -55,6 +55,7 @@ public:
 	void SendDropItemPacket(ItemRef item, PlayerRef player, bool isTool, bool broadcast, SOCKET client = 0);
 	void SendUpdateCurrentToolPacket(uint playerID, uint itemID, ItemType type, bool broadcast, SOCKET client = 0);
 	void SendUseToolPacket(uint playerID, ItemType type, bool broadcast, SOCKET client = 0);
+	void SendSpawnParticlePacket(Vector pos, bool broadcast, SOCKET client = 0);
 	void Broadcast(PacketID id, const std::vector<char>& packetData);
 
 public:
