@@ -221,6 +221,12 @@ void UMain::ProcessRecv()
 			RecvDropItem(dropItemPacket);
 			event->isComplete = true;
 			break;
+		case S_UpdateCurrentTool:
+			S_UpdateCurrentTool_Packet updateCurrentToolPacket;
+			FMemory::Memcpy(&updateCurrentToolPacket, event->serializedPacketData.data(), sizeof(S_UpdateCurrentTool_Packet));
+			RecvUpdateCurrentTool(updateCurrentToolPacket);
+			event->isComplete = true;
+			break;
 		case S_CreateGameRoom:
 			S_CreateGameRoom_Packet createGameRoomPacket{ _gameNetwork->DeserializeVector<GameRoomDTO>(event->serializedPacketData), _gameNetwork->DeserializeVector<WallDTO>(event->serializedPacketData) };
 			RecvCreateGameRoom(createGameRoomPacket);
@@ -959,6 +965,10 @@ void UMain::RecvItemPickupNotify(S_ItemPickupNotify_Packet packet)
 			// ...
 		}
 	});
+}
+
+void UMain::RecvUpdateCurrentTool(S_UpdateCurrentTool_Packet packet)
+{
 }
 
 FRotator UMain::DirToRotation(Dir dir)
