@@ -39,6 +39,9 @@ public:
 	UFUNCTION()
 	void PickUpMontageEnded(UAnimMontage* montage, bool bIntererrupted);
 
+	// ¿Â∫Ò ∂º±‚
+	void UnequipTool(int itemID);
+
 private:
 	FVector _prevPos;
 	FRotator _prevRot;

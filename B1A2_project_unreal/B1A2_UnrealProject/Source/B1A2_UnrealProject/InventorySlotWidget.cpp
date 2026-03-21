@@ -10,38 +10,28 @@ void UInventorySlotWidget::SetSlotInfo(int32 id, ItemType type, float weight)
 	switch (type)
 	{
 	case ItemType::CardboardBox:
-		texture = CardboardBoxIcon;
-		break;
+		texture = CardboardBoxIcon; break;
 	case ItemType::GoldBar:
-		texture = GoldBarIcon;
-		break;
+		texture = GoldBarIcon; break;
 	case ItemType::RubberDuck:
-		texture = RubberDuckIcon;
-		break;
+		texture = RubberDuckIcon; break;
 	case ItemType::PlasticCrate:
-		texture = PlasticCrateIcon;
-		break;
+		texture = PlasticCrateIcon; break;
 	case ItemType::Screw:
-		texture = ScrewIcon;
-		break;
+		texture = ScrewIcon; break;
 	case ItemType::PirateHat:
-		texture = PirateHatIcon;
-		break;
+		texture = PirateHatIcon; break;
 	case ItemType::HardHat:
-		texture = HardHatIcon;
-		break;
+		texture = HardHatIcon; break;
 	case ItemType::EngineCore:
-		texture = EngineCoreIcon;
-		break;
+		texture = EngineCoreIcon; break;
 	case ItemType::ScrapMetal:
-		texture = ScrapMetalIcon;
-		break;
+		texture = ScrapMetalIcon; break;
 	case ItemType::EmptyCan:
-		texture = EmptyCanIcon;
-		break;
+		texture = EmptyCanIcon; break;
 	}
 	
-	if (texture == nullptr)
+	if (!texture)
 	{
 		UE_LOG(LogTemp, Error, TEXT("[Inventory] Texture is NULL for ItemType: %d"), (int32)type);
 	}
@@ -62,7 +52,13 @@ void UInventorySlotWidget::SetSlotInfo(int32 id, ItemType type, float weight)
 		WeightText->SetVisibility(ESlateVisibility::Visible);
 	}
 
+	// ½½·Ô Ã¤¿ò
 	isEmpty = false;
+
+	// ID, Type, Weight
+	SetItemID(id);
+	SetItemType(type);
+	SetItemWeight(weight);
 }
 
 void UInventorySlotWidget::SetSelected(bool isSelected)
@@ -74,4 +70,20 @@ void UInventorySlotWidget::SetSelected(bool isSelected)
 		SelectionHighlight->SetVisibility(ESlateVisibility::Visible);
 	else
 		SelectionHighlight->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void UInventorySlotWidget::ClearSlot()
+{
+	isEmpty = true;
+	_itemID = -1;
+
+	if (ItemIcon)
+	{
+		ItemIcon->SetVisibility(ESlateVisibility::Hidden);
+		ItemIcon->SetBrushFromTexture(nullptr);
+	}
+	if (WeightText)
+	{
+		WeightText->SetVisibility(ESlateVisibility::Hidden);
+	}
 }

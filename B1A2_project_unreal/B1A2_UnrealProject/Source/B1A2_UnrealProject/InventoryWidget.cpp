@@ -46,7 +46,7 @@ void UInventoryWidget::InitializeSlots()
 	}
 }
 
-void UInventoryWidget::SlectNextSlot()
+void UInventoryWidget::SelectNextSlot()
 {
 	// 이전 선택 해제하기
 	if (SlotArray.IsValidIndex(_currentSelectedIndex))
@@ -54,6 +54,23 @@ void UInventoryWidget::SlectNextSlot()
 
 	// 인덱스 계산
 	_currentSelectedIndex = (_currentSelectedIndex + 1) % SlotArray.Num();	// 0 ~ 25
+
+	// 새 슬롯 선택하기
+	UInventorySlotWidget* slot = SlotArray[_currentSelectedIndex];
+	if (slot)
+	{
+		slot->SetSelected(true);
+	}
+}
+
+void UInventoryWidget::SelectPrevSlot()
+{
+	// 이전 선택 해제하기
+	if (SlotArray.IsValidIndex(_currentSelectedIndex))
+		SlotArray[_currentSelectedIndex]->SetSelected(false);
+
+	// 인덱스 계산
+	_currentSelectedIndex = (_currentSelectedIndex - 1 + SlotArray.Num()) % SlotArray.Num();	// 0 ~ 25
 
 	// 새 슬롯 선택하기
 	UInventorySlotWidget* slot = SlotArray[_currentSelectedIndex];
@@ -74,5 +91,32 @@ void UInventoryWidget::ResetSelectSlot()
 	if (SlotArray.IsValidIndex(_currentSelectedIndex))
 	{
 		SlotArray[_currentSelectedIndex]->SetSelected(true);
+	}
+}
+
+FDroppedItemInfo UInventoryWidget::GetSelectedInventoryItem()
+{
+	FDroppedItemInfo info;
+
+	if (SlotArray.IsValidIndex(_currentSelectedIndex) && !SlotArray[_currentSelectedIndex]->isEmpty)
+	{
+		info.itemID = SlotArray[_currentSelectedIndex]->GetItemID();
+		info.type = SlotArray[_currentSelectedIndex]->GetItemType();
+		info.weight = SlotArray[_currentSelectedIndex]->GetItemWeight();
+		info.isValid = true;
+	}
+
+	return info;
+}
+
+void UInventoryWidget::RemoveItemByID(int32 itemID)
+{
+	for (UInventorySlotWidget* slot : SlotArray)
+	{
+		if (slot && !slot->isEmpty && slot->GetItemID() == itemID)
+		{
+			slot->ClearSlot();
+			return;
+		}
 	}
 }

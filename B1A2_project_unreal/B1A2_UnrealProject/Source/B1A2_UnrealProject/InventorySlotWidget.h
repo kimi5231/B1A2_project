@@ -24,6 +24,17 @@ public:
 	void SetSlotInfo(int32 id, ItemType type, float weight);
 	void SetSelected(bool isSelected);
 
+	// 슬롯에서 아이템 삭제
+	void ClearSlot();
+
+	// ID, Type, Weight
+	void SetItemID(int32 id) { _itemID = id; }
+	int32 GetItemID() { return _itemID; }
+	void SetItemType(ItemType type) { _itemType = type; }
+	ItemType GetItemType() { return _itemType; }
+	void SetItemWeight(float weight) { _itemWeight = weight; }
+	float GetItemWeight() { return _itemWeight; }
+
 public:
 	bool isEmpty = true;
 
@@ -59,4 +70,9 @@ protected:
 	// 선택됐을 때 표시하는 이미지
 	UPROPERTY(meta = (BindWidget))
 	UImage* SelectionHighlight;
+
+private:
+	int32 _itemID = 0;
+	ItemType _itemType;
+	float _itemWeight = 0.f;
 };

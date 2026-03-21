@@ -105,6 +105,7 @@ enum ItemType
 	Cutlass,
 	Blaster,
 	Key,
+	Lantern,
 
 	ItemTypeCount,
 };
