@@ -227,6 +227,12 @@ void UMain::ProcessRecv()
 			RecvUpdateCurrentTool(updateCurrentToolPacket);
 			event->isComplete = true;
 			break;
+		case S_UseTool:
+			S_UseTool_Packet useToolPacket;
+			FMemory::Memcpy(&useToolPacket, event->serializedPacketData.data(), sizeof(S_UseTool_Packet));
+			RecvUseTool(useToolPacket);
+			event->isComplete = true;
+			break;
 		case S_CreateGameRoom:
 			S_CreateGameRoom_Packet createGameRoomPacket{ _gameNetwork->DeserializeVector<GameRoomDTO>(event->serializedPacketData), _gameNetwork->DeserializeVector<WallDTO>(event->serializedPacketData) };
 			RecvCreateGameRoom(createGameRoomPacket);
@@ -968,6 +974,10 @@ void UMain::RecvItemPickupNotify(S_ItemPickupNotify_Packet packet)
 }
 
 void UMain::RecvUpdateCurrentTool(S_UpdateCurrentTool_Packet packet)
+{
+}
+
+void UMain::RecvUseTool(S_UseTool_Packet packet)
 {
 }
 

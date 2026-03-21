@@ -465,6 +465,20 @@ void ServerFramework::SendUpdateCurrentToolPacket(uint playerID, uint itemID, It
 
 void ServerFramework::SendUseToolPacket(uint playerID, ItemType type, bool broadcast, SOCKET client)
 {
+	// Packet Data 持失
+	S_UpdateCurrentTool_Packet packetData{ playerID, type };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	// SendEvent 持失
+	SendEventRef event = std::make_shared<SendEvent>();
+	event->isBroadcast = broadcast;
+	event->clientSocket = client;
+	event->packetID = S_UseTool;
+	event->serializedPacketData = serializedPacketData;
+
+	_sendEvents.push_back(event);
 }
 
 void ServerFramework::Broadcast(PacketID id, const std::vector<char>& packetData)

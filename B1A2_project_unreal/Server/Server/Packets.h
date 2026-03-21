@@ -23,6 +23,7 @@ enum PacketID
 	S_ItemPickupNotify,
 	S_DropItem,
 	S_UpdateCurrentTool,
+	S_UseTool,
 };
 
 struct Header
