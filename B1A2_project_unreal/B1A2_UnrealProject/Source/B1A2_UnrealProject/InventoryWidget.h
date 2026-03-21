@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Network/Includes.h"
+#include "ToolBarWidget.h"
 
 #include "InventoryWidget.generated.h"
 
@@ -33,6 +34,11 @@ public:
 	
 	// 위젯을 열 때 선택된 슬롯 처음 위치로 초기화
 	void ResetSelectSlot();
+
+	// 버리기 키를 입력했을 때, 현재 선택된 슬롯의 아이템 정보 리턴
+	FDroppedItemInfo GetSelectedInventoryItem();
+	// 서버에서 버리기 명령이 오면 인벤에서 삭제
+	void RemoveItemByID(int32 itemID);
 
 protected:
 	UPROPERTY(meta = (BindWidget))

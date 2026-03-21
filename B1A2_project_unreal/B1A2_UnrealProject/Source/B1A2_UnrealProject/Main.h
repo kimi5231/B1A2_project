@@ -38,6 +38,7 @@ public:
 
 	void SendLocalPosition();
 	void SendGetItem(int itemID, bool isTool, int playerID);
+	void SendDropItem(int playerID, ObjectType type, int itemID);
 
 	// Recv
 	void Update();
@@ -49,6 +50,7 @@ public:
 
 	void RecvAddItem(S_AddItem_Packet packet);
 	void RecvAddTool(S_AddItem_Packet packet);
+	void RecvDropItem(S_DropItem_Packet packet);
 
 	void RecvRemoveObject(S_RemoveObject_Packet packet);
 	void RemovePlayer(S_RemoveObject_Packet packet);

@@ -173,3 +173,7 @@ void AOtherPlayer::PickUpMontageEnded(UAnimMontage* montage, bool bIntererrupted
 	IsBusy = false;
 	UE_LOG(LogTemp, Log, TEXT("Montage Finished! Player is now free."));
 }
+
+void AOtherPlayer::UnequipTool(int itemID)
+{
+}

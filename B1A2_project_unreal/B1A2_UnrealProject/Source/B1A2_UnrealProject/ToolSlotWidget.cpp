@@ -30,7 +30,12 @@ void UToolSlotWidget::SetSlotInfo(int32 id, ItemType type)
 		ToolIcon->SetVisibility(ESlateVisibility::Visible);
 	}
 
+	// ½½·Ô Ã¤¿ò
 	isEmpty = false;
+
+	// ID, Type
+	SetToolID(id);
+	SetToolType(type);
 }
 
 void UToolSlotWidget::SetSelected(bool isSelected)
@@ -42,4 +47,16 @@ void UToolSlotWidget::SetSelected(bool isSelected)
 		SelectionHighlight->SetVisibility(ESlateVisibility::Visible);
 	else
 		SelectionHighlight->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void UToolSlotWidget::ClearSlot()
+{
+	isEmpty = true;
+	_toolID = -1;
+
+	if (ToolIcon)
+	{
+		ToolIcon->SetVisibility(ESlateVisibility::Hidden);
+		ToolIcon->SetBrushFromTexture(nullptr);
+	}
 }

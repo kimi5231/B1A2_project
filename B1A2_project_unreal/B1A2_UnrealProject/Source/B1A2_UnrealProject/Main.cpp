@@ -130,6 +130,19 @@ void UMain::SendGetItem(int itemID, bool isTool, int playerID)
 	_gameNetwork->SendGetItemPacket(itemID, isTool, playerID);
 }
 
+void UMain::SendDropItem(int playerID, ObjectType type, int itemID)
+{
+	if (_myID == 0 || itemID == 0)
+		return;
+
+	UWorld* world = GetWorld();
+	if (!world)
+		return;
+
+	// 함수 구현되면 풀기!!!!
+	// _gameNetwork->SendDropItemPacket(playerID, type, itemID);
+}
+
 void UMain::Update()
 {
 	if (!_gameNetwork)
@@ -200,6 +213,12 @@ void UMain::ProcessRecv()
 			S_ItemPickupNotify_Packet itemPickupNotifyPacket;
 			FMemory::Memcpy(&itemPickupNotifyPacket, event->serializedPacketData.data(), sizeof(S_ItemPickupNotify_Packet));
 			RecvItemPickupNotify(itemPickupNotifyPacket);
+			event->isComplete = true;
+			break;
+		case S_DropItem:
+			S_DropItem_Packet dropItemPacket;
+			FMemory::Memcpy(&dropItemPacket, event->serializedPacketData.data(), sizeof(S_DropItem_Packet));
+			RecvDropItem(dropItemPacket);
 			event->isComplete = true;
 			break;
 		case S_CreateGameRoom:
@@ -441,6 +460,137 @@ void UMain::RecvAddTool(S_AddItem_Packet packet)
 
 		// Spawn 후 Map에 등록
 		_tools.Add(id, tool);
+	});
+}
+
+void UMain::RecvDropItem(S_DropItem_Packet packet)
+{
+	int playerID = packet.playerID;
+	int itemID = packet.itemID;
+	ObjectType itemType = packet.itemObjectType;
+
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		UWorld* world = GetWorld();
+		if (!world)
+			return;
+
+		// MyPlayer라면 슬롯에서 삭제
+		if (packet.playerID == _myID)
+		{
+			// 아이템
+			if (itemType == ObjectType::Item)
+			{
+				// 인벤에서 삭제
+				_myPlayer->RemoveItemInInventoryByID(itemID);
+			}
+			// 장비
+			else if (itemType == ObjectType::Tool)
+			{
+				// 툴바에서 삭제
+				_myPlayer->RemoveToolInToolBarByID(itemID);
+
+				// 손에 들고 있으면 제거
+				_myPlayer->UnequipTool(itemID);
+			}
+		}
+		// OtherPlayer이고, 들고있는 도구라면 손에서 떼도록
+		else
+		{
+			AOtherPlayer** foundPlayer = _otherPlayers.Find(playerID);
+			if (foundPlayer && *foundPlayer)
+			{
+				if (itemType == ObjectType::Tool)
+				{
+					(*foundPlayer)->UnequipTool(itemID);
+				}
+			}
+		}
+
+		// 버린 위치에 스폰
+		FVector spawnLocation(packet.itemPos.x, packet.itemPos.y, packet.itemPos.z);
+		FRotator spawnRotation(0, 0, 0);	// 일단 yaw도 0으로 테스트
+
+		// 장비
+		if (itemType == ObjectType::Tool)
+		{	
+			ABaseItem* tool = nullptr;
+
+			switch (packet.itemType)
+			{
+			case ItemType::Cutlass:
+				tool = world->SpawnActor<ABaseItem>(CutlassClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);	// 임시 위치 보정
+				UE_LOG(LogTemp, Log, TEXT("[Tool] Cutlass Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 20);
+				break;
+			case ItemType::Blaster:
+				tool = world->SpawnActor<ABaseItem>(BlasterClass, spawnLocation, spawnRotation);
+				UE_LOG(LogTemp, Log, TEXT("[Tool] Blaster Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+				break;
+			case ItemType::Key:
+				tool = world->SpawnActor<ABaseItem>(KeyClass, spawnLocation, spawnRotation);
+				UE_LOG(LogTemp, Log, TEXT("[Tool] Key Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+				break;
+			}
+
+			tool->SetItemID(itemID);
+			tool->SetIsTool(true);
+
+			// 이미 Map에 등록되어 있음
+		}
+		// 아이템
+		else if (itemType == ObjectType::Item)
+		{
+			ABaseItem* item = nullptr;
+
+			switch (packet.itemType)
+			{
+			case ItemType::CardboardBox:
+				item = world->SpawnActor<ABaseItem>(CardboardBoxClass, spawnLocation, spawnRotation);
+				UE_LOG(LogTemp, Log, TEXT("[Item] CardboardBox Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+				break;
+			case ItemType::GoldBar:
+				item = world->SpawnActor<ABaseItem>(GoldBarClass, spawnLocation, spawnRotation);
+				UE_LOG(LogTemp, Log, TEXT("[Item] GoldBar Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+				break;
+			case ItemType::RubberDuck:
+				item = world->SpawnActor<ABaseItem>(RubberDuckClass, spawnLocation, spawnRotation);
+				UE_LOG(LogTemp, Log, TEXT("[Item] RubberDuck Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+				break;
+			case ItemType::PlasticCrate:
+				item = world->SpawnActor<ABaseItem>(PlasticCrateClass, spawnLocation, spawnRotation);
+				UE_LOG(LogTemp, Log, TEXT("[Item] PlasticCrate Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+				break;
+			case ItemType::Screw:
+				item = world->SpawnActor<ABaseItem>(ScrewClass, spawnLocation, spawnRotation);
+				UE_LOG(LogTemp, Log, TEXT("[Item] Screw Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+				break;
+			case ItemType::PirateHat:
+				item = world->SpawnActor<ABaseItem>(PirateHatClass, spawnLocation, spawnRotation);
+				UE_LOG(LogTemp, Log, TEXT("[Item] PirateHat Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+				break;
+			case ItemType::HardHat:
+				item = world->SpawnActor<ABaseItem>(HardHatClass, spawnLocation, spawnRotation);
+				UE_LOG(LogTemp, Log, TEXT("[Item] HardHat Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+				break;
+			case ItemType::EngineCore:
+				item = world->SpawnActor<ABaseItem>(EngineCoreClass, spawnLocation, spawnRotation);
+				UE_LOG(LogTemp, Log, TEXT("[Item] EngineCore Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+				break;
+			case ItemType::ScrapMetal:
+				item = world->SpawnActor<ABaseItem>(ScrapMetalClass, spawnLocation, spawnRotation);
+				UE_LOG(LogTemp, Log, TEXT("[Item] ScrapMetal Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+				break;
+			case ItemType::EmptyCan:
+				item = world->SpawnActor<ABaseItem>(EmptyCanClass, spawnLocation, spawnRotation);
+				UE_LOG(LogTemp, Log, TEXT("[Item] EmptyCan Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+				break;
+			}
+
+			item->SetItemID(itemID);
+			item->SetIsTool(false);
+
+			// 이미 Map에 등록되어 있음
+		}
 	});
 }
 
@@ -753,35 +903,63 @@ void UMain::RecvItemPickupNotify(S_ItemPickupNotify_Packet packet)
 {
 	int itemID = packet.itemID;
 	int playerID = packet.playerID;
-	
+	ObjectType objectType = packet.objectType;
+	ItemType itemType = packet.itemType;
+
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
 		UWorld* world = GetWorld();
 		if (!world)
 			return;
 
-		// Item
-		ABaseItem** foundItem = _items.Find(itemID);
-		if (!foundItem || !(*foundItem))
+		if (objectType == ObjectType::Item)
 		{
-			UE_LOG(LogTemp, Log, TEXT("[Item] item not found... ID %llu Not found"), itemID);
-			return;
+			// Item
+			ABaseItem** foundItem = _items.Find(itemID);
+			if (!foundItem || !(*foundItem))
+			{
+				UE_LOG(LogTemp, Log, TEXT("[Item] item not found... ID %llu Not found"), itemID);
+				return;
+			}
+
+			ABaseItem* item = *foundItem;
+
+			// Player
+			AOtherPlayer** foundPlayer = _otherPlayers.Find(playerID);
+			if (foundPlayer && *foundPlayer)
+			{
+				(*foundPlayer)->PlayPickUpAnimation(item);
+				UE_LOG(LogTemp, Warning, TEXT("[Item] OtherPlayer ID %llu Item PickUp Animation!"), playerID);
+			}
+			else
+				UE_LOG(LogTemp, Warning, TEXT("[Item] OtherPlayer ID %llu not found in map!"), playerID);
+
+			// _items에서 제거??
+			// ...
+
 		}
-
-		ABaseItem* item = *foundItem;
-
-		// Player
-		AOtherPlayer** foundPlayer = _otherPlayers.Find(playerID);
-		if (foundPlayer && *foundPlayer)
+		else if (objectType == ObjectType::Tool)
 		{
-			(*foundPlayer)->PlayPickUpAnimation(item);
-			UE_LOG(LogTemp, Warning, TEXT("[Item] OtherPlayer ID %llu Item PickUp Animation!"), playerID);
-		}
-		else
-			UE_LOG(LogTemp, Warning, TEXT("[Item] OtherPlayer ID %llu not found in map!"), playerID);
+			// Tool
+			ABaseItem** foundTool = _tools.Find(itemID);
+			if (!foundTool || !(*foundTool))
+			{
+				UE_LOG(LogTemp, Log, TEXT("[Tool] item not found... ID %llu Not found"), itemID);
+				return;
+			}
 
-		// _items에서 제거??
-	// ...
+			ABaseItem* tool = *foundTool;
+
+			// Player
+			AOtherPlayer** foundPlayer = _otherPlayers.Find(playerID);
+			if (foundPlayer && *foundPlayer)
+			{
+				(*foundPlayer)->PlayPickUpAnimation(tool);
+				UE_LOG(LogTemp, Warning, TEXT("[Tool] OtherPlayer ID %llu Tool PickUp Animation!"), playerID);
+			}
+			else
+				UE_LOG(LogTemp, Warning, TEXT("[Item] OtherPlayer ID %llu not found in map!"), playerID);
+		}
 	});
 }
 

@@ -72,3 +72,29 @@ void UToolBarWidget::ChangeSelection(bool forward)
 		UE_LOG(LogTemp, Display, TEXT("[ToolBar] Highlight!"));
 	}
 }
+
+FDroppedItemInfo UToolBarWidget::GetSelectedToolBarTool()
+{
+	FDroppedItemInfo info;
+
+	if (ToolSlots.IsValidIndex(_currentSelectedIndex) && !ToolSlots[_currentSelectedIndex]->isEmpty)
+	{
+		info.itemID = ToolSlots[_currentSelectedIndex]->GetToolID();
+		info.type = ToolSlots[_currentSelectedIndex]->GetToolType();
+		info.isValid = true;
+	}
+
+	return info;
+}
+
+void UToolBarWidget::RemoveToolByID(int32 toolID)
+{
+	for (UToolSlotWidget* slot : ToolSlots)
+	{
+		if (slot && !slot->isEmpty && slot->GetToolID() == toolID)
+		{
+			slot->ClearSlot();
+			return;
+		}
+	}
+}

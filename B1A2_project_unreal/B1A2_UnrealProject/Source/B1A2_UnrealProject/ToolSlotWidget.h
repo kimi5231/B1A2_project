@@ -23,6 +23,15 @@ public:
 	void SetSlotInfo(int32 id, ItemType type);
 	void SetSelected(bool isSelected);
 
+	// 슬롯에서 장비 삭제
+	void ClearSlot();
+
+	// ID, Type
+	void SetToolID(int32 id) { _toolID = id; }
+	int32 GetToolID() { return _toolID; }
+	void SetToolType(ItemType type) { _toolType = type; }
+	ItemType GetToolType() { return _toolType; }
+
 public:
 	bool isEmpty = true;
 
@@ -42,4 +51,8 @@ public:
 	// 선택됐을 때 표시하는 이미지
 	UPROPERTY(meta = (BindWidget))
 	UImage* SelectionHighlight;
+
+private:
+	int32 _toolID = 0;
+	ItemType _toolType;
 };

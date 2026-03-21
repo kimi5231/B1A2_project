@@ -6,6 +6,14 @@
 #include "Blueprint/UserWidget.h"
 #include "Network/Includes.h"
 
+struct FDroppedItemInfo
+{
+	int32 itemID = -1;
+	ItemType type = ItemType::EmptyCan;
+	float weight = 0.0f;
+	bool isValid = false;
+};
+
 #include "ToolBarWidget.generated.h"
 
 class UVerticalBox;
@@ -27,6 +35,11 @@ public:
 	void AddTool(int id, ItemType type);
 	void ChangeSelection(bool forward);		// 휠 방향에 따라 변경
 
+	// 버리기 키를 입력했을 때, 현재 선택된 슬롯의 장비 정보 리턴
+	FDroppedItemInfo GetSelectedToolBarTool();
+	// 서버에서 버리기 명령이 오면 툴바에서 삭제
+	void RemoveToolByID(int32 toolID);
+
 protected:
 	UPROPERTY(meta = (BindWidget))
 	UVerticalBox* SlotBox;
@@ -38,5 +51,4 @@ protected:
 	TArray<UToolSlotWidget*> ToolSlots;
 
 	int32 _currentSelectedIndex = 0;
-	
 };

@@ -52,7 +52,13 @@ void UInventorySlotWidget::SetSlotInfo(int32 id, ItemType type, float weight)
 		WeightText->SetVisibility(ESlateVisibility::Visible);
 	}
 
+	// ½½·Ô Ã¤¿ò
 	isEmpty = false;
+
+	// ID, Type, Weight
+	SetItemID(id);
+	SetItemType(type);
+	SetItemWeight(weight);
 }
 
 void UInventorySlotWidget::SetSelected(bool isSelected)
@@ -64,4 +70,20 @@ void UInventorySlotWidget::SetSelected(bool isSelected)
 		SelectionHighlight->SetVisibility(ESlateVisibility::Visible);
 	else
 		SelectionHighlight->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void UInventorySlotWidget::ClearSlot()
+{
+	isEmpty = true;
+	_itemID = -1;
+
+	if (ItemIcon)
+	{
+		ItemIcon->SetVisibility(ESlateVisibility::Hidden);
+		ItemIcon->SetBrushFromTexture(nullptr);
+	}
+	if (WeightText)
+	{
+		WeightText->SetVisibility(ESlateVisibility::Hidden);
+	}
 }

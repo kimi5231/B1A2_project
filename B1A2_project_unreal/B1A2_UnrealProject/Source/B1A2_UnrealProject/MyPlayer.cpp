@@ -125,6 +125,9 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(InventoryTurnOnAndOffAction, ETriggerEvent::Started, this, &AMyPlayer::ToggleInventory);
 		EnhancedInputComponent->BindAction(InventoryItemSelectForwardAction, ETriggerEvent::Started, this, &AMyPlayer::InventoryItemSelectForward);
 		EnhancedInputComponent->BindAction(InventoryItemSelectBackwardAction, ETriggerEvent::Started, this, &AMyPlayer::InventoryItemSelectBackward);
+
+		// Item or Tool Drop
+		EnhancedInputComponent->BindAction(ItemOrToolDropAction, ETriggerEvent::Started, this, &AMyPlayer::ItemOrToolDrop);
 	}
 }
 
@@ -273,6 +276,62 @@ void AMyPlayer::ToolSelectDown()
 			widget->ChangeSelection(false);
 
 		UE_LOG(LogTemp, Display, TEXT("[Input] Mouse Wheel Up"));
+	}
+}
+
+void AMyPlayer::ItemOrToolDrop()
+{
+	FDroppedItemInfo info;
+
+	// Inventory가 열려있을 때, 선택된 아이템 버리기
+	if (_inventoryWidgetInstance && _inventoryWidgetInstance->IsInViewport())
+	{
+		UInventoryWidget* widget = Cast<UInventoryWidget>(_inventoryWidgetInstance);
+		info = widget->GetSelectedInventoryItem();
+
+		if (info.isValid)
+		{
+			// 패킷 보내기
+			if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
+			{
+				gameInstance->SendDropItem(gameInstance->GetMyID(), ObjectType::Item, info.itemID);
+				UE_LOG(LogTemp, Display, TEXT("[Item] Item Drop Packet Send! ItemID: %d"), info.itemID);
+			}
+		}
+	}
+	// Inventory가 닫혀있을 때, 선택된 장비 버리기
+	else if (_toolBarWidgetInstance)
+	{
+		UToolBarWidget* widget = Cast<UToolBarWidget>(_toolBarWidgetInstance);
+		info = widget->GetSelectedToolBarTool();
+
+		if (info.isValid)
+		{
+			// 패킷 보내기
+			if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
+			{
+				gameInstance->SendDropItem(gameInstance->GetMyID(), ObjectType::Tool, info.itemID);				
+				UE_LOG(LogTemp, Display, TEXT("[Tool] Tool Drop Packet Send! ToolID: %d"), info.itemID);
+			}
+		}
+	}
+}
+
+void AMyPlayer::RemoveItemInInventoryByID(int itemID)
+{
+	if (_inventoryWidgetInstance)
+	{
+		UInventoryWidget* widget = Cast<UInventoryWidget>(_inventoryWidgetInstance);
+		widget->RemoveItemByID(itemID);
+	}
+}
+
+void AMyPlayer::RemoveToolInToolBarByID(int itemID)
+{
+	if (_toolBarWidgetInstance)
+	{
+		UToolBarWidget* widget = Cast<UToolBarWidget>(_toolBarWidgetInstance);
+		widget->RemoveToolByID(itemID);
 	}
 }
 

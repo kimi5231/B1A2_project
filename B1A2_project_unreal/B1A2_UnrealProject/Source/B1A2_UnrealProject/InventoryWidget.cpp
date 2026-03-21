@@ -93,3 +93,30 @@ void UInventoryWidget::ResetSelectSlot()
 		SlotArray[_currentSelectedIndex]->SetSelected(true);
 	}
 }
+
+FDroppedItemInfo UInventoryWidget::GetSelectedInventoryItem()
+{
+	FDroppedItemInfo info;
+
+	if (SlotArray.IsValidIndex(_currentSelectedIndex) && !SlotArray[_currentSelectedIndex]->isEmpty)
+	{
+		info.itemID = SlotArray[_currentSelectedIndex]->GetItemID();
+		info.type = SlotArray[_currentSelectedIndex]->GetItemType();
+		info.weight = SlotArray[_currentSelectedIndex]->GetItemWeight();
+		info.isValid = true;
+	}
+
+	return info;
+}
+
+void UInventoryWidget::RemoveItemByID(int32 itemID)
+{
+	for (UInventorySlotWidget* slot : SlotArray)
+	{
+		if (slot && !slot->isEmpty && slot->GetItemID() == itemID)
+		{
+			slot->ClearSlot();
+			return;
+		}
+	}
+}

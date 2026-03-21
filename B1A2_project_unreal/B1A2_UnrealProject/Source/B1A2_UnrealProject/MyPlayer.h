@@ -78,6 +78,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
 	UInputAction* ToolSlotDownAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
+	UInputAction* ItemOrToolDropAction;
+
 public:
 	AMyPlayer();
 
@@ -123,6 +126,16 @@ protected:
 	void ToolSelectUp();
 	void ToolSelectDown();
 
+	// Item/Tool 버리기 입력
+	void ItemOrToolDrop();
+
+public:
+	// Inventory에서 Item 삭제
+	void RemoveItemInInventoryByID(int itemID);
+	// ToolBar에서 Tool 삭제
+	void RemoveToolInToolBarByID(int itemID);
+
+protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<UUserWidget> _toolBarWidgetClass;
 
