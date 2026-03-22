@@ -164,7 +164,7 @@ void UMain::SendUseTool(int playerID, int toolID, Rotation playerRotation)
 	if (!world)
 		return;
 
-	_gameNetwork->SendUseTool(playerID, toolID, playerRotation);
+	_gameNetwork->SendUseToolPacket(playerID, toolID, playerRotation);
 }
 
 void UMain::Update()
@@ -904,6 +904,9 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 		for (int i = 0; i < packet.doors.size(); ++i)
 		{
 			const DoorDTO& wall = packet.doors[i];
+
+			if (wall.doorType == DoorType::Door)
+				continue;
 
 			FVector pos(wall.pos.x, wall.pos.y, wall.pos.z);
 			FRotator rot = DirToRotation(wall.dir);
