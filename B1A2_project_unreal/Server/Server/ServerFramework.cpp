@@ -347,39 +347,34 @@ void ServerFramework::SendMovePacket(GameObjectRef object, bool broadcast, SOCKE
 
 void ServerFramework::SendCreateCubesPacket(const std::vector<CubeRef>& cubes, bool broadcast, SOCKET client)
 {
-	std::vector<CubeDTO> cubeInfos;
-	cubeInfos.resize(cubes.size());
+	std::vector<DoorRef> doors;
 
-	uint idx = 0;
-	std::vector<DoorRef> walls;
-	for (const CubeRef gameRoom : cubes)
+	std::vector<CubeDTO> cubeDTOs;
+	for (const CubeRef cube : cubes)
 	{
-		cubeInfos[idx].type = gameRoom->GetGameRoomType();
-		cubeInfos[idx].pos = gameRoom->GetPos();
-		cubeInfos[idx].dir = gameRoom->GetDir();
-
-		walls.insert(walls.end(), gameRoom->GetWalls().begin(), gameRoom->GetWalls().end());
-		idx++;
+		// Cube 정보 기록
+		CubeDTO DTO{ cube->GetCubeType(), cube->GetPos(), cube->GetDir() };
+		cubeDTOs.push_back(DTO);
+	
+		// Cube Door 저장
+		doors.insert(doors.end(), cube->GetDoors().begin(), cube->GetDoors().end());
 	}
 
-	std::vector<WallDTO> wallInfos;
-	/*wallInfos.resize(walls.size());
-	
-	idx = 0;
-	for (const DoorRef wall : walls)
+	std::vector<DoorDTO> doorDTOs;
+	for (const DoorRef door : doors)
 	{
-		wallInfos[idx].pos = wall->GetPos();
-		wallInfos[idx].dir = wall->GetDir();
-		idx++;
-	}*/
+		// Door 정보 기록
+		DoorDTO DTO{ door->GetPos(), door->GetDir(), door->GetState(), door->GetDoorType() };
+		doorDTOs.push_back(DTO);
+	}
 	
 	// Packet Serialize
-	std::vector<char> cubeData = SerializeVector(cubeInfos);
-	std::vector<char> wallData = SerializeVector(wallInfos);
+	std::vector<char> cubeData = SerializeVector(cubeDTOs);
+	std::vector<char> doorData = SerializeVector(doorDTOs);
 	std::vector<char> serializedPacketData;
 
 	serializedPacketData.insert(serializedPacketData.end(), cubeData.begin(), cubeData.end());
-	serializedPacketData.insert(serializedPacketData.end(), wallData.begin(), wallData.end());
+	serializedPacketData.insert(serializedPacketData.end(), doorData.begin(), doorData.end());
 
 	// SendEvent 생성
 	SendEventRef event = std::make_shared<SendEvent>();

@@ -36,13 +36,13 @@ void Monster::Update(const std::vector<CubeRef>& gameRooms)
 		return;
 
 	// 현재 위치한 방의 타일맵 가져오기
-	const std::vector<std::vector<std::vector<short>>>& tilemap = g_dataManager->GetTilemap(currentCube->GetGameRoomType());
+	const std::vector<std::vector<std::vector<short>>>& tilemap = g_dataManager->GetTilemap(currentCube->GetCubeType());
 	
 	// 타일맵의 시작점 계산(FrontLeftButtom)
 	Vector cubePos = currentCube->GetPos();
 	Vector cubeSize = currentCube->GetSize();
 	Vector start{ cubePos.x - cubeSize.x / 2, cubePos.y - cubeSize.y / 2, cubePos.z };
-	switch (currentCube->GetGameRoomType())
+	switch (currentCube->GetCubeType())
 	{
 	case CubeType::GapRoom:	// 입구가 2층
 	case CubeType::RailCatwalk:
@@ -114,7 +114,7 @@ void Monster::Update(const std::vector<CubeRef>& gameRooms)
 					Vector otherCubePos = cube->GetPos();
 					Vector otherCubeSize = cube->GetSize();
 					Vector otherstart{ otherCubePos.x - otherCubeSize.x / 2, otherCubePos.y - otherCubeSize.y / 2, otherCubePos.z };
-					switch (cube->GetGameRoomType())
+					switch (cube->GetCubeType())
 					{
 					case CubeType::GapRoom:	// 입구가 2층
 					case CubeType::RailCatwalk:
@@ -125,7 +125,7 @@ void Monster::Update(const std::vector<CubeRef>& gameRooms)
 						break;
 					}
 
-					const std::vector<std::vector<std::vector<short>>> otherTilemap = g_dataManager->GetTilemap(cube->GetGameRoomType());
+					const std::vector<std::vector<std::vector<short>>> otherTilemap = g_dataManager->GetTilemap(cube->GetCubeType());
 					Vector otherMax{ otherTilemap[0][0].size(), otherTilemap[0].size(), otherTilemap.size() };
 					Vector otherIndex = (corner - otherstart) / TileSize;
 

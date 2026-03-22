@@ -67,7 +67,7 @@ void DataManager::LoadGameRoomInfos()
         for (int i = 0; i < DifficultyCount; i++)
             info.spawnChance[static_cast<Difficulty>(i)] = room["spawnChance"][i];
 
-        info.f1DoorCount.first = room["f1DoorCount"]["min"];
+        /*info.f1DoorCount.first = room["f1DoorCount"]["min"];
         info.f1DoorCount.second = room["f1DoorCount"]["max"];
         info.f2DoorCount.first = room["f2DoorCount"]["min"];
         info.f2DoorCount.second = room["f2DoorCount"]["max"];
@@ -90,6 +90,16 @@ void DataManager::LoadGameRoomInfos()
             pos.z = doorPos[2];
 
             info.f2DoorPos.push_back(pos);
+        }*/
+
+        for (const auto& doorPos : room["doorPos"])
+        {
+            Vector pos;
+            pos.x = doorPos[0];
+            pos.y = doorPos[1];
+            pos.z = doorPos[2];
+
+            info.doorPos.push_back(pos);
         }
 
         for (const auto& doorDir : room["doorDir"])

@@ -132,8 +132,8 @@ void Room::CreateFactoryCubes()
 	}
 
 	// 이후 방 절차적 생성
-	//while(conditions.totalGameRoomCount != _gameRooms.size())
-	for (int i : std::views::iota(1u, conditions.totalCubeCount))
+	while(conditions.totalCubeCount != _cubes.size())
+	//for (int i : std::views::iota(1u, conditions.totalCubeCount))
 	{
 		// 연결할 방향 선택
 		Dir connectDir;
@@ -149,10 +149,10 @@ void Room::CreateFactoryCubes()
 		std::uniform_int_distribution<int> selectDoor(0, _connectableDoors[connectDir].size() - 1);
 		DoorRef door = _connectableDoors[connectDir][selectDoor(gen)];
 
-		// GameRoomType 선택
+		// CubeType 선택
 		// 연결할 방의 타입에 따라 가능한 방 타입 다르게 설정
 		CubeType type;
-		CubeType prevRoomType = _cubes[door->GetRoomID()]->GetGameRoomType();
+		CubeType prevRoomType = _cubes[door->GetRoomID()]->GetCubeType();
 		switch (prevRoomType)
 		{
 		case CubeType::Staircase:
@@ -181,7 +181,7 @@ void Room::CreateFactoryCubes()
 
 		CubeInfo info = g_dataManager->GetGameRoomInfo(type);
 
-		// 선택된 GameRoomType이 이미 최대치만큼 있으면 다시 뽑기
+		// 선택된 CubeType이 이미 최대치만큼 있으면 다시 뽑기
 		if (_currentCubeCount[type] == info.maxCreateCount[_currentDifficulty])
 			continue;
 
@@ -207,14 +207,14 @@ void Room::CreateFactoryCubes()
 			break;
 		}
 
-		CubeRef newRoom = std::make_shared<Cube>(pos, dir, info);
+		CubeRef newCube = std::make_shared<Cube>(pos, dir, info);
 
 		// 방을 배치할 자리가 있는지 확인
 		bool isCreate = true;
-		for (const CubeRef gameRoom : _cubes)
+		for (const CubeRef cube : _cubes)
 		{
 			// 배치하려는 곳에 이미 방이 있으면 생성X
-			if (gameRoom->CheckCollision(newRoom->GetBoundingBox()))
+			if (cube->CheckCollision(newCube->GetBoundingBox()))
 			{
 				isCreate = false;
 				break;
@@ -235,17 +235,17 @@ void Room::CreateFactoryCubes()
 			_connectableDoors[connectDir].erase(std::remove(_connectableDoors[connectDir].begin(), _connectableDoors[connectDir].end(), door), _connectableDoors[connectDir].end());
 
 			// ID 부여
-			newRoom->SetID(generateGameRoomID++);
+			newCube->SetID(generateGameRoomID++);
 
 			// 연결된 방끼리 서로 기록
-			newRoom->AddConnectedRoom(_cubes[door->GetRoomID()]);
-			_cubes[door->GetRoomID()]->AddConnectedRoom(newRoom);
+			newCube->AddConnectedRoom(_cubes[door->GetRoomID()]);
+			_cubes[door->GetRoomID()]->AddConnectedRoom(newCube);
 
-			_cubes.push_back(newRoom);
+			_cubes.push_back(newCube);
 			_currentCubeCount[type]++;
 
 			// 문 생성
-			std::vector<DoorRef>& doors = newRoom->CreateDoors();
+			std::vector<DoorRef>& doors = newCube->CreateDoors();
 			for (const DoorRef door : doors)
 				_connectableDoors[door->GetDir()].push_back(door);
 

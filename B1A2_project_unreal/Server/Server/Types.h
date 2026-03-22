@@ -29,6 +29,11 @@ enum ObjectState
 	// Etc
 	HIT,
 	DEAD,
+
+	// Door
+	LOCK,
+	OPEN,
+	CLOSE,
 };
 
 enum class ObjectPoolState 
@@ -69,6 +74,12 @@ enum class CubeType
 	Staircase,
 
 	GameRoomTypeCount,
+};
+
+enum class DoorType
+{
+	Wall,
+	Door,
 };
 
 enum Difficulty 
@@ -204,10 +215,11 @@ struct CubeInfo
 	std::unordered_map<Difficulty, uint> minCreateCount;
 	std::unordered_map<Difficulty, uint> maxCreateCount;
 	std::unordered_map<Difficulty, float> spawnChance;
-	std::pair<uint, uint> f1DoorCount;
+	/*std::pair<uint, uint> f1DoorCount;
 	std::pair<uint, uint> f2DoorCount;
 	std::vector<Vector> f1DoorPos;
-	std::vector<Vector> f2DoorPos;
+	std::vector<Vector> f2DoorPos;*/
+	std::vector<Vector> doorPos;
 	std::vector<Dir> doorDir;
 	int enterDistance;
 };

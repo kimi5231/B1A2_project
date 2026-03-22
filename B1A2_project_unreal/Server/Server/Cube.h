@@ -20,10 +20,10 @@ public:
 	void AddConnectedRoom(CubeRef gameRoom) { _connetedCube.push_back(gameRoom); }
 
 public:
-	void SetGameRoomInfo(CubeInfo info) { _info = info; }
-	CubeInfo GetGameRoomInfo() { return _info; }
-	void SetGameRoomType(CubeType type) { _info.type = type; }
-	CubeType GetGameRoomType() { return _info.type; }
+	void SetCubeInfo(CubeInfo info) { _info = info; }
+	CubeInfo GetCubeInfo() { return _info; }
+	void SetCubeType(CubeType type) { _info.type = type; }
+	CubeType GetCubeType() { return _info.type; }
 	void SetSize(Vector size) { _info.size = size; }
 	Vector GetSize() { return _info.size; }
 	void SetPos(Vector pos) { _pos = pos; }
@@ -31,7 +31,7 @@ public:
 	void SetDir(Dir dir) { _dir = dir; }
 	Dir GetDir() { return _dir; }
 	BoundingBox GetBoundingBox() { return _box; }
-	std::vector<DoorRef>& GetWalls() { return _walls; }
+	std::vector<DoorRef>& GetDoors() { return _doors; }
 	void SetID(uint id) { _id = id; }
 	std::vector<std::weak_ptr<Cube>>& GetConnectedCubes() { return _connetedCube; }
 
@@ -45,5 +45,4 @@ private:
 	// 순환참조 방지
 	std::vector<std::weak_ptr<Cube>> _connetedCube;
 	std::vector<DoorRef> _doors;
-	std::vector<DoorRef> _walls;
 };

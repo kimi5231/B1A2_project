@@ -40,10 +40,12 @@ struct CubeDTO
 	Dir dir;
 };
 
-struct WallDTO
+struct DoorDTO
 {
 	Vector pos;
 	Dir dir;
+	ObjectState state;
+	DoorType doorType;
 };
 
 // Client
@@ -150,7 +152,7 @@ struct S_Move_Packet
 struct S_CreateCubes_Packet
 {
 	std::vector<CubeDTO> cubes;
-	std::vector<WallDTO> walls;
+	std::vector<DoorDTO> doors;
 };
 
 struct S_AddItemToInventory_Packet

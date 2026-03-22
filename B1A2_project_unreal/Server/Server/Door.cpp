@@ -6,4 +6,6 @@ Door::Door(Vector pos, Dir dir, uint roomID, Dir roomDir)
 {
 	_pos = pos;
 	_dir = static_cast<Dir>((roomDir + dir) % DirCount);
+	_doorType = DoorType::Door;
+	_state = ObjectState::CLOSE;
 }

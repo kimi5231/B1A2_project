@@ -240,7 +240,7 @@ void UMain::ProcessRecv()
 			event->isComplete = true;
 			break;
 		case S_CreateCubes:
-			S_CreateCubes_Packet createCubesPacket{ _gameNetwork->DeserializeVector<CubeDTO>(event->serializedPacketData), _gameNetwork->DeserializeVector<WallDTO>(event->serializedPacketData) };
+			S_CreateCubes_Packet createCubesPacket{ _gameNetwork->DeserializeVector<CubeDTO>(event->serializedPacketData), _gameNetwork->DeserializeVector<DoorDTO>(event->serializedPacketData) };
 			RecvCreateCubes(createCubesPacket);
 			event->isComplete = true;
 			break;
@@ -847,9 +847,9 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 		}
 
 		// Wall
-		for (int i = 0; i < packet.walls.size(); ++i)
+		for (int i = 0; i < packet.doors.size(); ++i)
 		{
-			const WallDTO& wall = packet.walls[i];
+			const DoorDTO& wall = packet.doors[i];
 
 			FVector pos(wall.pos.x, wall.pos.y, wall.pos.z);
 			FRotator rot = DirToRotation(wall.dir);

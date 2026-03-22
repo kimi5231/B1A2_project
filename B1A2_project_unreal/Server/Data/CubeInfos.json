@@ -10,8 +10,7 @@
             "spawnChance": [0.0, 0.0, 0.0],
             "f1DoorCount": {"min": 2, "max": 3}, 
             "f2DoorCount": {"min": 0, "max": 0},
-            "f1DoorPos": [[-325, 0, 0], [0, 325, 0], [325, 0, 0]],
-            "f2DoorPos": [],
+            "doorPos": [[-325, 0, 0], [0, 325, 0], [325, 0, 0]],
             "doorDir": [3, 2, 1],
             "enterDistance": 0
         },
@@ -25,8 +24,7 @@
             "spawnChance": [0.35, 0.35, 0.45],
             "f1DoorCount": {"min": 0, "max": 0}, 
             "f2DoorCount": {"min": 3, "max": 5},
-            "f1DoorPos": [],
-            "f2DoorPos": [[-650, 0, 600], [-400, 325, 600], [400, 325, 600], [650, 0, 600], [-400, -325, 600]],
+            "doorPos": [[-650, 0, 0], [-400, 325, 0], [400, 325, 0], [650, 0, 0], [-400, -325, 0]],
             "doorDir": [3, 2, 2, 1, 0],
             "enterDistance": 400
         },
@@ -40,8 +38,7 @@
             "spawnChance": [0.0, 0.0, 0.0],
             "f1DoorCount": {"min": 1, "max": 1}, 
             "f2DoorCount": {"min": 0, "max": 0},
-            "f1DoorPos": [[325, -325, 0]],
-            "f2DoorPos": [],
+            "doorPos": [[325, -325, 0]],
             "doorDir": [0],
             "enterDistance": -325
         },
@@ -55,8 +52,7 @@
             "spawnChance": [0.0, 0.0, 0.0],
             "f1DoorCount": {"min": 1, "max": 1}, 
             "f2DoorCount": {"min": 0, "max": 0},
-            "f1DoorPos": [[-325, 650, 0]],
-            "f2DoorPos": [],
+            "doorPos": [[-325, 650, 0]],
             "doorDir": [2],
             "enterDistance": -325
         },
@@ -70,8 +66,7 @@
             "spawnChance": [0.50, 0.60, 0.80],
             "f1DoorCount": {"min": 2, "max": 3}, 
             "f2DoorCount": {"min": 1, "max": 2},
-            "f1DoorPos": [[325, -650, 600],[-325, 650, 600], [325, 650, 600]],
-            "f2DoorPos": [[-325, -650, 1200], [325, -650, 1200]],
+            "doorPos": [[325, -650, 0],[-325, 650, 0], [325, 650, 0], [-325, -650, 600], [325, -650, 600]],
             "doorDir": [0, 2, 2, 0, 0],
             "enterDistance": -325
         },
@@ -85,8 +80,7 @@
             "spawnChance": [0.0, 0.0, 0.0],
             "f1DoorCount": {"min": 1, "max": 4}, 
             "f2DoorCount": {"min": 0, "max": 0},
-            "f1DoorPos": [[700, 0, 0],[350, 400, 0], [-350, 400, 0], [-700, 0, 0]],
-            "f2DoorPos": [],
+            "doorPos": [[700, 0, 0],[350, 400, 0], [-350, 400, 0], [-700, 0, 0]],
             "doorDir": [1, 2, 2, 3],
             "enterDistance": 350
         },
@@ -100,8 +94,7 @@
             "spawnChance": [0.0, 0.0, 0.0],
             "f1DoorCount": {"min": 2, "max": 5}, 
             "f2DoorCount": {"min": 0, "max": 0},
-            "f1DoorPos": [[-250, -500, 0], [-500, -250, 0], [250, 500, 0], [500, 250, 0], [500, -250, 0]],
-            "f2DoorPos": [],
+            "doorPos": [[-250, -500, 0], [-500, -250, 0], [250, 500, 0], [500, 250, 0], [500, -250, 0]],
             "doorDir": [0, 3, 2, 1, 1],
             "enterDistance": 250
         },
@@ -115,10 +108,9 @@
             "spawnChance": [0.50, 0.70, 0.0],
             "f1DoorCount": {"min": 0, "max": 1}, 
             "f2DoorCount": {"min": 1, "max": 2},
-            "f1DoorPos": [[0, 500, 0]],
-            "f2DoorPos": [[-350, 100, 600],[600, -300, 600]],
+            "doorPos": [[0, 500, -600], [-350, 100, 0],[600, -300, 0]],
             "doorDir": [2, 2, 1],
-            "enterDistance": 350
+            "enterDistance": -350
         },
         {
             "type": 8,
@@ -130,8 +122,7 @@
             "spawnChance": [0.30, 0.50, 0.50],
             "f1DoorCount": {"min": 0, "max": 0}, 
             "f2DoorCount": {"min": 0, "max": 0},
-            "f1DoorPos": [],
-            "f2DoorPos": [],
+            "doorPos": [],
             "doorDir": [],
             "enterDistance": -200
         },
@@ -145,8 +136,7 @@
             "spawnChance": [0.30, 0.50, 0.70],
             "f1DoorCount": {"min": 3, "max": 5}, 
             "f2DoorCount": {"min": 0, "max": 1},
-            "f1DoorPos": [[1000, -500, 600], [1000, 0, 600], [1000, 500, 600], [300, 750, 600], [-400, 750, 600]],
-            "f2DoorPos": [[-800, -750, 1200]],
+            "doorPos": [[1000, -500, 0], [1000, 0, 0], [1000, 500, 0], [300, 750, 0], [-400, 750, 0], [-800, -750, 600]],
             "doorDir": [1, 1, 1, 2, 2, 0],
             "enterDistance": 300
         },
@@ -160,8 +150,7 @@
             "spawnChance": [0.40, 0.40, 0.45],
             "f1DoorCount": {"min": 0, "max": 0}, 
             "f2DoorCount": {"min": 2, "max": 3},
-            "f1DoorPos": [],
-            "f2DoorPos": [[325, -325, 600], [325, 325, 600], [-100, 650, 600]],
+            "doorPos": [[325, -325, 0], [325, 325, 0], [-100, 650, 0]],
             "doorDir": [1, 1, 2],
             "enterDistance": -100
         },
@@ -175,8 +164,7 @@
             "spawnChance": [0.0, 0.0, 0.0],
             "f1DoorCount": {"min": 1, "max": 1}, 
             "f2DoorCount": {"min": 0, "max": 0},
-            "f1DoorPos": [[0, 300, 0]],
-            "f2DoorPos": [],
+            "doorPos": [[0, 300, 0]],
             "doorDir": [2],
             "enterDistance": 0
         },
@@ -190,8 +178,7 @@
             "spawnChance": [0.40, 0.40, 0.40],
             "f1DoorCount": {"min": 2, "max": 7}, 
             "f2DoorCount": {"min": 0, "max": 0},
-            "f1DoorPos": [[350, -700, 0], [700, -350, 0], [700, 350, 0], [350, 700, 0], [-350, 700, 0], [-700, 350, 0], [-700, -350, 0]],
-            "f2DoorPos": [],
+            "doorPos": [[350, -700, 0], [700, -350, 0], [700, 350, 0], [350, 700, 0], [-350, 700, 0], [-700, 350, 0], [-700, -350, 0]],
             "doorDir": [0, 1, 1, 2, 2, 3, 3],
             "enterDistance": -350
         },
@@ -205,8 +192,7 @@
             "spawnChance": [0.0, 0.0, 0.0],
             "f1DoorCount": {"min": 1, "max": 1}, 
             "f2DoorCount": {"min": 1, "max": 2},
-            "f1DoorPos": [[0, 400, 0]],
-            "f2DoorPos": [[0, -400, 600], [0, 400, 600]],
+            "doorPos": [[0, 400, 0], [0, -400, 600], [0, 400, 600]],
             "doorDir": [2, 0, 2],
             "enterDistance": 0
         }
