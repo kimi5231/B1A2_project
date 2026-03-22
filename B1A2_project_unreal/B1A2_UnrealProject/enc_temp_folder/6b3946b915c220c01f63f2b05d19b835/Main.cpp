@@ -84,7 +84,7 @@ void UMain::SendLocalPosition()
 		Vector pos;
 		pos.x = (float)playerPawn->GetActorLocation().X;
 		pos.y = (float)playerPawn->GetActorLocation().Y;
-		pos.z = (float)playerPawn->GetActorLocation().Z - 98.f;
+		pos.z = (float)playerPawn->GetActorLocation().Z;
 
 		Rotation rot;
 		rot.pitch = (float)playerPawn->GetActorRotation().Pitch;
@@ -139,6 +139,7 @@ void UMain::SendDropItem(int playerID, bool isTool, int itemID)
 	if (!world)
 		return;
 
+	// 함수 구현되면 풀기!!!!
 	_gameNetwork->SendDropItemPacket(itemID, isTool, playerID);
 }
 
@@ -239,7 +240,7 @@ void UMain::ProcessRecv()
 			event->isComplete = true;
 			break;
 		case S_CreateCubes:
-			S_CreateCubes_Packet createCubesPacket{ _gameNetwork->DeserializeVector<CubeDTO>(event->serializedPacketData), _gameNetwork->DeserializeVector<DoorDTO>(event->serializedPacketData) };
+			S_CreateCubes_Packet createCubesPacket{ _gameNetwork->DeserializeVector<CubeDTO>(event->serializedPacketData), _gameNetwork->DeserializeVector<WallDTO>(event->serializedPacketData) };
 			RecvCreateCubes(createCubesPacket);
 			event->isComplete = true;
 			break;
@@ -306,7 +307,7 @@ void UMain::AddPlayer(S_AddObject_Packet packet)
 	}
 
 	// 다른 플레이어 Spawn
-	FVector spawnLocation(packet.pos.x, packet.pos.y, packet.pos.z + 98.f);
+	FVector spawnLocation(packet.pos.x, packet.pos.y, packet.pos.z);
 	FRotator spawnRotation(0, packet.rotation.yaw, 0);
 	int id = packet.objectID;
 
@@ -550,7 +551,8 @@ void UMain::RecvDropItem(S_DropItem_Packet packet)
 
 			tool->SetItemID(itemID);
 			tool->SetIsTool(true);
-			_tools.Add(itemID, tool);
+
+			// 이미 Map에 등록되어 있음
 		}
 		// 아이템
 		else
@@ -603,7 +605,8 @@ void UMain::RecvDropItem(S_DropItem_Packet packet)
 
 			item->SetItemID(itemID);
 			item->SetIsTool(false);
-			_items.Add(itemID, item);
+
+			// 이미 Map에 등록되어 있음
 		}
 	});
 }
@@ -726,7 +729,7 @@ void UMain::RecvMovePlayer(S_Move_Packet packet)
 
 		AOtherPlayer* player = (*findPlayer);
 
-		FVector pos(packet.pos.x, packet.pos.y, packet.pos.z + 98.f);
+		FVector pos(packet.pos.x, packet.pos.y, packet.pos.z);
 		FRotator rot(0, packet.rotation.yaw, 0);
 		player->SetPlayerLocation(pos, rot);
 		player->SetPlayerState(packet.state);
@@ -844,9 +847,9 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 		}
 
 		// Wall
-		for (int i = 0; i < packet.doors.size(); ++i)
+		for (int i = 0; i < packet.walls.size(); ++i)
 		{
-			const DoorDTO& wall = packet.doors[i];
+			const WallDTO& wall = packet.walls[i];
 
 			FVector pos(wall.pos.x, wall.pos.y, wall.pos.z);
 			FRotator rot = DirToRotation(wall.dir);
@@ -886,8 +889,6 @@ void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 			_myPlayer->PlayPickUpAnimation(tool);
 			// 툴바에 넣기
 			_myPlayer->AddToolToToolBar(packet.itemType, itemID);
-			// _tools에서 제거
-			_tools.Remove(itemID);
 
 			UE_LOG(LogTemp, Display, TEXT("[RecvAddItemToInventory] Tool PickedUp and To ToolBar"));
 		}
@@ -906,11 +907,12 @@ void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 			_myPlayer->PlayPickUpAnimation(item);
 			// 인벤에 넣기
 			_myPlayer->AddItemToInventory(packet.itemType, itemID, packet.itemWeight);
-			// _items에서 제거
-			_items.Remove(itemID);
 
 			UE_LOG(LogTemp, Display, TEXT("[RecvAddItemToInventory] Item PickedUp and To Inventory"));
-		}		
+		}
+
+		// _items에서 제거??
+		// ...
 	});
 }
 
@@ -927,10 +929,9 @@ void UMain::RecvItemPickupNotify(S_ItemPickupNotify_Packet packet)
 		if (!world)
 			return;
 
-		// Tool
 		if (isTool)
 		{
-
+			// Tool
 			ABaseItem** foundTool = _tools.Find(itemID);
 			if (!foundTool || !(*foundTool))
 			{
@@ -945,19 +946,14 @@ void UMain::RecvItemPickupNotify(S_ItemPickupNotify_Packet packet)
 			if (foundPlayer && *foundPlayer)
 			{
 				(*foundPlayer)->PlayPickUpAnimation(tool);
-
-				// _tools에서 제거
-				_tools.Remove(itemID);
-
 				UE_LOG(LogTemp, Warning, TEXT("[Tool] OtherPlayer ID %llu Tool PickUp Animation!"), playerID);
 			}
 			else
 				UE_LOG(LogTemp, Warning, TEXT("[Item] OtherPlayer ID %llu not found in map!"), playerID);
 		}
-		// Item
 		else
 		{
-
+			// Item
 			ABaseItem** foundItem = _items.Find(itemID);
 			if (!foundItem || !(*foundItem))
 			{
@@ -972,10 +968,6 @@ void UMain::RecvItemPickupNotify(S_ItemPickupNotify_Packet packet)
 			if (foundPlayer && *foundPlayer)
 			{
 				(*foundPlayer)->PlayPickUpAnimation(item);
-
-				// _items에서 제거
-				_items.Remove(itemID);
-
 				UE_LOG(LogTemp, Warning, TEXT("[Item] OtherPlayer ID %llu Item PickUp Animation!"), playerID);
 			}
 			else
