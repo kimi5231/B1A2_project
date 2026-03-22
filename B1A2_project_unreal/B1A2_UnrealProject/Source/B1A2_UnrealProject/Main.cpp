@@ -238,6 +238,12 @@ void UMain::ProcessRecv()
 			RecvSpawnParticle(spawnParticlePacket);
 			event->isComplete = true;
 			break;
+		case S_InteractDoorNotify:
+			S_InteractDoorNotify_Packet interactDoorNotifyPacket;
+			FMemory::Memcpy(&interactDoorNotifyPacket, event->serializedPacketData.data(), sizeof(S_InteractDoorNotify_Packet));
+			RecvInteractDoorNotify(interactDoorNotifyPacket);
+			event->isComplete = true;
+			break;
 		case S_CreateCubes:
 			S_CreateCubes_Packet createCubesPacket{ _gameNetwork->DeserializeVector<CubeDTO>(event->serializedPacketData), _gameNetwork->DeserializeVector<DoorDTO>(event->serializedPacketData) };
 			RecvCreateCubes(createCubesPacket);
@@ -996,6 +1002,10 @@ void UMain::RecvUseTool(S_UseTool_Packet packet)
 }
 
 void UMain::RecvSpawnParticle(S_SpawnParticle_Packet packet)
+{
+}
+
+void UMain::RecvInteractDoorNotify(S_InteractDoorNotify_Packet packet)
 {
 }
 

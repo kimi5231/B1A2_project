@@ -491,6 +491,20 @@ void ServerFramework::SendSpawnParticlePacket(Vector pos, bool broadcast, SOCKET
 
 void ServerFramework::SendInteractDoorNotifyPacket(uint playerID, uint doorID, ObjectState doorState, bool broadcast, SOCKET client)
 {
+	// Packet Data 持失
+	S_InteractDoorNotify_Packet packetData{ playerID, doorID, doorState };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	// SendEvent 持失
+	SendEventRef event = std::make_shared<SendEvent>();
+	event->isBroadcast = broadcast;
+	event->clientSocket = client;
+	event->packetID = S_InteractDoorNotify;
+	event->serializedPacketData = serializedPacketData;
+
+	_sendEvents.push_back(event);
 }
 
 void ServerFramework::Broadcast(PacketID id, const std::vector<char>& packetData)
