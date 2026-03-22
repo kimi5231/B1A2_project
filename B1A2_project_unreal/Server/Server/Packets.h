@@ -12,6 +12,7 @@ enum PacketID
 	C_ChangeTool,
 	C_UseTool,
 	C_InteractDoor,
+	C_Emotion,
 
 	//Server
 	S_AddObject,

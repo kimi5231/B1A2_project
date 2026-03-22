@@ -152,7 +152,7 @@ void UMain::SendChangeTool(int playerID, int toolID)
 	if (!world)
 		return;
 
-	_gameNetwork->SendChangeTool(playerID, toolID);
+	_gameNetwork->SendChangeToolPacket(playerID, toolID);
 }
 
 void UMain::Update()

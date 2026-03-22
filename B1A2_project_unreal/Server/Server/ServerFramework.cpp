@@ -193,6 +193,11 @@ void ServerFramework::ProcessRecv(ClientRef client)
 		memcpy(&useToolPacket, packet.data() + sizeof(Header), sizeof(C_UseTool_Packet));
 		ProcessUseToolPacket(useToolPacket);
 		break;
+	case C_Emotion:
+		C_Emotion_Packet emotionPacket;
+		memcpy(&emotionPacket, packet.data() + sizeof(Header), sizeof(C_Emotion_Packet));
+		ProcessEmotionPacket(emotionPacket);
+		break;
 	}
 }
 
@@ -683,4 +688,9 @@ void ServerFramework::ProcessInteractDoorPacket(C_InteractDoor_Packet packet)
 		door->SetState(ObjectState::OPEN);
 
 	SendInteractDoorNotifyPacket(packet.playerID, packet.doorID, door->GetState(), true);
+}
+
+void ServerFramework::ProcessEmotionPacket(C_Emotion_Packet packet)
+{
+
 }

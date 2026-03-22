@@ -70,6 +70,7 @@ public:
 	void ProcessChangeToolPacket(C_ChangeTool_Packet packet);
 	void ProcessUseToolPacket(C_UseTool_Packet packet);
 	void ProcessInteractDoorPacket(C_InteractDoor_Packet packet);
+	void ProcessEmotionPacket(C_Emotion_Packet packet);
 
 public:
 	Room* GetRoom() { return _room; }
