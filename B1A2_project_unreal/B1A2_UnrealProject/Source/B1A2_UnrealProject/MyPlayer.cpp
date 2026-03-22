@@ -260,7 +260,14 @@ void AMyPlayer::ToolSelectUp()
 		UToolBarWidget* widget = Cast<UToolBarWidget>(_toolBarWidgetInstance);
 
 		if (widget)
-			widget->ChangeSelection(true);
+		{
+			widget->ChangeSelection(true);	// 하이라이트 변경
+			UpdateToolVisual();	// 모델 변경
+
+			// 타이머 설정(서버로 보내기 체크)
+			GetWorldTimerManager().ClearTimer(ToolChangeTimerHandle);
+			GetWorldTimerManager().SetTimer(ToolChangeTimerHandle, this, &AMyPlayer::SendChangeToolPacket, 0.5f, false);
+		}
 
 		UE_LOG(LogTemp, Display, TEXT("[Input] Mouse Wheel Up"));
 	}
@@ -273,7 +280,14 @@ void AMyPlayer::ToolSelectDown()
 		UToolBarWidget* widget = Cast<UToolBarWidget>(_toolBarWidgetInstance);
 
 		if (widget)
-			widget->ChangeSelection(false);
+		{
+			widget->ChangeSelection(false);		// 하이라이트 변경
+			UpdateToolVisual();		// 모델 변경
+
+			// 타이머 설정(서버로 보내기 체크)
+			GetWorldTimerManager().ClearTimer(ToolChangeTimerHandle);
+			GetWorldTimerManager().SetTimer(ToolChangeTimerHandle, this, &AMyPlayer::SendChangeToolPacket, 0.5f, false);
+		}
 
 		UE_LOG(LogTemp, Display, TEXT("[Input] Mouse Wheel Up"));
 	}
@@ -332,6 +346,76 @@ void AMyPlayer::RemoveToolInToolBarByID(int itemID)
 	{
 		UToolBarWidget* widget = Cast<UToolBarWidget>(_toolBarWidgetInstance);
 		widget->RemoveToolByID(itemID);
+	}
+}
+
+void AMyPlayer::SendChangeToolPacket()
+{
+	UToolBarWidget* widget = Cast<UToolBarWidget>(_toolBarWidgetInstance);
+	if (!widget)
+		return;
+
+	FDroppedItemInfo ToolInfo = widget->GetSelectedToolBarTool();
+	if (ToolInfo.itemID == -1)	// 빈 슬롯일 경우 Send하지 않음
+		return;
+
+	if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
+	{
+		gameInstance->SendChangeTool(gameInstance->GetMyID(), ToolInfo.itemID);
+		UE_LOG(LogTemp, Log, TEXT("[Tool] Sent C_ChangeTool_Packet: ID %d"), ToolInfo.itemID);
+	}
+}
+
+void AMyPlayer::UpdateToolVisual()
+{
+	UToolBarWidget* widget = Cast<UToolBarWidget>(_toolBarWidgetInstance);
+	if (!widget) 
+		return;
+
+	// 현재 선택된 슬롯의 정보
+	FDroppedItemInfo info = widget->GetSelectedToolBarTool();
+
+	// 기존 도구가 있으면 제거
+	if (CurrentToolActor)
+	{
+		CurrentToolActor->Destroy();
+		CurrentToolActor = nullptr;
+	}
+
+	// 빈 슬롯이라면 바꾸지 않음
+	if (info.itemID == -1)
+		return;
+
+	TSubclassOf<ABaseItem> ToolClass = GetToolClass(info.type);
+	if (ToolClass)
+	{
+		FActorSpawnParameters Params;
+		Params.Owner = this;
+
+		// Tool 액터 생성
+		CurrentToolActor = GetWorld()->SpawnActor<AActor>(ToolClass, FVector::ZeroVector, FRotator::ZeroRotator, Params);
+
+		if (CurrentToolActor)
+		{
+			CurrentToolActor->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, HandSocketName);
+			CurrentToolActor->SetActorEnableCollision(false);	// 충돌 끔
+		}
+	}
+}
+
+TSubclassOf<class ABaseItem> AMyPlayer::GetToolClass(ItemType Type)
+{
+	UMain* GameInstance = Cast<UMain>(GetGameInstance());
+	if (!GameInstance) 
+		return nullptr;
+
+	switch (Type)
+	{
+	case ItemType::Cutlass: return GameInstance->CutlassClass;
+	case ItemType::Blaster: return GameInstance->BlasterClass;
+	case ItemType::Key:     return GameInstance->KeyClass;
+	//case ItemType::Lantern: return GameInstance->LanternClass;
+	default: return nullptr;
 	}
 }
 

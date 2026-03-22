@@ -7,6 +7,7 @@
 #include "OtherPlayer.h"
 #include "Network/GameNetwork.h"
 #include "BaseItem.h"
+#include "ToolBarWidget.h"
 
 #define BUFSIZE	64
 
@@ -140,6 +141,18 @@ void UMain::SendDropItem(int playerID, bool isTool, int itemID)
 		return;
 
 	_gameNetwork->SendDropItemPacket(itemID, isTool, playerID);
+}
+
+void UMain::SendChangeTool(int playerID, int toolID)
+{
+	if (_myID == 0 || toolID == 0)
+		return;
+
+	UWorld* world = GetWorld();
+	if (!world)
+		return;
+
+	_gameNetwork->SendChangeTool(playerID, toolID);
 }
 
 void UMain::Update()
@@ -886,6 +899,20 @@ void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 			_myPlayer->PlayPickUpAnimation(tool);
 			// 툴바에 넣기
 			_myPlayer->AddToolToToolBar(packet.itemType, itemID);
+			// 손에 부착
+			if (UToolBarWidget* widget = Cast<UToolBarWidget>(_myPlayer->GetToolBarWidget()))
+			{
+				FDroppedItemInfo currentInfo = widget->GetSelectedToolBarTool();
+
+				if (currentInfo.isValid && currentInfo.itemID == packet.itemID)	// 방금 주운 아이템 ID와 현재 툴바 하이라이트된 칸의 ID가 같을 때
+				{
+					// 캐릭터 손에 모델 부착
+					_myPlayer->UpdateToolVisual();
+
+					// 서버에도 현재 이 도구를 장착했음 통보하기 - 생각해보니 필요 없는 것 같기도..
+					//this->SendChangeTool(packet.itemID, packet.itemType);	// 이거 보내면 오류나서 일단 보류!!!!
+				}
+			}
 			// _tools에서 제거
 			_tools.Remove(itemID);
 

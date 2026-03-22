@@ -142,6 +142,25 @@ protected:
 	UPROPERTY()
 	UUserWidget* _toolBarWidgetInstance;
 
+protected:
+	// Tool
+	// Tool 사용 타이머 핸들
+	FTimerHandle ToolChangeTimerHandle;
+	// 현재 손에 들고 있는 Tool Actor
+	UPROPERTY()
+	AActor* CurrentToolActor;
+	// Tool이 붙을 뼈
+	const FName HandSocketName = TEXT("RightHandSocket");
+	// 패킷 보내기
+	void SendChangeToolPacket();
+	TSubclassOf<class ABaseItem> GetToolClass(ItemType Type);
+
+public:
+	// 로컬 플레이어 모델 업데이트
+	void UpdateToolVisual();
+
+	UUserWidget* GetToolBarWidget() const { return _toolBarWidgetInstance; }
+
 private:
 	// 아이템 상호작용
 	UFUNCTION()
@@ -164,5 +183,4 @@ private:
 	// 상호작용 객체 확인 타이머
 	float _interactionTimer = 0.1f;		// 현재 남은 시간
 	const float INTERACTION_DELAY = 0.1f;	// 확인 간격
-
 };
