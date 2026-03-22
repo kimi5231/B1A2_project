@@ -8,6 +8,7 @@ enum class ObjectType : char
 	Player,
 	Monster,
 	Item,
+	Door,
 };
 
 enum ObjectState

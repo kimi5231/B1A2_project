@@ -13,7 +13,7 @@ public:
 	void Update();
 
 public:
-	std::vector<DoorRef>& CreateDoors();
+	std::vector<DoorRef> CreateDoors();
 	bool CheckCollision(BoundingBox other) { return _box.CheckCollision(other.GetBounds()); };
 	bool CheckInclude(BoundingBox other) { return _box.CheckInclude(other.GetBounds()); }
 
@@ -31,7 +31,6 @@ public:
 	void SetDir(Dir dir) { _dir = dir; }
 	Dir GetDir() { return _dir; }
 	BoundingBox GetBoundingBox() { return _box; }
-	std::vector<DoorRef>& GetDoors() { return _doors; }
 	void SetID(uint id) { _id = id; }
 	std::vector<std::weak_ptr<Cube>>& GetConnectedCubes() { return _connetedCube; }
 
@@ -44,5 +43,4 @@ private:
 
 	// 순환참조 방지
 	std::vector<std::weak_ptr<Cube>> _connetedCube;
-	std::vector<DoorRef> _doors;
 };

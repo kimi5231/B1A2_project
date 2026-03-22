@@ -193,6 +193,11 @@ void ServerFramework::ProcessRecv(ClientRef client)
 		memcpy(&useToolPacket, packet.data() + sizeof(Header), sizeof(C_UseTool_Packet));
 		ProcessUseToolPacket(useToolPacket);
 		break;
+	case C_Emotion:
+		C_Emotion_Packet emotionPacket;
+		memcpy(&emotionPacket, packet.data() + sizeof(Header), sizeof(C_Emotion_Packet));
+		ProcessEmotionPacket(emotionPacket);
+		break;
 	}
 }
 
@@ -345,26 +350,21 @@ void ServerFramework::SendMovePacket(GameObjectRef object, bool broadcast, SOCKE
 	_sendEvents.push_back(event);
 }
 
-void ServerFramework::SendCreateCubesPacket(const std::vector<CubeRef>& cubes, bool broadcast, SOCKET client)
+void ServerFramework::SendCreateCubesPacket(const std::vector<CubeRef>& cubes, const std::vector<DoorRef>& doors, bool broadcast, SOCKET client)
 {
-	std::vector<DoorRef> doors;
-
 	std::vector<CubeDTO> cubeDTOs;
 	for (const CubeRef cube : cubes)
 	{
 		// Cube 정보 기록
 		CubeDTO DTO{ cube->GetCubeType(), cube->GetPos(), cube->GetDir() };
 		cubeDTOs.push_back(DTO);
-	
-		// Cube Door 저장
-		doors.insert(doors.end(), cube->GetDoors().begin(), cube->GetDoors().end());
 	}
 
 	std::vector<DoorDTO> doorDTOs;
 	for (const DoorRef door : doors)
 	{
 		// Door 정보 기록
-		DoorDTO DTO{ door->GetPos(), door->GetDir(), door->GetState(), door->GetDoorType() };
+		DoorDTO DTO{ door->GetID(), door->GetPos(), door->GetDir(), door->GetState(), door->GetDoorType() };
 		doorDTOs.push_back(DTO);
 	}
 	
@@ -494,6 +494,24 @@ void ServerFramework::SendSpawnParticlePacket(Vector pos, bool broadcast, SOCKET
 	_sendEvents.push_back(event);
 }
 
+void ServerFramework::SendInteractDoorNotifyPacket(uint playerID, uint doorID, ObjectState doorState, bool broadcast, SOCKET client)
+{
+	// Packet Data 생성
+	S_InteractDoorNotify_Packet packetData{ playerID, doorID, doorState };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	// SendEvent 생성
+	SendEventRef event = std::make_shared<SendEvent>();
+	event->isBroadcast = broadcast;
+	event->clientSocket = client;
+	event->packetID = S_InteractDoorNotify;
+	event->serializedPacketData = serializedPacketData;
+
+	_sendEvents.push_back(event);
+}
+
 void ServerFramework::Broadcast(PacketID id, const std::vector<char>& packetData)
 {
 	// Room에 있는 모든 Client에게 Packet 송신
@@ -516,7 +534,7 @@ void ServerFramework::ProcessAccept(SOCKET clientSocket)
 
 	// 추후 게임 시작 시 broadcast로 보내도록 코드 옮기기
 	// GameRoom 정보 송신
-	SendCreateCubesPacket(_room->GetCubes(), false, newClient->socket);
+	SendCreateCubesPacket(_room->GetCubes(), _room->GetDoors(), false, newClient->socket);
 
 	// 새로 접속한 Client에게 Room에 있는 모든 Object 정보 송신
 	const std::unordered_map<uint, PlayerRef>& players = _room->GetPlayers();
@@ -653,4 +671,26 @@ void ServerFramework::ProcessUseToolPacket(C_UseTool_Packet packet)
 		// 도구 사용 알리기
 		SendUseToolPacket(packet.playerID, tool->GetItemType(), true);
 	}
+}
+
+void ServerFramework::ProcessInteractDoorPacket(C_InteractDoor_Packet packet)
+{
+	// 요청한 Player와 Door가 상호작용 가능 거리인지 확인
+	PlayerRef player = dynamic_pointer_cast<Player>(_room->GetGameObject(ObjectType::Player, packet.playerID));
+	DoorRef door = dynamic_pointer_cast<Door>(_room->GetGameObject(ObjectType::Door, packet.doorID));
+
+	// 거리 확인 코드 추가하기
+
+	// 상호작용 가능하면 Door State 변경
+	if (door->GetState() == ObjectState::OPEN)
+		door->SetState(ObjectState::CLOSE);
+	else
+		door->SetState(ObjectState::OPEN);
+
+	SendInteractDoorNotifyPacket(packet.playerID, packet.doorID, door->GetState(), true);
+}
+
+void ServerFramework::ProcessEmotionPacket(C_Emotion_Packet packet)
+{
+
 }

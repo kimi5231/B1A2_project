@@ -97,7 +97,7 @@ void GameNetwork::ProcessRecv()
 	}
 
 	// Packet 荐脚(啊函 单捞磐)
-	std::vector<char> packet(3000);
+	std::vector<char> packet(4000);
 	if (recv(_clientSocket, packet.data(), packetSize, MSG_WAITALL) <= 0)
 	{
 		//ProcessDisconnect(client);
@@ -231,6 +231,16 @@ void GameNetwork::ProcessRecv()
 		_recvEvents.push_back(event);
 		break;
 	}
+	case S_InteractDoorNotify:
+	{
+		NetworkEventRef event = std::make_shared<NetworkEvent>();
+		event->packetID = header.id;
+		event->serializedPacketData.resize(packet.size() - sizeof(Header));
+		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), packet.size() - sizeof(Header));
+		std::lock_guard<std::mutex> lock(_recvMutex);
+		_recvEvents.push_back(event);
+		break;
+	}
 	}
 }
 
@@ -328,7 +338,7 @@ void GameNetwork::SendDropItemPacket(int itemID, bool isTool, int playerID)
 	_sendEvents.push_back(event);
 }
 
-void GameNetwork::SendChangeTool(int playerID, int toolID)
+void GameNetwork::SendChangeToolPacket(int playerID, int toolID)
 {
 	// Packet Data 积己
 	C_ChangeTool_Packet packetData{ playerID, toolID };
@@ -345,7 +355,7 @@ void GameNetwork::SendChangeTool(int playerID, int toolID)
 	_sendEvents.push_back(event);
 }
 
-void GameNetwork::SendUseTool(int playerID, int toolID, Rotation playerRotation)
+void GameNetwork::SendUseToolPacket(int playerID, int toolID, Rotation playerRotation)
 {
 	// Packet Data 积己
 	C_UseTool_Packet packetData{ playerID, toolID, playerRotation };
@@ -356,6 +366,40 @@ void GameNetwork::SendUseTool(int playerID, int toolID, Rotation playerRotation)
 	// SendEvent 积己
 	NetworkEventRef event = std::make_shared<NetworkEvent>();
 	event->packetID = C_UseTool;
+	event->serializedPacketData = serializedPacketData;
+
+	std::lock_guard<std::mutex> lock(_sendMutex);
+	_sendEvents.push_back(event);
+}
+
+void GameNetwork::SendInteractDoorPacket(int playerID, int doorID)
+{
+	// Packet Data 积己
+	C_InteractDoor_Packet packetData{ playerID, doorID };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	// SendEvent 积己
+	NetworkEventRef event = std::make_shared<NetworkEvent>();
+	event->packetID = C_InteractDoor;
+	event->serializedPacketData = serializedPacketData;
+
+	std::lock_guard<std::mutex> lock(_sendMutex);
+	_sendEvents.push_back(event);
+}
+
+void GameNetwork::SendEmotionPacket(float angry, float disgust, float fear, float happy, float sad, float surprise, float neutral)
+{
+	// Packet Data 积己
+	C_Emotion_Packet packetData{ angry, disgust, fear, happy, sad, surprise, neutral };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	// SendEvent 积己
+	NetworkEventRef event = std::make_shared<NetworkEvent>();
+	event->packetID = C_Emotion;
 	event->serializedPacketData = serializedPacketData;
 
 	std::lock_guard<std::mutex> lock(_sendMutex);

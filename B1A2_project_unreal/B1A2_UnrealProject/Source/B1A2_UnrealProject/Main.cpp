@@ -152,7 +152,7 @@ void UMain::SendChangeTool(int playerID, int toolID)
 	if (!world)
 		return;
 
-	_gameNetwork->SendChangeTool(playerID, toolID);
+	_gameNetwork->SendChangeToolPacket(playerID, toolID);
 }
 
 void UMain::SendUseTool(int playerID, int toolID, Rotation playerRotation)
@@ -261,6 +261,12 @@ void UMain::ProcessRecv()
 			S_SpawnParticle_Packet spawnParticlePacket;
 			FMemory::Memcpy(&spawnParticlePacket, event->serializedPacketData.data(), sizeof(S_SpawnParticle_Packet));
 			RecvSpawnParticle(spawnParticlePacket);
+			event->isComplete = true;
+			break;
+		case S_InteractDoorNotify:
+			S_InteractDoorNotify_Packet interactDoorNotifyPacket;
+			FMemory::Memcpy(&interactDoorNotifyPacket, event->serializedPacketData.data(), sizeof(S_InteractDoorNotify_Packet));
+			RecvInteractDoorNotify(interactDoorNotifyPacket);
 			event->isComplete = true;
 			break;
 		case S_CreateCubes:
@@ -1061,6 +1067,10 @@ void UMain::RecvUseTool(S_UseTool_Packet packet)
 }
 
 void UMain::RecvSpawnParticle(S_SpawnParticle_Packet packet)
+{
+}
+
+void UMain::RecvInteractDoorNotify(S_InteractDoorNotify_Packet packet)
 {
 }
 

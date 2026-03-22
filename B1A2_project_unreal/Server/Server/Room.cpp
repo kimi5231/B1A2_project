@@ -110,24 +110,29 @@ void Room::CreateFactoryCubes()
 		}
 	}
 
-	uint generateGameRoomID = 0;
+	uint generateCubeID = 1;
+	uint generateDoorID = 1;
 
 	// 방 생성(문은 방 안에서 생성 + 비상구)
 	// MainEntranceRoom 생성
 	{
-		CubeInfo info = g_dataManager->GetGameRoomInfo(CubeType::MainEntranceRoom);
+		CubeInfo info = g_dataManager->GetCubeInfo(CubeType::MainEntranceRoom);
 
 		// 0층 중앙에 배치
 		Vector pos{};
 
-		CubeRef gameRoom = std::make_shared<Cube>(pos, Front, info);
-		gameRoom->SetID(generateGameRoomID++);
+		CubeRef cube = std::make_shared<Cube>(pos, Front, info);
+		cube->SetID(generateCubeID++);
 
-		std::vector<DoorRef>& doors = gameRoom->CreateDoors();
+		std::vector<DoorRef> doors = cube->CreateDoors();
 		for (const DoorRef door : doors)
+		{
+			door->SetID(generateDoorID++);
+			_doors.push_back(door);
 			_connectableDoors[door->GetDir()].push_back(door);
-
-		_cubes.push_back(gameRoom);
+		}
+			
+		_cubes.push_back(cube);
 		_currentCubeCount[CubeType::MainEntranceRoom]++;
 	}
 
@@ -152,7 +157,7 @@ void Room::CreateFactoryCubes()
 		// CubeType 선택
 		// 연결할 방의 타입에 따라 가능한 방 타입 다르게 설정
 		CubeType type;
-		CubeType prevRoomType = _cubes[door->GetRoomID()]->GetCubeType();
+		CubeType prevRoomType = _cubes[door->GetRoomID() - 1]->GetCubeType();
 		switch (prevRoomType)
 		{
 		case CubeType::Staircase:
@@ -179,7 +184,7 @@ void Room::CreateFactoryCubes()
 		}
 		}
 
-		CubeInfo info = g_dataManager->GetGameRoomInfo(type);
+		CubeInfo info = g_dataManager->GetCubeInfo(type);
 
 		// 선택된 CubeType이 이미 최대치만큼 있으면 다시 뽑기
 		if (_currentCubeCount[type] == info.maxCreateCount[_currentDifficulty])
@@ -235,22 +240,32 @@ void Room::CreateFactoryCubes()
 			_connectableDoors[connectDir].erase(std::remove(_connectableDoors[connectDir].begin(), _connectableDoors[connectDir].end(), door), _connectableDoors[connectDir].end());
 
 			// ID 부여
-			newCube->SetID(generateGameRoomID++);
+			newCube->SetID(generateCubeID++);
 
 			// 연결된 방끼리 서로 기록
-			newCube->AddConnectedRoom(_cubes[door->GetRoomID()]);
-			_cubes[door->GetRoomID()]->AddConnectedRoom(newCube);
+			newCube->AddConnectedRoom(_cubes[door->GetRoomID() - 1]);
+			_cubes[door->GetRoomID() - 1]->AddConnectedRoom(newCube);
 
 			_cubes.push_back(newCube);
 			_currentCubeCount[type]++;
 
 			// 문 생성
-			std::vector<DoorRef>& doors = newCube->CreateDoors();
+			std::vector<DoorRef> doors = newCube->CreateDoors();
 			for (const DoorRef door : doors)
+			{
+				door->SetID(generateDoorID++);
+				_doors.push_back(door);
 				_connectableDoors[door->GetDir()].push_back(door);
+			}
 
 			std::cout << "Create" << static_cast<int>(type) << std::endl;
 		}
+	}
+
+	for (auto& doors : _connectableDoors)
+	{
+		for (auto& door : doors.second)
+			door->SetDoorType(DoorType::Wall);
 	}
 
 	std::cout << "Success Create GameRooms" << std::endl;
@@ -338,6 +353,9 @@ GameObjectRef Room::GetGameObject(ObjectType type, uint id)
 		break;
 	case ObjectType::Item:
 		return _items[id - 1];
+		break;
+	case ObjectType::Door:
+		return _doors[id - 1];
 		break;
 	}
 }

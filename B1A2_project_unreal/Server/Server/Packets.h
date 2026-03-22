@@ -11,6 +11,8 @@ enum PacketID
 	C_DropItem,
 	C_ChangeTool,
 	C_UseTool,
+	C_InteractDoor,
+	C_Emotion,
 
 	//Server
 	S_AddObject,
@@ -25,6 +27,7 @@ enum PacketID
 	S_UpdateCurrentTool,
 	S_UseTool,
 	S_SpawnParticle,
+	S_InteractDoorNotify,
 };
 
 struct Header
@@ -42,6 +45,7 @@ struct CubeDTO
 
 struct DoorDTO
 {
+	uint id;
 	Vector pos;
 	Dir dir;
 	ObjectState state;

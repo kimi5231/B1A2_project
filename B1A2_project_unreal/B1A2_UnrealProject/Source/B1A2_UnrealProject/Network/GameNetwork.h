@@ -30,8 +30,10 @@ public:
 	void SendMovePacket(ObjectType type, int id, Vector pos, Rotation rotation, ObjectState state);
 	void SendGetItemPacket(int itemID, bool isTool, int playerID);
 	void SendDropItemPacket(int itemID, bool isTool, int playerID);
-	void SendChangeTool(int playerID, int toolID);
-	void SendUseTool(int playerID, int toolID, Rotation playerRotation);
+	void SendChangeToolPacket(int playerID, int toolID);
+	void SendUseToolPacket(int playerID, int toolID, Rotation playerRotation);
+	void SendInteractDoorPacket(int playerID, int doorID);
+	void SendEmotionPacket(float angry, float disgust, float fear, float happy, float sad, float surprise, float neutral);
 
 public:
 	std::vector<NetworkEventRef>& GetRecvEvents() { return _recvEvents; }
