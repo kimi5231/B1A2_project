@@ -262,6 +262,12 @@ void Room::CreateFactoryCubes()
 		}
 	}
 
+	for (auto& doors : _connectableDoors)
+	{
+		for (auto& door : doors.second)
+			door->SetDoorType(DoorType::Wall);
+	}
+
 	std::cout << "Success Create GameRooms" << std::endl;
 
 	// 아이템 생성
