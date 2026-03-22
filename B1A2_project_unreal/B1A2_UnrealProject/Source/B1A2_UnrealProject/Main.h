@@ -40,6 +40,7 @@ public:
 	void SendGetItem(int itemID, bool isTool, int playerID);
 	void SendDropItem(int playerID, bool isTool, int itemID);
 	void SendChangeTool(int playerID, int toolID);
+	void SendUseTool(int playerID, int toolID, Rotation playerRotation);
 
 	// Recv
 	void Update();
@@ -78,50 +79,54 @@ public:
 
 public:
 	// Room Box Class
-	UPROPERTY(EditDefaultsOnly, Category = "Room")
+	UPROPERTY(EditDefaultsOnly, Category = "Cube")
 	TSubclassOf<AStaticMeshActor> MainEntranceRoomClass;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Room")
+	UPROPERTY(EditDefaultsOnly, Category = "Cube")
 	TSubclassOf<AStaticMeshActor> GapRoomClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Room")
+	UPROPERTY(EditDefaultsOnly, Category = "Cube")
 	TSubclassOf<AStaticMeshActor> ApparatusRoomClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Room")
+	UPROPERTY(EditDefaultsOnly, Category = "Cube")
 	TSubclassOf<AStaticMeshActor> ServerRoomClass;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Room")
+	UPROPERTY(EditDefaultsOnly, Category = "Cube")
 	TSubclassOf<AStaticMeshActor> CabinetRoomClass;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Room")
+	UPROPERTY(EditDefaultsOnly, Category = "Cube")
 	TSubclassOf<AStaticMeshActor> PipedHallways_GridClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Room")
+	UPROPERTY(EditDefaultsOnly, Category = "Cube")
 	TSubclassOf<AStaticMeshActor> PipedHallways_LineClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Room")
+	UPROPERTY(EditDefaultsOnly, Category = "Cube")
 	TSubclassOf<AStaticMeshActor> RailCatwalkClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Room")
+	UPROPERTY(EditDefaultsOnly, Category = "Cube")
 	TSubclassOf<AStaticMeshActor> StaircaseClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Room")
+	UPROPERTY(EditDefaultsOnly, Category = "Cube")
 	TSubclassOf<AStaticMeshActor> StorageRoom_ConerClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Room")
+	UPROPERTY(EditDefaultsOnly, Category = "Cube")
 	TSubclassOf<AStaticMeshActor> StorageRoom_RectClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Room")
+	UPROPERTY(EditDefaultsOnly, Category = "Cube")
 	TSubclassOf<AStaticMeshActor> StorageRoom_StepClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Room")
+	UPROPERTY(EditDefaultsOnly, Category = "Cube")
 	TSubclassOf<AStaticMeshActor> YellowOfficeRoomClass;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Room")
+	UPROPERTY(EditDefaultsOnly, Category = "Cube")
 	TSubclassOf<AStaticMeshActor> 	FactoryRoomClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Room")
+	UPROPERTY(EditDefaultsOnly, Category = "Cube")
 	TSubclassOf<AStaticMeshActor> 	Wall_FillerClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Cube")
+
+	TSubclassOf<AStaticMeshActor> DoorClass;
 
 	// ∏ÛΩ∫≈Õ
 	UPROPERTY(EditDefaultsOnly, Category = "Monster")

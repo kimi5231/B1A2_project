@@ -393,7 +393,7 @@ void AMyPlayer::UpdateToolVisual()
 		Params.Owner = this;
 
 		// Tool 액터 생성
-		CurrentToolActor = GetWorld()->SpawnActor<AActor>(ToolClass, FVector::ZeroVector, FRotator::ZeroRotator, Params);
+		CurrentToolActor = GetWorld()->SpawnActor<ABaseItem>(ToolClass, FVector::ZeroVector, FRotator::ZeroRotator, Params);
 
 		if (CurrentToolActor)
 		{
@@ -547,33 +547,56 @@ void AMyPlayer::UseTool()
 	if (IsBusy)
 		return;
 
-	IsBusy = true;
+	UToolBarWidget* widget = Cast<UToolBarWidget>(_toolBarWidgetInstance);
+	if (!widget)
+		return;
 
-	// 아직 Tool 생성이 안 돼서 테스트용으로 애니메이션 넣음
-	float duration = PlayAnimMontage(ComboMontage, 1.0f, FName("Slash"));
-	if (duration > 0.f)
+	FDroppedItemInfo ToolInfo = widget->GetSelectedToolBarTool();
+	if (ToolInfo.itemID == -1)
+		return;
+
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && ComboMontage)
 	{
-		FTimerHandle timerHandle;
-		GetWorldTimerManager().SetTimer(timerHandle, [this]() {IsBusy = false; }, duration, false);
-	}
-	else
-	{
-		IsBusy = false;
+		IsBusy = true; // 입력 차단 시작
+
+		// 몽타주 실행
+		float duration = PlayAnimMontage(ComboMontage, 1.0f, FName("Slash"));
+
+		if (duration > 0.f)
+		{
+			// 타이머 대신 종료 델리게이트 설정
+			FOnMontageEnded EndDelegate;
+			EndDelegate.BindUObject(this, &AMyPlayer::OnToolMontageEnded);
+			AnimInstance->Montage_SetEndDelegate(EndDelegate, ComboMontage);
+		}
+		else
+		{
+			IsBusy = false; // 재생 실패 시 즉시 해제
+		}
 	}
 
-	//if (IsBusy || _currentTool == EToolType::None)
-	//	return;
-	//
-	//switch (_currentTool)
-	//{
-	//case EToolType::None:	// Test
-	//case EToolType::Sword:
-	//	float duration = PlayAnimMontage(ComboMontage, 1.0f, FName("Slash"));
-	//	if (duration > 0.f)
-	//	{
-	//		FTimerHandle timerHandle;
-	//		GetWorldTimerManager().SetTimer(timerHandle, [this]() {IsBusy = false; }, duration, false);
-	//	}
-	//	break;
-	//}
+	// 서버에 C_UseTool 송신
+	if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
+	{	
+		FRotator rot = GetControlRotation();
+		// - 180 ~ 180 값을 0 ~ 360으로 정규화
+		float normPitch = FRotator::NormalizeAxis(rot.Pitch);
+		if (normPitch < 0) normPitch += 360.0f;
+		float normYaw = FRotator::NormalizeAxis(rot.Yaw);
+		if (normYaw < 0) normYaw += 360.0f;
+		float normRoll = FRotator::NormalizeAxis(rot.Roll);
+		if (normRoll < 0) normRoll += 360.0f;
+		Rotation rotation = { normPitch, normYaw, normRoll };
+
+		gameInstance->SendUseTool(gameInstance->GetMyID(),ToolInfo.itemID, rotation);
+		//UE_LOG(LogTemp, Log, TEXT("[Tool] Use Tool, Tool ID: %d, Type: %d"), ToolInfo.itemID, (int32)type);
+	}
+}
+
+void AMyPlayer::OnToolMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	// 몽타주가 정상 종료되었거나, 다른 애니메이션에 의해 끊겼을 때 종료됨
+	IsBusy = false;
+	UE_LOG(LogTemp, Log, TEXT("[Tool] Montage Ended. IsBusy is now False. Interrupted: %s"), bInterrupted ? TEXT("True") : TEXT("False"));
 }

@@ -7,6 +7,7 @@
 #include "InteractableInterface.h"
 #include "Components/WidgetComponent.h"
 #include "Components/SphereComponent.h"
+#include "Network/Includes.h"
 
 #include "BaseItem.generated.h"
 
@@ -39,6 +40,9 @@ public:
 
 	void PickUp(USceneComponent* mesh, FName socketName);
 
+	void SetItemType(ItemType type) { _type = type; }
+	ItemType GetItemType() { return _type; }
+ 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* ItemMesh;
@@ -52,4 +56,5 @@ protected:
 private:
 	int _itemID = {};
 	bool _isTool = false;
+	ItemType _type;
 };

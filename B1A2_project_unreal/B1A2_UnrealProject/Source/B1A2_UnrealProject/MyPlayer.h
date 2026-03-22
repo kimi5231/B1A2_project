@@ -148,7 +148,7 @@ protected:
 	FTimerHandle ToolChangeTimerHandle;
 	// 현재 손에 들고 있는 Tool Actor
 	UPROPERTY()
-	AActor* CurrentToolActor;
+	ABaseItem* CurrentToolActor;
 	// Tool이 붙을 뼈
 	const FName HandSocketName = TEXT("RightHandSocket");
 	// 패킷 보내기
@@ -175,6 +175,9 @@ private:
 
 	void Interact();
 	void UseTool();
+	// 몽타주 애니메이션 종료시 호출
+	UFUNCTION()
+	void OnToolMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
 	// 위치 정보 Send 타이머
 	float _movePacketSendTimer = 0.2f;	// 현재 남은 시간
