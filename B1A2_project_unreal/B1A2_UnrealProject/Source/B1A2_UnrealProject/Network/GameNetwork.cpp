@@ -161,7 +161,7 @@ void GameNetwork::ProcessRecv()
 		_recvEvents.push_back(event);
 		break;
 	}
-	case S_CreateGameRoom:
+	case S_CreateCubes:
 	{
 		NetworkEventRef event = std::make_shared<NetworkEvent>();
 		event->packetID = header.id;

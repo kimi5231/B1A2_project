@@ -63,7 +63,7 @@ public:
 	void RecvMoveMonster(S_Move_Packet packet);
 
 	void RecvUpdateObjectState(S_UpdateObjectState_Packet packet);
-	void RecvCreateGameRoom(S_CreateGameRoom_Packet packet);
+	void RecvCreateCubes(S_CreateCubes_Packet packet);
 	void RecvAddItemToInventory(S_AddItemToInventory_Packet packet);
 	void RecvItemPickupNotify(S_ItemPickupNotify_Packet packet);
 	void RecvUpdateCurrentTool(S_UpdateCurrentTool_Packet packet);

@@ -149,7 +149,7 @@ struct S_Move_Packet
 
 struct S_CreateCubes_Packet
 {
-	std::vector<CubeDTO> Cubes;
+	std::vector<CubeDTO> cubes;
 	std::vector<WallDTO> walls;
 };
 

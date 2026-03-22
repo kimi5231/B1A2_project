@@ -347,16 +347,16 @@ void ServerFramework::SendMovePacket(GameObjectRef object, bool broadcast, SOCKE
 
 void ServerFramework::SendCreateCubesPacket(const std::vector<CubeRef>& cubes, bool broadcast, SOCKET client)
 {
-	std::vector<CubeDTO> roomInfos;
-	roomInfos.resize(cubes.size());
+	std::vector<CubeDTO> cubeInfos;
+	cubeInfos.resize(cubes.size());
 
 	uint idx = 0;
 	std::vector<DoorRef> walls;
 	for (const CubeRef gameRoom : cubes)
 	{
-		roomInfos[idx].type = gameRoom->GetGameRoomType();
-		roomInfos[idx].pos = gameRoom->GetPos();
-		roomInfos[idx].dir = gameRoom->GetDir();
+		cubeInfos[idx].type = gameRoom->GetGameRoomType();
+		cubeInfos[idx].pos = gameRoom->GetPos();
+		cubeInfos[idx].dir = gameRoom->GetDir();
 
 		walls.insert(walls.end(), gameRoom->GetWalls().begin(), gameRoom->GetWalls().end());
 		idx++;
@@ -374,7 +374,7 @@ void ServerFramework::SendCreateCubesPacket(const std::vector<CubeRef>& cubes, b
 	}*/
 	
 	// Packet Serialize
-	std::vector<char> cubeData = SerializeVector(roomInfos);
+	std::vector<char> cubeData = SerializeVector(cubeInfos);
 	std::vector<char> wallData = SerializeVector(wallInfos);
 	std::vector<char> serializedPacketData;
 
