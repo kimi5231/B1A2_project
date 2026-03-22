@@ -97,7 +97,7 @@ void GameNetwork::ProcessRecv()
 	}
 
 	// Packet 荐脚(啊函 单捞磐)
-	std::vector<char> packet(3000);
+	std::vector<char> packet(4000);
 	if (recv(_clientSocket, packet.data(), packetSize, MSG_WAITALL) <= 0)
 	{
 		//ProcessDisconnect(client);
@@ -356,6 +356,23 @@ void GameNetwork::SendUseTool(int playerID, int toolID, Rotation playerRotation)
 	// SendEvent 积己
 	NetworkEventRef event = std::make_shared<NetworkEvent>();
 	event->packetID = C_UseTool;
+	event->serializedPacketData = serializedPacketData;
+
+	std::lock_guard<std::mutex> lock(_sendMutex);
+	_sendEvents.push_back(event);
+}
+
+void GameNetwork::SendInteractDoor(int playerID, int doorID)
+{
+	// Packet Data 积己
+	C_InteractDoor_Packet packetData{ playerID, doorID };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	// SendEvent 积己
+	NetworkEventRef event = std::make_shared<NetworkEvent>();
+	event->packetID = C_InteractDoor;
 	event->serializedPacketData = serializedPacketData;
 
 	std::lock_guard<std::mutex> lock(_sendMutex);

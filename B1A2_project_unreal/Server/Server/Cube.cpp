@@ -20,8 +20,9 @@ void Cube::Update()
 }
 
 // 추후 비상구 생성 여부도 따질 것
-std::vector<DoorRef>& Cube::CreateDoors()
+std::vector<DoorRef> Cube::CreateDoors()
 {
+	std::vector<DoorRef> doors;
 	for (int i = 0; i < _info.doorPos.size(); i++)
 	{
 		Vector doorPos{};
@@ -47,10 +48,10 @@ std::vector<DoorRef>& Cube::CreateDoors()
 		}
 
 		DoorRef door = std::make_shared<Door>(doorPos, _info.doorDir[i], _id, _dir);
-		_doors.push_back(door);
+		doors.push_back(door);
 	}
 
-	return _doors;
+	return doors;
 	
 	//// 2층 문 생성
 	//if (_info.f2DoorPos.size())

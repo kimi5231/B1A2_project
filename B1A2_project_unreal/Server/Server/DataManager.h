@@ -13,7 +13,7 @@ public:
 
 public:
 	const CubeConditionInfo& GetGameRoomConditionInfo(Difficulty current, Difficulty detail) { return _gameRoomconditionInfos[{current, detail}]; }
-	const CubeInfo& GetGameRoomInfo(CubeType type) { return _gameRoomInfos[type]; }
+	const CubeInfo& GetCubeInfo(CubeType type) { return _gameRoomInfos[type]; }
 	const std::vector<std::vector<std::vector<short>>>& GetTilemap(CubeType type) { return _gameRoomTilemaps[type]; }
 
 private:

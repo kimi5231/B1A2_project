@@ -29,6 +29,7 @@ public:
 	const std::unordered_map<uint, MonsterRef>& GetMonsters() { return _monsters; }
 	const std::vector<ItemRef>& GetItems() { return _items; }
 	const std::vector<CubeRef>& GetCubes() { return _cubes; }
+	const std::vector<DoorRef>& GetDoors() { return _doors; }
 
 private:
 	// 추후 로그인 기능 추가 후 ID로 대체할 것
@@ -37,6 +38,7 @@ private:
 	uint _generateItemID{};
 
 	std::vector<CubeRef> _cubes;
+	std::vector<DoorRef> _doors;
 	std::unordered_map<uint, PlayerRef> _players;
 	std::unordered_map<uint, MonsterRef> _monsters;
 	std::vector<ItemRef> _items;

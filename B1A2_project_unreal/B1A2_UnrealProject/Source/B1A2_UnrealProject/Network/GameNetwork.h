@@ -32,6 +32,7 @@ public:
 	void SendDropItemPacket(int itemID, bool isTool, int playerID);
 	void SendChangeTool(int playerID, int toolID);
 	void SendUseTool(int playerID, int toolID, Rotation playerRotation);
+	void SendInteractDoor(int playerID, int doorID);
 
 public:
 	std::vector<NetworkEventRef>& GetRecvEvents() { return _recvEvents; }

@@ -49,13 +49,14 @@ public:
 	void SendRemoveObjectPacket(ObjectType objectType, uint objectID, bool broadcast, SOCKET client = 0);
 	void SendUpdateObjectStatePacket(GameObjectRef object, bool broadcast, SOCKET client = 0);
 	void SendMovePacket(GameObjectRef object, bool broadcast, SOCKET client = 0);
-	void SendCreateCubesPacket(const std::vector<CubeRef>& cubes, bool broadcast, SOCKET client = 0);
+	void SendCreateCubesPacket(const std::vector<CubeRef>& cubes, const std::vector<DoorRef>& doors, bool broadcast, SOCKET client = 0);
 	void SendAddItemToInventoryPacket(ItemRef item, bool isTool, bool broadcast, SOCKET client = 0);
 	void SendItemPickupNotifyPacket(ItemRef item, uint playerID, bool isTool, bool broadcast, SOCKET client = 0);
 	void SendDropItemPacket(ItemRef item, PlayerRef player, bool isTool, bool broadcast, SOCKET client = 0);
 	void SendUpdateCurrentToolPacket(uint playerID, uint itemID, ItemType type, bool broadcast, SOCKET client = 0);
 	void SendUseToolPacket(uint playerID, ItemType type, bool broadcast, SOCKET client = 0);
 	void SendSpawnParticlePacket(Vector pos, bool broadcast, SOCKET client = 0);
+	void SendInteractDoorNotifyPacket(uint playerID, uint doorID, ObjectState doorState, bool broadcast, SOCKET client = 0);
 	void Broadcast(PacketID id, const std::vector<char>& packetData);
 
 public:
@@ -68,6 +69,7 @@ public:
 	void ProcessDropItemPacket(C_DropItem_Packet packet);
 	void ProcessChangeToolPacket(C_ChangeTool_Packet packet);
 	void ProcessUseToolPacket(C_UseTool_Packet packet);
+	void ProcessInteractDoorPacket(C_InteractDoor_Packet packet);
 
 public:
 	Room* GetRoom() { return _room; }
