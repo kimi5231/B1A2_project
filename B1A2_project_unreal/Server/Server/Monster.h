@@ -8,5 +8,5 @@ public:
 	~Monster();
 
 public:
-	void Update(const std::vector<GameRoomRef>& gameRooms);
+	void Update(const std::vector<CubeRef>& gameRooms);
 };

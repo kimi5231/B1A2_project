@@ -24,7 +24,7 @@ using SendEventRef = std::shared_ptr<class SendEvent>;
 using ClientRef = std::shared_ptr<class Client>;
 using RoomRef = std::shared_ptr<class Room>;
 
-using GameRoomRef = std::shared_ptr<class GameRoom>;
+using CubeRef = std::shared_ptr<class Cube>;
 using GameObjectRef = std::shared_ptr<class GameObject>;
 using PlayerRef = std::shared_ptr<class Player>;
 using MonsterRef = std::shared_ptr<class Monster>;

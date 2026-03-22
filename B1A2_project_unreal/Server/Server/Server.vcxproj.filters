@@ -53,7 +53,7 @@
     <ClCompile Include="Global.cpp">
       <Filter>소스 파일\Main</Filter>
     </ClCompile>
-    <ClCompile Include="GameRoom.cpp">
+    <ClCompile Include="Cube.cpp">
       <Filter>소스 파일\Game\Stage</Filter>
     </ClCompile>
     <ClCompile Include="DataManager.cpp">
@@ -97,7 +97,7 @@
     <ClInclude Include="Global.h">
       <Filter>소스 파일\Main</Filter>
     </ClInclude>
-    <ClInclude Include="GameRoom.h">
+    <ClInclude Include="Cube.h">
       <Filter>소스 파일\Game\Stage</Filter>
     </ClInclude>
     <ClInclude Include="Types.h">

@@ -2,7 +2,7 @@
 #include "ServerFramework.h"
 #include "Room.h"
 #include "Player.h"
-#include "GameRoom.h"
+#include "Cube.h"
 #include "Item.h"
 #include "Tool.h"
 #include "Door.h"
@@ -345,14 +345,14 @@ void ServerFramework::SendMovePacket(GameObjectRef object, bool broadcast, SOCKE
 	_sendEvents.push_back(event);
 }
 
-void ServerFramework::SendCreateGameRoomPacket(const std::vector<GameRoomRef>& gameRooms, bool broadcast, SOCKET client)
+void ServerFramework::SendCreateCubesPacket(const std::vector<CubeRef>& cubes, bool broadcast, SOCKET client)
 {
-	std::vector<GameRoomDTO> roomInfos;
-	roomInfos.resize(gameRooms.size());
+	std::vector<CubeDTO> roomInfos;
+	roomInfos.resize(cubes.size());
 
 	uint idx = 0;
 	std::vector<DoorRef> walls;
-	for (const GameRoomRef gameRoom : gameRooms)
+	for (const CubeRef gameRoom : cubes)
 	{
 		roomInfos[idx].type = gameRoom->GetGameRoomType();
 		roomInfos[idx].pos = gameRoom->GetPos();
@@ -374,18 +374,18 @@ void ServerFramework::SendCreateGameRoomPacket(const std::vector<GameRoomRef>& g
 	}*/
 	
 	// Packet Serialize
-	std::vector<char> gameRoomData = SerializeVector(roomInfos);
+	std::vector<char> cubeData = SerializeVector(roomInfos);
 	std::vector<char> wallData = SerializeVector(wallInfos);
 	std::vector<char> serializedPacketData;
 
-	serializedPacketData.insert(serializedPacketData.end(), gameRoomData.begin(), gameRoomData.end());
+	serializedPacketData.insert(serializedPacketData.end(), cubeData.begin(), cubeData.end());
 	serializedPacketData.insert(serializedPacketData.end(), wallData.begin(), wallData.end());
 
 	// SendEvent 생성
 	SendEventRef event = std::make_shared<SendEvent>();
 	event->isBroadcast = broadcast;
 	event->clientSocket = client;
-	event->packetID = S_CreateGameRoom;
+	event->packetID = S_CreateCubes;
 	event->serializedPacketData = serializedPacketData;
 
 	_sendEvents.push_back(event);
@@ -521,7 +521,7 @@ void ServerFramework::ProcessAccept(SOCKET clientSocket)
 
 	// 추후 게임 시작 시 broadcast로 보내도록 코드 옮기기
 	// GameRoom 정보 송신
-	SendCreateGameRoomPacket(_room->GetGameRooms(), false, newClient->socket);
+	SendCreateCubesPacket(_room->GetCubes(), false, newClient->socket);
 
 	// 새로 접속한 Client에게 Room에 있는 모든 Object 정보 송신
 	const std::unordered_map<uint, PlayerRef>& players = _room->GetPlayers();
@@ -556,7 +556,7 @@ void ServerFramework::ProcessDisconnect(ClientRef client)
 
 void ServerFramework::ProcessUpdateObjectStatePacket(C_UpdateObjectState_Packet packet)
 {
-	GameObjectRef object = _room->GetObject(packet.type, packet.objectID);
+	GameObjectRef object = _room->GetGameObject(packet.type, packet.objectID);
 
 	object->SetState(packet.state);
 
@@ -570,7 +570,7 @@ void ServerFramework::ProcessUpdateObjectStatePacket(C_UpdateObjectState_Packet 
 
 void ServerFramework::ProcessMovePacket(C_Move_Packet packet)
 {
-	GameObjectRef object = _room->GetObject(packet.type, packet.objectID);
+	GameObjectRef object = _room->GetGameObject(packet.type, packet.objectID);
 
 	if (object == nullptr)
 		return;
@@ -590,14 +590,14 @@ void ServerFramework::ProcessMovePacket(C_Move_Packet packet)
 void ServerFramework::ProcessGetItemPacket(SOCKET clientSocket, C_GetItem_Packet packet)
 {
 	// Player가 요청한 아이템이 얻을 수 있는 것인지 확인
-	ItemRef item = std::dynamic_pointer_cast<Item>(_room->GetObject(ObjectType::Item, packet.itemID));
+	ItemRef item = std::dynamic_pointer_cast<Item>(_room->GetGameObject(ObjectType::Item, packet.itemID));
 	if (item->GetObjectPoolState() != ObjectPoolState::InWorld)
 		return;
 
 	// 아이템을 얻을 수 있는 조건인지 확인(거리)
 	
 	// 얻을 수 있는 아이템이라면 Player 인벤토리에 추가
-	PlayerRef player = std::dynamic_pointer_cast<Player>(_room->GetObject(ObjectType::Player, packet.playerID));
+	PlayerRef player = std::dynamic_pointer_cast<Player>(_room->GetGameObject(ObjectType::Player, packet.playerID));
 	// 아이템이 제대로 추가되었다면
 	if (player->AddItemToInventory(packet.isTool, packet.itemID))
 	{
@@ -619,12 +619,12 @@ void ServerFramework::ProcessGetItemPacket(SOCKET clientSocket, C_GetItem_Packet
 void ServerFramework::ProcessDropItemPacket(C_DropItem_Packet packet)
 {
 	// Player 인벤토리에서 아이템 제거
-	PlayerRef player = dynamic_pointer_cast<Player>(_room->GetObject(ObjectType::Player, packet.playerID));
+	PlayerRef player = dynamic_pointer_cast<Player>(_room->GetGameObject(ObjectType::Player, packet.playerID));
 	// 아이템이 제대로 제거되었다면
 	if (player->RemoveItemFromInventory(packet.isTool, packet.itemID))
 	{
 		// 떨어뜨린 아이템 ObjectPoolState 변경
-		ItemRef item = std::dynamic_pointer_cast<Item>(_room->GetObject(ObjectType::Item, packet.itemID));
+		ItemRef item = std::dynamic_pointer_cast<Item>(_room->GetGameObject(ObjectType::Item, packet.itemID));
 		item->SetObjectPoolState(ObjectPoolState::InWorld);
 
 		SendDropItemPacket(item, player, packet.isTool, true);
@@ -634,13 +634,13 @@ void ServerFramework::ProcessDropItemPacket(C_DropItem_Packet packet)
 void ServerFramework::ProcessChangeToolPacket(C_ChangeTool_Packet packet)
 {
 	// Player 인벤토리에 해당 도구가 존재하는지 확인
-	PlayerRef player = dynamic_pointer_cast<Player>(_room->GetObject(ObjectType::Player, packet.playerID));
+	PlayerRef player = dynamic_pointer_cast<Player>(_room->GetGameObject(ObjectType::Player, packet.playerID));
 	if (player->ExistItem(true, packet.toolID))
 	{
 		// 도구가 존재하면 해당 도구를 들도록 설정
 		player->SetCurrentTool(packet.toolID);
 
-		ItemRef item = std::dynamic_pointer_cast<Item>(_room->GetObject(ObjectType::Item, packet.toolID));
+		ItemRef item = std::dynamic_pointer_cast<Item>(_room->GetGameObject(ObjectType::Item, packet.toolID));
 		SendUpdateCurrentToolPacket(packet.playerID, packet.toolID, item->GetItemType(), true);
 	}
 }
@@ -648,11 +648,11 @@ void ServerFramework::ProcessChangeToolPacket(C_ChangeTool_Packet packet)
 void ServerFramework::ProcessUseToolPacket(C_UseTool_Packet packet)
 {
 	// 요청된 도구가 Player가 들고 있는 도구가 맞는지 확인
-	PlayerRef player = dynamic_pointer_cast<Player>(_room->GetObject(ObjectType::Player, packet.playerID));
+	PlayerRef player = dynamic_pointer_cast<Player>(_room->GetGameObject(ObjectType::Player, packet.playerID));
 	if (player->GetCurrentTool() == packet.toolID)
 	{
 		// 도구 사용 처리
-		ToolRef tool = std::dynamic_pointer_cast<Tool>(_room->GetObject(ObjectType::Item, packet.toolID));
+		ToolRef tool = std::dynamic_pointer_cast<Tool>(_room->GetGameObject(ObjectType::Item, packet.toolID));
 		tool->UseTool();
 
 		// 도구 사용 알리기

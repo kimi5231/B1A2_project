@@ -22,9 +22,9 @@ void DataManager::LoadGameRoomConditionInfos()
     // GameRoomConditionInfo 추출
     for (const auto& condition : data["conditions"])
     {
-        GameRoomConditionInfo info;
+        CubeConditionInfo info;
 
-        info.totalGameRoomCount = condition["totalRoomCount"];
+        info.totalCubeCount = condition["totalRoomCount"];
 
         info.createItemCount.first = condition["createItemCount"]["min"];
         info.createItemCount.second = condition["createItemCount"]["max"];
@@ -44,25 +44,18 @@ void DataManager::LoadGameRoomConditionInfos()
 
 void DataManager::LoadGameRoomInfos()
 {
-    std::ifstream file(_dataPath/"GameRoomInfos.json");
+    std::ifstream file(_dataPath/"CubeInfos.json");
     json data = json::parse(file);
 
     // GameRoomInfo 추출
     for (const auto& room : data["rooms"])
     {
-        GameRoomInfo info;
+        CubeInfo info;
 
         info.type = room["type"];
         info.size.x = room["size"][0];
         info.size.y = room["size"][1];
         info.size.z = room["size"][2];
-
-       /* for (int i = 0; i < DirCount; i++)
-        {
-            info.leftTopPos[static_cast<Dir>(i)].x = room["leftTopPos"][i][0];
-            info.leftTopPos[static_cast<Dir>(i)].y = room["leftTopPos"][i][1];
-            info.leftTopPos[static_cast<Dir>(i)].z = room["leftTopPos"][i][2];
-        }*/
             
         info.isCreateItem = room["isCreateItem"];
         info.isCreateExit = room["isCreateExit"];
@@ -78,26 +71,6 @@ void DataManager::LoadGameRoomInfos()
         info.f1DoorCount.second = room["f1DoorCount"]["max"];
         info.f2DoorCount.first = room["f2DoorCount"]["min"];
         info.f2DoorCount.second = room["f2DoorCount"]["max"];
-    
-        /*for (const auto& doorPos : room["f1DoorPos"]) 
-        {            
-            Vector pos;
-            pos.x = doorPos[1];
-            pos.y = doorPos[2];
-            pos.z = doorPos[3];
-            
-            info.f1DoorPos[doorPos[0]].push_back(pos);
-        }
-
-        for (const auto& doorPos : room["f2DoorPos"])
-        {
-            Vector pos;
-            pos.x = doorPos[1];
-            pos.y = doorPos[2];
-            pos.z = doorPos[3];
-
-            info.f2DoorPos[doorPos[0]].push_back(pos);
-        }*/
 
         for (const auto& doorPos : room["f1DoorPos"])
         {
@@ -136,7 +109,7 @@ void DataManager::LoadGameRoomTilemaps()
     // GameRoomTilemap 추출
     for (const auto& tilemap : data["tilemaps"])
     {
-        GameRoomType type = tilemap["type"];
+        CubeType type = tilemap["type"];
         Vector tileCount{ tilemap["tileCount"][0], tilemap["tileCount"][1], tilemap["tileCount"][2] };
 
         std::vector<std::vector<std::vector<short>>> tilemap3D;

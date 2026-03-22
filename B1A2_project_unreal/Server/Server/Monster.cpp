@@ -2,7 +2,7 @@
 #include "Monster.h"
 #include "Global.h"
 #include "Room.h"
-#include "GameRoom.h"
+#include "Cube.h"
 #include "DataManager.h"
 
 Monster::Monster()
@@ -19,11 +19,11 @@ Monster::~Monster()
 {
 }
 
-void Monster::Update(const std::vector<GameRoomRef>& gameRooms)
+void Monster::Update(const std::vector<CubeRef>& gameRooms)
 {
 	// 현재 위치한 방이 어디인지 확인
-	GameRoomRef currentCube;
-	for (const GameRoomRef gameRoom : gameRooms)
+	CubeRef currentCube;
+	for (const CubeRef gameRoom : gameRooms)
 	{
 		if (gameRoom->GetBoundingBox().CheckInclude(_pos))
 		{
@@ -44,11 +44,11 @@ void Monster::Update(const std::vector<GameRoomRef>& gameRooms)
 	Vector start{ cubePos.x - cubeSize.x / 2, cubePos.y - cubeSize.y / 2, cubePos.z };
 	switch (currentCube->GetGameRoomType())
 	{
-	case GameRoomType::GapRoom:	// 입구가 2층
-	case GameRoomType::RailCatwalk:
-	case GameRoomType::StorageRoom_Step:
-	case GameRoomType::CabinetRoom:
-	case GameRoomType::FactoryRoom:
+	case CubeType::GapRoom:	// 입구가 2층
+	case CubeType::RailCatwalk:
+	case CubeType::StorageRoom_Step:
+	case CubeType::CabinetRoom:
+	case CubeType::FactoryRoom:
 		start.z -= 600;
 		break;
 	}
@@ -106,7 +106,7 @@ void Monster::Update(const std::vector<GameRoomRef>& gameRooms)
 		if (index < Vector{0, 0, 0} || index >= max)
 		{
 			bool flag = true;
-			std::vector<std::weak_ptr<GameRoom>>& connectedCubes = currentCube->GetConnectedCubes();
+			std::vector<std::weak_ptr<Cube>>& connectedCubes = currentCube->GetConnectedCubes();
 			for (const auto& cubeWeak : connectedCubes)
 			{
 				if (auto cube = cubeWeak.lock())
@@ -116,11 +116,11 @@ void Monster::Update(const std::vector<GameRoomRef>& gameRooms)
 					Vector otherstart{ otherCubePos.x - otherCubeSize.x / 2, otherCubePos.y - otherCubeSize.y / 2, otherCubePos.z };
 					switch (cube->GetGameRoomType())
 					{
-					case GameRoomType::GapRoom:	// 입구가 2층
-					case GameRoomType::RailCatwalk:
-					case GameRoomType::StorageRoom_Step:
-					case GameRoomType::CabinetRoom:
-					case GameRoomType::FactoryRoom:
+					case CubeType::GapRoom:	// 입구가 2층
+					case CubeType::RailCatwalk:
+					case CubeType::StorageRoom_Step:
+					case CubeType::CabinetRoom:
+					case CubeType::FactoryRoom:
 						otherstart.z -= 600;
 						break;
 					}

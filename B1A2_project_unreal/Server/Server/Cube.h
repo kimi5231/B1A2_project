@@ -3,11 +3,11 @@
 
 class Door;
 
-class GameRoom
+class Cube
 {
 public:
-	GameRoom(Vector pos, Dir dir, GameRoomInfo info);
-	~GameRoom();
+	Cube(Vector pos, Dir dir, CubeInfo info);
+	~Cube();
 
 public:
 	void Update();
@@ -17,13 +17,13 @@ public:
 	bool CheckCollision(BoundingBox other) { return _box.CheckCollision(other.GetBounds()); };
 	bool CheckInclude(BoundingBox other) { return _box.CheckInclude(other.GetBounds()); }
 
-	void AddConnectedRoom(GameRoomRef gameRoom) { _connetedRoom.push_back(gameRoom); }
+	void AddConnectedRoom(CubeRef gameRoom) { _connetedCube.push_back(gameRoom); }
 
 public:
-	void SetGameRoomInfo(GameRoomInfo info) { _info = info; }
-	GameRoomInfo GetGameRoomInfo() { return _info; }
-	void SetGameRoomType(GameRoomType type) { _info.type = type; }
-	GameRoomType GetGameRoomType() { return _info.type; }
+	void SetGameRoomInfo(CubeInfo info) { _info = info; }
+	CubeInfo GetGameRoomInfo() { return _info; }
+	void SetGameRoomType(CubeType type) { _info.type = type; }
+	CubeType GetGameRoomType() { return _info.type; }
 	void SetSize(Vector size) { _info.size = size; }
 	Vector GetSize() { return _info.size; }
 	void SetPos(Vector pos) { _pos = pos; }
@@ -33,17 +33,17 @@ public:
 	BoundingBox GetBoundingBox() { return _box; }
 	std::vector<DoorRef>& GetWalls() { return _walls; }
 	void SetID(uint id) { _id = id; }
-	std::vector<std::weak_ptr<GameRoom>>& GetConnectedCubes() { return _connetedRoom; }
+	std::vector<std::weak_ptr<Cube>>& GetConnectedCubes() { return _connetedCube; }
 
 private:
-	GameRoomInfo _info{};
+	CubeInfo _info{};
 	uint _id{};
 	Vector _pos{};
 	Dir _dir{};
 	BoundingBox _box;
 
 	// 순환참조 방지
-	std::vector<std::weak_ptr<GameRoom>> _connetedRoom;
+	std::vector<std::weak_ptr<Cube>> _connetedCube;
 	std::vector<DoorRef> _doors;
 	std::vector<DoorRef> _walls;
 };

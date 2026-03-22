@@ -1,25 +1,25 @@
 #include "pch.h"
-#include "GameRoom.h"
+#include "Cube.h"
 #include "Door.h"
 #include "Global.h"
 
-GameRoom::GameRoom(Vector pos, Dir dir, GameRoomInfo info)
+Cube::Cube(Vector pos, Dir dir, CubeInfo info)
 	: _pos(pos), _dir(dir), _info(info)
 {
 	_box.SetBounds(_pos, info.size, dir);
 }
 
-GameRoom::~GameRoom()
+Cube::~Cube()
 {
 }
 
-void GameRoom::Update()
+void Cube::Update()
 {
 
 }
 
 // 추후 비상구 생성 여부도 따질 것
-std::vector<DoorRef>& GameRoom::CreateDoors()
+std::vector<DoorRef>& Cube::CreateDoors()
 {
 	std::bernoulli_distribution isCreateDoor(0.5);
 

@@ -142,7 +142,7 @@
     <ClInclude Include="Packets.h" />
     <ClInclude Include="Tool.h" />
     <ClInclude Include="Types.h" />
-    <ClInclude Include="GameRoom.h" />
+    <ClInclude Include="Cube.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="pch.h" />
@@ -154,7 +154,7 @@
     <ClCompile Include="BoundingBox.cpp" />
     <ClCompile Include="DataManager.cpp" />
     <ClCompile Include="Door.cpp" />
-    <ClCompile Include="GameRoom.cpp" />
+    <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Global.cpp" />
     <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="Item.cpp" />

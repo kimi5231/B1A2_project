@@ -18,7 +18,7 @@ enum PacketID
 	S_RemoveObject,
 	S_UpdateObjectState,
 	S_Move,
-	S_CreateGameRoom,
+	S_CreateCubes,
 	S_AddItemToInventory,
 	S_ItemPickupNotify,
 	S_DropItem,
@@ -33,9 +33,9 @@ struct Header
 	int dataSize;
 };
 
-struct GameRoomDTO
+struct CubeDTO
 {
-	GameRoomType type;
+	CubeType type;
 	Vector pos;
 	Dir dir;
 };
@@ -147,9 +147,9 @@ struct S_Move_Packet
 	ObjectState state;
 };
 
-struct S_CreateGameRoom_Packet
+struct S_CreateCubes_Packet
 {
-	std::vector<GameRoomDTO> gameRooms;
+	std::vector<CubeDTO> Cubes;
 	std::vector<WallDTO> walls;
 };
 

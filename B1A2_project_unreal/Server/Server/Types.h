@@ -48,7 +48,7 @@ enum Dir
 	DirCount
 };
 
-enum class GameRoomType
+enum class CubeType
 {
 	MainEntranceRoom,
 
@@ -195,11 +195,10 @@ struct Rotation
 	float roll;
 };
 
-struct GameRoomInfo
+struct CubeInfo
 {
-	GameRoomType type;
+	CubeType type;
 	Vector size;
-	//std::unordered_map<Dir, Vector> leftTopPos;
 	bool isCreateItem;
 	bool isCreateExit;
 	std::unordered_map<Difficulty, uint> minCreateCount;
@@ -209,15 +208,13 @@ struct GameRoomInfo
 	std::pair<uint, uint> f2DoorCount;
 	std::vector<Vector> f1DoorPos;
 	std::vector<Vector> f2DoorPos;
-	//std::unordered_map<Dir, std::vector<Vector>> f1DoorPos;
-	//std::unordered_map<Dir, std::vector<Vector>> f2DoorPos;
 	std::vector<Dir> doorDir;
 	int enterDistance;
 };
 
-struct GameRoomConditionInfo
+struct CubeConditionInfo
 {
-	uint totalGameRoomCount;
+	uint totalCubeCount;
 	std::pair<uint, uint> createItemCount;
 	std::pair<uint, uint> createExitCount;
 	std::pair<uint, uint> exitPos;

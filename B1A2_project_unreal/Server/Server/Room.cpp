@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Room.h"
 #include "Global.h"
-#include "GameRoom.h"
+#include "Cube.h"
 #include "Door.h"
 #include "Item.h"
 #include "Tool.h"
@@ -15,7 +15,7 @@ Room::Room()
 	_currentDifficulty = Difficulty::Easy;
 	_detailDifficulty = Difficulty::Easy;
 
-	CreateFactoryGameRooms();
+	CreateFactoryCubes();
 
 	// 테스트용 아이템 생성
 	ItemRef scrap = std::make_shared<Item>(ItemType::CardboardBox);
@@ -50,7 +50,7 @@ void Room::Update()
 
 		// 몬스터 업데이트
 		for (const auto& item : _monsters)
-			item.second->Update(_gameRooms);
+			item.second->Update(_cubes);
 
 		// 플레이어, 몬스터 충돌 처리
 		/*for (const auto& playerItem : _players)
@@ -66,19 +66,19 @@ void Room::Update()
 	}
 }
 
-void Room::SetupGameRoomConditions()
+void Room::SetupCubeConditions()
 {
 	
 }
 
-void Room::CreateFactoryGameRooms()
+void Room::CreateFactoryCubes()
 {
 	// 난이도에 맞춰 조건 설정
-	GameRoomConditionInfo conditions = g_dataManager->GetGameRoomConditionInfo(_currentDifficulty, _detailDifficulty);
+	CubeConditionInfo conditions = g_dataManager->GetGameRoomConditionInfo(_currentDifficulty, _detailDifficulty);
 
 	// 방별 개수 초기화
-	for (int i = 0; i < static_cast<int>(GameRoomType::GameRoomTypeCount); i++)
-		_currentGameRoomCount[static_cast<GameRoomType>(i)] = 0;
+	for (int i = 0; i < static_cast<int>(CubeType::GameRoomTypeCount); i++)
+		_currentCubeCount[static_cast<CubeType>(i)] = 0;
 	
 	// 나중에 json으로 불러올 예정
 	// array로 바꾸는 것도 고려할 것, 고정된 크기
@@ -115,25 +115,25 @@ void Room::CreateFactoryGameRooms()
 	// 방 생성(문은 방 안에서 생성 + 비상구)
 	// MainEntranceRoom 생성
 	{
-		GameRoomInfo info = g_dataManager->GetGameRoomInfo(GameRoomType::MainEntranceRoom);
+		CubeInfo info = g_dataManager->GetGameRoomInfo(CubeType::MainEntranceRoom);
 
 		// 0층 중앙에 배치
 		Vector pos{};
 
-		GameRoomRef gameRoom = std::make_shared<GameRoom>(pos, Front, info);
+		CubeRef gameRoom = std::make_shared<Cube>(pos, Front, info);
 		gameRoom->SetID(generateGameRoomID++);
 
 		std::vector<DoorRef>& doors = gameRoom->CreateDoors();
 		for (const DoorRef door : doors)
 			_connectableDoors[door->GetDir()].push_back(door);
 
-		_gameRooms.push_back(gameRoom);
-		_currentGameRoomCount[GameRoomType::MainEntranceRoom]++;
+		_cubes.push_back(gameRoom);
+		_currentCubeCount[CubeType::MainEntranceRoom]++;
 	}
 
 	// 이후 방 절차적 생성
 	//while(conditions.totalGameRoomCount != _gameRooms.size())
-	for (int i : std::views::iota(1u, conditions.totalGameRoomCount))
+	for (int i : std::views::iota(1u, conditions.totalCubeCount))
 	{
 		// 연결할 방향 선택
 		Dir connectDir;
@@ -151,38 +151,38 @@ void Room::CreateFactoryGameRooms()
 
 		// GameRoomType 선택
 		// 연결할 방의 타입에 따라 가능한 방 타입 다르게 설정
-		GameRoomType type;
-		GameRoomType prevRoomType = _gameRooms[door->GetRoomID()]->GetGameRoomType();
+		CubeType type;
+		CubeType prevRoomType = _cubes[door->GetRoomID()]->GetGameRoomType();
 		switch (prevRoomType)
 		{
-		case GameRoomType::Staircase:
+		case CubeType::Staircase:
 		{
 			// 연결할 방이 계단 => 방, 난간 통로, 복도 가능
-			std::uniform_int_distribution<int> selectGameRoomType(static_cast<int>(GameRoomType::GapRoom), static_cast<int>(GameRoomType::PipedHallways_Grid));
-			type = static_cast<GameRoomType>(selectGameRoomType(gen));
+			std::uniform_int_distribution<int> selectGameRoomType(static_cast<int>(CubeType::GapRoom), static_cast<int>(CubeType::PipedHallways_Grid));
+			type = static_cast<CubeType>(selectGameRoomType(gen));
 			break;
 		}
-		case GameRoomType::RailCatwalk:
-		case GameRoomType::PipedHallways_Line:
+		case CubeType::RailCatwalk:
+		case CubeType::PipedHallways_Line:
 		{
 			// 연결할 방이 난간 통로 or 복도 => 모든 방 가능
-			std::uniform_int_distribution<int> selectGameRoomType(static_cast<int>(GameRoomType::GapRoom), static_cast<int>(GameRoomType::Staircase));
-			type = static_cast<GameRoomType>(selectGameRoomType(gen));
+			std::uniform_int_distribution<int> selectGameRoomType(static_cast<int>(CubeType::GapRoom), static_cast<int>(CubeType::Staircase));
+			type = static_cast<CubeType>(selectGameRoomType(gen));
 			break;
 		}
 		default:
 		{
 			// 연결할 방이 일반 방 => 계단, 난간 통로, 복도 가능
-			std::uniform_int_distribution<int> selectGameRoomType(static_cast<int>(GameRoomType::RailCatwalk), static_cast<int>(GameRoomType::Staircase));
-			type = static_cast<GameRoomType>(selectGameRoomType(gen));
+			std::uniform_int_distribution<int> selectGameRoomType(static_cast<int>(CubeType::RailCatwalk), static_cast<int>(CubeType::Staircase));
+			type = static_cast<CubeType>(selectGameRoomType(gen));
 			break;
 		}
 		}
 
-		GameRoomInfo info = g_dataManager->GetGameRoomInfo(type);
+		CubeInfo info = g_dataManager->GetGameRoomInfo(type);
 
 		// 선택된 GameRoomType이 이미 최대치만큼 있으면 다시 뽑기
-		if (_currentGameRoomCount[type] == info.maxCreateCount[_currentDifficulty])
+		if (_currentCubeCount[type] == info.maxCreateCount[_currentDifficulty])
 			continue;
 
 		Vector pos{};
@@ -207,11 +207,11 @@ void Room::CreateFactoryGameRooms()
 			break;
 		}
 
-		GameRoomRef newRoom = std::make_shared<GameRoom>(pos, dir, info);
+		CubeRef newRoom = std::make_shared<Cube>(pos, dir, info);
 
 		// 방을 배치할 자리가 있는지 확인
 		bool isCreate = true;
-		for (const GameRoomRef gameRoom : _gameRooms)
+		for (const CubeRef gameRoom : _cubes)
 		{
 			// 배치하려는 곳에 이미 방이 있으면 생성X
 			if (gameRoom->CheckCollision(newRoom->GetBoundingBox()))
@@ -238,11 +238,11 @@ void Room::CreateFactoryGameRooms()
 			newRoom->SetID(generateGameRoomID++);
 
 			// 연결된 방끼리 서로 기록
-			newRoom->AddConnectedRoom(_gameRooms[door->GetRoomID()]);
-			_gameRooms[door->GetRoomID()]->AddConnectedRoom(newRoom);
+			newRoom->AddConnectedRoom(_cubes[door->GetRoomID()]);
+			_cubes[door->GetRoomID()]->AddConnectedRoom(newRoom);
 
-			_gameRooms.push_back(newRoom);
-			_currentGameRoomCount[type]++;
+			_cubes.push_back(newRoom);
+			_currentCubeCount[type]++;
 
 			// 문 생성
 			std::vector<DoorRef>& doors = newRoom->CreateDoors();
@@ -326,7 +326,7 @@ void Room::RemoveObject(ObjectType type, uint id, bool isSend)
 		g_framework->SendRemoveObjectPacket(type, id, true);
 }
 
-GameObjectRef Room::GetObject(ObjectType type, uint id)
+GameObjectRef Room::GetGameObject(ObjectType type, uint id)
 {
 	switch (type)
 	{
