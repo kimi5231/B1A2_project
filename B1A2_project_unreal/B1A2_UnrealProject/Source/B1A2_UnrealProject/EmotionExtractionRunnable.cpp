@@ -9,6 +9,9 @@ EmotionExtractionRunnable::EmotionExtractionRunnable(UMain* main)
     : _main(main)
 {
     _running = true;
+
+    // 배열 초기화
+    _emotionAccumulators.Init(0.f, 7);
 }
 
 EmotionExtractionRunnable::~EmotionExtractionRunnable()
@@ -94,26 +97,37 @@ uint32 EmotionExtractionRunnable::Run()
             cv::Mat prob;
             cv::exp(output, prob);
 
-            double MaxVal = 0;
-            cv::Point MaxLoc;
-            cv::minMaxLoc(prob, nullptr, &MaxVal, nullptr, &MaxLoc);
-            int MaxIdx = MaxLoc.x;
-
-            // 로그 출력
-            FString scoreLog = TEXT("[OpenCV] Emotion Probabilities: ");
-            for (int i = 0; i < prob.cols; i++)
+            for (int i = 0; i < 7; i++)
             {
-                float s = prob.at<float>(0, i);
-                if (FER2013_Labels.IsValidIndex(i))
-                {
-                    scoreLog += FString::Printf(TEXT("[%s: %.2f] "), *FER2013_Labels[i], s);
-                }
+                _emotionAccumulators[i] += prob.at<float>(0, i);
             }
+            _capturedCount++;
 
-            UE_LOG(LogTemp, Log, TEXT("%s"), *scoreLog);
-            UE_LOG(LogTemp, Warning, TEXT(">> Result: %s (%.1f%%)"), *FER2013_Labels[MaxIdx], MaxVal * 100.0f);
+            UE_LOG(LogTemp, Log, TEXT("[OpenCV] Data Collected: %d/%d"), _capturedCount, TARGET_COUNT);
+
+            // 30개 이상 쌓이면 데이터 전송
+            if (_capturedCount >= TARGET_COUNT)
+            {
+                TArray<float> averages;
+                averages.Init(0.0f, 7);
+
+                for (int i = 0; i < 7; i++)
+                {
+                    averages[i] = _emotionAccumulators[i] / (float)TARGET_COUNT;
+                }
+
+                // Server로 전송
+                if (_main)
+                {
+                    _main->SendEmotion(averages[0], averages[1], averages[2], averages[3], averages[4], averages[5], averages[6]);
+                    UE_LOG(LogTemp, Warning, TEXT("[OpenCV] 30 Frames Averaged and Packet Sent!"));
+                }
+
+                // 초기화
+                for (int i = 0; i < 7; i++) _emotionAccumulators[i] = 0.0f;
+                _capturedCount = 0;
+            }
         }
-
         FPlatformProcess::Sleep(1.0f);
     }
     return 0;

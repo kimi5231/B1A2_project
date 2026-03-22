@@ -42,6 +42,8 @@ public:
 	// 장비 떼기
 	void UnequipTool(int itemID);
 
+	void UpdateTool(ItemType type);
+
 private:
 	FVector _prevPos;
 	FRotator _prevRot;
@@ -85,4 +87,15 @@ protected:
 	// 몽타주 재생시 움직임 금지
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
 	bool IsBusy = false;
+
+protected:
+	// Tool 사용 타이머 핸들
+	FTimerHandle ToolChangeTimerHandle;
+	// 현재 손에 들고 있는 Tool Actor
+	UPROPERTY()
+	ABaseItem* CurrentToolActor;
+	// Tool이 붙을 뼈
+	const FName HandSocketName = TEXT("RightHandSocket");
+
+	TSubclassOf<class ABaseItem> GetToolClass(ItemType Type);
 };

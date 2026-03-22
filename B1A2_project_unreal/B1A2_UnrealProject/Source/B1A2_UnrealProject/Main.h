@@ -41,6 +41,7 @@ public:
 	void SendDropItem(int playerID, bool isTool, int itemID);
 	void SendChangeTool(int playerID, int toolID);
 	void SendUseTool(int playerID, int toolID, Rotation playerRotation);
+	void SendEmotion(float angry, float disgust, float fear, float happy, float sad, float surprise, float neutral);
 
 	// Recv
 	void Update();

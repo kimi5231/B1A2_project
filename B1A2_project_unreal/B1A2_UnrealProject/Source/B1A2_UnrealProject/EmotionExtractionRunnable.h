@@ -34,4 +34,8 @@ private:
 
 	// 감정 라벨(FER2013)
 	TArray<FString> Labels = { TEXT("Angry"), TEXT("Disgust"), TEXT("Fear"), TEXT("Happy"), TEXT("Sad"), TEXT("Surprise"), TEXT("Neutral") };
+
+	TArray<float> _emotionAccumulators;	// 감정 점수 누적
+	int32 _capturedCount = 0;
+	const int32 TARGET_COUNT = 30;
 };

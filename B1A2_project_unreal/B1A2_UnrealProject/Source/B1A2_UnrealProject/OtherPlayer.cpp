@@ -177,3 +177,44 @@ void AOtherPlayer::PickUpMontageEnded(UAnimMontage* montage, bool bIntererrupted
 void AOtherPlayer::UnequipTool(int itemID)
 {
 }
+
+void AOtherPlayer::UpdateTool(ItemType type)
+{
+	if (CurrentToolActor)
+	{
+		CurrentToolActor->Destroy();
+		CurrentToolActor = nullptr;
+	}
+
+	TSubclassOf<ABaseItem> ToolClass = GetToolClass(type);
+
+	if (ToolClass)
+	{
+		FActorSpawnParameters Params;
+		Params.Owner = this;
+
+		CurrentToolActor = GetWorld()->SpawnActor<ABaseItem>(ToolClass, FVector::ZeroVector, FRotator::ZeroRotator, Params);
+
+		if (CurrentToolActor)
+		{
+			CurrentToolActor->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, HandSocketName);
+			CurrentToolActor->SetActorEnableCollision(false);
+		}
+	}
+}
+
+TSubclassOf<class ABaseItem> AOtherPlayer::GetToolClass(ItemType Type)
+{
+	UMain* GameInstance = Cast<UMain>(GetGameInstance());
+	if (!GameInstance)
+		return nullptr;
+
+	switch (Type)
+	{
+	case ItemType::Cutlass: return GameInstance->CutlassClass;
+	case ItemType::Blaster: return GameInstance->BlasterClass;
+	case ItemType::Key:     return GameInstance->KeyClass;
+		//case ItemType::Lantern: return GameInstance->LanternClass;
+	default: return nullptr;
+	}
+}

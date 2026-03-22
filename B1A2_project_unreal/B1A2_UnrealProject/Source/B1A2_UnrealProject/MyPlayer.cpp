@@ -327,6 +327,9 @@ void AMyPlayer::ItemOrToolDrop()
 				gameInstance->SendDropItem(gameInstance->GetMyID(), true, info.itemID);				
 				UE_LOG(LogTemp, Display, TEXT("[Tool] Tool Drop Packet Send! ToolID: %d"), info.itemID);
 			}
+
+			// 들고 있는 Tool 지우기
+			CurrentToolActor->Destroy();
 		}
 	}
 }
@@ -400,22 +403,6 @@ void AMyPlayer::UpdateToolVisual()
 			CurrentToolActor->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, HandSocketName);
 			CurrentToolActor->SetActorEnableCollision(false);	// 충돌 끔
 		}
-	}
-}
-
-TSubclassOf<class ABaseItem> AMyPlayer::GetToolClass(ItemType Type)
-{
-	UMain* GameInstance = Cast<UMain>(GetGameInstance());
-	if (!GameInstance) 
-		return nullptr;
-
-	switch (Type)
-	{
-	case ItemType::Cutlass: return GameInstance->CutlassClass;
-	case ItemType::Blaster: return GameInstance->BlasterClass;
-	case ItemType::Key:     return GameInstance->KeyClass;
-	//case ItemType::Lantern: return GameInstance->LanternClass;
-	default: return nullptr;
 	}
 }
 

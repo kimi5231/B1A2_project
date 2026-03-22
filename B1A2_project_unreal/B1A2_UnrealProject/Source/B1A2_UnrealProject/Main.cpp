@@ -167,6 +167,18 @@ void UMain::SendUseTool(int playerID, int toolID, Rotation playerRotation)
 	_gameNetwork->SendUseToolPacket(playerID, toolID, playerRotation);
 }
 
+void UMain::SendEmotion(float angry, float disgust, float fear, float happy, float sad, float surprise, float neutral)
+{
+	if (_myID == 0)
+		return;
+
+	UWorld* world = GetWorld();
+	if (!world)
+		return;
+
+	_gameNetwork->SendEmotionPacket(angry, disgust, fear, happy, sad, surprise, neutral);
+}
+
 void UMain::Update()
 {
 	if (!_gameNetwork)
@@ -1023,10 +1035,14 @@ void UMain::RecvItemPickupNotify(S_ItemPickupNotify_Packet packet)
 				// _tools에서 제거
 				_tools.Remove(itemID);
 
+				// 손에 Tool 부착
+				(*foundPlayer)->UpdateTool(itemType);
+
 				UE_LOG(LogTemp, Warning, TEXT("[Tool] OtherPlayer ID %llu Tool PickUp Animation!"), playerID);
 			}
 			else
 				UE_LOG(LogTemp, Warning, TEXT("[Item] OtherPlayer ID %llu not found in map!"), playerID);
+
 		}
 		// Item
 		else
@@ -1054,15 +1070,50 @@ void UMain::RecvItemPickupNotify(S_ItemPickupNotify_Packet packet)
 			}
 			else
 				UE_LOG(LogTemp, Warning, TEXT("[Item] OtherPlayer ID %llu not found in map!"), playerID);
-
-			// _items에서 제거??
-			// ...
 		}
 	});
 }
 
 void UMain::RecvUpdateCurrentTool(S_UpdateCurrentTool_Packet packet)
 {
+	uint32 playerID = packet.playerID;
+	ItemType itemType = packet.itemType;
+	uint32 itemID = packet.itemID;
+
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+		{
+			UWorld* world = GetWorld();
+			if (!world) return;
+
+			// MyPlayer가 잘못된 도구를 들고있다면
+			if (playerID == _myID)
+			{
+				APlayerController* PC = world->GetFirstPlayerController();
+				if (PC)
+				{
+					AMyPlayer* myPlayer = Cast<AMyPlayer>(PC->GetPawn());
+					if (myPlayer)
+					{
+						myPlayer->UpdateToolVisual();
+						UE_LOG(LogTemp, Log, TEXT("[Tool] MyPlayer Tool Visual Updated."));
+					}
+				}
+			}
+			// OtherPlayer
+			else
+			{
+				AOtherPlayer** foundPlayer = _otherPlayers.Find(playerID);
+				if (foundPlayer && *foundPlayer)
+				{
+					(*foundPlayer)->UpdateTool(itemType);
+					UE_LOG(LogTemp, Log, TEXT("[Tool] OtherPlayer ID %u Updated Tool to Type %d"), playerID, (int32)itemType);
+				}
+				else
+				{
+					UE_LOG(LogTemp, Warning, TEXT("[Tool] OtherPlayer ID %u not found in _otherPlayers map!"), playerID);
+				}
+			}
+		});
 }
 
 void UMain::RecvUseTool(S_UseTool_Packet packet)

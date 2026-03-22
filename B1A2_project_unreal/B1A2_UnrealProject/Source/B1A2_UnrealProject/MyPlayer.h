@@ -129,6 +129,9 @@ protected:
 	// Item/Tool 버리기 입력
 	void ItemOrToolDrop();
 
+	// Tool Change 패킷 보내기
+	void SendChangeToolPacket();
+
 public:
 	// Inventory에서 Item 삭제
 	void RemoveItemInInventoryByID(int itemID);
@@ -141,19 +144,6 @@ protected:
 
 	UPROPERTY()
 	UUserWidget* _toolBarWidgetInstance;
-
-protected:
-	// Tool
-	// Tool 사용 타이머 핸들
-	FTimerHandle ToolChangeTimerHandle;
-	// 현재 손에 들고 있는 Tool Actor
-	UPROPERTY()
-	ABaseItem* CurrentToolActor;
-	// Tool이 붙을 뼈
-	const FName HandSocketName = TEXT("RightHandSocket");
-	// 패킷 보내기
-	void SendChangeToolPacket();
-	TSubclassOf<class ABaseItem> GetToolClass(ItemType Type);
 
 public:
 	// 로컬 플레이어 모델 업데이트
