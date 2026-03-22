@@ -9,6 +9,7 @@ Player::Player()
 	_rotation = {0, 0, 0};
 	_type = ObjectType::Player;
 	_box.SetBounds(_pos, {60, 30, 180}, Front);
+	_inventory = new Inventory();
 }
 
 Player::~Player()
