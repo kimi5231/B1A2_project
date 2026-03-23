@@ -119,6 +119,8 @@ enum ItemType
 	Key,
 	Lantern,
 
+	None,
+
 	ItemTypeCount,
 };
 

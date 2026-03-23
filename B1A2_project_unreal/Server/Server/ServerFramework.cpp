@@ -646,13 +646,21 @@ void ServerFramework::ProcessDropItemPacket(C_DropItem_Packet packet)
 
 void ServerFramework::ProcessChangeToolPacket(C_ChangeTool_Packet packet)
 {
-	// Player 인벤토리에 해당 도구가 존재하는지 확인
 	PlayerRef player = dynamic_pointer_cast<Player>(_room->GetGameObject(ObjectType::Player, packet.playerID));
+
+	// toolID가 0이면 도구를 들지 않는 것
+	if(packet.toolID == 0)
+	{
+		player->SetCurrentTool(0);
+		SendUpdateCurrentToolPacket(packet.playerID, packet.toolID, ItemType::None, true);
+		return;
+	}
+
+	// Player 인벤토리에 해당 도구가 존재하는지 확인
 	if (player->ExistItem(true, packet.toolID))
 	{
 		// 도구가 존재하면 해당 도구를 들도록 설정
 		player->SetCurrentTool(packet.toolID);
-
 		ItemRef item = std::dynamic_pointer_cast<Item>(_room->GetGameObject(ObjectType::Item, packet.toolID));
 		SendUpdateCurrentToolPacket(packet.playerID, packet.toolID, item->GetItemType(), true);
 	}
