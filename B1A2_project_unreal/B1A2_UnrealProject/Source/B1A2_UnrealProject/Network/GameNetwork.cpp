@@ -97,7 +97,7 @@ void GameNetwork::ProcessRecv()
 	}
 
 	// Packet 수신(가변 데이터)
-	std::vector<char> packet(4000);
+	std::vector<char> packet(5000);
 	if (recv(_clientSocket, packet.data(), packetSize, MSG_WAITALL) <= 0)
 	{
 		//ProcessDisconnect(client);
