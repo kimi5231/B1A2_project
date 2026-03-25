@@ -28,6 +28,16 @@ Room::Room()
 	tool->SetPos({ 0, -200, 25 });
 	tool->SetObjectPoolState(ObjectPoolState::InWorld);
 	_items.push_back(tool);
+	ItemRef tool2 = std::make_shared<Tool>(ItemType::Blaster);
+	tool2->SetID(_generateItemID++);
+	tool2->SetPos({ 0, 100, 25 });
+	tool2->SetObjectPoolState(ObjectPoolState::InWorld);
+	_items.push_back(tool2);
+	ItemRef tool3 = std::make_shared<Tool>(ItemType::Key);
+	tool3->SetID(_generateItemID++);
+	tool3->SetPos({ 0, 200, 25 });
+	tool3->SetObjectPoolState(ObjectPoolState::InWorld);
+	_items.push_back(tool3);
 }
 
 Room::~Room()
