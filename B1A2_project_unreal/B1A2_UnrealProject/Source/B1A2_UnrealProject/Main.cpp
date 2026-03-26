@@ -971,7 +971,7 @@ void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 			// 장비 줍기 애니메이션 재생 + 월드에서 장비 삭제
 			_myPlayer->PlayPickUpAnimation(tool);
 			// 툴바에 넣기
-			_myPlayer->AddToolToToolBar(packet.itemType, itemID);
+			_myPlayer->AddToolToToolBar(packet.itemType, itemID, packet.itemWeight);
 			// 손에 부착
 			if (UToolBarWidget* widget = Cast<UToolBarWidget>(_myPlayer->GetToolBarWidget()))
 			{

@@ -2,6 +2,7 @@
 
 
 #include "InventorySlotWidget.h"
+#include "Components/Border.h"
 
 void UInventorySlotWidget::SetSlotInfo(int32 id, ItemType type, float weight)
 {
@@ -45,6 +46,12 @@ void UInventorySlotWidget::SetSlotInfo(int32 id, ItemType type, float weight)
 		UE_LOG(LogTemp, Warning, TEXT("[Inventory] Success! Slot updated with ID: %d"), id);
 	}
 
+	// 무게 배경
+	if (WeightTextBackground)
+	{
+		WeightTextBackground->SetVisibility(ESlateVisibility::Visible);
+	}
+
 	// 무게
 	if (WeightText)
 	{
@@ -81,6 +88,10 @@ void UInventorySlotWidget::ClearSlot()
 	{
 		ItemIcon->SetVisibility(ESlateVisibility::Hidden);
 		ItemIcon->SetBrushFromTexture(nullptr);
+	}
+	if (WeightTextBackground)
+	{
+		WeightTextBackground->SetVisibility(ESlateVisibility::Hidden);
 	}
 	if (WeightText)
 	{

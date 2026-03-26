@@ -100,7 +100,7 @@ public:
 
 public:
 	void AddItemToInventory(ItemType type, int id, float weight);
-	void AddToolToToolBar(ItemType type, int id);
+	void AddToolToToolBar(ItemType type, int id, float weight);
 
 protected:
 	UPROPERTY()

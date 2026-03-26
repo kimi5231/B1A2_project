@@ -32,7 +32,7 @@ protected:
 	virtual void NativeConstruct() override;
 
 public:
-	void AddTool(int id, ItemType type);
+	void AddTool(int id, ItemType type, float weight);
 	void ChangeSelection(bool forward);		// 휠 방향에 따라 변경
 
 	// 버리기 키를 입력했을 때, 현재 선택된 슬롯의 장비 정보 리턴
@@ -52,3 +52,4 @@ protected:
 
 	int32 _currentSelectedIndex = 0;
 };
+ 

@@ -189,7 +189,7 @@ void AMyPlayer::AddItemToInventory(ItemType type, int id, float weight)
 	}
 }
 
-void AMyPlayer::AddToolToToolBar(ItemType type, int id)
+void AMyPlayer::AddToolToToolBar(ItemType type, int id, float weight)
 {
 	if (_toolBarWidgetInstance == nullptr)
 	{
@@ -200,7 +200,7 @@ void AMyPlayer::AddToolToToolBar(ItemType type, int id)
 	UToolBarWidget* toolBar = Cast<UToolBarWidget>(_toolBarWidgetInstance);
 	if (toolBar)
 	{
-		toolBar->AddTool(id, type);
+		toolBar->AddTool(id, type, weight);
 	}
 }
 

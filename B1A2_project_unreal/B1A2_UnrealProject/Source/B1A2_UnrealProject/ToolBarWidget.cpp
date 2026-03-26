@@ -35,7 +35,7 @@ void UToolBarWidget::NativeConstruct()
 	ToolSlots[0]->SetSelected(true);	// Ã¹ ¹øÂ° ½½·Ô ±âº» ¼±ÅÃ
 }
 
-void UToolBarWidget::AddTool(int id, ItemType type)
+void UToolBarWidget::AddTool(int id, ItemType type, float weight)
 {
 	// ºó ½½·Ô Ã£±â
 	for (UToolSlotWidget* slot : ToolSlots)
@@ -43,7 +43,7 @@ void UToolBarWidget::AddTool(int id, ItemType type)
 		if (slot && slot->isEmpty)
 		{
 			UE_LOG(LogTemp, Display, TEXT("[Tool] Add Tool to ToolBar SUCCESS!!! ID: %d, Type: %d"), id, static_cast<int32>(type));
-			slot->SetSlotInfo(id, type);
+			slot->SetSlotInfo(id, type, weight);
 			return;
 		}
 	}
@@ -81,6 +81,7 @@ FDroppedItemInfo UToolBarWidget::GetSelectedToolBarTool()
 	{
 		info.itemID = ToolSlots[_currentSelectedIndex]->GetToolID();
 		info.type = ToolSlots[_currentSelectedIndex]->GetToolType();
+		info.weight = ToolSlots[_currentSelectedIndex]->GetToolWeight();
 		info.isValid = true;
 	}
 

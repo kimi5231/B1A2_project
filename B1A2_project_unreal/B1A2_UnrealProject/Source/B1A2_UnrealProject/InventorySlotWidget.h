@@ -12,6 +12,7 @@
 
 class UImage;
 class UTextBlock;
+class UBorder;
 /**
  * 
  */
@@ -41,6 +42,9 @@ public:
 protected:
 	UPROPERTY(meta = (BindWidget))
 	UImage* ItemIcon;
+
+	UPROPERTY(meta = (BindWidget))
+	UBorder* WeightTextBackground;
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* WeightText;

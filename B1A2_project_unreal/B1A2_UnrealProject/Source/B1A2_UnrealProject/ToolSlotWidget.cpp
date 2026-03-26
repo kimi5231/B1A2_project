@@ -1,9 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "ToolSlotWidget.h"
+#include "Components/Image.h"
+#include "Components/TextBlock.h"
+#include "Components/Border.h"
 
-void UToolSlotWidget::SetSlotInfo(int32 id, ItemType type)
+void UToolSlotWidget::SetSlotInfo(int32 id, ItemType type, float weight)
 {
 	UTexture2D* texture = nullptr;
 
@@ -30,12 +31,25 @@ void UToolSlotWidget::SetSlotInfo(int32 id, ItemType type)
 		ToolIcon->SetVisibility(ESlateVisibility::Visible);
 	}
 
+	// 무게 배경
+	if (WeightTextBackground)
+	{
+		WeightTextBackground->SetVisibility(ESlateVisibility::Visible);
+	}
+	// 무게 텍스트
+	if (WeightText)
+	{
+		WeightText->SetText(FText::AsNumber(weight));
+		WeightText->SetVisibility(ESlateVisibility::Visible);
+	}
+
 	// 슬롯 채움
 	isEmpty = false;
 
-	// ID, Type
+	// ID, Type, Weight
 	SetToolID(id);
 	SetToolType(type);
+	SetToolWeight(weight);
 }
 
 void UToolSlotWidget::SetSelected(bool isSelected)
@@ -58,5 +72,13 @@ void UToolSlotWidget::ClearSlot()
 	{
 		ToolIcon->SetVisibility(ESlateVisibility::Hidden);
 		ToolIcon->SetBrushFromTexture(nullptr);
+	}
+	if (WeightTextBackground)
+	{
+		WeightTextBackground->SetVisibility(ESlateVisibility::Hidden);
+	}
+	if (WeightText)
+	{
+		WeightText->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
