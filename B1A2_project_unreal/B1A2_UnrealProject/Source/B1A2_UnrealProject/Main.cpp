@@ -313,7 +313,7 @@ void UMain::AddPlayer(S_AddObject_Packet packet)
 			UWorld* world = GetWorld();
 			if (!world) return;
 
-			FVector spawnLocation(packet.pos.x, packet.pos.y, packet.pos.z);
+			FVector spawnLocation(packet.pos.x, packet.pos.y, packet.pos.z + 98.f);
 			FRotator spawnRotation(0, packet.rotation.yaw, 0);
 
 			auto playerController = UGameplayStatics::GetPlayerController(this, 0);
@@ -333,7 +333,7 @@ void UMain::AddPlayer(S_AddObject_Packet packet)
 
 			_myPlayer = player;
 
-			UE_LOG(LogTemp, Log, TEXT("My Player Spawned! [%d], %f, %f, %f"), packet.objectID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+			UE_LOG(LogTemp, Log, TEXT("My Player Spawned! [%d], %f, %f, %f"), packet.objectID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 98.f);
 		});
 		return;
 	}
@@ -514,18 +514,22 @@ void UMain::RecvAddTool(S_AddItem_Packet packet)
 		case ItemType::Cutlass:
 			tool = world->SpawnActor<ABaseItem>(CutlassClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);	// 임시 위치 보정
 			tool->SetItemType(ItemType::Cutlass);
-			UE_LOG(LogTemp, Log, TEXT("[Tool] Cutlass Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 20);
+			UE_LOG(LogTemp, Log, TEXT("[Tool] Cutlass Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
 			break;
 		case ItemType::Blaster:
-			tool = world->SpawnActor<ABaseItem>(BlasterClass, spawnLocation, spawnRotation);
+			tool = world->SpawnActor<ABaseItem>(BlasterClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
 			tool->SetItemType(ItemType::Blaster);
-			UE_LOG(LogTemp, Log, TEXT("[Tool] Blaster Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+			UE_LOG(LogTemp, Log, TEXT("[Tool] Blaster Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
 			break;
 		case ItemType::Key:
-			tool = world->SpawnActor<ABaseItem>(KeyClass, spawnLocation, spawnRotation);
+			tool = world->SpawnActor<ABaseItem>(KeyClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
 			tool->SetItemType(ItemType::Key);
-			UE_LOG(LogTemp, Log, TEXT("[Tool] Key Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+			UE_LOG(LogTemp, Log, TEXT("[Tool] Key Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
 			break;
+		case ItemType::Lantern:
+			tool = world->SpawnActor<ABaseItem>(LanternClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
+			tool->SetItemType(ItemType::Lantern);
+			UE_LOG(LogTemp, Log, TEXT("[Tool] Lantern Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
 		}
 
 		tool->SetItemID(id);
@@ -593,17 +597,22 @@ void UMain::RecvDropItem(S_DropItem_Packet packet)
 			case ItemType::Cutlass:
 				tool = world->SpawnActor<ABaseItem>(CutlassClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);	// 임시 위치 보정
 				tool->SetItemType(ItemType::Cutlass);
-				UE_LOG(LogTemp, Log, TEXT("[Tool] Cutlass Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 20);
+				UE_LOG(LogTemp, Log, TEXT("[Tool] Cutlass Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
 				break;
 			case ItemType::Blaster:
-				tool = world->SpawnActor<ABaseItem>(BlasterClass, spawnLocation, spawnRotation);
+				tool = world->SpawnActor<ABaseItem>(BlasterClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
 				tool->SetItemType(ItemType::Blaster);
-				UE_LOG(LogTemp, Log, TEXT("[Tool] Blaster Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+				UE_LOG(LogTemp, Log, TEXT("[Tool] Blaster Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
 				break;
 			case ItemType::Key:
-				tool = world->SpawnActor<ABaseItem>(KeyClass, spawnLocation, spawnRotation);
+				tool = world->SpawnActor<ABaseItem>(KeyClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
 				tool->SetItemType(ItemType::Key);
-				UE_LOG(LogTemp, Log, TEXT("[Tool] Key Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+				UE_LOG(LogTemp, Log, TEXT("[Tool] Key Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
+				break;
+			case ItemType::Lantern:
+				tool = world->SpawnActor<ABaseItem>(KeyClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
+				tool->SetItemType(ItemType::Key);
+				UE_LOG(LogTemp, Log, TEXT("[Tool] Lantern Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
 				break;
 			}
 
@@ -619,54 +628,54 @@ void UMain::RecvDropItem(S_DropItem_Packet packet)
 			switch (packet.itemType)
 			{
 			case ItemType::CardboardBox:
-				item = world->SpawnActor<ABaseItem>(CardboardBoxClass, spawnLocation, spawnRotation);
+				item = world->SpawnActor<ABaseItem>(CardboardBoxClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
 				item->SetItemType(ItemType::CardboardBox);
-				UE_LOG(LogTemp, Log, TEXT("[Item] CardboardBox Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+				UE_LOG(LogTemp, Log, TEXT("[Item] CardboardBox Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
 				break;
 			case ItemType::GoldBar:
-				item = world->SpawnActor<ABaseItem>(GoldBarClass, spawnLocation, spawnRotation);
+				item = world->SpawnActor<ABaseItem>(GoldBarClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
 				item->SetItemType(ItemType::GoldBar);
-				UE_LOG(LogTemp, Log, TEXT("[Item] GoldBar Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+				UE_LOG(LogTemp, Log, TEXT("[Item] GoldBar Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
 				break;
 			case ItemType::RubberDuck:
-				item = world->SpawnActor<ABaseItem>(RubberDuckClass, spawnLocation, spawnRotation);
+				item = world->SpawnActor<ABaseItem>(RubberDuckClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
 				item->SetItemType(ItemType::RubberDuck);
-				UE_LOG(LogTemp, Log, TEXT("[Item] RubberDuck Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+				UE_LOG(LogTemp, Log, TEXT("[Item] RubberDuck Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
 				break;
 			case ItemType::PlasticCrate:
-				item = world->SpawnActor<ABaseItem>(PlasticCrateClass, spawnLocation, spawnRotation);
+				item = world->SpawnActor<ABaseItem>(PlasticCrateClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
 				item->SetItemType(ItemType::PlasticCrate);
-				UE_LOG(LogTemp, Log, TEXT("[Item] PlasticCrate Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+				UE_LOG(LogTemp, Log, TEXT("[Item] PlasticCrate Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
 				break;
 			case ItemType::Screw:
-				item = world->SpawnActor<ABaseItem>(ScrewClass, spawnLocation, spawnRotation);
+				item = world->SpawnActor<ABaseItem>(ScrewClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
 				item->SetItemType(ItemType::Screw);
-				UE_LOG(LogTemp, Log, TEXT("[Item] Screw Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+				UE_LOG(LogTemp, Log, TEXT("[Item] Screw Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
 				break;
 			case ItemType::PirateHat:
-				item = world->SpawnActor<ABaseItem>(PirateHatClass, spawnLocation, spawnRotation);
+				item = world->SpawnActor<ABaseItem>(PirateHatClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
 				item->SetItemType(ItemType::PirateHat);
-				UE_LOG(LogTemp, Log, TEXT("[Item] PirateHat Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+				UE_LOG(LogTemp, Log, TEXT("[Item] PirateHat Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
 				break;
 			case ItemType::HardHat:
-				item = world->SpawnActor<ABaseItem>(HardHatClass, spawnLocation, spawnRotation);
+				item = world->SpawnActor<ABaseItem>(HardHatClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
 				item->SetItemType(ItemType::HardHat);
-				UE_LOG(LogTemp, Log, TEXT("[Item] HardHat Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+				UE_LOG(LogTemp, Log, TEXT("[Item] HardHat Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
 				break;
 			case ItemType::EngineCore:
-				item = world->SpawnActor<ABaseItem>(EngineCoreClass, spawnLocation, spawnRotation);
+				item = world->SpawnActor<ABaseItem>(EngineCoreClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
 				item->SetItemType(ItemType::EngineCore);
-				UE_LOG(LogTemp, Log, TEXT("[Item] EngineCore Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+				UE_LOG(LogTemp, Log, TEXT("[Item] EngineCore Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
 				break;
 			case ItemType::ScrapMetal:
-				item = world->SpawnActor<ABaseItem>(ScrapMetalClass, spawnLocation, spawnRotation);
+				item = world->SpawnActor<ABaseItem>(ScrapMetalClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
 				item->SetItemType(ItemType::ScrapMetal);
-				UE_LOG(LogTemp, Log, TEXT("[Item] ScrapMetal Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+				UE_LOG(LogTemp, Log, TEXT("[Item] ScrapMetal Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
 				break;
 			case ItemType::EmptyCan:
-				item = world->SpawnActor<ABaseItem>(EmptyCanClass, spawnLocation, spawnRotation);
+				item = world->SpawnActor<ABaseItem>(EmptyCanClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
 				item->SetItemType(ItemType::EmptyCan);
-				UE_LOG(LogTemp, Log, TEXT("[Item] EmptyCan Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+				UE_LOG(LogTemp, Log, TEXT("[Item] EmptyCan Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
 				break;
 			}
 

@@ -163,6 +163,8 @@ public:
 	TSubclassOf<class ABaseItem> BlasterClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Tool")
 	TSubclassOf<class ABaseItem> KeyClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Tool")
+	TSubclassOf<class ABaseItem> LanternClass;
 
 private:
 	GameNetwork* _gameNetwork = nullptr;
