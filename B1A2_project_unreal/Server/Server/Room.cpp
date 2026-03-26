@@ -18,26 +18,31 @@ Room::Room()
 	CreateFactoryCubes();
 
 	// 테스트용 아이템 생성
-	ItemRef scrap = std::make_shared<Item>(ItemType::CardboardBox);
-	scrap->SetID(_generateItemID++);
-	scrap->SetPos({ 0, -100, 25 });
-	scrap->SetObjectPoolState(ObjectPoolState::InWorld);
-	_items.push_back(scrap);
-	ItemRef tool = std::make_shared<Tool>(ItemType::Cutlass);
-	tool->SetID(_generateItemID++);
-	tool->SetPos({ 0, -200, 25 });
-	tool->SetObjectPoolState(ObjectPoolState::InWorld);
-	_items.push_back(tool);
-	ItemRef tool2 = std::make_shared<Tool>(ItemType::Blaster);
-	tool2->SetID(_generateItemID++);
-	tool2->SetPos({ 0, 100, 25 });
-	tool2->SetObjectPoolState(ObjectPoolState::InWorld);
-	_items.push_back(tool2);
-	ItemRef tool3 = std::make_shared<Tool>(ItemType::Key);
-	tool3->SetID(_generateItemID++);
-	tool3->SetPos({ 0, 200, 25 });
-	tool3->SetObjectPoolState(ObjectPoolState::InWorld);
-	_items.push_back(tool3);
+	ItemRef box = std::make_shared<Item>(ItemType::CardboardBox);
+	box->SetID(_generateItemID++);
+	box->SetPos({ 0, -100, 25 });
+	box->SetObjectPoolState(ObjectPoolState::InWorld);
+	_items.push_back(box);
+	ItemRef cutlass = std::make_shared<Tool>(ItemType::Cutlass);
+	cutlass->SetID(_generateItemID++);
+	cutlass->SetPos({ 0, -200, 25 });
+	cutlass->SetObjectPoolState(ObjectPoolState::InWorld);
+	_items.push_back(cutlass);
+	ItemRef blaster = std::make_shared<Tool>(ItemType::Blaster);
+	blaster->SetID(_generateItemID++);
+	blaster->SetPos({ 0, 100, 25 });
+	blaster->SetObjectPoolState(ObjectPoolState::InWorld);
+	_items.push_back(blaster);
+	ItemRef key = std::make_shared<Tool>(ItemType::Key);
+	key->SetID(_generateItemID++);
+	key->SetPos({ 0, 200, 25 });
+	key->SetObjectPoolState(ObjectPoolState::InWorld);
+	_items.push_back(key);
+	ItemRef lantern = std::make_shared<Tool>(ItemType::Lantern);
+	lantern->SetID(_generateItemID++);
+	lantern->SetPos({ 0, 250, 25 });
+	lantern->SetObjectPoolState(ObjectPoolState::InWorld);
+	_items.push_back(lantern);
 }
 
 Room::~Room()
