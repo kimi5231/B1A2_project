@@ -359,13 +359,23 @@ void AMyPlayer::SendChangeToolPacket()
 		return;
 
 	FDroppedItemInfo ToolInfo = widget->GetSelectedToolBarTool();
-	if (ToolInfo.itemID == -1)	// 빈 슬롯일 경우 Send하지 않음
+	int32 currentItemID = ToolInfo.itemID;
+	
+	if (_lastSentToolID == -1 && currentItemID == -1)	// 이전에 선택된 슬롯이 빈 슬롯 && 현재 선택된 슬롯이 빈 슬롯일 경우 Send하지 않음
 		return;
+	if (_lastSentToolID == currentItemID)		// 동일한 Tool을 선택한 경우 Send하지 않음
+		return;
+
+	int32 IDtoSend = currentItemID;
+	if (_lastSentToolID != -1 && ToolInfo.itemID == -1)		// 이전에 선택된 슬롯에 Tool이 있음 && 현재 선택된 슬롯이 빈 슬롯일 경우 ID를 0으로 Send
+		IDtoSend = 0;
 
 	if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
 	{
-		gameInstance->SendChangeTool(gameInstance->GetMyID(), ToolInfo.itemID);
-		UE_LOG(LogTemp, Log, TEXT("[Tool] Sent C_ChangeTool_Packet: ID %d"), ToolInfo.itemID);
+		gameInstance->SendChangeTool(gameInstance->GetMyID(), IDtoSend);
+		_lastSentToolID = currentItemID;
+
+		UE_LOG(LogTemp, Log, TEXT("[Tool] Sent C_ChangeTool_Packet: ID %d"), currentItemID);
 	}
 }
 

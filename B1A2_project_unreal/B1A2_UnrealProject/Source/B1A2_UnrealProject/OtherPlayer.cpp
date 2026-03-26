@@ -186,6 +186,10 @@ void AOtherPlayer::UpdateTool(ItemType type)
 		CurrentToolActor = nullptr;
 	}
 
+	// 도구를 들지 않았을 땐 삭제만 하고 끝
+	if (type == ItemType::None)
+		return;	
+
 	TSubclassOf<ABaseItem> ToolClass = GetToolClass(type);
 
 	if (ToolClass)

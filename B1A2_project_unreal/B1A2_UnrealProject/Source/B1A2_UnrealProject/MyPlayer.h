@@ -176,4 +176,9 @@ private:
 	// 상호작용 객체 확인 타이머
 	float _interactionTimer = 0.1f;		// 현재 남은 시간
 	const float INTERACTION_DELAY = 0.1f;	// 확인 간격
+	
+	// 직전에 서버에 보낸 Tool의 ID
+	int32 _lastSentToolID = -1;	
+	// 장비가 있는 슬롯 선택 -> 빈 슬롯 선택: 서버에 패킷 송신
+	// 빈 슬롯 선택 -> 빈 슬롯 선택: 서버에 패킷 송신X
 };

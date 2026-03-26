@@ -145,7 +145,7 @@ void UMain::SendDropItem(int playerID, bool isTool, int itemID)
 
 void UMain::SendChangeTool(int playerID, int toolID)
 {
-	if (_myID == 0 || toolID == 0)
+	if (_myID == 0 || toolID < 0)
 		return;
 
 	UWorld* world = GetWorld();
@@ -848,13 +848,13 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 		if (!world)
 			return;
 
-		// Room
+		// Cube
 		for (int i = 0; i < packet.cubes.size(); ++i)
 		{
-			const CubeDTO& room = packet.cubes[i];
+			const CubeDTO& cube = packet.cubes[i];
 
-			FVector pos(room.pos.x, room.pos.y, room.pos.z);
-			FRotator rot = DirToRotation(room.dir);
+			FVector pos(cube.pos.x, cube.pos.y, cube.pos.z);
+			FRotator rot = DirToRotation(cube.dir);
 
 			FActorSpawnParameters params;
 			params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -864,79 +864,84 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 			{
 			case CubeType::MainEntranceRoom:
 				roomActor = world->SpawnActor<AStaticMeshActor>(MainEntranceRoomClass, pos, rot, params);
-				UE_LOG(LogTemp, Log, TEXT("[Room] MainEntrance Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+				UE_LOG(LogTemp, Log, TEXT("[Room] MainEntrance Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
 				break;
 			case CubeType::GapRoom:
 				roomActor = world->SpawnActor<AStaticMeshActor>(GapRoomClass, pos, rot, params);
-				UE_LOG(LogTemp, Log, TEXT("[Room] Gap Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+				UE_LOG(LogTemp, Log, TEXT("[Room] Gap Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
 				break;
 			case CubeType::ApparatusRoom:
 				roomActor = world->SpawnActor<AStaticMeshActor>(ApparatusRoomClass, pos, rot, params);
-				UE_LOG(LogTemp, Log, TEXT("[Room] ApparatusRoom Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+				UE_LOG(LogTemp, Log, TEXT("[Room] ApparatusRoom Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
 				break;
 			case CubeType::ServerRoom:
 				roomActor = world->SpawnActor<AStaticMeshActor>(ServerRoomClass, pos, rot, params);
-				UE_LOG(LogTemp, Log, TEXT("[Room] Server Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+				UE_LOG(LogTemp, Log, TEXT("[Room] Server Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
 				break;
 			case CubeType::CabinetRoom:
 				roomActor = world->SpawnActor<AStaticMeshActor>(CabinetRoomClass, pos, rot, params);
-				UE_LOG(LogTemp, Log, TEXT("[Room] Cabinet Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+				UE_LOG(LogTemp, Log, TEXT("[Room] Cabinet Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
 				break;
 			case CubeType::StorageRoom_Rect:
 				roomActor = world->SpawnActor<AStaticMeshActor>(StorageRoom_RectClass, pos, rot, params);
-				UE_LOG(LogTemp, Log, TEXT("[Room] StorageRoom_Rect Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+				UE_LOG(LogTemp, Log, TEXT("[Room] StorageRoom_Rect Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
 				break;
 			case CubeType::StorageRoom_Corner:
 				roomActor = world->SpawnActor<AStaticMeshActor>(StorageRoom_ConerClass, pos, rot, params);
-				UE_LOG(LogTemp, Log, TEXT("[Room] StorageRoom_Coner Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+				UE_LOG(LogTemp, Log, TEXT("[Room] StorageRoom_Coner Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
 				break;
 			case CubeType::StorageRoom_Step:
 				roomActor = world->SpawnActor<AStaticMeshActor>(StorageRoom_StepClass, pos, rot, params);
-				UE_LOG(LogTemp, Log, TEXT("[Room] StorageRoom_Step Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+				UE_LOG(LogTemp, Log, TEXT("[Room] StorageRoom_Step Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
 				break;
 			case CubeType::YellowOfficeRoom:
 				roomActor = world->SpawnActor<AStaticMeshActor>(YellowOfficeRoomClass, pos, rot, params);
-				UE_LOG(LogTemp, Log, TEXT("[Room] YellowOffice Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+				UE_LOG(LogTemp, Log, TEXT("[Room] YellowOffice Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
 				break;
 			case CubeType::FactoryRoom:
 				roomActor = world->SpawnActor<AStaticMeshActor>(FactoryRoomClass, pos, rot, params);
-				UE_LOG(LogTemp, Log, TEXT("[Room] Factory Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+				UE_LOG(LogTemp, Log, TEXT("[Room] Factory Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
 				break;
 			case CubeType::RailCatwalk:
 				roomActor = world->SpawnActor<AStaticMeshActor>(RailCatwalkClass, pos, rot, params);
-				UE_LOG(LogTemp, Log, TEXT("[Room] RailCatwalk Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+				UE_LOG(LogTemp, Log, TEXT("[Room] RailCatwalk Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
 				break;
 			case CubeType::PipedHallways_Line:
 				roomActor = world->SpawnActor<AStaticMeshActor>(PipedHallways_LineClass, pos, rot, params);
-				UE_LOG(LogTemp, Log, TEXT("[Room] PipedHallways_Line Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+				UE_LOG(LogTemp, Log, TEXT("[Room] PipedHallways_Line Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
 				break;
 			case CubeType::PipedHallways_Grid:
 				roomActor = world->SpawnActor<AStaticMeshActor>(PipedHallways_GridClass, pos, rot, params);
-				UE_LOG(LogTemp, Log, TEXT("[Room] PipedHallways_Grid Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+				UE_LOG(LogTemp, Log, TEXT("[Room] PipedHallways_Grid Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
 				break;
 			case CubeType::Staircase:
 				roomActor = world->SpawnActor<AStaticMeshActor>(StaircaseClass, pos, rot, params);
-				UE_LOG(LogTemp, Log, TEXT("[Room] Staircase Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, room.pos.x, room.pos.y, room.pos.z, room.type, room.dir);
+				UE_LOG(LogTemp, Log, TEXT("[Room] Staircase Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
 				break;
 			}
 		}
 
-		// Wall
+		// Wall or Door
 		for (int i = 0; i < packet.doors.size(); ++i)
 		{
-			const DoorDTO& wall = packet.doors[i];
+			const DoorDTO& door = packet.doors[i];
 
-			if (wall.doorType == DoorType::Door)
-				continue;
-
-			FVector pos(wall.pos.x, wall.pos.y, wall.pos.z);
-			FRotator rot = DirToRotation(wall.dir);
+			FVector pos(door.pos.x, door.pos.y, door.pos.z);
+			FRotator rot = DirToRotation(door.dir);
 
 			FActorSpawnParameters params;
 			params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-			AStaticMeshActor* wallActor = world->SpawnActor<AStaticMeshActor>(Wall_FillerClass, pos, rot, params);
-			UE_LOG(LogTemp, Log, TEXT("[Room] Wall Spawned [%d] pos = %f, %f, %f, dir = %d"), i, wall.pos.x, wall.pos.y, wall.pos.z, wall.dir);
+			if (door.doorType == DoorType::Door)
+			{
+				AStaticMeshActor* doorActor = world->SpawnActor<AStaticMeshActor>(DoorClass, pos, rot, params);
+				UE_LOG(LogTemp, Log, TEXT("[Room] Door Spawned [%d] pos = %f, %f, %f, dir = %d"), i, door.pos.x, door.pos.y, door.pos.z, door.dir);
+			}
+			else if (door.doorType == DoorType::Wall)
+			{
+				AStaticMeshActor* wallActor = world->SpawnActor<AStaticMeshActor>(Wall_FillerClass, pos, rot, params);
+				UE_LOG(LogTemp, Log, TEXT("[Room] Wall Spawned [%d] pos = %f, %f, %f, dir = %d"), i, door.pos.x, door.pos.y, door.pos.z, door.dir);
+			}
 		}
 	});
 }
@@ -976,9 +981,6 @@ void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 				{
 					// 캐릭터 손에 모델 부착
 					_myPlayer->UpdateToolVisual();
-
-					// 서버에도 현재 이 도구를 장착했음 통보하기 - 생각해보니 필요 없는 것 같기도..
-					//this->SendChangeTool(packet.itemID, packet.itemType);	// 이거 보내면 오류나서 일단 보류!!!!
 				}
 			}
 			// _tools에서 제거
