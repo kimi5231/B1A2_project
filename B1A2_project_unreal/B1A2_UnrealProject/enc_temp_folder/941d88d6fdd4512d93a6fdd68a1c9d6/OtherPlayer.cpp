@@ -132,7 +132,7 @@ void AOtherPlayer::PlayPickUpAnimation(ABaseItem* item)
 	if (AnimInstance)
 	{
 		// Àç»ý
-		float Duration = PlayAnimMontage(ComboMontage, 1.7f, FName("TakeItem"));
+		float Duration = PlayAnimMontage(ComboMontage, 1.0f, FName("TakeItem"));
 
 		if (Duration > 0.f)
 		{
