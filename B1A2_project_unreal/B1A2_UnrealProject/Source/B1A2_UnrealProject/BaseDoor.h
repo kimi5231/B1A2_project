@@ -7,6 +7,7 @@
 #include "InteractableInterface.h"
 #include "Components/WidgetComponent.h"
 #include "Components/BoxComponent.h"
+#include "Components/TimelineComponent.h"
 #include "Network/Includes.h"
 
 #include "BaseDoor.generated.h"
@@ -46,6 +47,18 @@ protected:
 	// 문 열림 - 닫힘 애니메이션 
 	void OnStateChanged(ObjectState oldState, ObjectState newState);
 
+	UFUNCTION()
+	void UpdateDoorRotation(float value);
+
+	// Components
+	UPROPERTY(EditAnywhere, Category = "Door|Animation")
+	UCurveFloat* doorCurve;
+
+	FTimeline doorTimeline;
+
+	UPROPERTY(EditAnywhere, Category = "Door|Animation")
+	float rotationAngle = 70.f;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* DoorFrameMesh;
 
@@ -58,6 +71,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UBoxComponent* CollisionBox;
 
+	// 앞뒤로 위젯 보이도록
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UWidgetComponent* EWidget;
 

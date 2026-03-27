@@ -433,18 +433,17 @@ void AMyPlayer::OnItemOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAc
 
 void AMyPlayer::OnItemOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	ABaseItem* item = Cast<ABaseItem>(OtherActor);
-	if (!item)
+	if (!OtherActor)
 		return;
 
-	_nearInteractables.Remove(item);
-	//UE_LOG(LogTemp, Log, TEXT("[Item] OverlapEnd! Removed Nearby Item: %s (Count: %d)"), *OtherActor->GetName(), _nearInteractableItem.Num());
-
-	// 충돌 끝나면, 보고 있던 아이템 or 문 포커스 해제하기
-	if (_focusedActor == item)
+	if (_nearInteractables.Contains(OtherActor))
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("[Item] OverlapEnd! Focused item left range, clearing focus"));
-		ClearFocusedActor();
+		_nearInteractables.Remove(OtherActor);
+
+		if (_focusedActor == OtherActor)
+		{
+			ClearFocusedActor();
+		}
 	}
 }
 

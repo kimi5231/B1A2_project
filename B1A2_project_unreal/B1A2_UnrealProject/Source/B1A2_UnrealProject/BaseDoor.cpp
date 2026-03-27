@@ -39,6 +39,13 @@ void ABaseDoor::BeginPlay()
 {
 	Super::BeginPlay();
 	
+    if (!doorCurve)
+        return;
+
+    // 타임라인에 업데이트 함수 바인딩
+    FOnTimelineFloat ProgressUpdate;
+    ProgressUpdate.BindUFunction(this, FName("UpdateDoorRotation"));
+    doorTimeline.AddInterpFloat(doorCurve, ProgressUpdate);
 }
 
 // Called every frame
@@ -46,6 +53,7 @@ void ABaseDoor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+    doorTimeline.TickTimeline(DeltaTime);
 }
 
 void ABaseDoor::ShowInteractionUI_Implementation()
@@ -77,14 +85,31 @@ void ABaseDoor::UpdateDoorState(ObjectState newState)
     ObjectState oldState = _currentState;
     _currentState = newState;
 
-    // 애니메이션 실행
-    OnStateChanged(oldState, newState);
-
     UE_LOG(LogTemp, Log, TEXT("[Door] State Changed: %d -> %d"), (int)oldState, (int)newState);
+
+    // 애니메이션 실행(Open, Close)
+    if (_currentState == ObjectState::LOCK)
+        return;
+    OnStateChanged(oldState, newState);
 }
 
-void ABaseDoor::OnStateChanged(ObjectState OldState, ObjectState NewState)
+void ABaseDoor::OnStateChanged(ObjectState oldState, ObjectState newState)
 {
+    switch (newState)
+    {
+    case ObjectState::OPEN:
+        doorTimeline.Play();    // 정방향 재생
+        break;
+    case ObjectState::CLOSE:
+        doorTimeline.Reverse(); // 역방항 재생
+    }
+
     UE_LOG(LogTemp, Display, TEXT("[Door] Animation"));
+}
+
+void ABaseDoor::UpdateDoorRotation(float value)
+{
+    FRotator newRotation = FRotator(0.f, value * rotationAngle, 0.f);
+    DoorMesh->SetRelativeRotation(newRotation);
 }
 
