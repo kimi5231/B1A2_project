@@ -1129,6 +1129,25 @@ void UMain::RecvUpdateCurrentTool(S_UpdateCurrentTool_Packet packet)
 
 void UMain::RecvUseTool(S_UseTool_Packet packet)
 {
+	int playerID = packet.playerID;
+	ItemType toolType = packet.toolType;
+
+	if (playerID == _myID)
+		return;
+
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		UWorld* world = GetWorld();
+		if (!world)
+			return;
+
+		// OtherPlayer Animation
+		AOtherPlayer** foundPlayer = _otherPlayers.Find(playerID);
+		if (foundPlayer && *foundPlayer)
+		{
+			(*foundPlayer)->PlayUseToolAnimation(toolType);
+		}
+	});
 }
 
 void UMain::RecvSpawnParticle(S_SpawnParticle_Packet packet)

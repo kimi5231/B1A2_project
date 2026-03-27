@@ -164,7 +164,7 @@ private:
 	void UpdateBestInteractableItem();
 
 	void Interact();
-	void UseTool();
+	void UseToolAnimationAndSend();
 	// 몽타주 애니메이션 종료시 호출
 	UFUNCTION()
 	void OnToolMontageEnded(UAnimMontage* Montage, bool bInterrupted);

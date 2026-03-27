@@ -44,6 +44,9 @@ public:
 
 	void UpdateTool(ItemType type);
 
+	// 장비 사용 애니메이션 - OtherPlayer만(MyPlayer는 UseToolAnimationAndSend() 사용)
+	void PlayUseToolAnimation(ItemType type);
+
 private:
 	FVector _prevPos;
 	FRotator _prevRot;

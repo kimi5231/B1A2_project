@@ -115,7 +115,7 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(GetItemAction, ETriggerEvent::Started, this, &AMyPlayer::Interact);
 
 		// Use Tool
-		EnhancedInputComponent->BindAction(UseToolAction, ETriggerEvent::Triggered, this, &AMyPlayer::UseTool);
+		EnhancedInputComponent->BindAction(UseToolAction, ETriggerEvent::Triggered, this, &AMyPlayer::UseToolAnimationAndSend);
 
 		// Tool Bar
 		EnhancedInputComponent->BindAction(ToolSlotUpAction, ETriggerEvent::Started, this, &AMyPlayer::ToolSelectUp);
@@ -539,7 +539,7 @@ void AMyPlayer::Interact()
 	}
 }
 
-void AMyPlayer::UseTool()
+void AMyPlayer::UseToolAnimationAndSend()
 {
 	if (IsBusy)
 		return;

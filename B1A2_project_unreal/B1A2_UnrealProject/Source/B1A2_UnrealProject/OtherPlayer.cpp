@@ -207,6 +207,29 @@ void AOtherPlayer::UpdateTool(ItemType type)
 	}
 }
 
+void AOtherPlayer::PlayUseToolAnimation(ItemType type)
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (!AnimInstance) 
+		return;
+
+	switch (type)
+	{
+	case ItemType::Cutlass:
+		if (ComboMontage) PlayAnimMontage(ComboMontage, 1.0f, FName("Slash"));
+		break;
+	case ItemType::Blaster:
+		if (ComboMontage) PlayAnimMontage(ComboMontage, 1.0f, FName("Shoot"));
+		break;
+	case ItemType::Key:	// 애니메이션 X
+		break;
+	case ItemType::Lantern:
+		break;
+	default:
+		break;
+	}
+}
+
 TSubclassOf<class ABaseItem> AOtherPlayer::GetToolClass(ItemType Type)
 {
 	UMain* GameInstance = Cast<UMain>(GetGameInstance());
