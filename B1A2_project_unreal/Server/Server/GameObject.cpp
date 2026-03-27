@@ -25,7 +25,9 @@ void GameObject::SetPos(Vector pos)
 
 void GameObject::SetState(ObjectState state)
 {
-	_state = state;
+	if(_state == state)
+		return;
 
+	_state = state;
 	g_framework->SendUpdateObjectStatePacket(shared_from_this(), true);
 }

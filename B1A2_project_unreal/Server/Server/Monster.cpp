@@ -4,9 +4,22 @@
 #include "Room.h"
 #include "Cube.h"
 #include "DataManager.h"
+#include "FSM.h"
 
 Monster::Monster()
 {
+	// FSM 생성
+	_fsm = new FSM();
+
+	// State 생성
+	_idle = new IdleState();
+	_roaming = new RoamingState();
+	_openDoor = new OpenDoorState();
+	_chase = new ChaseState();
+	_attack = new AttackState();
+	_hit = new HitState();
+	_dead = new DeadState();
+
 	_pos = {0, 200, 100};
 	_size = { 80, 80, 80 };
 	_rotation = { 0, 0, 0 };
@@ -21,6 +34,8 @@ Monster::~Monster()
 
 void Monster::Update(const std::vector<CubeRef>& gameRooms)
 {
+	_fsm->Update();
+
 	// 현재 위치한 방이 어디인지 확인
 	CubeRef currentCube;
 	for (const CubeRef gameRoom : gameRooms)
@@ -175,4 +190,34 @@ void Monster::Update(const std::vector<CubeRef>& gameRooms)
 	}
 
 	g_framework->SendMovePacket(shared_from_this(), true);
+}
+
+void Monster::SetState(ObjectState state)
+{
+	GameObject::SetState(state);
+
+	switch (state)
+	{
+	case IDLE:
+		_fsm->ChangeState(_idle);
+		break;
+	case ROAMING:
+		_fsm->ChangeState(_roaming);
+		break;
+	case OPEN_DOOR:
+		_fsm->ChangeState(_openDoor);
+		break;
+	case CHASE:
+		_fsm->ChangeState(_chase);
+		break;
+	case ATTACK:
+		_fsm->ChangeState(_attack);
+		break;
+	case HIT:
+		_fsm->ChangeState(_hit);
+		break;
+	case DEAD:
+		_fsm->ChangeState(_dead);
+		break;
+	}
 }

@@ -21,7 +21,7 @@ public:
 	Vector GetPos() { return _pos; }
 	void SetRotation(Rotation rotation) { _rotation = rotation; }
 	Rotation GetRotation() { return _rotation; }
-	void SetState(ObjectState state);
+	virtual void SetState(ObjectState state);
 	ObjectState GetState() { return _state; }
 	BoundingBox GetBoundingBox() { return _box; }
 	void SetObjectPoolState(ObjectPoolState objectPoolState) { _objectPoolState = objectPoolState; }

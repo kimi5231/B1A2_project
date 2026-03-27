@@ -140,6 +140,9 @@
     <ClInclude Include="Item.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="Packets.h" />
+    <ClInclude Include="Spider.h" />
+    <ClInclude Include="State.h" />
+    <ClInclude Include="FSM.h" />
     <ClInclude Include="Tool.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="Cube.h" />
@@ -168,6 +171,9 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="ServerFramework.cpp" />
+    <ClCompile Include="Spider.cpp" />
+    <ClCompile Include="State.cpp" />
+    <ClCompile Include="FSM.cpp" />
     <ClCompile Include="Tool.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

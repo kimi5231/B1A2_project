@@ -30,6 +30,12 @@
     <Filter Include="소스 파일\Game\Object\Item">
       <UniqueIdentifier>{fd7e806f-670e-4eac-b469-c748ee1e63df}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Game\Object\Monster">
+      <UniqueIdentifier>{97748d81-aad6-406f-95c2-d304c71dc975}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Game\Object\Monster\FSM">
+      <UniqueIdentifier>{60074fae-25c7-487a-92d6-550d1df636e5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -62,9 +68,6 @@
     <ClCompile Include="Door.cpp">
       <Filter>소스 파일\Game\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Monster.cpp">
-      <Filter>소스 파일\Game\Object</Filter>
-    </ClCompile>
     <ClCompile Include="BoundingBox.cpp">
       <Filter>소스 파일\Game\Collision</Filter>
     </ClCompile>
@@ -76,6 +79,18 @@
     </ClCompile>
     <ClCompile Include="Inventory.cpp">
       <Filter>소스 파일\Game\Object\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Monster.cpp">
+      <Filter>소스 파일\Game\Object\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="FSM.cpp">
+      <Filter>소스 파일\Game\Object\Monster\FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="State.cpp">
+      <Filter>소스 파일\Game\Object\Monster\FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="Spider.cpp">
+      <Filter>소스 파일\Game\Object\Monster</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -112,9 +127,6 @@
     <ClInclude Include="Door.h">
       <Filter>소스 파일\Game\Object</Filter>
     </ClInclude>
-    <ClInclude Include="Monster.h">
-      <Filter>소스 파일\Game\Object</Filter>
-    </ClInclude>
     <ClInclude Include="BoundingBox.h">
       <Filter>소스 파일\Game\Collision</Filter>
     </ClInclude>
@@ -126,6 +138,18 @@
     </ClInclude>
     <ClInclude Include="Inventory.h">
       <Filter>소스 파일\Game\Object\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Monster.h">
+      <Filter>소스 파일\Game\Object\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="FSM.h">
+      <Filter>소스 파일\Game\Object\Monster\FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="State.h">
+      <Filter>소스 파일\Game\Object\Monster\FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Spider.h">
+      <Filter>소스 파일\Game\Object\Monster</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

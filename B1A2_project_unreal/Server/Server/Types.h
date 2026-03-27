@@ -35,6 +35,14 @@ enum ObjectState
 	LOCK,
 	OPEN,
 	CLOSE,
+
+	// Monster
+	PAUSE,
+	MAKE_WEB,
+	ROAMING,
+	CHASE,
+	ATTACK,
+	RETURN,
 };
 
 enum class ObjectPoolState 
@@ -234,4 +242,17 @@ struct CubeConditionInfo
 	std::pair<uint, uint> createExitCount;
 	std::pair<uint, uint> exitPos;
 	std::pair<uint, uint> floor;
+};
+
+struct SpiderStatus
+{
+	float hp;
+	float speed;
+	float chaseSpeed;
+	float chaseTime;
+	float openDoorTime;
+	float attackDelay;
+	unsigned char attackDamage;
+	float makeWebTime;
+	unsigned char webCount;
 };
