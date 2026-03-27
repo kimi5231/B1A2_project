@@ -18,6 +18,7 @@
 #include "Main.h"
 #include "InteractableInterface.h"
 #include "BaseItem.h"
+#include "BaseDoor.h"
 
 #include "InventoryWidget.h" 
 #include "ToolBarWidget.h" 
@@ -93,7 +94,7 @@ void AMyPlayer::Tick(float DeltaTime)
 	{
 		_interactionTimer = INTERACTION_DELAY;
 
-		UpdateBestInteractableItem();
+		UpdateBestInteractableActor();
 	}
 }
 
@@ -418,18 +419,15 @@ void AMyPlayer::UpdateToolVisual()
 
 void AMyPlayer::OnItemOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	ABaseItem* item = Cast<ABaseItem>(OtherActor);
-	if (!item)
-		return;
-
-	_nearInteractableItem.Add(item);
-
-	//UE_LOG(LogTemp, Log, TEXT("[Item] Overlap Begin! Added Nearby Item: %s (Count: %d)"), *OtherActor->GetName(), _nearInteractableItem.Num());
-
-	// 아이템 인식 중에 아이템이 삭제되는 경우 - 삭제될 때 호출(구독)
-	if (item && !item->OnDestroyed.IsAlreadyBound(this, &AMyPlayer::OnItemDestroyed))
+	if (OtherActor && OtherActor->GetClass()->ImplementsInterface(UInteractableInterface::StaticClass()))
 	{
-		item->OnDestroyed.AddDynamic(this, &AMyPlayer::OnItemDestroyed);
+		_nearInteractables.Add(OtherActor);
+
+		// 아이템 인식 중에 아이템이 삭제되는 경우 - 삭제될 때 호출(구독)
+		if (!OtherActor->OnDestroyed.IsAlreadyBound(this, &AMyPlayer::OnItemDestroyed))
+		{
+			OtherActor->OnDestroyed.AddDynamic(this, &AMyPlayer::OnItemDestroyed);
+		}
 	}
 }
 
@@ -439,14 +437,14 @@ void AMyPlayer::OnItemOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActo
 	if (!item)
 		return;
 
-	_nearInteractableItem.Remove(item);
+	_nearInteractables.Remove(item);
 	//UE_LOG(LogTemp, Log, TEXT("[Item] OverlapEnd! Removed Nearby Item: %s (Count: %d)"), *OtherActor->GetName(), _nearInteractableItem.Num());
 
-	// 충돌 끝나면, 보고 있던 아이템 포커스 해제하기
-	if (_focusedItem == item)
+	// 충돌 끝나면, 보고 있던 아이템 or 문 포커스 해제하기
+	if (_focusedActor == item)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("[Item] OverlapEnd! Focused item left range, clearing focus"));
-		ClearFocusedItem();
+		ClearFocusedActor();
 	}
 }
 
@@ -456,86 +454,87 @@ void AMyPlayer::OnItemDestroyed(AActor* destroyedItem)
 	if (item)
 		return;
 
-	_nearInteractableItem.Remove(item);
+	_nearInteractables.Remove(item);
 
-	if (_focusedItem == item)
-		ClearFocusedItem();
+	if (_focusedActor == item)
+		ClearFocusedActor();
 
 	UE_LOG(LogTemp, Log, TEXT("[Item] Item Destroyed in Player Reference"));
 }
 
-void AMyPlayer::SetFocusedItem(ABaseItem* newItem)
+void AMyPlayer::SetFocusedActor(AActor* newActor)
 {
-	if (_focusedItem == newItem)
+	if (_focusedActor == newActor)
 		return;
 
-	if (_focusedItem)
-		IInteractableInterface::Execute_HideInteractionUI(_focusedItem);
+	if (_focusedActor)
+		IInteractableInterface::Execute_HideInteractionUI(_focusedActor);
 
-	_focusedItem = newItem;
+	_focusedActor = newActor;
 
-	if (_focusedItem)
-		IInteractableInterface::Execute_ShowInteractionUI(_focusedItem);
+	if (_focusedActor)
+		IInteractableInterface::Execute_ShowInteractionUI(_focusedActor);
 }
 
-void AMyPlayer::ClearFocusedItem()
+void AMyPlayer::ClearFocusedActor()
 {
-	if (!_focusedItem)
+	if (!_focusedActor)
 		return;
 
-	IInteractableInterface::Execute_HideInteractionUI(_focusedItem);
-	_focusedItem = nullptr;
+	IInteractableInterface::Execute_HideInteractionUI(_focusedActor);
+	_focusedActor = nullptr;
 }
 
-void AMyPlayer::UpdateBestInteractableItem()
+void AMyPlayer::UpdateBestInteractableActor()
 {
-	// 겹쳐 있는 아이템이 없으면 포커스 해제
-	if (_nearInteractableItem.Num() == 0)
+	// 겹쳐 있는 아이템 or 문이 없으면 포커스 해제
+	if (_nearInteractables.Num() == 0)
 	{
-		ClearFocusedItem();
+		ClearFocusedActor();
 		return;
 	}
 
-	ABaseItem* closestItem = nullptr;
+	AActor* closestActor = nullptr;
 	float minDistance = TNumericLimits<float>::Max();
 	FVector playerLocation = GetActorLocation();
 
-	// 가장 가까운 아이템 찾기
-	for (ABaseItem* item : _nearInteractableItem)
+	// 가장 가까운 Interactable 액터 찾기 (문 or 아이템)
+	for (AActor* actor : _nearInteractables)
 	{
-		if (!item)
+		if (!IsValid(actor))
 			continue;
 
-		float dist = FVector::DistSquared(playerLocation, item->GetActorLocation());
+		float dist = FVector::DistSquared(playerLocation, actor->GetActorLocation());
 		if (dist < minDistance)
 		{
 			minDistance = dist;
-			closestItem = item;
+			closestActor = actor;
 		}
 	}
 
-	// 가장 가까운 아이템 포커스
-	if (closestItem)
-		SetFocusedItem(closestItem);
+	// 가장 가까운 아이템 or 문 포커스
+	if (closestActor)
+		SetFocusedActor(closestActor);
 }
 
 void AMyPlayer::Interact()
 {
-	if (IsBusy)	// 다른 몽타주 실행 중이면 무시
+	if (IsBusy || !_focusedActor)	// 다른 몽타주 실행 중 or 상호작용 할 객체가 없으면 무시
 		return;
 
-	if (!_focusedItem)
-	{
-		UE_LOG(LogTemp, Log, TEXT("[Item] E Key Pressed, but no focused Item"));
+	UMain* gameInstance = Cast<UMain>(GetGameInstance());
+	if (!gameInstance)
 		return;
+
+	// Item or Tool인 경우
+	if (ABaseItem* item = Cast<ABaseItem>(_focusedActor))
+	{
+		gameInstance->SendGetItem(item->GetItemID(), item->GetIsTool(), gameInstance->GetMyID());
 	}
-
-	if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
+	// Door인 경우
+	else if (ABaseDoor* door = Cast<ABaseDoor>(_focusedActor))
 	{
-		UE_LOG(LogTemp, Display, TEXT("[Item/Tool] E Key Pressed, Sending GetItem Request - ID: %d, IsTool: %s, PlayerID: %d"),
-			_focusedItem->GetItemID(), _focusedItem->GetIsTool() ? TEXT("True") : TEXT("False"), gameInstance->GetMyID());
-
-		gameInstance->SendGetItem(_focusedItem->GetItemID(), _focusedItem->GetIsTool(), gameInstance->GetMyID());
+		gameInstance->SendInteractDoor(gameInstance->GetMyID(), door->GetDoorID());
 	}
 }
 

@@ -17,6 +17,7 @@ class FRunnableThread;
 class AOtherPlayer;
 class AMyPlayer;
 class ABaseItem;
+class ABaseDoor;
 
 UCLASS()
 class B1A2_UNREALPROJECT_API UMain : public UGameInstance
@@ -40,6 +41,7 @@ public:
 	void SendGetItem(int itemID, bool isTool, int playerID);
 	void SendDropItem(int playerID, bool isTool, int itemID);
 	void SendChangeTool(int playerID, int toolID);
+	void SendInteractDoor(int playerID, int doorID);
 	void SendUseTool(int playerID, int toolID, Rotation playerRotation);
 	void SendEmotion(float angry, float disgust, float fear, float happy, float sad, float surprise, float neutral);
 
@@ -128,7 +130,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Cube")
 
-	TSubclassOf<AStaticMeshActor> DoorClass;
+	TSubclassOf<ABaseDoor> DoorClass;
 
 	// 몬스터
 	UPROPERTY(EditDefaultsOnly, Category = "Monster")
@@ -196,4 +198,6 @@ private:
 	TMap<uint64, ABaseItem*> _items;
 	// 장비
 	TMap<uint64, ABaseItem*> _tools;
+	// 문
+	TMap<uint64, ABaseDoor*> _doors;
 };
