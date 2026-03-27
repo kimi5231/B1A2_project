@@ -35,18 +35,18 @@ void UToolBarWidget::NativeConstruct()
 	ToolSlots[0]->SetSelected(true);	// 첫 번째 슬롯 기본 선택
 }
 
-void UToolBarWidget::AddTool(int id, ItemType type, float weight)
+int32 UToolBarWidget::AddTool(int id, ItemType type, float weight)
 {
-	// 빈 슬롯 찾기
-	for (UToolSlotWidget* slot : ToolSlots)
+	for (int32 i = 0; i < ToolSlots.Num(); ++i)
 	{
-		if (slot && slot->isEmpty)
+		if (ToolSlots[i] && ToolSlots[i]->isEmpty)
 		{
-			UE_LOG(LogTemp, Display, TEXT("[Tool] Add Tool to ToolBar SUCCESS!!! ID: %d, Type: %d"), id, static_cast<int32>(type));
-			slot->SetSlotInfo(id, type, weight);
-			return;
+			ToolSlots[i]->SetSlotInfo(id, type, weight);
+			return i;
 		}
 	}
+	
+	return -1;	// 빈 슬롯이 없을 경우 
 }
 
 void UToolBarWidget::ChangeSelection(bool forward)
@@ -71,6 +71,19 @@ void UToolBarWidget::ChangeSelection(bool forward)
 
 		UE_LOG(LogTemp, Display, TEXT("[ToolBar] Highlight!"));
 	}
+}
+
+void UToolBarWidget::SetSelectedIndex(int32 index)
+{
+	if (!ToolSlots.IsValidIndex(index)) return;
+
+	// 기존 하이라이트 끄기
+	if (ToolSlots.IsValidIndex(_currentSelectedIndex))
+		ToolSlots[_currentSelectedIndex]->SetSelected(false);
+
+	// 새 인덱스로 변경 및 하이라이트 켜기
+	_currentSelectedIndex = index;
+	ToolSlots[_currentSelectedIndex]->SetSelected(true);
 }
 
 FDroppedItemInfo UToolBarWidget::GetSelectedToolBarTool()
@@ -99,3 +112,4 @@ void UToolBarWidget::RemoveToolByID(int32 toolID)
 		}
 	}
 }
+
