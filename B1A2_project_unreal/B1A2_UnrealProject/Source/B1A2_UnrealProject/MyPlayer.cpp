@@ -332,7 +332,7 @@ void AMyPlayer::ItemOrToolDrop()
 			}
 
 			// 들고 있는 Tool 지우기
-			CurrentToolActor->Destroy();
+			_currentAttachedToolActor->Destroy();
 		}
 	}
 }
@@ -392,10 +392,10 @@ void AMyPlayer::UpdateToolVisual()
 	FDroppedItemInfo info = widget->GetSelectedToolBarTool();
 
 	// 기존 도구가 있으면 제거
-	if (CurrentToolActor)
+	if (_currentAttachedToolActor)
 	{
-		CurrentToolActor->Destroy();
-		CurrentToolActor = nullptr;
+		_currentAttachedToolActor->Destroy();
+		_currentAttachedToolActor = nullptr;
 	}
 
 	// 빈 슬롯이라면 바꾸지 않음
@@ -409,12 +409,12 @@ void AMyPlayer::UpdateToolVisual()
 		Params.Owner = this;
 
 		// Tool 액터 생성
-		CurrentToolActor = GetWorld()->SpawnActor<ABaseItem>(ToolClass, FVector::ZeroVector, FRotator::ZeroRotator, Params);
+		_currentAttachedToolActor = GetWorld()->SpawnActor<ABaseItem>(ToolClass, FVector::ZeroVector, FRotator::ZeroRotator, Params);
 
-		if (CurrentToolActor)
+		if (_currentAttachedToolActor)
 		{
-			CurrentToolActor->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, HandSocketName);
-			CurrentToolActor->SetActorEnableCollision(false);	// 충돌 끔
+			_currentAttachedToolActor->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, HandSocketName);
+			_currentAttachedToolActor->SetActorEnableCollision(false);	// 충돌 끔
 		}
 	}
 }

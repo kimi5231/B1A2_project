@@ -96,7 +96,7 @@ protected:
 	FTimerHandle ToolChangeTimerHandle;
 	// 현재 손에 들고 있는 Tool Actor
 	UPROPERTY()
-	ABaseItem* CurrentToolActor;
+	ABaseItem* _currentAttachedToolActor;
 	// Tool이 붙을 뼈
 	const FName HandSocketName = TEXT("RightHandSocket");
 

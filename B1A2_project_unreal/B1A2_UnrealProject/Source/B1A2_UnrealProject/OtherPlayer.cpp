@@ -176,14 +176,19 @@ void AOtherPlayer::PickUpMontageEnded(UAnimMontage* montage, bool bIntererrupted
 
 void AOtherPlayer::UnequipTool(int itemID)
 {
+	if (_currentAttachedToolActor)
+	{
+		_currentAttachedToolActor->Destroy();
+		_currentAttachedToolActor = nullptr;
+	}
 }
 
 void AOtherPlayer::UpdateTool(ItemType type)
 {
-	if (CurrentToolActor)
+	if (_currentAttachedToolActor)
 	{
-		CurrentToolActor->Destroy();
-		CurrentToolActor = nullptr;
+		_currentAttachedToolActor->Destroy();
+		_currentAttachedToolActor = nullptr;
 	}
 
 	// 도구를 들지 않았을 땐 삭제만 하고 끝
@@ -197,12 +202,12 @@ void AOtherPlayer::UpdateTool(ItemType type)
 		FActorSpawnParameters Params;
 		Params.Owner = this;
 
-		CurrentToolActor = GetWorld()->SpawnActor<ABaseItem>(ToolClass, FVector::ZeroVector, FRotator::ZeroRotator, Params);
+		_currentAttachedToolActor = GetWorld()->SpawnActor<ABaseItem>(ToolClass, FVector::ZeroVector, FRotator::ZeroRotator, Params);
 
-		if (CurrentToolActor)
+		if (_currentAttachedToolActor)
 		{
-			CurrentToolActor->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, HandSocketName);
-			CurrentToolActor->SetActorEnableCollision(false);
+			_currentAttachedToolActor->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, HandSocketName);
+			_currentAttachedToolActor->SetActorEnableCollision(false);
 		}
 	}
 }
@@ -241,7 +246,7 @@ TSubclassOf<class ABaseItem> AOtherPlayer::GetToolClass(ItemType Type)
 	case ItemType::Cutlass: return GameInstance->CutlassClass;
 	case ItemType::Blaster: return GameInstance->BlasterClass;
 	case ItemType::Key:     return GameInstance->KeyClass;
-		//case ItemType::Lantern: return GameInstance->LanternClass;
+	case ItemType::Lantern: return GameInstance->LanternClass;
 	default: return nullptr;
 	}
 }
