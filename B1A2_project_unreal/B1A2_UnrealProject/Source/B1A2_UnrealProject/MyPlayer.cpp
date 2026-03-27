@@ -190,19 +190,21 @@ void AMyPlayer::AddItemToInventory(ItemType type, int id, float weight)
 	}
 }
 
-void AMyPlayer::AddToolToToolBar(ItemType type, int id, float weight)
+int32 AMyPlayer::AddToolToToolBar(ItemType type, int id, float weight)
 {
 	if (_toolBarWidgetInstance == nullptr)
 	{
 		UE_LOG(LogTemp, Error, TEXT("[ToolBar] _toolBarWidgetInstance is NULL!"));
-		return;
+		return -1;
 	}
 
 	UToolBarWidget* toolBar = Cast<UToolBarWidget>(_toolBarWidgetInstance);
 	if (toolBar)
 	{
-		toolBar->AddTool(id, type, weight);
+		return toolBar->AddTool(id, type, weight);
 	}
+	else
+		return -1;
 }
 
 void AMyPlayer::ToggleInventory()
@@ -263,11 +265,7 @@ void AMyPlayer::ToolSelectUp()
 		if (widget)
 		{
 			widget->ChangeSelection(true);	// 하이라이트 변경
-			UpdateToolVisual();	// 모델 변경
-
-			// 타이머 설정(서버로 보내기 체크)
-			GetWorldTimerManager().ClearTimer(ToolChangeTimerHandle);
-			GetWorldTimerManager().SetTimer(ToolChangeTimerHandle, this, &AMyPlayer::SendChangeToolPacket, 0.5f, false);
+			OnToolSelectionChanged();
 		}
 
 		UE_LOG(LogTemp, Display, TEXT("[Input] Mouse Wheel Up"));
@@ -283,15 +281,19 @@ void AMyPlayer::ToolSelectDown()
 		if (widget)
 		{
 			widget->ChangeSelection(false);		// 하이라이트 변경
-			UpdateToolVisual();		// 모델 변경
-
-			// 타이머 설정(서버로 보내기 체크)
-			GetWorldTimerManager().ClearTimer(ToolChangeTimerHandle);
-			GetWorldTimerManager().SetTimer(ToolChangeTimerHandle, this, &AMyPlayer::SendChangeToolPacket, 0.5f, false);
+			OnToolSelectionChanged();
 		}
 
 		UE_LOG(LogTemp, Display, TEXT("[Input] Mouse Wheel Up"));
 	}
+}
+
+void AMyPlayer::OnToolSelectionChanged()
+{
+	UpdateToolVisual();
+
+	GetWorldTimerManager().ClearTimer(ToolChangeTimerHandle);
+	GetWorldTimerManager().SetTimer(ToolChangeTimerHandle, this, &AMyPlayer::SendChangeToolPacket, 0.5f, false);
 }
 
 void AMyPlayer::ItemOrToolDrop()

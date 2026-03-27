@@ -986,20 +986,17 @@ void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 			}
 
 			ABaseItem* tool = *foundTool;
+			int32 toolIndex = _myPlayer->AddToolToToolBar(packet.itemType, itemID, packet.itemWeight);
 
 			// 장비 줍기 애니메이션 재생 + 월드에서 장비 삭제
 			_myPlayer->PlayPickUpAnimation(tool);
 			// 툴바에 넣기
-			_myPlayer->AddToolToToolBar(packet.itemType, itemID, packet.itemWeight);
-			// 손에 부착
-			if (UToolBarWidget* widget = Cast<UToolBarWidget>(_myPlayer->GetToolBarWidget()))
+			if (toolIndex != -1)
 			{
-				FDroppedItemInfo currentInfo = widget->GetSelectedToolBarTool();
-
-				if (currentInfo.isValid && currentInfo.itemID == packet.itemID)	// 방금 주운 아이템 ID와 현재 툴바 하이라이트된 칸의 ID가 같을 때
+				if (UToolBarWidget* widget = Cast<UToolBarWidget>(_myPlayer->GetToolBarWidget()))
 				{
-					// 캐릭터 손에 모델 부착
-					_myPlayer->UpdateToolVisual();
+					widget->SetSelectedIndex(toolIndex);
+					_myPlayer->OnToolSelectionChanged();	// 손에 부착 및 서버로 패킷 전송
 				}
 			}
 			// _tools에서 제거

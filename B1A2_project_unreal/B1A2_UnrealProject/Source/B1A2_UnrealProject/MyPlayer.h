@@ -100,7 +100,7 @@ public:
 
 public:
 	void AddItemToInventory(ItemType type, int id, float weight);
-	void AddToolToToolBar(ItemType type, int id, float weight);
+	int32 AddToolToToolBar(ItemType type, int id, float weight);
 
 protected:
 	UPROPERTY()
@@ -124,7 +124,11 @@ protected:
 	// Tool Bar 입력
 	void ToolSelectUp();
 	void ToolSelectDown();
+public:
+	// Tool 획득시 변경
+	void OnToolSelectionChanged();
 
+protected:
 	// Item/Tool 버리기 입력
 	void ItemOrToolDrop();
 
