@@ -104,11 +104,10 @@ public:
 
 protected:
 	UPROPERTY()
-	TSet<ABaseItem*> _nearInteractableItem;
+	TSet<AActor*> _nearInteractables;
 
 	UPROPERTY()
-	ABaseItem* _focusedItem;	// E 버튼을 띄울 아이템
-
+	AActor* _focusedActor;	// E 버튼을 띄울 아이템 or 문
 
 	// 위젯
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
@@ -159,9 +158,9 @@ private:
 	void OnItemOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	UFUNCTION()
 	void OnItemDestroyed(AActor* destroyedItem);
-	void SetFocusedItem(ABaseItem* newItem);
-	void ClearFocusedItem();
-	void UpdateBestInteractableItem();
+	void SetFocusedActor(AActor* newActor);
+	void ClearFocusedActor();
+	void UpdateBestInteractableActor();
 
 	void Interact();
 	void UseToolAnimationAndSend();

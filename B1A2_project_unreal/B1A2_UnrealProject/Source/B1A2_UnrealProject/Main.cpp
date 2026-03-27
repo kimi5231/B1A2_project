@@ -7,6 +7,7 @@
 #include "OtherPlayer.h"
 #include "Network/GameNetwork.h"
 #include "BaseItem.h"
+#include "BaseDoor.h"
 #include "ToolBarWidget.h"
 
 #define BUFSIZE	64
@@ -153,6 +154,18 @@ void UMain::SendChangeTool(int playerID, int toolID)
 		return;
 
 	_gameNetwork->SendChangeToolPacket(playerID, toolID);
+}
+
+void UMain::SendInteractDoor(int playerID, int doorID)
+{
+	if (_myID == 0 || doorID < 0)
+		return;
+
+	UWorld* world = GetWorld();
+	if (!world)
+		return;
+
+	_gameNetwork->SendInteractDoorPacket(playerID, doorID);
 }
 
 void UMain::SendUseTool(int playerID, int toolID, Rotation playerRotation)
@@ -934,7 +947,13 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 
 			if (door.doorType == DoorType::Door)
 			{
-				AStaticMeshActor* doorActor = world->SpawnActor<AStaticMeshActor>(DoorClass, pos, rot, params);
+				ABaseDoor* doorActor = world->SpawnActor<ABaseDoor>(DoorClass, pos, rot, params);
+				doorActor->SetDoorState(packet.doors[i].state);
+				doorActor->SetDoorID(packet.doors[i].id);
+
+				// Map에 추가
+				_doors.Add(packet.doors[i].id, doorActor);
+
 				UE_LOG(LogTemp, Log, TEXT("[Room] Door Spawned [%d] pos = %f, %f, %f, dir = %d"), i, door.pos.x, door.pos.y, door.pos.z, door.dir);
 			}
 			else if (door.doorType == DoorType::Wall)
@@ -1156,6 +1175,22 @@ void UMain::RecvSpawnParticle(S_SpawnParticle_Packet packet)
 
 void UMain::RecvInteractDoorNotify(S_InteractDoorNotify_Packet packet)
 {
+	int doorID = packet.doorID;
+	ObjectState state = packet.doorState;
+
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		UWorld* world = GetWorld();
+		if (!world)
+			return;
+
+		ABaseDoor** foundDoor = _doors.Find(doorID);
+		if (foundDoor && *foundDoor)
+		{
+			(*foundDoor)->UpdateDoorState(state);
+			UE_LOG(LogTemp, Log, TEXT("[Door] DoorID %d State Updated to %d"), doorID, (int)state);
+		}
+	});
 }
 
 FRotator UMain::DirToRotation(Dir dir)
