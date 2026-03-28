@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 #include <map>
 #include <array>
 #include <random>
@@ -14,6 +15,8 @@
 #include <utility> 
 #include <functional>
 #include <chrono>
+#include <queue>
+#include <cmath>
 
 #include "Types.h"
 
@@ -24,7 +27,6 @@ using SendEventRef = std::shared_ptr<class SendEvent>;
 using ClientRef = std::shared_ptr<class Client>;
 using RoomRef = std::shared_ptr<class Room>;
 
-using CubeRef = std::shared_ptr<class Cube>;
 using GameObjectRef = std::shared_ptr<class GameObject>;
 using PlayerRef = std::shared_ptr<class Player>;
 using MonsterRef = std::shared_ptr<class Monster>;

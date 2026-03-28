@@ -14,6 +14,9 @@ public:
 	void Update(const std::vector<CubeRef>& gameRooms);
 
 public:
+	std::vector<CubeRef> FindCubePath(Vector goal, const std::vector<CubeRef>& gameRooms);
+
+public:
 	virtual void SetState(ObjectState state) override;
 
 protected:

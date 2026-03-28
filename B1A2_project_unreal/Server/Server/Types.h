@@ -217,6 +217,15 @@ struct Rotation
 	float roll;
 };
 
+using CubeRef = std::shared_ptr<class Cube>;
+
+struct CubeNode
+{
+	CubeRef cube;
+	float g, h, f;
+	CubeNode* parent;
+};
+
 struct CubeInfo
 {
 	CubeType type;

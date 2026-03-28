@@ -32,7 +32,8 @@ public:
 	Dir GetDir() { return _dir; }
 	BoundingBox GetBoundingBox() { return _box; }
 	void SetID(uint id) { _id = id; }
-	std::vector<std::weak_ptr<Cube>>& GetConnectedCubes() { return _connetedCube; }
+	uint GetID() { return _id; }
+	std::vector<CubeRef>& GetConnectedCubes() { return _connetedCube; }
 
 private:
 	CubeInfo _info{};
@@ -41,6 +42,5 @@ private:
 	Dir _dir{};
 	BoundingBox _box;
 
-	// 순환참조 방지
-	std::vector<std::weak_ptr<Cube>> _connetedCube;
+	std::vector<CubeRef> _connetedCube;
 };
