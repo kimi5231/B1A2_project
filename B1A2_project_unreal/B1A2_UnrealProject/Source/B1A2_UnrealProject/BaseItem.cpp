@@ -26,6 +26,10 @@ ABaseItem::ABaseItem()
     EWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("InteractionWidget"));
     EWidget->SetupAttachment(RootComponent);
     EWidget->SetVisibility(false);
+
+    ScanInfoWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("ScanWidget"));
+    ScanInfoWidget->SetupAttachment(RootComponent);
+    ScanInfoWidget->SetVisibility(false);
 }
 
 // Called when the game starts or when spawned
@@ -63,5 +67,29 @@ void ABaseItem::HideInteractionUI_Implementation()
 void ABaseItem::Interact_Implementation()
 {
     UE_LOG(LogTemp, Log, TEXT("[Item] EButton Interact Called"));
+}
+
+void ABaseItem::OnScanned()
+{
+    if (ScanInfoWidget)
+    {
+        ScanInfoWidget->SetVisibility(true);
+
+        // 이미 타이머가 돌면 초기화 (다시 스캔 시)
+        GetWorldTimerManager().ClearTimer(ScanDisplayTimerHandle);
+
+        // 3초 후 위젯 숨김
+        GetWorldTimerManager().SetTimer(ScanDisplayTimerHandle, this, &ABaseItem::HideScanInfo, 3.0f, false);
+
+        UE_LOG(LogTemp, Display, TEXT("[Scan] Item [%d]"), _itemID);
+    }
+}
+
+void ABaseItem::HideScanInfo()
+{
+    if (ScanInfoWidget)
+    {
+        ScanInfoWidget->SetVisibility(false);
+    }
 }
 

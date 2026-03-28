@@ -129,6 +129,9 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 		// Item or Tool Drop
 		EnhancedInputComponent->BindAction(ItemOrToolDropAction, ETriggerEvent::Started, this, &AMyPlayer::ItemOrToolDrop);
+
+		// Scan
+		EnhancedInputComponent->BindAction(ScanAction, ETriggerEvent::Started, this, &AMyPlayer::Scan);
 	}
 }
 
@@ -335,6 +338,47 @@ void AMyPlayer::ItemOrToolDrop()
 			_currentAttachedToolActor->Destroy();
 		}
 	}
+}
+
+void AMyPlayer::Scan()
+{
+	UMain* gameInstance = Cast<UMain>(GetGameInstance());
+	if (!gameInstance) return;
+
+	FVector playerLoc = GetActorLocation();
+	FVector forwardDir = GetFollowCamera()->GetForwardVector(); // 카메라가 바라보는 방향 기준
+	forwardDir.Z = 0; // 평면적인 부채꼴을 위해 Z축 무시 (선택 사항)
+	forwardDir.Normalize();
+
+	float scanRadius = 500.0f;
+	float scanHalfAngleDeg = 80.0f; // 160도의 절반
+	float cosHalfAngle = FMath::Cos(FMath::DegreesToRadians(scanHalfAngleDeg));
+
+	TArray<ABaseItem*> allScanables = gameInstance->GetAllScanableItems();
+	for (ABaseItem* item : allScanables)
+	{
+		if (!item) continue;
+
+		FVector itemLoc = item->GetActorLocation();
+		FVector dirToItem = itemLoc - playerLoc;
+		float distance = dirToItem.Size();
+
+		// 거리 검사
+		if (distance <= scanRadius)
+		{
+			dirToItem.Normalize();
+
+			// 각도 검사
+			float DotProduct = FVector::DotProduct(forwardDir, dirToItem);
+			if (DotProduct >= cosHalfAngle)
+			{
+				item->OnScanned();
+			}
+		}
+	}
+
+	// 스캔 VFX 실행 (아래 3번 참고)
+	//PlayScanVisualEffect();
 }
 
 void AMyPlayer::RemoveItemInInventoryByID(int itemID)

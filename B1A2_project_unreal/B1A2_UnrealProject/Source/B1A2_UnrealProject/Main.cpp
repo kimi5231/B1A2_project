@@ -1204,3 +1204,26 @@ FRotator UMain::DirToRotation(Dir dir)
 
 	return rotation;
 }
+
+TArray<class ABaseItem*> UMain::GetAllScanableItems()
+{
+	TArray<ABaseItem*> CombinedList;
+
+	for (auto& ItemPair : _items)
+	{
+		if (ItemPair.Value)
+		{
+			CombinedList.Add(ItemPair.Value);
+		}
+	}
+
+	for (auto& ToolPair : _tools)
+	{
+		if (ToolPair.Value) 
+		{
+			CombinedList.Add(ToolPair.Value);
+		}
+	}
+
+	return CombinedList;
+}

@@ -81,6 +81,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
 	UInputAction* ItemOrToolDropAction;
 
+	// Scan
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
+	UInputAction* ScanAction;
+
 public:
 	AMyPlayer();
 
@@ -135,6 +139,8 @@ protected:
 	// Tool Change 패킷 보내기
 	void SendChangeToolPacket();
 
+	// Scan
+	void Scan();
 public:
 	// Inventory에서 Item 삭제
 	void RemoveItemInInventoryByID(int itemID);
