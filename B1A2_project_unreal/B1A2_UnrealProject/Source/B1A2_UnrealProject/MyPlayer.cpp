@@ -413,7 +413,9 @@ void AMyPlayer::UpdateToolVisual()
 
 		if (_currentAttachedToolActor)
 		{
-			_currentAttachedToolActor->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, HandSocketName);
+			FName targetSocket = _currentAttachedToolActor->TargetSocketName;
+
+			_currentAttachedToolActor->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, targetSocket);
 			_currentAttachedToolActor->SetActorEnableCollision(false);	// Ãæµ¹ ²û
 		}
 	}

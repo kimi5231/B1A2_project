@@ -97,8 +97,6 @@ protected:
 	// 현재 손에 들고 있는 Tool Actor
 	UPROPERTY()
 	ABaseItem* _currentAttachedToolActor;
-	// Tool이 붙을 뼈
-	const FName HandSocketName = TEXT("RightHandSocket");
-
+	
 	TSubclassOf<class ABaseItem> GetToolClass(ItemType Type);
 };

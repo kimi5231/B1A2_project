@@ -53,6 +53,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UWidgetComponent* EWidget;
 
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tool Socket")
+	FName TargetSocketName;
+
 private:
 	int _itemID = {};
 	bool _isTool = false;
