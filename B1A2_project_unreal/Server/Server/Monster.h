@@ -14,14 +14,15 @@ public:
 	void Update(const std::vector<CubeRef>& cubes, const std::vector<DoorRef>& doors);
 
 public:
-	std::vector<CubeRef> FindCubePath(Vector goal, const std::vector<CubeRef>& gameRooms);
-	std::deque<VectorInt> FindPath(VectorInt goal, const CubeRef cube);
+	std::vector<CubeRef> FindCubePath(const CubeRef goalCube, const CubeRef currentCube, const std::vector<CubeRef>& gameRooms);
+	std::deque<VectorInt> FindPath(VectorInt goal, const CubeRef ccurrentCubeube);
 
 public:
 	virtual void SetState(ObjectState state) override;
 
 protected:
 	FSM* _fsm;
+	VectorInt _targetPos;
 	std::deque<VectorInt> _path;
 
 	// °øÅë State
