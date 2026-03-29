@@ -200,4 +200,9 @@ private:
 	TMap<uint64, ABaseItem*> _tools;
 	// 문
 	TMap<uint64, ABaseDoor*> _doors;
+
+public:
+	// 스캔 시 맵에 있는 아이템 + 장비 반환
+	UFUNCTION(BlueprintCallable, Category = "Item")
+	TArray<class ABaseItem*> GetAllScanableItems();
 };

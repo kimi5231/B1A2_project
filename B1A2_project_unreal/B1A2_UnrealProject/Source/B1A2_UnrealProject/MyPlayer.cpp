@@ -14,6 +14,7 @@
 #include "CollisionQueryParams.h"   
 #include "Engine/OverlapResult.h"
 #include "Components/CapsuleComponent.h"
+#include "Materials/MaterialInstanceDynamic.h"
 
 #include "Main.h"
 #include "InteractableInterface.h"
@@ -72,6 +73,23 @@ void AMyPlayer::BeginPlay()
 	{
 		_inventoryWidgetInstance = CreateWidget<UUserWidget>(GetWorld(), _inventoryWidgetClass);
 	}
+
+	// Scan Material 설정
+	if (ScanMaterialOrigin && FollowCamera)
+	{
+		// 동적 인스턴스 생성
+		ScanMaterialInst = UMaterialInstanceDynamic::Create(ScanMaterialOrigin, this);
+
+		// 카메라의 포스트 프로세스 세팅에 추가
+		FWeightedBlendable Blendable;
+		Blendable.Weight = 1.0f; // 가중치는 1로 고정
+		Blendable.Object = ScanMaterialInst;
+
+		FollowCamera->PostProcessSettings.WeightedBlendables.Array.Add(Blendable);
+
+		// 초기에는 효과가 안 보이도록 0으로 설정
+		ScanMaterialInst->SetScalarParameterValue(TEXT("ScanIntensity"), 0.0f);
+	}
 }
 
 void AMyPlayer::Tick(float DeltaTime)
@@ -129,6 +147,9 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 		// Item or Tool Drop
 		EnhancedInputComponent->BindAction(ItemOrToolDropAction, ETriggerEvent::Started, this, &AMyPlayer::ItemOrToolDrop);
+
+		// Scan
+		EnhancedInputComponent->BindAction(ScanAction, ETriggerEvent::Started, this, &AMyPlayer::Scan);
 	}
 }
 
@@ -337,6 +358,54 @@ void AMyPlayer::ItemOrToolDrop()
 	}
 }
 
+void AMyPlayer::Scan()
+{
+	UMain* gameInstance = Cast<UMain>(GetGameInstance());
+	if (!gameInstance) return;
+
+	FVector playerLoc = GetActorLocation();
+	FVector forwardDir = GetFollowCamera()->GetForwardVector(); // 카메라가 바라보는 방향 기준
+	forwardDir.Z = 0; // 평면적인 부채꼴을 위해 Z축 무시 (선택 사항)
+	forwardDir.Normalize();
+
+	float scanRadius = 500.0f;
+	float scanHalfAngleDeg = 80.0f; // 160도의 절반
+	float cosHalfAngle = FMath::Cos(FMath::DegreesToRadians(scanHalfAngleDeg));
+
+	TArray<ABaseItem*> allScanables = gameInstance->GetAllScanableItems();
+	for (ABaseItem* item : allScanables)
+	{
+		if (!item) continue;
+
+		FVector itemLoc = item->GetActorLocation();
+		FVector dirToItem = itemLoc - playerLoc;
+		float distance = dirToItem.Size();
+
+		// 거리 검사
+		if (distance <= scanRadius)
+		{
+			dirToItem.Normalize();
+
+			// 각도 검사
+			float DotProduct = FVector::DotProduct(forwardDir, dirToItem);
+			if (DotProduct >= cosHalfAngle)
+			{
+				item->OnScanned();
+			}
+		}
+	}
+
+	// 시각 효과 실행
+	if (ScanMaterialInst)
+	{
+		CurrentScanAlpha = 1.0f; // 최대 밝기
+		ScanMaterialInst->SetScalarParameterValue(TEXT("ScanIntensity"), CurrentScanAlpha);
+
+		// 0.01초마다 UpdateScanEffect를 호출하여 부드럽게 감소
+		GetWorldTimerManager().SetTimer(ScanTimerHandle, this, &AMyPlayer::UpdateScanEffect, 0.01f, true);
+	}
+}
+
 void AMyPlayer::RemoveItemInInventoryByID(int itemID)
 {
 	if (_inventoryWidgetInstance)
@@ -413,10 +482,26 @@ void AMyPlayer::UpdateToolVisual()
 
 		if (_currentAttachedToolActor)
 		{
-			_currentAttachedToolActor->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, HandSocketName);
+			FName targetSocket = _currentAttachedToolActor->TargetSocketName;
+
+			_currentAttachedToolActor->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, targetSocket);
 			_currentAttachedToolActor->SetActorEnableCollision(false);	// 충돌 끔
 		}
 	}
+}
+
+void AMyPlayer::UpdateScanEffect()
+{
+	if (CurrentScanAlpha <= 0.0f)
+	{
+		CurrentScanAlpha = 0.0f;
+		ScanMaterialInst->SetScalarParameterValue(TEXT("ScanIntensity"), 0.0f);
+		GetWorldTimerManager().ClearTimer(ScanTimerHandle);
+		return;
+	}
+
+	CurrentScanAlpha -= (0.01f / ScanEffectDuration);
+	ScanMaterialInst->SetScalarParameterValue(TEXT("ScanIntensity"), CurrentScanAlpha);
 }
 
 void AMyPlayer::OnItemOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

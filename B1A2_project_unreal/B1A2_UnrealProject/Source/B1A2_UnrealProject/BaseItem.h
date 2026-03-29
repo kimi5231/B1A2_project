@@ -38,11 +38,12 @@ public:
 	void SetIsTool(bool isTool) { _isTool = isTool; }
 	bool GetIsTool() { return _isTool; }
 
-	void PickUp(USceneComponent* mesh, FName socketName);
-
 	void SetItemType(ItemType type) { _type = type; }
 	ItemType GetItemType() { return _type; }
  
+	void OnScanned();		// 스캔 범위에 들었을 때 위젯 On
+	void HideScanInfo();	// 3초 후 Hide
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* ItemMesh;
@@ -52,6 +53,15 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UWidgetComponent* EWidget;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UWidgetComponent* ScanInfoWidget;
+	
+	FTimerHandle ScanDisplayTimerHandle;
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tool Socket")
+	FName TargetSocketName;
 
 private:
 	int _itemID = {};

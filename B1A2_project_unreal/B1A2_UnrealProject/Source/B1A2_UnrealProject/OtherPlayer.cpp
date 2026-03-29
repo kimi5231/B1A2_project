@@ -199,14 +199,20 @@ void AOtherPlayer::UpdateTool(ItemType type)
 
 	if (ToolClass)
 	{
+		
 		FActorSpawnParameters Params;
 		Params.Owner = this;
 
 		_currentAttachedToolActor = GetWorld()->SpawnActor<ABaseItem>(ToolClass, FVector::ZeroVector, FRotator::ZeroRotator, Params);
-
+		
 		if (_currentAttachedToolActor)
-		{
-			_currentAttachedToolActor->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, HandSocketName);
+		{		
+			// 붙을 뼈의 이름
+			FName targetSocket = _currentAttachedToolActor->TargetSocketName;
+
+			// 부착
+			_currentAttachedToolActor->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, targetSocket);
+			// 충돌 무시
 			_currentAttachedToolActor->SetActorEnableCollision(false);
 		}
 	}
