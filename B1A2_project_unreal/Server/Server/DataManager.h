@@ -1,4 +1,5 @@
 #pragma once
+#include "DetourNavMesh.h"
 
 class DataManager
 {
@@ -10,6 +11,7 @@ public:
 	void LoadGameRoomConditionInfos();
 	void LoadGameRoomInfos();
 	void LoadGameRoomTilemaps();
+	void LoadCubeNavMesh();
 
 public:
 	const CubeConditionInfo& GetGameRoomConditionInfo(Difficulty current, Difficulty detail) { return _gameRoomconditionInfos[{current, detail}]; }
@@ -22,4 +24,5 @@ private:
 	std::map<std::pair<Difficulty, Difficulty>, CubeConditionInfo> _gameRoomconditionInfos;
 	std::unordered_map<CubeType, CubeInfo> _gameRoomInfos;
 	std::unordered_map<CubeType, std::vector<std::vector<std::vector<short>>>> _gameRoomTilemaps;
+	std::unordered_map<CubeType, dtNavMesh*> _cubeNavMesh;
 };

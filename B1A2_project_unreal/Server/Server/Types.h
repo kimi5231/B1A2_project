@@ -100,12 +100,11 @@ enum Difficulty
 	DifficultyCount,
 };
 
-enum TileState : short
+enum TileState : char
 {
-	Impassable = 0b00, // 갈 수 없음 + 물체 없음
-	Passable = 0b01, // 갈 수 있음 + 물체 없음
-	Wall = 0b10, // 갈 수 없음 + 물체 있음 == 벽
-	Occupied = 0b11  // 갈 수 있음 + 물체 있음
+	Impassable,
+	Passable,
+	Wall,
 };
 
 enum ItemType
@@ -157,21 +156,17 @@ enum Corner
 };
 
 //------------------Struct------------------
-// unordered map에 pair를 쓰기 위해 필요한 구조체
-struct PairHash
-{
-	size_t operator()(const std::pair<int, int>& p) const noexcept 
-	{
-		// 두 값을 섞어서 Hash 생성
-		return std::hash<int>()(p.first) ^ (std::hash<int>()(p.second) << 1);
-	}
-};
+struct VectorInt;
 
 struct Vector
 {
 	float x;
 	float y;
 	float z;
+
+	inline Vector() : x(0), y(0), z(0) {}
+	inline Vector(float X, float Y, float Z) : x(X), y(Y), z(Z) {}
+	inline Vector(const VectorInt& other);
 
 	Vector operator+(const Vector& other) const
 	{
@@ -188,6 +183,11 @@ struct Vector
 		return { x/ value, y/ value, z/ value };
 	}
 
+	Vector operator*(const int value) const
+	{
+		return { x * value, y * value, z * value };
+	}
+
 	bool operator<(const Vector& other) const
 	{
 		return (x < other.x || y < other.y || z < other.z);
@@ -201,6 +201,113 @@ struct Vector
 	bool operator>=(const Vector& other) const
 	{
 		return (x >= other.x || y >= other.y || z >= other.z);
+	}
+
+	bool operator==(const Vector& other) const
+	{
+		return (x == other.x && y == other.y && z == other.z);
+	}
+};
+
+struct VectorInt
+{
+	int x;
+	int y;
+	int z;
+
+	inline VectorInt() : x(0), y(0), z(0) {}
+	inline VectorInt(int X, int Y, int Z) : x(X), y(Y), z(Z) {}
+	inline VectorInt(const Vector& other)
+	{
+		x = static_cast<int>(other.x);
+		y = static_cast<int>(other.y);
+		z = static_cast<int>(other.z);
+	}
+	inline VectorInt(size_t X, size_t Y, size_t Z)
+	{
+		x = static_cast<int>(X);
+		y = static_cast<int>(Y);
+		z = static_cast<int>(Z);
+	}
+
+	VectorInt operator+(const VectorInt& other) const
+	{
+		return VectorInt( other.x + x, other.y + y, other.z + z );
+	}
+
+	VectorInt operator-(const VectorInt& other) const
+	{
+		return { x - other.x, y - other.y, z - other.z };
+	}
+
+	VectorInt operator/(const int value) const
+	{
+		return { x / value, y / value, z / value };
+	}
+
+	VectorInt operator*(const int value) const
+	{
+		return { x * value, y * value, z * value };
+	}
+
+	bool operator<(const VectorInt& other) const
+	{
+		return (x < other.x || y < other.y || z < other.z);
+	}
+
+	bool operator>(const VectorInt& other) const
+	{
+		return (x > other.x || y > other.y || z > other.z);
+	}
+
+	bool operator>=(const VectorInt& other) const
+	{
+		return (x >= other.x || y >= other.y || z >= other.z);
+	}
+
+	bool operator==(const VectorInt& other) const
+	{
+		return (x == other.x && y == other.y && z == other.z);
+	}
+
+	VectorInt& operator=(const Vector& other)
+	{
+		x = static_cast<int>(other.x);
+		y = static_cast<int>(other.y);
+		z = static_cast<int>(other.z);
+		return *this;
+	}
+};
+
+Vector::Vector(const VectorInt& other)
+{
+	x = static_cast<float>(other.x);
+	y = static_cast<float>(other.y);
+	z = static_cast<float>(other.z);
+}
+
+// unordered map에 Vector를 쓰기 위해 필요한 구조체
+struct VectorHash
+{
+	size_t operator()(const Vector& v) const noexcept
+	{
+		// 두 값을 섞어서 Hash 생성
+		std::size_t h1 = std::hash<float>()(v.x);
+		std::size_t h2 = std::hash<float>()(v.y);
+		std::size_t h3 = std::hash<float>()(v.z);
+		return h1 ^ (h2 << 1) ^ (h3 << 2);
+	}
+};
+
+struct VectorIntHash
+{
+	size_t operator()(const VectorInt& v) const noexcept
+	{
+		// 두 값을 섞어서 Hash 생성
+		std::size_t h1 = std::hash<int>()(v.x);
+		std::size_t h2 = std::hash<int>()(v.y);
+		std::size_t h3 = std::hash<int>()(v.z);
+		return h1 ^ (h2 << 1) ^ (h3 << 2);
 	}
 };
 
@@ -224,6 +331,13 @@ struct CubeNode
 	CubeRef cube;
 	float g, h, f;
 	CubeNode* parent;
+};
+
+struct TileNode
+{
+	VectorInt index;
+	float g, h, f;
+	TileNode* parent;
 };
 
 struct CubeInfo

@@ -5,6 +5,7 @@
 #include "Cube.h"
 #include "DataManager.h"
 #include "FSM.h"
+#include "Door.h"
 
 Monster::Monster()
 {
@@ -32,13 +33,51 @@ Monster::~Monster()
 {
 }
 
-void Monster::Update(const std::vector<CubeRef>& gameRooms)
+void Monster::Update(const std::vector<CubeRef>& cubes, const std::vector<DoorRef>& doors)
 {
 	_fsm->Update();
 
-	std::vector<CubeRef> path = FindCubePath({ 0, 0, 0 }, gameRooms);
-
+	// 경로 갱신
+	if (_path.empty())
 	{
+		std::vector<CubeRef> cubePath = FindCubePath({ 0, 0, 0 }, cubes);
+
+		Vector goal;
+		DoorRef door;
+		for (uint& doorID : cubePath[0]->GetDoors())
+		{
+
+			if (doors[doorID - 1]->GetConnectedCubeID() == cubePath[1]->GetID())
+			{
+				door = doors[doorID - 1];
+				break;
+			}
+		}
+
+		switch (door->GetDir())
+		{
+		case Front:
+			goal = { door->GetPos().x, door->GetPos().y + _size.y / 2, 100 };
+			break;
+		case Right:
+			goal = { door->GetPos().x - _size.x / 2, door->GetPos().y, 100 };
+			break;
+		case Back:
+			goal = { door->GetPos().x, door->GetPos().y - _size.y / 2, 100 };
+			break;
+		case Left:
+			goal = { door->GetPos().x + _size.x / 2, door->GetPos().y, 100 };
+			break;
+		}
+
+		_path = FindPath(goal, cubePath[0]);
+	}
+
+	SetPos(_path[0]);
+	_path.pop_front();
+	g_framework->SendMovePacket(shared_from_this(), true);
+	
+	/*{
 		// 현재 위치한 방이 어디인지 확인
 		CubeRef currentCube;
 		for (const CubeRef gameRoom : gameRooms)
@@ -171,10 +210,10 @@ void Monster::Update(const std::vector<CubeRef>& gameRooms)
 				SetPos(pos);
 				return;
 			}
-		}
+		} 
 
 		g_framework->SendMovePacket(shared_from_this(), true);
-	}
+	}*/
 }
 
 std::vector<CubeRef> Monster::FindCubePath(Vector goal, const std::vector<CubeRef>& gameRooms)
@@ -265,6 +304,133 @@ std::vector<CubeRef> Monster::FindCubePath(Vector goal, const std::vector<CubeRe
 
 		// 확인한 노드는 closeList에 추가
 		closeList.insert(currentNode->cube->GetID());
+	}
+}
+
+std::deque<VectorInt> Monster::FindPath(VectorInt goal, const CubeRef cube)
+{
+	// 현재 위치한 방의 타일맵 가져오기
+	const std::vector<std::vector<std::vector<short>>>& tilemap = g_dataManager->GetTilemap(cube->GetCubeType());
+
+	// 타일맵의 시작점 계산(FrontLeftButtom)
+	VectorInt cubePos = cube->GetPos();
+	VectorInt cubeSize = cube->GetSize();
+	VectorInt start{ cubePos.x - cubeSize.x / 2, cubePos.y - cubeSize.y / 2, cubePos.z };
+	switch (cube->GetCubeType())
+	{
+	case CubeType::GapRoom:	// 입구가 2층
+	case CubeType::RailCatwalk:
+	case CubeType::StorageRoom_Step:
+	case CubeType::CabinetRoom:
+	case CubeType::FactoryRoom:
+		start.z -= 600;
+		break;
+	}
+
+	// 현재 위치와 목적지의 인덱스 계산
+	VectorInt max{ tilemap[0][0].size(), tilemap[0].size(), tilemap.size() };
+	VectorInt startIndex = (_pos - start) / TileSize;
+	VectorInt goalIndex = (goal - start) / TileSize;
+
+	// Cube 방향에 따라 인덱스 변환
+	switch (cube->GetDir())
+	{
+	case Right:
+		startIndex = { startIndex.y, max.x - 1 - startIndex.x, startIndex.z };
+		goalIndex = { goalIndex.y, max.x - 1 - goalIndex.x, goalIndex.z };
+		break;
+	case Back:
+		startIndex = { max.x - 1 - startIndex.x, max.y - 1 - startIndex.y, startIndex.z };
+		goalIndex = { max.x - 1 - goalIndex.x, max.y - 1 - goalIndex.y, goalIndex.z };
+		break;
+	case Left:
+		startIndex = { max.y - 1 - startIndex.y, startIndex.x, startIndex.z };
+		goalIndex = { max.y - 1 - goalIndex.y, goalIndex.x, goalIndex.z };
+		break;
+	}
+
+	// 길찾기에 사용할 임시 BoundingBox
+	BoundingBox temp = _box;
+	const std::array<Vector, CornerCount>& corners = _box.GetCorners();
+
+	// 길찾기에 필요한 자료구조 정의
+	auto cmp = [](TileNode* a, TileNode* b) { return a->f > b->f; };
+	std::priority_queue<TileNode*, std::vector<TileNode*>, decltype(cmp)> openList(cmp);
+	std::unordered_map<VectorInt, TileNode*, VectorIntHash> openMap;
+	std::unordered_set<VectorInt, VectorIntHash> closeList;
+
+	// openList에 시작 노드 추가
+	float startH = sqrt((_pos.x - goal.x)* (_pos.x - goal.x) + (_pos.y - goal.y) * (_pos.y - goal.y) + (_pos.z - goal.z) * (_pos.z - goal.z));
+	TileNode* startNode = new TileNode{ startIndex, 0, startH, startH, nullptr };
+	openList.push(startNode);
+	openMap[startIndex] = startNode;
+
+	while (!openList.empty())
+	{
+		// openList에서 f값이 가장 작은 노드 가져오기
+		TileNode* currentNode = openList.top();
+		openList.pop();
+		openMap.erase(currentNode->index);
+
+		// 현재 노드와 연결된 모든 노드 확인
+		// 상하좌우 대각선
+		for (int x = currentNode->index.x - 1; x <= currentNode->index.x + 1; ++x)
+		{
+			for (int y = currentNode->index.y - 1; y <= currentNode->index.y + 1; ++y)
+			{
+				VectorInt connectedIndex{ x, y, currentNode->index.z };
+
+				// 현재 노드는 제외
+				if (connectedIndex == currentNode->index)
+					continue;
+
+				// 목적지 노드라면 경로	반환
+				if (connectedIndex.x == goalIndex.x && connectedIndex.y == goalIndex.y)
+				{
+					std::deque<VectorInt> path;
+					path.push_back(start + goalIndex * TileSize);
+					TileNode* node = currentNode;
+					while (node)
+					{
+						path.push_back(start + node->index * TileSize);
+						node = node->parent;
+					}
+					std::reverse(path.begin(), path.end());
+					return path;
+				}
+
+				// 이미 closeList에 있으면 무시
+				if (closeList.find(connectedIndex) != closeList.end())
+					continue;
+
+				float g = currentNode->g + 1;
+				VectorInt connectedPos = start + connectedIndex * TileSize;
+				float h = sqrt((connectedPos.x - goal.x) * (connectedPos.x - goal.x) + (connectedPos.y - goal.y) * (connectedPos.y - goal.y) + (connectedPos.z - goal.z) * (connectedPos.z - goal.z));
+				float f = g + h;
+
+				// 이미 openList에 있을때
+				if (openMap.find(connectedIndex) != openMap.end())
+				{
+					// 더 나은 경로가 발견되면 갱신
+					if (openMap[connectedIndex]->f > f)
+					{
+						TileNode* newNode = new TileNode{ connectedIndex, g, h, f, currentNode };
+						openList.push(newNode);
+						openMap[connectedIndex] = newNode;
+					}
+
+					continue;
+				}
+
+				// 두 List에 모두 없으면 openList에 추가
+				TileNode* newNode = new TileNode{ connectedIndex, g, h, f, currentNode };
+				openList.push(newNode);
+				openMap[connectedIndex] = newNode;
+			}
+		}
+		
+		// 확인한 노드는 closeList에 추가
+		closeList.insert(currentNode->index);
 	}
 }
 

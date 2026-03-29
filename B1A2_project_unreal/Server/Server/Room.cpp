@@ -65,7 +65,7 @@ void Room::Update()
 
 		// 몬스터 업데이트
 		for (const auto& item : _monsters)
-			item.second->Update(_cubes);
+			item.second->Update(_cubes, _doors);
 
 		// 플레이어, 몬스터 충돌 처리
 		/*for (const auto& playerItem : _players)
@@ -143,6 +143,7 @@ void Room::CreateFactoryCubes()
 		for (const DoorRef door : doors)
 		{
 			door->SetID(generateDoorID++);
+			cube->AddDoor(door->GetID());
 			_doors.push_back(door);
 			_connectableDoors[door->GetDir()].push_back(door);
 		}
@@ -250,6 +251,7 @@ void Room::CreateFactoryCubes()
 		// 자리가 있으면 배치
 		if (isCreate)
 		{
+			door->SetConnectedCubeID(generateCubeID);
 			// 방과 연결된 문은 삭제
 			door->SetConnectable(false);
 			_connectableDoors[connectDir].erase(std::remove(_connectableDoors[connectDir].begin(), _connectableDoors[connectDir].end(), door), _connectableDoors[connectDir].end());
@@ -259,6 +261,7 @@ void Room::CreateFactoryCubes()
 
 			// 연결된 방끼리 서로 기록
 			newCube->AddConnectedRoom(_cubes[door->GetRoomID() - 1]);
+			newCube->AddDoor(door->GetID());
 			_cubes[door->GetRoomID() - 1]->AddConnectedRoom(newCube);
 
 			_cubes.push_back(newCube);
@@ -269,6 +272,7 @@ void Room::CreateFactoryCubes()
 			for (const DoorRef door : doors)
 			{
 				door->SetID(generateDoorID++);
+				newCube->AddDoor(door->GetID());
 				_doors.push_back(door);
 				_connectableDoors[door->GetDir()].push_back(door);
 			}
@@ -299,6 +303,7 @@ GameObjectRef Room::AddObject(ObjectType type)
 	switch (type) 
 	{
 	case ObjectType::Player:
+	{
 		_players[_generatePlayerID] = std::make_shared<Player>();
 		object = _players[_generatePlayerID];
 		// temp
@@ -307,6 +312,7 @@ GameObjectRef Room::AddObject(ObjectType type)
 		object->SetPos(pos);
 		object->SetID(_generatePlayerID++);
 		_playerCount++;
+	}
 		break;
 	// temp. 추후 Monster Type별로 나눌 예정
 	case ObjectType::Monster:

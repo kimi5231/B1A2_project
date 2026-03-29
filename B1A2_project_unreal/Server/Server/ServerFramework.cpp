@@ -169,9 +169,11 @@ void ServerFramework::ProcessRecv(ClientRef client)
 	switch (header.id)
 	{
 	case C_Move:
+	{
 		C_Move_Packet movePacket;
 		memcpy(&movePacket, packet.data() + sizeof(Header), sizeof(C_Move_Packet));
 		ProcessMovePacket(movePacket);
+	}
 		break;
 	case C_GetItem:
 		C_GetItem_Packet getItemPacket;

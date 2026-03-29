@@ -220,12 +220,15 @@ void UMain::ProcessRecv()
 		switch (event->packetID)
 		{
 		case S_AddObject:
+		{
 			S_AddObject_Packet addObjectPacket;
 			FMemory::Memcpy(&addObjectPacket, event->serializedPacketData.data(), sizeof(S_AddObject_Packet));
 			RecvAddObject(addObjectPacket);
 			event->isComplete = true;
 			break;
+		}
 		case S_AddItem:
+		{
 			S_AddItem_Packet addItemPacket;
 			FMemory::Memcpy(&addItemPacket, event->serializedPacketData.data(), sizeof(S_AddItem_Packet));
 			if (addItemPacket.isTool)
@@ -234,6 +237,7 @@ void UMain::ProcessRecv()
 				RecvAddItem(addItemPacket);
 			event->isComplete = true;
 			break;
+		}
 		case S_RemoveObject:
 			S_RemoveObject_Packet removeObjectPacket;
 			FMemory::Memcpy(&removeObjectPacket, event->serializedPacketData.data(), sizeof(S_RemoveObject_Packet));
@@ -247,11 +251,13 @@ void UMain::ProcessRecv()
 			event->isComplete = true;
 			break;
 		case S_Move:
+		{
 			S_Move_Packet movePacket;
 			FMemory::Memcpy(&movePacket, event->serializedPacketData.data(), sizeof(S_Move_Packet));
 			RecvMoveObject(movePacket);
 			event->isComplete = true;
 			break;
+		}
 		case S_AddItemToInventory:	// MyPlayer의 아이템과 장비를 인벤과 툴바에 넣음 (OtherPlayer는 UpdateObjectState)
 			S_AddItemToInventory_Packet addItemToInventoryPacket;
 			FMemory::Memcpy(&addItemToInventoryPacket, event->serializedPacketData.data(), sizeof(S_AddItemToInventory_Packet));
@@ -265,11 +271,13 @@ void UMain::ProcessRecv()
 			event->isComplete = true;
 			break;
 		case S_DropItem:
+		{
 			S_DropItem_Packet dropItemPacket;
 			FMemory::Memcpy(&dropItemPacket, event->serializedPacketData.data(), sizeof(S_DropItem_Packet));
 			RecvDropItem(dropItemPacket);
 			event->isComplete = true;
 			break;
+		}
 		case S_UpdateCurrentTool:
 			S_UpdateCurrentTool_Packet updateCurrentToolPacket;
 			FMemory::Memcpy(&updateCurrentToolPacket, event->serializedPacketData.data(), sizeof(S_UpdateCurrentTool_Packet));
@@ -283,11 +291,13 @@ void UMain::ProcessRecv()
 			event->isComplete = true;
 			break;
 		case S_SpawnParticle:
+		{
 			S_SpawnParticle_Packet spawnParticlePacket;
 			FMemory::Memcpy(&spawnParticlePacket, event->serializedPacketData.data(), sizeof(S_SpawnParticle_Packet));
 			RecvSpawnParticle(spawnParticlePacket);
 			event->isComplete = true;
 			break;
+		}
 		case S_InteractDoorNotify:
 			S_InteractDoorNotify_Packet interactDoorNotifyPacket;
 			FMemory::Memcpy(&interactDoorNotifyPacket, event->serializedPacketData.data(), sizeof(S_InteractDoorNotify_Packet));
