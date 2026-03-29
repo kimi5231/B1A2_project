@@ -14,6 +14,7 @@
 #include "CollisionQueryParams.h"   
 #include "Engine/OverlapResult.h"
 #include "Components/CapsuleComponent.h"
+#include "Materials/MaterialInstanceDynamic.h"
 
 #include "Main.h"
 #include "InteractableInterface.h"
@@ -71,6 +72,23 @@ void AMyPlayer::BeginPlay()
 	if (_inventoryWidgetClass)
 	{
 		_inventoryWidgetInstance = CreateWidget<UUserWidget>(GetWorld(), _inventoryWidgetClass);
+	}
+
+	// Scan Material 설정
+	if (ScanMaterialOrigin && FollowCamera)
+	{
+		// 동적 인스턴스 생성
+		ScanMaterialInst = UMaterialInstanceDynamic::Create(ScanMaterialOrigin, this);
+
+		// 카메라의 포스트 프로세스 세팅에 추가
+		FWeightedBlendable Blendable;
+		Blendable.Weight = 1.0f; // 가중치는 1로 고정
+		Blendable.Object = ScanMaterialInst;
+
+		FollowCamera->PostProcessSettings.WeightedBlendables.Array.Add(Blendable);
+
+		// 초기에는 효과가 안 보이도록 0으로 설정
+		ScanMaterialInst->SetScalarParameterValue(TEXT("ScanIntensity"), 0.0f);
 	}
 }
 
@@ -377,8 +395,15 @@ void AMyPlayer::Scan()
 		}
 	}
 
-	// 스캔 VFX 실행 (아래 3번 참고)
-	//PlayScanVisualEffect();
+	// 시각 효과 실행
+	if (ScanMaterialInst)
+	{
+		CurrentScanAlpha = 1.0f; // 최대 밝기
+		ScanMaterialInst->SetScalarParameterValue(TEXT("ScanIntensity"), CurrentScanAlpha);
+
+		// 0.01초마다 UpdateScanEffect를 호출하여 부드럽게 감소
+		GetWorldTimerManager().SetTimer(ScanTimerHandle, this, &AMyPlayer::UpdateScanEffect, 0.01f, true);
+	}
 }
 
 void AMyPlayer::RemoveItemInInventoryByID(int itemID)
@@ -463,6 +488,20 @@ void AMyPlayer::UpdateToolVisual()
 			_currentAttachedToolActor->SetActorEnableCollision(false);	// 충돌 끔
 		}
 	}
+}
+
+void AMyPlayer::UpdateScanEffect()
+{
+	if (CurrentScanAlpha <= 0.0f)
+	{
+		CurrentScanAlpha = 0.0f;
+		ScanMaterialInst->SetScalarParameterValue(TEXT("ScanIntensity"), 0.0f);
+		GetWorldTimerManager().ClearTimer(ScanTimerHandle);
+		return;
+	}
+
+	CurrentScanAlpha -= (0.01f / ScanEffectDuration);
+	ScanMaterialInst->SetScalarParameterValue(TEXT("ScanIntensity"), CurrentScanAlpha);
 }
 
 void AMyPlayer::OnItemOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

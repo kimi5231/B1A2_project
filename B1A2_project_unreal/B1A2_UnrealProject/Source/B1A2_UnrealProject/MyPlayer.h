@@ -6,6 +6,7 @@
 #include "OtherPlayer.h"
 #include "Animation/AnimMontage.h"
 #include "Blueprint/UserWidget.h"
+#include "Engine/EngineTypes.h"
 
 #include "MyPlayer.generated.h"
 
@@ -16,6 +17,8 @@ class UInputAction;
 struct FInputActionValue;
 class UMain;
 class ABaseItem;
+class UMaterialInterface;
+class UMaterialInstanceDynamic;
 
 /**
  * 
@@ -159,6 +162,22 @@ public:
 	void UpdateToolVisual();
 
 	UUserWidget* GetToolBarWidget() const { return _toolBarWidgetInstance; }
+
+protected:
+	// Scan
+	UPROPERTY(EditAnywhere, Category = "Scan")
+	UMaterialInterface* ScanMaterialOrigin;
+
+	UPROPERTY()
+	UMaterialInstanceDynamic* ScanMaterialInst;
+
+	// 타이머
+	FTimerHandle ScanTimerHandle;
+	float ScanEffectDuration = 1.0f; // 1초 동안 지속
+	float CurrentScanAlpha = 0.0f;
+
+	// 스캔 효과를 서서히 줄여 줌
+	void UpdateScanEffect();
 
 private:
 	// 아이템 상호작용
