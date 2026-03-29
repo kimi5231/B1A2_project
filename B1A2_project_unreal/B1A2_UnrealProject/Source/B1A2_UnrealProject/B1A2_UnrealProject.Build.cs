@@ -8,7 +8,7 @@ public class B1A2_UnrealProject : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "OpenCVHelper", "OpenCV", "NavigationSystem", "NavMesh", "Blutility", "UMGEditor" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "OpenCVHelper", "OpenCV", "NavigationSystem", "NavMesh" });
 
 		PublicDependencyModuleNames.AddRange(new string[] {
 			"Core",

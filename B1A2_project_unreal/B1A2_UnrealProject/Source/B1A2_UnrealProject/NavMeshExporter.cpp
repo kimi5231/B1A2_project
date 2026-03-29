@@ -8,47 +8,62 @@
 #include "Serialization/BufferArchive.h"
 #include "Misc/FileHelper.h"
 
+// Detour 표준 헤더 구조체와 유사하게 정의 (서버와 약속된 포맷)
+struct FNavMeshHeader {
+    int32 Magic;
+    int32 Version;
+    int32 NumTiles;
+    dtNavMeshParams Params; // Detour의 표준 파라미터 구조체
+};
+
 void ANavMeshExporter::ExportNavMeshToBinary(FString FilePath)
 {
-    // 네비게이션 시스템 가져오기
     UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
     if (!NavSys) return;
 
-    // RecastNavMesh 데이터 찾기
     ARecastNavMesh* RecastNavMesh = Cast<ARecastNavMesh>(NavSys->GetDefaultNavDataInstance());
     if (!RecastNavMesh) return;
 
-    // 내부 Detour 데이터 접근
+    // 1. 언리얼 내부의 진짜 Detour 포인터 추출
     const dtNavMesh* DetourMesh = RecastNavMesh->GetRecastMesh();
     if (!DetourMesh) return;
 
-    // 바이너리 아카이브 준비
     FBufferArchive ToBinary;
 
-    // 헤더 저장 (NAVM 마커 및 버전)
-    int32 Magic = 0x4E41564D;
-    int32 Version = 1;
-    ToBinary << Magic;
-    ToBinary << Version;
+    // 2. 헤더 정보 구성
+    FNavMeshHeader Header;
+    Header.Magic = 0x4E41564D; // 'NAVM'
+    Header.Version = 1;
+    Header.Params = *DetourMesh->getParams(); // 중요: NavMesh의 원점, 타일 크기 등 설정 정보
 
-    // 타일 데이터 직렬화
-    int32 MaxTiles = DetourMesh->getMaxTiles();
-    ToBinary << MaxTiles;
+    // 실제 데이터가 있는 타일 개수만 세기
+    int32 ActualTileCount = 0;
+    for (int32 i = 0; i < DetourMesh->getMaxTiles(); ++i)
+    {
+        const dtMeshTile* Tile = DetourMesh->getTile(i);
+        if (Tile && Tile->header && Tile->dataSize > 0) ActualTileCount++;
+    }
+    Header.NumTiles = ActualTileCount;
 
-    for (int32 i = 0; i < MaxTiles; ++i)
+    // 3. 헤더 먼저 쓰기 (구조체 통째로 직렬화)
+    ToBinary.Serialize(&Header, sizeof(FNavMeshHeader));
+
+    // 4. 각 타일의 데이터 쓰기
+    for (int32 i = 0; i < DetourMesh->getMaxTiles(); ++i)
     {
         const dtMeshTile* Tile = DetourMesh->getTile(i);
         if (!Tile || !Tile->header || Tile->dataSize <= 0) continue;
 
-        int32 TileDataSize = Tile->dataSize;
-        ToBinary << i;             // 타일 인덱스
-        ToBinary << TileDataSize;  // 타일 크기
-        ToBinary.Serialize(Tile->data, TileDataSize); // 원본 바이너리 복사
+        // 서버에서 addTile 시 필요한 정보들
+        uint32 TileDataSize = Tile->dataSize;
+
+        // [타일 데이터 크기] -> [타일 바이너리] 순서로 기록
+        ToBinary << TileDataSize;
+        ToBinary.Serialize(Tile->data, TileDataSize);
     }
 
-    // 파일 저장
     if (FFileHelper::SaveArrayToFile(ToBinary, *FilePath))
     {
-        UE_LOG(LogTemp, Log, TEXT("NavMesh Export Success! Path: %s"), *FilePath);
+        UE_LOG(LogTemp, Log, TEXT("Detour Compatible NavMesh Export Success!"));
     }
 }

@@ -3,16 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EditorUtilityActor.h"
+#include "GameFramework/Actor.h"
 #include "NavMeshExporter.generated.h"
 
 UCLASS()
-class B1A2_UNREALPROJECT_API ANavMeshExporter : public AEditorUtilityActor
+class B1A2_UNREALPROJECT_API ANavMeshExporter : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 
-	UFUNCTION(BlueprintCallable, Category = "Navigation")
+	UFUNCTION(BlueprintCallable, CallInEditor, Category = "Navigation")
 	void ExportNavMeshToBinary(FString FilePath);
 };
