@@ -157,6 +157,12 @@ protected:
 	UPROPERTY()
 	UUserWidget* _toolBarWidgetInstance;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<UUserWidget> _controlExplainWidgetClass;
+
+	UPROPERTY()
+	UUserWidget* _controlExplainWidgetInstance;
+
 public:
 	// 로컬 플레이어 모델 업데이트
 	void UpdateToolVisual();

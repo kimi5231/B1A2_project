@@ -77,9 +77,6 @@ void AMyPlayer::BeginPlay()
 	if (_controlExplainWidgetClass)
 	{
 		_controlExplainWidgetInstance = CreateWidget<UUserWidget>(GetWorld(), _controlExplainWidgetClass);
-
-		if (_controlExplainWidgetInstance)
-			_controlExplainWidgetInstance->AddToViewport();
 	}
 
 	// Scan Material ¼³Á¤
