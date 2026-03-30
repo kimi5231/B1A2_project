@@ -57,7 +57,7 @@ protected:
 	FTimeline doorTimeline;
 
 	UPROPERTY(EditAnywhere, Category = "Door|Animation")
-	float rotationAngle = 70.f;
+	float rotationAngle = 120.f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* DoorFrameMesh;
