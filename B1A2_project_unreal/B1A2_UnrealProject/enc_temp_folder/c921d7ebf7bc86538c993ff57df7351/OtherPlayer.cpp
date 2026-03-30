@@ -230,7 +230,7 @@ void AOtherPlayer::PlayUseToolAnimation(ItemType type)
 		if (ComboMontage) PlayAnimMontage(ComboMontage, 1.0f, FName("Slash"));
 		break;
 	case ItemType::Blaster:
-		if (ComboMontage) PlayAnimMontage(ComboMontage, 1.0f, FName("Shooting"));
+		if (ComboMontage) PlayAnimMontage(ComboMontage, 1.0f, FName("Shoot"));
 		break;
 	case ItemType::Key:	// 애니메이션 X
 		break;
