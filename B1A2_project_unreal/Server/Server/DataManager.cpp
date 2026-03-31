@@ -150,28 +150,28 @@ void DataManager::LoadGameRoomTilemaps()
 
 void DataManager::LoadCubeNavMesh()
 {
-    std::ifstream file(_dataPath / "MainNavMesh.bin", std::ios::binary);
+ //   std::ifstream file(_dataPath / "MainNavMesh.bin", std::ios::binary);
 
-    // 1. NavMesh 파라미터 읽기
-    dtNavMeshParams params;
-    file.read(reinterpret_cast<char*>(&params), sizeof(dtNavMeshParams));
+ //   // 1. NavMesh 파라미터 읽기
+ //   dtNavMeshParams params;
+ //   file.read(reinterpret_cast<char*>(&params), sizeof(dtNavMeshParams));
 
-    // 2. NavMesh 객체 생성 및 초기화
-    dtNavMesh* navMesh = dtAllocNavMesh();
-    navMesh->init(&params);
+ //   // 2. NavMesh 객체 생성 및 초기화
+ //   dtNavMesh* navMesh = dtAllocNavMesh();
+ //   navMesh->init(&params);
 
-    // 3. 타일 데이터 읽기
-    for (int i = 0; i < params.maxTiles; ++i)
-    {
-        int dataSize = 0;
-        file.read(reinterpret_cast<char*>(&dataSize), sizeof(int));
-        if (dataSize == 0) continue;
+ //   // 3. 타일 데이터 읽기
+ //   for (int i = 0; i < params.maxTiles; ++i)
+ //   {
+ //       int dataSize = 0;
+ //       file.read(reinterpret_cast<char*>(&dataSize), sizeof(int));
+ //       if (dataSize == 0) continue;
 
-        std::unique_ptr<unsigned char[]> data(new unsigned char[dataSize]);
-        file.read(reinterpret_cast<char*>(data.get()), dataSize);
+ //       std::unique_ptr<unsigned char[]> data(new unsigned char[dataSize]);
+ //       file.read(reinterpret_cast<char*>(data.get()), dataSize);
 
-        navMesh->addTile(data.release(), dataSize, DT_TILE_FREE_DATA, 0, 0);
-    }
+ //       navMesh->addTile(data.release(), dataSize, DT_TILE_FREE_DATA, 0, 0);
+ //   }
 
-	_cubeNavMesh[CubeType::MainEntranceRoom] = navMesh;
+	//_cubeNavMesh[CubeType::MainEntranceRoom] = navMesh;
 }
