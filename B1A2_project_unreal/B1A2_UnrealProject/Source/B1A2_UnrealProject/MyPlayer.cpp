@@ -158,6 +158,9 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 		// Scan
 		EnhancedInputComponent->BindAction(ScanAction, ETriggerEvent::Started, this, &AMyPlayer::Scan);
+
+		// Cheet Key
+		EnhancedInputComponent->BindAction(CheetKeyAction, ETriggerEvent::Started, this, &AMyPlayer::CheetKey);
 	}
 }
 
@@ -412,6 +415,11 @@ void AMyPlayer::Scan()
 		// 0.01초마다 UpdateScanEffect를 호출하여 부드럽게 감소
 		GetWorldTimerManager().SetTimer(ScanTimerHandle, this, &AMyPlayer::UpdateScanEffect, 0.01f, true);
 	}
+}
+
+void AMyPlayer::CheetKey()
+{
+	SetActorLocation(FVector(0.f, 0.f, 25.f));
 }
 
 void AMyPlayer::RemoveItemInInventoryByID(int itemID)
