@@ -88,6 +88,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
 	UInputAction* ScanAction;
 
+	// Cheet Key(Go To MainRoom)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
+	UInputAction* CheetKeyAction;
+
 public:
 	AMyPlayer();
 
@@ -144,6 +148,10 @@ protected:
 
 	// Scan
 	void Scan();
+
+	// Cheet Key
+	void CheetKey();
+
 public:
 	// Inventory에서 Item 삭제
 	void RemoveItemInInventoryByID(int itemID);

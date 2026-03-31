@@ -651,9 +651,9 @@ void UMain::RecvDropItem(S_DropItem_Packet packet)
 			switch (packet.itemType)
 			{
 			case ItemType::CardboardBox:
-				item = world->SpawnActor<ABaseItem>(CardboardBoxClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
+				item = world->SpawnActor<ABaseItem>(CardboardBoxClass, (spawnLocation.X, spawnLocation.Y, spawnLocation), spawnRotation);
 				item->SetItemType(ItemType::CardboardBox);
-				UE_LOG(LogTemp, Log, TEXT("[Item] CardboardBox Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
+				UE_LOG(LogTemp, Log, TEXT("[Item] CardboardBox Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
 				break;
 			case ItemType::GoldBar:
 				item = world->SpawnActor<ABaseItem>(GoldBarClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
