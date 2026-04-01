@@ -229,6 +229,12 @@ struct VectorInt
 		y = static_cast<int>(Y);
 		z = static_cast<int>(Z);
 	}
+	inline VectorInt(float X, float Y, float Z)
+	{
+		x = static_cast<int>(X);
+		y = static_cast<int>(Y);
+		z = static_cast<int>(Z);
+	}
 
 	VectorInt operator+(const VectorInt& other) const
 	{
@@ -335,6 +341,7 @@ struct CubeNode
 
 struct TileNode
 {
+	VectorInt pos;
 	VectorInt index;
 	float g, h, f;
 	TileNode* parent;

@@ -17,6 +17,7 @@
 #include <chrono>
 #include <queue>
 #include <cmath>
+#include <algorithm>
 
 #include "Types.h"
 

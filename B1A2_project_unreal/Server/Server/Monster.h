@@ -14,15 +14,27 @@ public:
 	void Update(const std::vector<CubeRef>& cubes, const std::vector<DoorRef>& doors);
 
 public:
-	std::vector<CubeRef> FindCubePath(const CubeRef goalCube, const CubeRef currentCube, const std::vector<CubeRef>& gameRooms);
+	std::deque<CubeRef> FindCubePath(const CubeRef goalCube, const CubeRef currentCube, const std::vector<CubeRef>& gameRooms);
 	std::deque<VectorInt> FindPath(VectorInt goal, const CubeRef ccurrentCubeube);
+
+	VectorInt WorldToLocalIndex(VectorInt wp, CubeRef cube);
+
+	bool IsWalkable(CubeRef cube, VectorInt localIdx);
+
+	CubeRef FindCubeAtWorldPos(VectorInt wp, CubeRef currentCube);
+
+	bool IsPointInCube(VectorInt wp, CubeRef cube);
+	std::deque<VectorInt> ReconstructPath(TileNode* goalNode);
+	
+	float GetDistance(VectorInt a, VectorInt b);
 
 public:
 	virtual void SetState(ObjectState state) override;
 
 protected:
 	FSM* _fsm;
-	VectorInt _targetPos;
+	VectorInt* _targetPos;
+	std::deque<CubeRef> _cubePath;
 	std::deque<VectorInt> _path;
 
 	// °øÅë State

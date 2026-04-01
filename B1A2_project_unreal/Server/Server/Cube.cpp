@@ -6,8 +6,17 @@
 Cube::Cube(Vector pos, Dir dir, CubeInfo info)
 	: _pos(pos), _dir(dir), _info(info)
 {
-	// 바운딩 박스 중점하고 바닥 위치 다른 큐브는 다르게 처리 필요
-	_box.SetBounds(_pos, info.size, dir);
+	auto type = info.type;
+	Vector Pos = _pos;
+	if (type == CubeType::GapRoom || type == CubeType::RailCatwalk ||
+		type == CubeType::StorageRoom_Step || type == CubeType::CabinetRoom ||
+		type == CubeType::FactoryRoom)
+	{
+		Pos.z -= 600;
+		_box.SetBounds(Pos, info.size, dir);
+	}
+	else
+		_box.SetBounds(_pos, info.size, dir);
 }
 
 Cube::~Cube()
