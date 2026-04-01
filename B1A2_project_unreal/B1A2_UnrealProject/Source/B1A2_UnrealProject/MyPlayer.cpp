@@ -73,6 +73,14 @@ void AMyPlayer::BeginPlay()
 	{
 		_inventoryWidgetInstance = CreateWidget<UUserWidget>(GetWorld(), _inventoryWidgetClass);
 	}
+	// Control Explain 위젯
+	if (_controlExplainWidgetClass)
+	{
+		_controlExplainWidgetInstance = CreateWidget<UUserWidget>(GetWorld(), _controlExplainWidgetClass);
+
+		if (_controlExplainWidgetInstance)
+			_controlExplainWidgetInstance->AddToViewport();
+	}
 
 	// Scan Material 설정
 	if (ScanMaterialOrigin && FollowCamera)
@@ -150,6 +158,9 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 		// Scan
 		EnhancedInputComponent->BindAction(ScanAction, ETriggerEvent::Started, this, &AMyPlayer::Scan);
+
+		// Cheat Key
+		EnhancedInputComponent->BindAction(CheatKeyAction, ETriggerEvent::Started, this, &AMyPlayer::CheatKey);
 	}
 }
 
@@ -406,6 +417,11 @@ void AMyPlayer::Scan()
 	}
 }
 
+void AMyPlayer::CheatKey()
+{
+	SetActorLocation(FVector(0.f, 0.f, 25.f));
+}
+
 void AMyPlayer::RemoveItemInInventoryByID(int itemID)
 {
 	if (_inventoryWidgetInstance)
@@ -637,30 +653,52 @@ void AMyPlayer::UseToolAnimationAndSend()
 	if (ToolInfo.itemID == -1)
 		return;
 
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	if (AnimInstance && ComboMontage)
+	// 애니메이션 필요한 경우 판단(Key 사용, Lantern 사용 지금은 애니메이션 X)
+	bool useAnimation = true;
+	FName animName;
+
+	switch (ToolInfo.type)
 	{
-		IsBusy = true; // 입력 차단 시작
+	case ItemType::Cutlass:
+		animName = "Slash";
+		break;
+	case ItemType::Blaster:
+		animName = "Shooting";
+		break;
+	case ItemType::Lantern:
+	case ItemType::Key:
+		useAnimation = false;
+		break;
+	}
 
-		// 몽타주 실행
-		float duration = PlayAnimMontage(ComboMontage, 1.0f, FName("Slash"));
+	if (useAnimation)
+	{
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		if (AnimInstance && ComboMontage)
+		{
+			IsBusy = true; // 입력 차단 시작
 
-		if (duration > 0.f)
-		{
-			// 타이머 대신 종료 델리게이트 설정
-			FOnMontageEnded EndDelegate;
-			EndDelegate.BindUObject(this, &AMyPlayer::OnToolMontageEnded);
-			AnimInstance->Montage_SetEndDelegate(EndDelegate, ComboMontage);
-		}
-		else
-		{
-			IsBusy = false; // 재생 실패 시 즉시 해제
+			// 몽타주 실행
+
+			float duration = PlayAnimMontage(ComboMontage, 1.0f, animName);
+
+			if (duration > 0.f)
+			{
+				// 타이머 대신 종료 델리게이트 설정
+				FOnMontageEnded EndDelegate;
+				EndDelegate.BindUObject(this, &AMyPlayer::OnToolMontageEnded);
+				AnimInstance->Montage_SetEndDelegate(EndDelegate, ComboMontage);
+			}
+			else
+			{
+				IsBusy = false; // 재생 실패 시 즉시 해제
+			}
 		}
 	}
 
 	// 서버에 C_UseTool 송신
 	if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
-	{	
+	{
 		FRotator rot = GetControlRotation();
 		// - 180 ~ 180 값을 0 ~ 360으로 정규화
 		float normPitch = FRotator::NormalizeAxis(rot.Pitch);
@@ -671,7 +709,7 @@ void AMyPlayer::UseToolAnimationAndSend()
 		if (normRoll < 0) normRoll += 360.0f;
 		Rotation rotation = { normPitch, normYaw, normRoll };
 
-		gameInstance->SendUseTool(gameInstance->GetMyID(),ToolInfo.itemID, rotation);
+		gameInstance->SendUseTool(gameInstance->GetMyID(), ToolInfo.itemID, rotation);
 		//UE_LOG(LogTemp, Log, TEXT("[Tool] Use Tool, Tool ID: %d, Type: %d"), ToolInfo.itemID, (int32)type);
 	}
 }

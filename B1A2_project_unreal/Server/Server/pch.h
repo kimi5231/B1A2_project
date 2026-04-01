@@ -26,10 +26,10 @@
 //#pragma comment(lib, "Detour.lib")
 //#pragma comment(lib, "DetourCrowd.lib")
 //#pragma comment(lib, "DetourTileCache.lib")
-#pragma comment(lib, "Recast-d.lib")
-#pragma comment(lib, "Detour-d.lib")
-#pragma comment(lib, "DetourCrowd-d.lib")
-#pragma comment(lib, "DetourTileCache-d.lib")
+//#pragma comment(lib, "Recast-d.lib")
+//#pragma comment(lib, "Detour-d.lib")
+//#pragma comment(lib, "DetourCrowd-d.lib")
+//#pragma comment(lib, "DetourTileCache-d.lib")
 
 using SendEventRef = std::shared_ptr<class SendEvent>;
 

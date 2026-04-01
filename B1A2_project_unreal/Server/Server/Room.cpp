@@ -353,6 +353,9 @@ void Room::RemoveObject(ObjectType type, uint id, bool isSend)
 {
 	switch (type)
 	{
+	case ObjectType::Player:
+		_players.erase(id);
+		break;
 	case ObjectType::Item:
 		_items[id]->SetObjectPoolState(ObjectPoolState::Reusable);
 		break;

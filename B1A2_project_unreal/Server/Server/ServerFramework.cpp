@@ -571,7 +571,13 @@ void ServerFramework::ProcessAccept(SOCKET clientSocket)
 
 void ServerFramework::ProcessDisconnect(ClientRef client)
 {
+	// 연결 끊긴 Client를 나타내는 Player 제거
+	_room->RemoveObject(ObjectType::Player, client->player->GetID(), true);
 
+	std::cout << "Client 접속 종료" << std::endl;
+
+	// 연결 끊긴 Client 삭제 예약
+	_removeClients.push_back(client);
 }
 
 void ServerFramework::ProcessUpdateObjectStatePacket(C_UpdateObjectState_Packet packet)
