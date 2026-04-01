@@ -40,7 +40,7 @@ Room::Room()
 	_items.push_back(key);
 	ItemRef lantern = std::make_shared<Tool>(ItemType::Lantern);
 	lantern->SetID(_generateItemID++);
-	lantern->SetPos({ 0, 250, 25 });
+	lantern->SetPos({ 0, -100, 25 });
 	lantern->SetObjectPoolState(ObjectPoolState::InWorld);
 	_items.push_back(lantern);
 }
