@@ -159,8 +159,8 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		// Scan
 		EnhancedInputComponent->BindAction(ScanAction, ETriggerEvent::Started, this, &AMyPlayer::Scan);
 
-		// Cheet Key
-		EnhancedInputComponent->BindAction(CheetKeyAction, ETriggerEvent::Started, this, &AMyPlayer::CheetKey);
+		// Cheat Key
+		EnhancedInputComponent->BindAction(CheatKeyAction, ETriggerEvent::Started, this, &AMyPlayer::CheatKey);
 	}
 }
 
@@ -417,7 +417,7 @@ void AMyPlayer::Scan()
 	}
 }
 
-void AMyPlayer::CheetKey()
+void AMyPlayer::CheatKey()
 {
 	SetActorLocation(FVector(0.f, 0.f, 25.f));
 }
