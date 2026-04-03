@@ -188,6 +188,13 @@ struct Vector
 		return { x * value, y * value, z * value };
 	}
 
+	void operator*=(const int value)
+	{
+		x*= value;
+		y*= value;
+		z*= value;
+	}
+
 	bool operator<(const Vector& other) const
 	{
 		return (x < other.x || y < other.y || z < other.z);
@@ -341,7 +348,7 @@ struct CubeNode
 
 struct TileNode
 {
-	VectorInt pos;
+	//VectorInt pos;
 	VectorInt index;
 	float g, h, f;
 	TileNode* parent;
