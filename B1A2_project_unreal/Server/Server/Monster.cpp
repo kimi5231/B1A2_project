@@ -240,15 +240,14 @@ std::deque<CubeRef> Monster::FindCubePath(const CubeRef goalCube, const CubeRef 
 	return {};
 }
 
-float Monster::GetDistance(VectorInt a, VectorInt b) {
-	// sqrt 연산은 무겁지만 A*의 정확도를 위해 사용합니다. 
-	// 타일 단위로 계산하기 위해 나중에 TileSize로 나눕니다.
+float Monster::GetDistance(VectorInt a, VectorInt b)
+{
 	return (float)sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2) + pow(a.z - b.z, 2));
 }
 
 std::deque<VectorInt> Monster::FindPath(VectorInt goal, const CubeRef currentCube)
 {
-	// 1. 자료구조 준비
+	// 길찾기에 필요한 자료구조 선언
 	auto cmp = [](TileNode* a, TileNode* b) { return a->f > b->f; };
 	std::priority_queue<TileNode*, std::vector<TileNode*>, decltype(cmp)> openList(cmp);
 	std::unordered_map<VectorInt, TileNode*, VectorIntHash> allNodes;
@@ -593,9 +592,9 @@ VectorInt Monster::WorldToLocalIndex(VectorInt wp, CubeRef cube)
 	default:    result = { tx, ty, tz }; break; // Front
 	}
 
-	tx = std::clamp(tx, 0, maxX - 1);
-	ty = std::clamp(ty, 0, maxY - 1);
-	tz = std::clamp(tz, 0, maxZ - 1);
+	result.x = std::clamp(result.x, 0, maxX - 1);
+	result.y = std::clamp(result.y, 0, maxY - 1);
+	result.z = std::clamp(result.z, 0, maxZ - 1);
 
 	return result;
 }
