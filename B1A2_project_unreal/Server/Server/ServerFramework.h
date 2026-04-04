@@ -51,6 +51,7 @@ public:
 	void SendMovePacket(GameObjectRef object, bool broadcast, SOCKET client = 0);
 	void SendCreateCubesPacket(const std::vector<CubeRef>& cubes, const std::vector<DoorRef>& doors, bool broadcast, SOCKET client = 0);
 	void SendAddItemToInventoryPacket(ItemRef item, bool isTool, bool broadcast, SOCKET client = 0);
+	void SendRemoveItemFromInventoryPacket(ItemRef item, bool isTool, bool broadcast, SOCKET client = 0);
 	void SendItemPickupNotifyPacket(ItemRef item, uint playerID, bool isTool, bool broadcast, SOCKET client = 0);
 	void SendDropItemPacket(ItemRef item, PlayerRef player, bool isTool, bool broadcast, SOCKET client = 0);
 	void SendUpdateCurrentToolPacket(uint playerID, uint itemID, ItemType type, bool broadcast, SOCKET client = 0);
@@ -70,6 +71,7 @@ public:
 	void ProcessDropItemPacket(C_DropItem_Packet packet);
 	void ProcessChangeToolPacket(C_ChangeTool_Packet packet);
 	void ProcessUseToolPacket(C_UseTool_Packet packet);
+	void ProcessUseKeyPacket(SOCKET clientSocket, C_UseKey_Packet packet);
 	void ProcessInteractDoorPacket(C_InteractDoor_Packet packet);
 	void ProcessEmotionPacket(C_Emotion_Packet packet);
 

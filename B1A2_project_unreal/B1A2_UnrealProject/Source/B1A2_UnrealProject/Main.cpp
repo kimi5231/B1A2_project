@@ -264,6 +264,12 @@ void UMain::ProcessRecv()
 			RecvAddItemToInventory(addItemToInventoryPacket);
 			event->isComplete = true;
 			break;
+		case S_RemoveItemFromInventory:
+			S_RemoveItemFromInventory_Packet removeItemFromInventoryPacket;
+			FMemory::Memcpy(&removeItemFromInventoryPacket, event->serializedPacketData.data(), sizeof(S_RemoveItemFromInventory_Packet));
+			RecvRemoveItemFromInventory(removeItemFromInventoryPacket);
+			event->isComplete = true;
+			break;
 		case S_ItemPickupNotify:
 			S_ItemPickupNotify_Packet itemPickupNotifyPacket;
 			FMemory::Memcpy(&itemPickupNotifyPacket, event->serializedPacketData.data(), sizeof(S_ItemPickupNotify_Packet));
@@ -1046,6 +1052,11 @@ void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 			UE_LOG(LogTemp, Display, TEXT("[RecvAddItemToInventory] Item PickedUp and To Inventory"));
 		}		
 	});
+}
+
+void UMain::RecvRemoveItemFromInventory(S_RemoveItemFromInventory_Packet packet)
+{
+
 }
 
 void UMain::RecvItemPickupNotify(S_ItemPickupNotify_Packet packet)

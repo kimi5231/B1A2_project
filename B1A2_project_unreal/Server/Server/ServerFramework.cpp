@@ -411,6 +411,24 @@ void ServerFramework::SendAddItemToInventoryPacket(ItemRef item, bool isTool, bo
 	_sendEvents.push_back(event);
 }
 
+void ServerFramework::SendRemoveItemFromInventoryPacket(ItemRef item, bool isTool, bool broadcast, SOCKET client)
+{
+	// Packet Data 생성
+	S_RemoveItemFromInventory_Packet packetData{ isTool, item->GetItemType(), item->GetID() };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	// SendEvent 생성
+	SendEventRef event = std::make_shared<SendEvent>();
+	event->isBroadcast = broadcast;
+	event->clientSocket = client;
+	event->packetID = S_RemoveItemFromInventory;
+	event->serializedPacketData = serializedPacketData;
+
+	_sendEvents.push_back(event);
+}
+
 void ServerFramework::SendItemPickupNotifyPacket(ItemRef item, uint playerID, bool isTool, bool broadcast, SOCKET client)
 {
 	// Packet Data 생성
@@ -704,6 +722,34 @@ void ServerFramework::ProcessUseToolPacket(C_UseTool_Packet packet)
 		// 도구 사용 알리기
 		SendUseToolPacket(packet.playerID, tool->GetItemType(), true);
 	}
+}
+
+void ServerFramework::ProcessUseKeyPacket(SOCKET clientSocket, C_UseKey_Packet packet)
+{
+	// Player가 열쇠를 정말 가지고 있는지 확인
+	PlayerRef player = dynamic_pointer_cast<Player>(_room->GetGameObject(ObjectType::Player, packet.playerID));
+	// 가지고 있지 않으면 무시
+	if (!player->ExistItem(true, packet.toolID))
+		return;
+
+	// 요청한 Door가 닫힌 상태인지 확인
+	DoorRef door = dynamic_pointer_cast<Door>(_room->GetGameObject(ObjectType::Door, packet.doorID));
+	// 이미 열린 상태면 무시
+	if (door->GetState() == ObjectState::OPEN)
+		return;
+
+	// 요청한 Player가 열쇠를 사용할 수 있는 거리인지 확인
+	
+
+	// 사용 가능한 거리라면 Door State 변경
+	door->SetState(ObjectState::OPEN);
+
+	// Player 인벤토리에서 열쇠 제거
+	ItemRef item = dynamic_pointer_cast<Item>(_room->GetGameObject(ObjectType::Item, packet.toolID));
+	player->RemoveItemFromInventory(true, packet.toolID);
+
+	SendRemoveItemFromInventoryPacket(item, true, false, clientSocket);
+	SendUpdateObjectStatePacket(door, true);
 }
 
 void ServerFramework::ProcessInteractDoorPacket(C_InteractDoor_Packet packet)

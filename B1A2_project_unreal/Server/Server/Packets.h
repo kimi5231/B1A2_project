@@ -11,6 +11,7 @@ enum PacketID
 	C_DropItem,
 	C_ChangeTool,
 	C_UseTool,
+	C_UseKey,
 	C_InteractDoor,
 	C_Emotion,
 
@@ -22,6 +23,7 @@ enum PacketID
 	S_Move,
 	S_CreateCubes,
 	S_AddItemToInventory,
+	S_RemoveItemFromInventory,
 	S_ItemPickupNotify,
 	S_DropItem,
 	S_UpdateCurrentTool,
@@ -97,6 +99,13 @@ struct C_UseTool_Packet
 	Rotation playerRotation;
 };
 
+struct C_UseKey_Packet
+{
+	int playerID;
+	int toolID;
+	int doorID;
+};
+
 struct C_InteractDoor_Packet
 {
 	uint playerID;
@@ -166,6 +175,13 @@ struct S_AddItemToInventory_Packet
 	ItemType itemType;
 	int itemID;
 	float itemWeight;
+};
+
+struct S_RemoveItemFromInventory_Packet
+{
+	bool isTool;
+	ItemType itemType;
+	int itemID;
 };
 
 struct S_ItemPickupNotify_Packet

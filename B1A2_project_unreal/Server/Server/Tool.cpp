@@ -26,8 +26,6 @@ void Tool::UseTool()
 	case Blaster:
 		// 몬스터와 충돌처리할 총알 생성
 		break;
-	case Key:
-		break;
 	case Lantern:
 		break;
 	}
