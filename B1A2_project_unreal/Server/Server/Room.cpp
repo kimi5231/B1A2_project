@@ -43,6 +43,23 @@ Room::Room()
 	lantern->SetPos({ 0, -100, 25 });
 	lantern->SetObjectPoolState(ObjectPoolState::InWorld);
 	_items.push_back(lantern);
+
+	// 테스트용 몬스터 생성
+	MonsterRef none1 = std::make_shared<Monster>(MonsterType::None);
+	none1->SetID(_generateMonsterID++);
+	none1->SetPos({0, 0, 25});
+	none1->SetObjectPoolState(ObjectPoolState::InWorld);
+	_monsters.push_back(none1);
+	MonsterRef none2 = std::make_shared<Monster>(MonsterType::None);
+	none2->SetID(_generateMonsterID++);
+	none2->SetPos({ 0, 0, 25 });
+	none2->SetObjectPoolState(ObjectPoolState::InWorld);
+	_monsters.push_back(none1);
+	MonsterRef none3 = std::make_shared<Monster>(MonsterType::None);
+	none3->SetID(_generateMonsterID++);
+	none3->SetPos({ 0, 0, 25 });
+	none3->SetObjectPoolState(ObjectPoolState::InWorld);
+	_monsters.push_back(none1);
 }
 
 Room::~Room()
@@ -64,8 +81,8 @@ void Room::Update()
 			item.second->Update();
 
 		// 몬스터 업데이트
-		for (const auto& item : _monsters)
-			item.second->Update(_cubes, _doors);
+		for (const auto& monster : _monsters)
+			monster->Update(_cubes, _doors);
 
 		// 플레이어, 몬스터 충돌 처리
 		/*for (const auto& playerItem : _players)
@@ -314,17 +331,32 @@ GameObjectRef Room::AddObject(ObjectType type)
 		_playerCount++;
 	}
 		break;
-	// temp. 추후 Monster Type별로 나눌 예정
-	case ObjectType::Monster:
-		_monsters[_generateMonsterID] = std::make_shared<Monster>();
-		object = _monsters[_generateMonsterID];
-		object->SetID(_generateMonsterID++);
-		break;
 	}
 
 	g_framework->SendAddObjectPacket(object, true);
 
 	return object;
+}
+
+MonsterRef Room::AddIMonster(MonsterType monsterType, Vector pos, bool isSend)
+{
+	for (auto& monster : _monsters)
+	{
+		// 같은 종류의 재사용 가능한 몬스터 찾기
+		if (monster->GetObjectPoolState() == ObjectPoolState::Reusable && monster->GetMonsterType() == monsterType)
+		{
+			// 재사용이 가능하면, 정보 재설정
+			monster->SetPos(pos);
+
+			// ObjectPoolState 변경
+			monster->SetObjectPoolState(ObjectPoolState::InWorld);
+
+			if (isSend)
+				g_framework->SendSpawnMonsterPacket(monster, true);
+
+			return monster;
+		}
+	}
 }
 
 ItemRef Room::AddItem(bool isTool, ItemType itemType, Vector pos, bool isSend)

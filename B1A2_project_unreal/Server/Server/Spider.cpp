@@ -2,7 +2,8 @@
 #include "Spider.h"
 #include "FSM.h"
 
-Spider::Spider()
+Spider::Spider(MonsterType monsterType)
+	: Monster(monsterType)
 {
 	// State »ý¼º
 	_pause = new PauseState();

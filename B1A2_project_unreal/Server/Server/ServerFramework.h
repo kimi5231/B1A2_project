@@ -57,6 +57,7 @@ public:
 	void SendUseToolPacket(uint playerID, ItemType type, bool broadcast, SOCKET client = 0);
 	void SendSpawnParticlePacket(Vector pos, bool broadcast, SOCKET client = 0);
 	void SendInteractDoorNotifyPacket(uint playerID, uint doorID, ObjectState doorState, bool broadcast, SOCKET client = 0);
+	void SendSpawnMonsterPacket(MonsterRef monster, bool broadcast, SOCKET client = 0);
 	void Broadcast(PacketID id, const std::vector<char>& packetData);
 
 public:

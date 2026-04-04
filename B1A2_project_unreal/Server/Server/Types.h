@@ -11,6 +11,13 @@ enum class ObjectType : char
 	Door,
 };
 
+enum class MonsterType : char
+{
+	Spider,
+	
+	None,
+};
+
 enum ObjectState
 {
 	IDLE,

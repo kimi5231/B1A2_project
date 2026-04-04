@@ -4,7 +4,7 @@
 class Spider : public Monster
 {
 public:
-	Spider();
+	Spider(MonsterType monsterType);
 	~Spider();
 
 public:

@@ -519,6 +519,24 @@ void ServerFramework::SendInteractDoorNotifyPacket(uint playerID, uint doorID, O
 	_sendEvents.push_back(event);
 }
 
+void ServerFramework::SendSpawnMonsterPacket(MonsterRef monster, bool broadcast, SOCKET client)
+{
+	// Packet Data 생성
+	S_SpawnMonster_Packet packetData{ monster->GetID(), monster->GetMonsterType(), monster->GetState(), monster->GetPos(), monster->GetRotation()};
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	// SendEvent 생성
+	SendEventRef event = std::make_shared<SendEvent>();
+	event->isBroadcast = broadcast;
+	event->clientSocket = client;
+	event->packetID = S_SpawnMonster;
+	event->serializedPacketData = serializedPacketData;
+
+	_sendEvents.push_back(event);
+}
+
 void ServerFramework::Broadcast(PacketID id, const std::vector<char>& packetData)
 {
 	// Room에 있는 모든 Client에게 Packet 송신
@@ -547,9 +565,9 @@ void ServerFramework::ProcessAccept(SOCKET clientSocket)
 	const std::unordered_map<uint, PlayerRef>& players = _room->GetPlayers();
 	for (const auto& item : players)
 		SendAddObjectPacket(item.second, false, newClient->socket);
-	const std::unordered_map<uint, MonsterRef>& monsters = _room->GetMonsters();
-	for (const auto& item : monsters)
-		SendAddObjectPacket(item.second, false, newClient->socket);
+	const std::vector<MonsterRef>& monsters = _room->GetMonsters();
+	for (const auto& monster : monsters)
+		SendAddObjectPacket(monster, false, newClient->socket);
 	const std::vector<ItemRef>& items = _room->GetItems();
 	for (const auto& item : items)
 	{
@@ -560,12 +578,6 @@ void ServerFramework::ProcessAccept(SOCKET clientSocket)
 			else
 				SendAddItemPacket(item, false, newClient->socket);
 		}
-	}
-		
-	// 추후 삭제 예정
-	if (players.size() == 1)
-	{
-		_room->AddObject(ObjectType::Monster);
 	}
 }
 

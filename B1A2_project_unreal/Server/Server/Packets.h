@@ -28,6 +28,7 @@ enum PacketID
 	S_UseTool,
 	S_SpawnParticle,
 	S_InteractDoorNotify,
+	S_SpawnMonster,
 };
 
 struct Header
@@ -45,7 +46,7 @@ struct CubeDTO
 
 struct DoorDTO
 {
-	uint id;
+	int id;
 	Vector pos;
 	Dir dir;
 	ObjectState state;
@@ -63,7 +64,7 @@ struct C_UpdateObjectState_Packet
 struct C_Move_Packet
 {
 	ObjectType type;
-	uint objectID;
+	int objectID;
 	Vector pos;
 	Rotation rotation;
 	ObjectState state;
@@ -71,28 +72,28 @@ struct C_Move_Packet
 
 struct C_GetItem_Packet
 {
-	uint playerID;
+	int playerID;
 	bool isTool;
-	uint itemID;
+	int itemID;
 };
 
 struct C_DropItem_Packet
 {
-	uint playerID;
+	int playerID;
 	bool isTool;
-	uint itemID;
+	int itemID;
 };
 
 struct C_ChangeTool_Packet
 {
-	uint playerID;
-	uint toolID;
+	int playerID;
+	int toolID;
 };
 
 struct C_UseTool_Packet
 {
-	uint playerID;
-	uint toolID;
+	int playerID;
+	int toolID;
 	Rotation playerRotation;
 };
 
@@ -117,7 +118,7 @@ struct C_Emotion_Packet
 struct S_AddObject_Packet
 {
 	ObjectType type;
-	uint objectID;
+	int objectID;
 	Vector pos;
 	Rotation rotation;
 };
@@ -126,7 +127,7 @@ struct S_AddItem_Packet
 {
 	bool isTool;
 	ItemType itemType;
-	uint objectID;
+	int objectID;
 	Vector pos;
 	Rotation rotation;
 };
@@ -134,12 +135,12 @@ struct S_AddItem_Packet
 struct S_RemoveObject_Packet
 {
 	ObjectType objectType;
-	uint objectID;
+	int objectID;
 };
 
 struct S_UpdateObjectState_Packet
 {
-	uint objectID;
+	int objectID;
 	ObjectType type;
 	ObjectState state;
 };
@@ -147,7 +148,7 @@ struct S_UpdateObjectState_Packet
 struct S_Move_Packet
 {
 	ObjectType type;
-	uint objectID;
+	int objectID;
 	Vector pos;
 	Rotation rotation;
 	ObjectState state;
@@ -163,7 +164,7 @@ struct S_AddItemToInventory_Packet
 {
 	bool isTool;
 	ItemType itemType;
-	uint itemID;
+	int itemID;
 	float itemWeight;
 };
 
@@ -171,23 +172,23 @@ struct S_ItemPickupNotify_Packet
 {
 	bool isTool;
 	ItemType itemType;
-	uint itemID;
-	uint playerID;
+	int itemID;
+	int playerID;
 };
 
 struct S_DropItem_Packet
 {
-	uint playerID;
+	int playerID;
 	bool isTool;
 	ItemType itemType;
-	uint itemID;
+	int itemID;
 	Vector itemPos;
 };
 
 struct S_UpdateCurrentTool_Packet
 {
-	uint playerID;
-	uint itemID;
+	int playerID;
+	int itemID;
 	ItemType itemType;
 };
 
@@ -198,13 +199,22 @@ struct S_SpawnParticle_Packet
 
 struct S_InteractDoorNotify_Packet
 {
-	uint playerID;
-	uint doorID;
+	int playerID;
+	int doorID;
 	ObjectState doorState;
 };
 
 struct S_UseTool_Packet
 {
-	uint playerID;
+	int playerID;
 	ItemType toolType;
+};
+
+struct S_SpawnMonster_Packet
+{
+	int id;
+	MonsterType type;
+	ObjectState state;
+	Vector pos;
+	Rotation rotation;
 };

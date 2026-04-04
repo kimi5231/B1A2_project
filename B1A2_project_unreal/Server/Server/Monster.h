@@ -7,7 +7,7 @@ class FSM;
 class Monster : public GameObject
 {
 public:
-	Monster();
+	Monster(MonsterType monsterType);
 	~Monster();
 
 public:
@@ -29,8 +29,12 @@ public:
 
 public:
 	virtual void SetState(ObjectState state) override;
+	MonsterType GetMonsterType() { return _monsterType; };
+	void SetMonsterType(MonsterType monsterType) { _monsterType = monsterType; };
 
 protected:
+	MonsterType _monsterType;
+
 	FSM* _fsm;
 	VectorInt* _targetPos;
 	std::deque<CubeRef> _cubePath;

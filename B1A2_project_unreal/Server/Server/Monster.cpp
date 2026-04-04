@@ -7,7 +7,8 @@
 #include "FSM.h"
 #include "Door.h"
 
-Monster::Monster()
+Monster::Monster(MonsterType monsterType)
+	: _monsterType(monsterType)
 {
 	// FSM »ý¼º
 	_fsm = new FSM();

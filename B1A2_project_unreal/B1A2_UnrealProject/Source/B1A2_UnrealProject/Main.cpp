@@ -305,10 +305,20 @@ void UMain::ProcessRecv()
 			event->isComplete = true;
 			break;
 		case S_CreateCubes:
+		{
 			S_CreateCubes_Packet createCubesPacket{ _gameNetwork->DeserializeVector<CubeDTO>(event->serializedPacketData), _gameNetwork->DeserializeVector<DoorDTO>(event->serializedPacketData) };
 			RecvCreateCubes(createCubesPacket);
 			event->isComplete = true;
 			break;
+		}
+		case S_SpawnMonster:
+		{
+			S_SpawnMonster_Packet spawnMonsterPacket;
+			FMemory::Memcpy(&spawnMonsterPacket, event->serializedPacketData.data(), sizeof(S_SpawnMonster_Packet));
+			RecvSpawnMonster(spawnMonsterPacket);
+			event->isComplete = true;
+			break;
+		}
 		}
 	}
 }
@@ -1199,6 +1209,11 @@ void UMain::RecvInteractDoorNotify(S_InteractDoorNotify_Packet packet)
 			UE_LOG(LogTemp, Log, TEXT("[Door] DoorID %d State Updated to %d"), doorID, (int)state);
 		}
 	});
+}
+
+void UMain::RecvSpawnMonster(S_SpawnMonster_Packet packet)
+{
+
 }
 
 FRotator UMain::DirToRotation(Dir dir)

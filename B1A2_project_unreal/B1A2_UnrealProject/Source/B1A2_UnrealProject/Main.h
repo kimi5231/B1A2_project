@@ -75,6 +75,7 @@ public:
 	void RecvUseTool(S_UseTool_Packet packet);
 	void RecvSpawnParticle(S_SpawnParticle_Packet packet);
 	void RecvInteractDoorNotify(S_InteractDoorNotify_Packet packet);
+	void RecvSpawnMonster(S_SpawnMonster_Packet packet);
 
 	FRotator DirToRotation(Dir dir);
 
