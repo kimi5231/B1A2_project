@@ -960,6 +960,7 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 				ABaseDoor* doorActor = world->SpawnActor<ABaseDoor>(DoorClass, pos, rot, params);
 				doorActor->SetDoorState(packet.doors[i].state);
 				doorActor->SetDoorID(packet.doors[i].id);
+				doorActor->SetDoorRotation(packet.doors[i].state);	// 상태에 따라 문 각도 설정
 
 				// Map에 추가
 				_doors.Add(packet.doors[i].id, doorActor);

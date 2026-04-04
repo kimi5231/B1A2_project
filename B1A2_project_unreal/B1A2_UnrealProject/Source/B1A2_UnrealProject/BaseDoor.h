@@ -43,6 +43,8 @@ public:
 	void SetDoorID(int32 ID) { _doorID = ID; }
 	int32 GetDoorID() { return _doorID; }
 
+	void SetDoorRotation(ObjectState state);	// Open State로 생성 -> 문 열어놓기
+
 protected:
 	// 문 열림 - 닫힘 애니메이션 
 	void OnStateChanged(ObjectState oldState, ObjectState newState);

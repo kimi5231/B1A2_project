@@ -93,6 +93,25 @@ void ABaseDoor::UpdateDoorState(ObjectState newState)
     OnStateChanged(oldState, newState);
 }
 
+void ABaseDoor::SetDoorRotation(ObjectState state)
+{
+    if (!DoorMesh)
+        return;
+
+    switch (state)
+    {
+    case ObjectState::OPEN:
+        DoorMesh->SetRelativeRotation(FRotator(0.f, rotationAngle, 0.f));
+        doorTimeline.SetPlaybackPosition(1.0f, false);
+        break;
+    case ObjectState::CLOSE:
+    case ObjectState::LOCK:
+        DoorMesh->SetRelativeRotation(FRotator(0.f, 0.f, 0.f));
+        doorTimeline.SetPlaybackPosition(0.0f, false);
+        break;
+    }
+}
+
 void ABaseDoor::OnStateChanged(ObjectState oldState, ObjectState newState)
 {
     switch (newState)
