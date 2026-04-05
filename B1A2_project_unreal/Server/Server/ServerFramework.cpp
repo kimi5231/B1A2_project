@@ -585,10 +585,10 @@ void ServerFramework::ProcessAccept(SOCKET clientSocket)
 		SendAddObjectPacket(item.second, false, newClient->socket);
 	const std::vector<MonsterRef>& monsters = _room->GetMonsters();
 	for (const auto& monster : monsters)
-		SendAddObjectPacket(monster, false, newClient->socket);
-	/*const std::vector<MonsterRef>& monsters = _room->GetMonsters();
-	for (const auto& monster : monsters)
-		SendSpawnMonsterPacket(monster, false, newClient->socket);*/
+	{
+		if (monster->GetObjectPoolState() == ObjectPoolState::InWorld)
+			SendSpawnMonsterPacket(monster, false, newClient->socket);
+	}
 	const std::vector<ItemRef>& items = _room->GetItems();
 	for (const auto& item : items)
 	{
@@ -719,6 +719,7 @@ void ServerFramework::ProcessUseToolPacket(C_UseTool_Packet packet)
 	if (player->GetCurrentTool() == packet.toolID)
 	{
 		// 도구 사용 처리
+		player->SetRotation(packet.playerRotation);
 		player->Attack(_room);
 
 		// 도구 사용 알리기
