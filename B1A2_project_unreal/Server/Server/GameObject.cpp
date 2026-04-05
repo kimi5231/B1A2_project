@@ -36,6 +36,9 @@ bool GameObject::CheckInclude(Vector targetPos, float range, float angle)
 
 	float cosHalf = cos((angle * 0.5f) * (3.14159265f / 180.0f));
 
+	// ·Î±× Âï±â
+	printf("Yaw: %.1f | Dot: %.3f | CosHalf: %.3f\n", _rotation.yaw, dot, cosHalf);
+
 	return dot >= cosHalf;
 }
 
@@ -53,4 +56,15 @@ void GameObject::SetState(ObjectState state)
 
 	_state = state;
 	g_framework->SendUpdateObjectStatePacket(shared_from_this(), true);
+}
+
+void GameObject::SetObjectPoolState(ObjectPoolState objectPoolState)
+{
+	if (_objectPoolState == objectPoolState)
+		return;
+
+	_objectPoolState = objectPoolState;
+
+	if(_objectPoolState == ObjectPoolState::Reusable)
+		g_framework->SendRemoveObjectPacket(_type, _id, true);
 }

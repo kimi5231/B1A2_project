@@ -23,7 +23,6 @@ Monster::Monster(MonsterType monsterType)
 	_hit = new HitState();
 	_dead = new DeadState();
 
-	_pos = {0, 200, 100};
 	_size = { 80, 80, 80 };
 	_rotation = { 0, 0, 0 };
 	_type = ObjectType::Monster;
@@ -491,9 +490,17 @@ bool Monster::GetDamage(int damage)
 	if (!Creature::GetDamage(damage))
 		return false;
 
-	if (_fsm->ChangeState(_hit))
-		g_framework->SendUpdateObjectStatePacket(shared_from_this(), true);
+	std::cout << "Monster " << _id << " Get Damage\n";
 
+	if (_hp <= 0 && _fsm->ChangeState(_dead))
+	{
+		SetState(ObjectState::DEAD);
+		SetObjectPoolState(ObjectPoolState::Reusable);
+		return true;
+	}
+
+	if (_fsm->ChangeState(_hit))
+		SetState(ObjectState::HIT);
 	return true;
 }
 

@@ -10,6 +10,6 @@ public:
 public:
 	virtual bool GetDamage(int damage);
 
-private:
+protected:
 	int _hp;
 };

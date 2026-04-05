@@ -25,7 +25,7 @@ public:
 	virtual void SetState(ObjectState state);
 	ObjectState GetState() { return _state; }
 	BoundingBox GetBoundingBox() { return _box; }
-	void SetObjectPoolState(ObjectPoolState objectPoolState) { _objectPoolState = objectPoolState; }
+	void SetObjectPoolState(ObjectPoolState objectPoolState);
 	ObjectPoolState GetObjectPoolState() { return _objectPoolState; }
 
 protected:
