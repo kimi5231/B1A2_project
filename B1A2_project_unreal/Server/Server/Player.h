@@ -2,6 +2,7 @@
 #include "GameObject.h"
 
 class Inventory;
+class Room;
 
 class Player : public GameObject
 {
@@ -13,15 +14,17 @@ public:
 	virtual void Update();
 
 public:
-	bool AddItemToInventory(bool isTool, uint id);
-	bool RemoveItemFromInventory(bool isTool, uint id);
-	bool ExistItem(bool isTool, uint id);
+	bool AddItemToInventory(bool isTool, int id);
+	bool RemoveItemFromInventory(bool isTool, int id);
+	bool ExistItem(bool isTool, int id);
+
+	void Attack(Room* room);
 
 public:
-	void SetCurrentTool(uint toolID) { _currentTool = toolID; }
-	uint GetCurrentTool() { return _currentTool; }
+	int GetCurrentTool() { return _currentTool; }
+	void SetCurrentTool(int toolID) { _currentTool = toolID; }
 
 private:
 	Inventory* _inventory{};
-	uint _currentTool{};
+	int _currentTool{};
 };

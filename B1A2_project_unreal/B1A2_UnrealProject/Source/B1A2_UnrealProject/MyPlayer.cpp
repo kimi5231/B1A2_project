@@ -659,7 +659,7 @@ void AMyPlayer::UseToolAnimationAndSend()
 
 	switch (ToolInfo.type)
 	{
-	case ItemType::Cutlass:
+	case ItemType::CUTLASS:
 		animName = "Slash";
 		break;
 	case ItemType::Blaster:

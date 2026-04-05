@@ -226,7 +226,7 @@ void AOtherPlayer::PlayUseToolAnimation(ItemType type)
 
 	switch (type)
 	{
-	case ItemType::Cutlass:
+	case ItemType::CUTLASS:
 		if (ComboMontage) PlayAnimMontage(ComboMontage, 1.0f, FName("Slash"));
 		break;
 	case ItemType::Blaster:
@@ -249,7 +249,7 @@ TSubclassOf<class ABaseItem> AOtherPlayer::GetToolClass(ItemType Type)
 
 	switch (Type)
 	{
-	case ItemType::Cutlass: return GameInstance->CutlassClass;
+	case ItemType::CUTLASS: return GameInstance->CutlassClass;
 	case ItemType::Blaster: return GameInstance->BlasterClass;
 	case ItemType::Key:     return GameInstance->KeyClass;
 	case ItemType::Lantern: return GameInstance->LanternClass;

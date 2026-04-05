@@ -486,6 +486,17 @@ bool Monster::IsPointInCube(VectorInt wp, CubeRef cube)
 		wp.y >= pos.y - size.y / 2 && wp.y <= pos.y + size.y / 2);
 }
 
+bool Monster::GetDamage(int damage)
+{
+	if (!Creature::GetDamage(damage))
+		return false;
+
+	if (_fsm->ChangeState(_hit))
+		g_framework->SendUpdateObjectStatePacket(shared_from_this(), true);
+
+	return true;
+}
+
 void Monster::SetState(ObjectState state)
 {
 	GameObject::SetState(state);

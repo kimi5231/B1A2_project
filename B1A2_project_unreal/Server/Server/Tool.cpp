@@ -20,7 +20,7 @@ void Tool::UseTool()
 {
 	switch (_itemType)
 	{
-	case Cutlass:
+	case CUTLASS:
 		// 몬스터와 충돌처리할 바운딩 박스 생성
 		break;
 	case Blaster:

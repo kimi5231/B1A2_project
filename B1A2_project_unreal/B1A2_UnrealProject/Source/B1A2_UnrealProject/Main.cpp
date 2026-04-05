@@ -550,9 +550,9 @@ void UMain::RecvAddTool(S_AddItem_Packet packet)
 
 		switch (packet.itemType)
 		{
-		case ItemType::Cutlass:
+		case ItemType::CUTLASS:
 			tool = world->SpawnActor<ABaseItem>(CutlassClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 10), spawnRotation);
-			tool->SetItemType(ItemType::Cutlass);
+			tool->SetItemType(ItemType::CUTLASS);
 			UE_LOG(LogTemp, Log, TEXT("[Tool] Cutlass Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 10);
 			break;
 		case ItemType::Blaster:
@@ -633,9 +633,9 @@ void UMain::RecvDropItem(S_DropItem_Packet packet)
 
 			switch (packet.itemType)
 			{
-			case ItemType::Cutlass:
+			case ItemType::CUTLASS:
 				tool = world->SpawnActor<ABaseItem>(CutlassClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 10), spawnRotation);	// 임시 위치 보정
-				tool->SetItemType(ItemType::Cutlass);
+				tool->SetItemType(ItemType::CUTLASS);
 				UE_LOG(LogTemp, Log, TEXT("[Tool] Cutlass Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 10);
 				break;
 			case ItemType::Blaster:

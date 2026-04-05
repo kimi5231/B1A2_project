@@ -30,10 +30,16 @@
     <Filter Include="소스 파일\Game\Object\Item">
       <UniqueIdentifier>{fd7e806f-670e-4eac-b469-c748ee1e63df}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Game\Object\Monster">
+    <Filter Include="소스 파일\Game\Object\Item\Tool">
+      <UniqueIdentifier>{fb3df57f-01f9-403c-b30f-46f95cff84a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Game\Object\Creature">
+      <UniqueIdentifier>{03a42613-ed6b-4e90-bcd4-cca1438dcfd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Game\Object\Creature\Monster">
       <UniqueIdentifier>{97748d81-aad6-406f-95c2-d304c71dc975}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Game\Object\Monster\FSM">
+    <Filter Include="소스 파일\Game\Object\Creature\Monster\FSM">
       <UniqueIdentifier>{60074fae-25c7-487a-92d6-550d1df636e5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -51,9 +57,6 @@
       <Filter>소스 파일\Main</Filter>
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
-      <Filter>소스 파일\Game\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
       <Filter>소스 파일\Game\Object</Filter>
     </ClCompile>
     <ClCompile Include="Global.cpp">
@@ -74,23 +77,32 @@
     <ClCompile Include="Item.cpp">
       <Filter>소스 파일\Game\Object\Item</Filter>
     </ClCompile>
-    <ClCompile Include="Tool.cpp">
-      <Filter>소스 파일\Game\Object\Item</Filter>
-    </ClCompile>
     <ClCompile Include="Inventory.cpp">
       <Filter>소스 파일\Game\Object\Item</Filter>
     </ClCompile>
     <ClCompile Include="Monster.cpp">
-      <Filter>소스 파일\Game\Object\Monster</Filter>
+      <Filter>소스 파일\Game\Object\Creature\Monster</Filter>
     </ClCompile>
     <ClCompile Include="FSM.cpp">
-      <Filter>소스 파일\Game\Object\Monster\FSM</Filter>
+      <Filter>소스 파일\Game\Object\Creature\Monster\FSM</Filter>
     </ClCompile>
     <ClCompile Include="State.cpp">
-      <Filter>소스 파일\Game\Object\Monster\FSM</Filter>
+      <Filter>소스 파일\Game\Object\Creature\Monster\FSM</Filter>
     </ClCompile>
     <ClCompile Include="Spider.cpp">
-      <Filter>소스 파일\Game\Object\Monster</Filter>
+      <Filter>소스 파일\Game\Object\Creature\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Tool.cpp">
+      <Filter>소스 파일\Game\Object\Item\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="Cutlass.cpp">
+      <Filter>소스 파일\Game\Object\Item\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>소스 파일\Game\Object\Creature</Filter>
+    </ClCompile>
+    <ClCompile Include="Creature.cpp">
+      <Filter>소스 파일\Game\Object\Creature</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -104,9 +116,6 @@
       <Filter>소스 파일\Game</Filter>
     </ClInclude>
     <ClInclude Include="GameObject.h">
-      <Filter>소스 파일\Game\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
       <Filter>소스 파일\Game\Object</Filter>
     </ClInclude>
     <ClInclude Include="Global.h">
@@ -133,23 +142,35 @@
     <ClInclude Include="Item.h">
       <Filter>소스 파일\Game\Object\Item</Filter>
     </ClInclude>
-    <ClInclude Include="Tool.h">
-      <Filter>소스 파일\Game\Object\Item</Filter>
-    </ClInclude>
     <ClInclude Include="Inventory.h">
       <Filter>소스 파일\Game\Object\Item</Filter>
     </ClInclude>
     <ClInclude Include="Monster.h">
-      <Filter>소스 파일\Game\Object\Monster</Filter>
+      <Filter>소스 파일\Game\Object\Creature\Monster</Filter>
     </ClInclude>
     <ClInclude Include="FSM.h">
-      <Filter>소스 파일\Game\Object\Monster\FSM</Filter>
+      <Filter>소스 파일\Game\Object\Creature\Monster\FSM</Filter>
     </ClInclude>
     <ClInclude Include="State.h">
-      <Filter>소스 파일\Game\Object\Monster\FSM</Filter>
+      <Filter>소스 파일\Game\Object\Creature\Monster\FSM</Filter>
     </ClInclude>
     <ClInclude Include="Spider.h">
-      <Filter>소스 파일\Game\Object\Monster</Filter>
+      <Filter>소스 파일\Game\Object\Creature\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>소스 파일\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Tool.h">
+      <Filter>소스 파일\Game\Object\Item\Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="Cutlass.h">
+      <Filter>소스 파일\Game\Object\Item\Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>소스 파일\Game\Object\Creature</Filter>
+    </ClInclude>
+    <ClInclude Include="Creature.h">
+      <Filter>소스 파일\Game\Object\Creature</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

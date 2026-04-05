@@ -1,10 +1,10 @@
 #pragma once
-#include "GameObject.h"
+#include "Creature.h"
 #include "State.h"
 
 class FSM;
 
-class Monster : public GameObject
+class Monster : public Creature
 {
 public:
 	Monster(MonsterType monsterType);
@@ -26,6 +26,7 @@ public:
 	CubeRef FindCubeAtIndex(VectorInt index, CubeRef currentCube);
 
 	bool IsPointInCube(VectorInt wp, CubeRef cube);
+	virtual bool GetDamage(int damage) override;
 
 public:
 	virtual void SetState(ObjectState state) override;

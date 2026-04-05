@@ -16,13 +16,14 @@ void FSM::Update()
 		_currentState->Tick();
 }
 
-void FSM::ChangeState(State* state)
+bool FSM::ChangeState(State* state)
 {
 	if (_currentState == state || state == nullptr)
-		return;
+		return false;
 
 	if(_currentState)
 		_currentState->Exit();
 	_currentState = state;
 	_currentState->Enter();
+	return true;
 }

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "GameObject.h"
 #include "Global.h"
+#include "Utils.h"
 
 GameObject::GameObject()
 {
@@ -14,6 +15,28 @@ GameObject::~GameObject()
 void GameObject::Update()
 {
 
+}
+
+bool GameObject::CheckInclude(Vector targetPos, float range, float angle)
+{
+	// 거리 내에 있는지 확인
+	Vector diff = targetPos - _pos;
+	diff.z = 0; // 높이 차이 무시
+
+	float disSquare = diff.LengthSquared();
+	if (disSquare > range * range)
+		return false;
+
+	// 각도 내에 있는지 확인
+	//
+	Vector forward = GetForwardVector(_rotation.pitch, _rotation.yaw);
+	Vector target = diff / sqrt(disSquare);
+
+	float dot = forward.Dot(target);
+
+	float cosHalf = cos((angle * 0.5f) * (3.14159265f / 180.0f));
+
+	return dot >= cosHalf;
 }
 
 void GameObject::SetPos(Vector pos)

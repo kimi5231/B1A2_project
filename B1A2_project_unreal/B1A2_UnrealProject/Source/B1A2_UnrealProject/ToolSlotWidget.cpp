@@ -10,7 +10,7 @@ void UToolSlotWidget::SetSlotInfo(int32 id, ItemType type, float weight)
 
 	switch (type)
 	{
-	case ItemType::Cutlass:
+	case ItemType::CUTLASS:
 		texture = CutlassIcon; break;
 	case ItemType::Blaster:
 		texture = BlasterIcon; break;
