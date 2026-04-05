@@ -65,6 +65,130 @@ void UMain::ConnectOpenCV()
 	_emotionExtractionRunnable->Init();
 }
 
+void UMain::ProcessRecv()
+{
+	if (!_gameNetwork)
+	{
+		UE_LOG(LogTemp, Error, TEXT("_gameNetwork is null"));
+		return;
+	}
+
+	std::vector<NetworkEventRef>& recvEvents = _gameNetwork->GetRecvEvents();
+
+	for (NetworkEventRef event : recvEvents)
+	{
+		switch (event->packetID)
+		{
+		case S_AddObject:
+		{
+			S_AddObject_Packet addObjectPacket;
+			FMemory::Memcpy(&addObjectPacket, event->serializedPacketData.data(), sizeof(S_AddObject_Packet));
+			RecvAddObject(addObjectPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_AddItem:
+		{
+			S_AddItem_Packet addItemPacket;
+			FMemory::Memcpy(&addItemPacket, event->serializedPacketData.data(), sizeof(S_AddItem_Packet));
+			if (addItemPacket.isTool)
+				RecvAddTool(addItemPacket);
+			else
+				RecvAddItem(addItemPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_RemoveObject:
+			S_RemoveObject_Packet removeObjectPacket;
+			FMemory::Memcpy(&removeObjectPacket, event->serializedPacketData.data(), sizeof(S_RemoveObject_Packet));
+			RecvRemoveObject(removeObjectPacket);
+			event->isComplete = true;
+			break;
+		case S_UpdateObjectState:
+			S_UpdateObjectState_Packet updateObjectStatePacket;
+			FMemory::Memcpy(&updateObjectStatePacket, event->serializedPacketData.data(), sizeof(S_UpdateObjectState_Packet));
+			RecvUpdateObjectState(updateObjectStatePacket);
+			event->isComplete = true;
+			break;
+		case S_Move:
+		{
+			S_Move_Packet movePacket;
+			FMemory::Memcpy(&movePacket, event->serializedPacketData.data(), sizeof(S_Move_Packet));
+			RecvMoveObject(movePacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_AddItemToInventory:	// MyPlayer의 아이템과 장비를 인벤과 툴바에 넣음 (OtherPlayer는 UpdateObjectState)
+			S_AddItemToInventory_Packet addItemToInventoryPacket;
+			FMemory::Memcpy(&addItemToInventoryPacket, event->serializedPacketData.data(), sizeof(S_AddItemToInventory_Packet));
+			RecvAddItemToInventory(addItemToInventoryPacket);
+			event->isComplete = true;
+			break;
+		case S_RemoveItemFromInventory:
+			S_RemoveItemFromInventory_Packet removeItemFromInventoryPacket;
+			FMemory::Memcpy(&removeItemFromInventoryPacket, event->serializedPacketData.data(), sizeof(S_RemoveItemFromInventory_Packet));
+			RecvRemoveItemFromInventory(removeItemFromInventoryPacket);
+			event->isComplete = true;
+			break;
+		case S_ItemPickupNotify:
+			S_ItemPickupNotify_Packet itemPickupNotifyPacket;
+			FMemory::Memcpy(&itemPickupNotifyPacket, event->serializedPacketData.data(), sizeof(S_ItemPickupNotify_Packet));
+			RecvItemPickupNotify(itemPickupNotifyPacket);
+			event->isComplete = true;
+			break;
+		case S_DropItem:
+		{
+			S_DropItem_Packet dropItemPacket;
+			FMemory::Memcpy(&dropItemPacket, event->serializedPacketData.data(), sizeof(S_DropItem_Packet));
+			RecvDropItem(dropItemPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_UpdateCurrentTool:
+			S_UpdateCurrentTool_Packet updateCurrentToolPacket;
+			FMemory::Memcpy(&updateCurrentToolPacket, event->serializedPacketData.data(), sizeof(S_UpdateCurrentTool_Packet));
+			RecvUpdateCurrentTool(updateCurrentToolPacket);
+			event->isComplete = true;
+			break;
+		case S_UseTool:
+			S_UseTool_Packet useToolPacket;
+			FMemory::Memcpy(&useToolPacket, event->serializedPacketData.data(), sizeof(S_UseTool_Packet));
+			RecvUseTool(useToolPacket);
+			event->isComplete = true;
+			break;
+		case S_SpawnParticle:
+		{
+			S_SpawnParticle_Packet spawnParticlePacket;
+			FMemory::Memcpy(&spawnParticlePacket, event->serializedPacketData.data(), sizeof(S_SpawnParticle_Packet));
+			RecvSpawnParticle(spawnParticlePacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_InteractDoorNotify:
+			S_InteractDoorNotify_Packet interactDoorNotifyPacket;
+			FMemory::Memcpy(&interactDoorNotifyPacket, event->serializedPacketData.data(), sizeof(S_InteractDoorNotify_Packet));
+			RecvInteractDoorNotify(interactDoorNotifyPacket);
+			event->isComplete = true;
+			break;
+		case S_CreateCubes:
+		{
+			S_CreateCubes_Packet createCubesPacket{ _gameNetwork->DeserializeVector<CubeDTO>(event->serializedPacketData), _gameNetwork->DeserializeVector<DoorDTO>(event->serializedPacketData) };
+			RecvCreateCubes(createCubesPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_SpawnMonster:
+		{
+			S_SpawnMonster_Packet spawnMonsterPacket;
+			FMemory::Memcpy(&spawnMonsterPacket, event->serializedPacketData.data(), sizeof(S_SpawnMonster_Packet));
+			RecvSpawnMonster(spawnMonsterPacket);
+			event->isComplete = true;
+			break;
+		}
+		}
+	}
+}
+
 void UMain::ProcessSend(PacketID id, const void* packetData, int dataSize)
 {
 }
@@ -205,136 +329,12 @@ void UMain::Update()
 	ProcessRecv();
 }
 
-void UMain::ProcessRecv()
-{
-	if (!_gameNetwork)
-	{
-		UE_LOG(LogTemp, Error, TEXT("_gameNetwork is null"));
-		return;
-	}
 
-	std::vector<NetworkEventRef>& recvEvents = _gameNetwork->GetRecvEvents();
-
-	for (NetworkEventRef event : recvEvents)
-	{
-		switch (event->packetID)
-		{
-		case S_AddObject:
-		{
-			S_AddObject_Packet addObjectPacket;
-			FMemory::Memcpy(&addObjectPacket, event->serializedPacketData.data(), sizeof(S_AddObject_Packet));
-			RecvAddObject(addObjectPacket);
-			event->isComplete = true;
-			break;
-		}
-		case S_AddItem:
-		{
-			S_AddItem_Packet addItemPacket;
-			FMemory::Memcpy(&addItemPacket, event->serializedPacketData.data(), sizeof(S_AddItem_Packet));
-			if (addItemPacket.isTool)
-				RecvAddTool(addItemPacket);
-			else
-				RecvAddItem(addItemPacket);
-			event->isComplete = true;
-			break;
-		}
-		case S_RemoveObject:
-			S_RemoveObject_Packet removeObjectPacket;
-			FMemory::Memcpy(&removeObjectPacket, event->serializedPacketData.data(), sizeof(S_RemoveObject_Packet));
-			RecvRemoveObject(removeObjectPacket);
-			event->isComplete = true;
-			break;
-		case S_UpdateObjectState:
-			S_UpdateObjectState_Packet updateObjectStatePacket;
-			FMemory::Memcpy(&updateObjectStatePacket, event->serializedPacketData.data(), sizeof(S_UpdateObjectState_Packet));
-			RecvUpdateObjectState(updateObjectStatePacket);
-			event->isComplete = true;
-			break;
-		case S_Move:
-		{
-			S_Move_Packet movePacket;
-			FMemory::Memcpy(&movePacket, event->serializedPacketData.data(), sizeof(S_Move_Packet));
-			RecvMoveObject(movePacket);
-			event->isComplete = true;
-			break;
-		}
-		case S_AddItemToInventory:	// MyPlayer의 아이템과 장비를 인벤과 툴바에 넣음 (OtherPlayer는 UpdateObjectState)
-			S_AddItemToInventory_Packet addItemToInventoryPacket;
-			FMemory::Memcpy(&addItemToInventoryPacket, event->serializedPacketData.data(), sizeof(S_AddItemToInventory_Packet));
-			RecvAddItemToInventory(addItemToInventoryPacket);
-			event->isComplete = true;
-			break;
-		case S_RemoveItemFromInventory:
-			S_RemoveItemFromInventory_Packet removeItemFromInventoryPacket;
-			FMemory::Memcpy(&removeItemFromInventoryPacket, event->serializedPacketData.data(), sizeof(S_RemoveItemFromInventory_Packet));
-			RecvRemoveItemFromInventory(removeItemFromInventoryPacket);
-			event->isComplete = true;
-			break;
-		case S_ItemPickupNotify:
-			S_ItemPickupNotify_Packet itemPickupNotifyPacket;
-			FMemory::Memcpy(&itemPickupNotifyPacket, event->serializedPacketData.data(), sizeof(S_ItemPickupNotify_Packet));
-			RecvItemPickupNotify(itemPickupNotifyPacket);
-			event->isComplete = true;
-			break;
-		case S_DropItem:
-		{
-			S_DropItem_Packet dropItemPacket;
-			FMemory::Memcpy(&dropItemPacket, event->serializedPacketData.data(), sizeof(S_DropItem_Packet));
-			RecvDropItem(dropItemPacket);
-			event->isComplete = true;
-			break;
-		}
-		case S_UpdateCurrentTool:
-			S_UpdateCurrentTool_Packet updateCurrentToolPacket;
-			FMemory::Memcpy(&updateCurrentToolPacket, event->serializedPacketData.data(), sizeof(S_UpdateCurrentTool_Packet));
-			RecvUpdateCurrentTool(updateCurrentToolPacket);
-			event->isComplete = true;
-			break;
-		case S_UseTool:
-			S_UseTool_Packet useToolPacket;
-			FMemory::Memcpy(&useToolPacket, event->serializedPacketData.data(), sizeof(S_UseTool_Packet));
-			RecvUseTool(useToolPacket);
-			event->isComplete = true;
-			break;
-		case S_SpawnParticle:
-		{
-			S_SpawnParticle_Packet spawnParticlePacket;
-			FMemory::Memcpy(&spawnParticlePacket, event->serializedPacketData.data(), sizeof(S_SpawnParticle_Packet));
-			RecvSpawnParticle(spawnParticlePacket);
-			event->isComplete = true;
-			break;
-		}
-		case S_InteractDoorNotify:
-			S_InteractDoorNotify_Packet interactDoorNotifyPacket;
-			FMemory::Memcpy(&interactDoorNotifyPacket, event->serializedPacketData.data(), sizeof(S_InteractDoorNotify_Packet));
-			RecvInteractDoorNotify(interactDoorNotifyPacket);
-			event->isComplete = true;
-			break;
-		case S_CreateCubes:
-		{
-			S_CreateCubes_Packet createCubesPacket{ _gameNetwork->DeserializeVector<CubeDTO>(event->serializedPacketData), _gameNetwork->DeserializeVector<DoorDTO>(event->serializedPacketData) };
-			RecvCreateCubes(createCubesPacket);
-			event->isComplete = true;
-			break;
-		}
-		case S_SpawnMonster:
-		{
-			S_SpawnMonster_Packet spawnMonsterPacket;
-			FMemory::Memcpy(&spawnMonsterPacket, event->serializedPacketData.data(), sizeof(S_SpawnMonster_Packet));
-			RecvSpawnMonster(spawnMonsterPacket);
-			event->isComplete = true;
-			break;
-		}
-		}
-	}
-}
 
 void UMain::RecvAddObject(S_AddObject_Packet packet)
 {
 	if (packet.type == ObjectType::Player)
 		AddPlayer(packet);
-	else if (packet.type == ObjectType::Monster)
-		AddMonster(packet);
 }
 
 void UMain::AddPlayer(S_AddObject_Packet packet)
@@ -409,39 +409,6 @@ void UMain::AddPlayer(S_AddObject_Packet packet)
 		{
 			_otherPlayers.Remove(id);
 			UE_LOG(LogTemp, Error, TEXT("Other Spawn Failed... ID [%d]"), id);
-		}
-	});
-}
-
-void UMain::AddMonster(S_AddObject_Packet packet)
-{
-	if (_monsters.Contains(packet.objectID))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Monster already spawned... object ID: %d"), packet.objectID);
-		return;
-	}
-
-	FVector spawnLocation(packet.pos.x, packet.pos.y, packet.pos.z);
-	FRotator spawnRotation(0, packet.rotation.yaw, 0);
-	int id = packet.objectID;
-
-	AsyncTask(ENamedThreads::GameThread, [=, this]()
-	{
-		UWorld* world = GetWorld();
-		if (!world || !OtherPlayerClass)
-			return;
-
-		AStaticMeshActor* monsterActor = world->SpawnActor<AStaticMeshActor>(TestMonsterClass, spawnLocation, spawnRotation);
-
-		if (monsterActor)
-		{
-			_monsters.Add(id, monsterActor);
-			UE_LOG(LogTemp, Log, TEXT("Monster Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
-		}
-		else
-		{
-			_monsters.Remove(id);
-			UE_LOG(LogTemp, Error, TEXT("Monster Spawn Failed... ID [%d]"), id);
 		}
 	});
 }
@@ -782,14 +749,14 @@ void UMain::RemoveMonster(S_RemoveObject_Packet packet)
 		if (!world)
 			return;
 
-		AStaticMeshActor** foundMonster = _monsters.Find(id);
+		AActor** foundMonster = _monsters.Find(id);
 		if (!foundMonster || !(*foundMonster))
 		{
 			UE_LOG(LogTemp, Log, TEXT("[Monster] Remove Failed... ID %llu Not found"), id);
 			return;
 		}
 
-		AStaticMeshActor* monster = *foundMonster;
+		AActor* monster = *foundMonster;
 
 		// Map에서 제거
 		_monsters.Remove(id);
@@ -859,14 +826,14 @@ void UMain::RecvMoveMonster(S_Move_Packet packet)
 		if (!world)
 			return;
 
-		AStaticMeshActor** findMonster = _monsters.Find(packet.objectID);
+		AActor** findMonster = _monsters.Find(packet.objectID);
 		if (!findMonster)
 		{
-			UE_LOG(LogTemp, Error, TEXT("Monster [%d] not in _monsters"), packet.objectID);
+			//UE_LOG(LogTemp, Error, TEXT("Monster [%d] not in _monsters"), packet.objectID);
 			return;
 		}
 
-		AStaticMeshActor* monster = (*findMonster);
+		AActor* monster = (*findMonster);
 
 		FVector pos(packet.pos.x, packet.pos.y, packet.pos.z);
 		FRotator rot(0, packet.rotation.yaw, 0);
@@ -1224,7 +1191,45 @@ void UMain::RecvInteractDoorNotify(S_InteractDoorNotify_Packet packet)
 
 void UMain::RecvSpawnMonster(S_SpawnMonster_Packet packet)
 {
+	if (_monsters.Contains(packet.id))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Monster already spawned... object ID: %d"), packet.id);
+		return;
+	}
 
+	FVector spawnLocation(packet.pos.x, packet.pos.y, packet.pos.z);
+	FRotator spawnRotation(0, packet.rotation.yaw, 0);
+	int id = packet.id;
+
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		UWorld* world = GetWorld();
+		if (!world || !OtherPlayerClass)
+			return;
+
+		AActor* monsterActor;
+		switch (packet.type)
+		{
+		default:
+		case MonsterType::None:
+			monsterActor = world->SpawnActor<AActor>(TestMonsterClass, spawnLocation, spawnRotation);
+			break;
+		case MonsterType::Spider:
+			monsterActor = world->SpawnActor<AActor>(SpiderClass, spawnLocation, spawnRotation);
+			break;
+		}
+
+		if (monsterActor)
+		{
+			_monsters.Add(id, monsterActor);
+			UE_LOG(LogTemp, Log, TEXT("Monster Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+		}
+		else
+		{
+			_monsters.Remove(id);
+			UE_LOG(LogTemp, Error, TEXT("Monster Spawn Failed... ID [%d]"), id);
+		}
+	});
 }
 
 FRotator UMain::DirToRotation(Dir dir)

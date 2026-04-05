@@ -51,7 +51,6 @@ public:
 	
 	void RecvAddObject(S_AddObject_Packet packet);
 	void AddPlayer(S_AddObject_Packet packet);
-	void AddMonster(S_AddObject_Packet packet);
 
 	void RecvAddItem(S_AddItem_Packet packet);
 	void RecvAddTool(S_AddItem_Packet packet);
@@ -136,7 +135,9 @@ public:
 
 	// 몬스터
 	UPROPERTY(EditDefaultsOnly, Category = "Monster")
-	TSubclassOf<AStaticMeshActor> TestMonsterClass;
+	TSubclassOf<AActor> TestMonsterClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Monster")
+	TSubclassOf<AActor> SpiderClass;
 
 	// Item
 	UPROPERTY(EditDefaultsOnly, Category = "Item")
@@ -194,7 +195,7 @@ private:
 	int _myID{};
 
 	// 몬스터
-	TMap<uint64, AStaticMeshActor*> _monsters;
+	TMap<uint64, AActor*> _monsters;
 
 	// 아이템
 	TMap<uint64, ABaseItem*> _items;
