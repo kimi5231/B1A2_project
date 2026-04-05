@@ -10,6 +10,9 @@ public:
 public:
 	virtual bool GetDamage(int damage);
 
+public:
+	virtual bool SetState(ObjectState state) override;
+
 protected:
 	int _hp;
 };

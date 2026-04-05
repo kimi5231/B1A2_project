@@ -22,7 +22,7 @@ public:
 	Vector GetPos() { return _pos; }
 	void SetRotation(Rotation rotation) { _rotation = rotation; }
 	Rotation GetRotation() { return _rotation; }
-	virtual void SetState(ObjectState state);
+	virtual bool SetState(ObjectState state);
 	ObjectState GetState() { return _state; }
 	BoundingBox GetBoundingBox() { return _box; }
 	void SetObjectPoolState(ObjectPoolState objectPoolState);

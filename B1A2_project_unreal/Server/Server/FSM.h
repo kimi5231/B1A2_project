@@ -10,7 +10,7 @@ public:
 
 public:
 	virtual void Update();
-	bool ChangeState(State* state);
+	void ChangeState(State* state);
 
 private:
 	State* _currentState;

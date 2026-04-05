@@ -49,13 +49,14 @@ void GameObject::SetPos(Vector pos)
 	_box.SetOwnerPos(pos, Front);
 }
 
-void GameObject::SetState(ObjectState state)
+bool GameObject::SetState(ObjectState state)
 {
 	if(_state == state)
-		return;
+		return false;
 
 	_state = state;
 	g_framework->SendUpdateObjectStatePacket(shared_from_this(), true);
+	return true;
 }
 
 void GameObject::SetObjectPoolState(ObjectPoolState objectPoolState)

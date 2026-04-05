@@ -27,9 +27,10 @@ void Spider::Update()
 	
 }
 
-void Spider::SetState(ObjectState state)
+ bool Spider::SetState(ObjectState state)
 {
-	Monster::SetState(state);
+	if (Monster::SetState(state))
+		return false;
 
 	switch (state)
 	{
@@ -43,4 +44,6 @@ void Spider::SetState(ObjectState state)
 		_fsm->ChangeState(_return);
 		break;
 	}
+
+	return true;
 }

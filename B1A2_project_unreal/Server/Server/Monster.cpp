@@ -492,21 +492,21 @@ bool Monster::GetDamage(int damage)
 
 	std::cout << "Monster " << _id << " Get Damage\n";
 
-	if (_hp <= 0 && _fsm->ChangeState(_dead))
+	if (_hp <= 0)
 	{
 		SetState(ObjectState::DEAD);
 		SetObjectPoolState(ObjectPoolState::Reusable);
 		return true;
 	}
 
-	if (_fsm->ChangeState(_hit))
-		SetState(ObjectState::HIT);
+	SetState(ObjectState::HIT);
 	return true;
 }
 
-void Monster::SetState(ObjectState state)
+bool Monster::SetState(ObjectState state)
 {
-	GameObject::SetState(state);
+	if(!Creature::SetState(state))
+		return false;
 
 	switch (state)
 	{
@@ -532,4 +532,6 @@ void Monster::SetState(ObjectState state)
 		_fsm->ChangeState(_dead);
 		break;
 	}
+
+	return true;
 }

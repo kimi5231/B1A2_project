@@ -29,7 +29,7 @@ public:
 	virtual bool GetDamage(int damage) override;
 
 public:
-	virtual void SetState(ObjectState state) override;
+	virtual bool SetState(ObjectState state) override;
 	MonsterType GetMonsterType() { return _monsterType; };
 	void SetMonsterType(MonsterType monsterType) { _monsterType = monsterType; };
 

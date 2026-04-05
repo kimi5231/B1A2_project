@@ -11,7 +11,7 @@ public:
 	virtual void Update() override;
 
 public:
-	virtual void SetState(ObjectState state) override;
+	virtual bool SetState(ObjectState state) override;
 
 private:
 	PauseState* _pause;

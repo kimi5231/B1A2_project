@@ -1,10 +1,10 @@
 #pragma once
-#include "GameObject.h"
+#include "Creature.h"
 
 class Inventory;
 class Room;
 
-class Player : public GameObject
+class Player : public Creature
 {
 public: 
 	Player();
