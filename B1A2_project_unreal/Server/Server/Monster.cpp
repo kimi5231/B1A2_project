@@ -143,12 +143,12 @@ const CubeRef Monster::SelectRandomConnectedCube(Room* room)
 	openDoorCubeID.reserve(currentCube->GetDoors().size());
 	for (const int id : currentCube->GetDoors())
 	{
-		if (doors[id]->GetState() == ObjectState::OPEN)
+		if (doors[id - 1]->GetState() == ObjectState::OPEN)
 		{
-			if(doors[id]->GetConnectedCubeID() != _currentCubeID)
+			if(doors[id - 1]->GetConnectedCubeID() != _currentCubeID)
 				openDoorCubeID.push_back(id);
 			else
-				openDoorCubeID.push_back(doors[id]->GetRoomID());
+				openDoorCubeID.push_back(doors[id - 1]->GetRoomID());
 		}
 	}
 	
