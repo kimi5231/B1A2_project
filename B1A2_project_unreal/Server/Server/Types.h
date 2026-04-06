@@ -2,6 +2,9 @@
 
 using uint = unsigned int;
 
+using TimePoint = std::chrono::steady_clock::time_point;
+using FloatSec = std::chrono::duration<float>;
+
 //------------------Enums------------------
 enum class ObjectType : char
 {
@@ -415,5 +418,7 @@ struct SpiderStatus
 	float attackDelay;
 	unsigned char attackDamage;
 	float makeWebTime;
-	unsigned char webCount;
+	unsigned char maxWebCount;
+	float pauseTime;
+	float roamingTime;
 };

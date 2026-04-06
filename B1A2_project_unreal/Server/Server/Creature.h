@@ -11,8 +11,12 @@ public:
 	virtual bool GetDamage(int damage);
 
 public:
-	virtual bool SetState(ObjectState state) override;
+	void SetCurrentCubeID(const std::vector<CubeRef>& cubes);
+	int GetCurrentCubeID() { return _currentCubeID; }
+	virtual bool SetState(ObjectState state, bool isSend = true) override;
 
 protected:
+	int _currentCubeID;
+
 	int _hp;
 };
