@@ -36,9 +36,6 @@ bool GameObject::CheckInclude(Vector targetPos, float range, float angle)
 
 	float cosHalf = cos((angle * 0.5f) * (3.14159265f / 180.0f));
 
-	// ·Î±× Âï±â
-	printf("Yaw: %.1f | Dot: %.3f | CosHalf: %.3f\n", _rotation.yaw, dot, cosHalf);
-
 	return dot >= cosHalf;
 }
 

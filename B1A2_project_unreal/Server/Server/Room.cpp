@@ -47,19 +47,19 @@ Room::Room()
 	// 테스트용 몬스터 생성
 	MonsterRef none1 = std::make_shared<Monster>(MonsterType::None);
 	none1->SetID(_generateMonsterID++);
-	none1->SetPos({0, 0, 65});
+	none1->SetPos({0, 100, 65});
 	none1->SetObjectPoolState(ObjectPoolState::InWorld);
 	_monsters.push_back(none1);
-	/*MonsterRef none2 = std::make_shared<Monster>(MonsterType::None);
+	MonsterRef none2 = std::make_shared<Monster>(MonsterType::None);
 	none2->SetID(_generateMonsterID++);
-	none2->SetPos({ 0, 0, 65 });
+	none2->SetPos({ 0, 200, 65 });
 	none2->SetObjectPoolState(ObjectPoolState::InWorld);
-	_monsters.push_back(none1);
+	_monsters.push_back(none2);
 	MonsterRef none3 = std::make_shared<Monster>(MonsterType::None);
 	none3->SetID(_generateMonsterID++);
 	none3->SetPos({ 0, 0, 65 });
 	none3->SetObjectPoolState(ObjectPoolState::InWorld);
-	_monsters.push_back(none1);*/
+	_monsters.push_back(none3);
 }
 
 Room::~Room()
