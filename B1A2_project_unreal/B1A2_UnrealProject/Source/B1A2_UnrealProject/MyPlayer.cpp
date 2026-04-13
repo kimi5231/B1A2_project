@@ -327,6 +327,10 @@ void AMyPlayer::ToolSelectDown()
 
 void AMyPlayer::OnToolSelectionChanged()
 {
+	// 현재 랜턴을 들고있다면 내리기 몽타주 실행
+	if (IsLanternRaised)
+		LowerLanternState();
+
 	UpdateToolVisual();
 
 	GetWorldTimerManager().ClearTimer(ToolChangeTimerHandle);
@@ -547,12 +551,55 @@ void AMyPlayer::UpdateScanEffect()
 	{
 		CurrentScanAlpha = 0.0f;
 		ScanMaterialInst->SetScalarParameterValue(TEXT("ScanIntensity"), 0.0f);
+
+		// 노출 보정
+		FollowCamera->PostProcessSettings.AmbientOcclusionPower = false;
+
 		GetWorldTimerManager().ClearTimer(ScanTimerHandle);
 		return;
 	}
 
 	CurrentScanAlpha -= (0.01f / ScanEffectDuration);
 	ScanMaterialInst->SetScalarParameterValue(TEXT("ScanIntensity"), CurrentScanAlpha);
+
+	// 카메라 노출
+	FollowCamera->PostProcessSettings.bOverride_AutoExposureBias = true;
+	FollowCamera->PostProcessSettings.AutoExposureBias = CurrentScanAlpha * 2.f;
+}
+
+void AMyPlayer::LowerLanternState()
+{
+	if (!IsLanternRaised)
+		return;
+
+	// 줍기 애니메이션이 실행될 때 - 다른 장비로 바뀌면서 Lower 애니메이션 실행되지 않도록 함!(애니메이션 겹치는 문제 발생)
+	if (IsBusy)
+	{
+		IsLanternRaised = false;
+		return;
+	}
+
+	IsLanternRaised = false;
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && ComboMontage)
+	{
+		IsBusy = true; // 입력 차단 시작
+
+		// 몽타주 실행
+		float duration = PlayAnimMontage(ComboMontage, 2.0f, "LanternLower");
+
+		if (duration > 0.f)
+		{
+			// 타이머 대신 종료 델리게이트 설정
+			FOnMontageEnded EndDelegate;
+			EndDelegate.BindUObject(this, &AMyPlayer::OnToolMontageEnded);
+			AnimInstance->Montage_SetEndDelegate(EndDelegate, ComboMontage);
+		}
+		else
+		{
+			IsBusy = false; // 재생 실패 시 즉시 해제
+		}
+	}
 }
 
 void AMyPlayer::OnItemOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -691,6 +738,7 @@ void AMyPlayer::UseToolAnimationAndSend()
 	// 애니메이션 필요한 경우 판단(Key 사용, Lantern 사용 지금은 애니메이션 X)
 	bool useAnimation = true;
 	FName animName;
+	float animSpeed = 1.f;
 
 	switch (ToolInfo.type)
 	{
@@ -701,6 +749,10 @@ void AMyPlayer::UseToolAnimationAndSend()
 		animName = "Shooting";
 		break;
 	case ItemType::Lantern:
+		IsLanternRaised = !IsLanternRaised;	// 들고 있으면 내림, 내리고 있으면 듦
+		animName = IsLanternRaised ? "LanternRaise" : "LanternLower";
+		animSpeed = 2.f;
+		break;
 	case ItemType::Key:
 		useAnimation = false;
 		break;
@@ -714,8 +766,7 @@ void AMyPlayer::UseToolAnimationAndSend()
 			IsBusy = true; // 입력 차단 시작
 
 			// 몽타주 실행
-
-			float duration = PlayAnimMontage(ComboMontage, 1.0f, animName);
+			float duration = PlayAnimMontage(ComboMontage, animSpeed, animName);
 
 			if (duration > 0.f)
 			{

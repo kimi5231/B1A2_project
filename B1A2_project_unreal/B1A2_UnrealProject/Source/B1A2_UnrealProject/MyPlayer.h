@@ -207,6 +207,13 @@ protected:
 	// 스캔 효과를 서서히 줄여 줌
 	void UpdateScanEffect();
 
+protected:
+	// 현재 렌턴을 들고있는지?	
+	UPROPERTY(BlueprintReadOnly, Category = "Tool")
+	bool IsLanternRaised = false;
+		
+	// 랜턴 내리기 애니메이션
+	void LowerLanternState();
 private:
 	// 아이템 상호작용
 	UFUNCTION()
