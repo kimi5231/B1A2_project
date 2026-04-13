@@ -161,6 +161,11 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 		// Cheat Key
 		EnhancedInputComponent->BindAction(CheatKeyAction, ETriggerEvent::Started, this, &AMyPlayer::CheatKey);
+
+		// Rock Scissor Paper
+		EnhancedInputComponent->BindAction(SendRockAction, ETriggerEvent::Started, this, &AMyPlayer::SendRock);
+		EnhancedInputComponent->BindAction(SendScissorAction, ETriggerEvent::Started, this, &AMyPlayer::SendScissor);
+		EnhancedInputComponent->BindAction(SendPaperAction, ETriggerEvent::Started, this, &AMyPlayer::SendPaper);
 	}
 }
 
@@ -420,6 +425,36 @@ void AMyPlayer::Scan()
 void AMyPlayer::CheatKey()
 {
 	SetActorLocation(FVector(0.f, 0.f, 25.f));
+}
+
+void AMyPlayer::SendRock()
+{
+	if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
+	{
+		gameInstance->SendEmotion(0.f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.f);	// Happy
+	
+		UE_LOG(LogTemp, Log, TEXT("[Emotion] Sent C_Emotion Happy"));
+	}
+}
+
+void AMyPlayer::SendScissor()
+{
+	if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
+	{
+		gameInstance->SendEmotion(0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 1.f);	// Neutral
+
+		UE_LOG(LogTemp, Log, TEXT("[Emotion] Sent C_Emotion Neutral"));
+	}
+}
+
+void AMyPlayer::SendPaper()
+{
+	if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
+	{
+		gameInstance->SendEmotion(1.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f);	// Angry
+
+		UE_LOG(LogTemp, Log, TEXT("[Emotion] Sent C_Emotion Angry"));
+	}
 }
 
 void AMyPlayer::RemoveItemInInventoryByID(int itemID)

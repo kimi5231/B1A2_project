@@ -92,6 +92,15 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
 	UInputAction* CheatKeyAction;
 
+	// 가위바위보
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
+	UInputAction* SendRockAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
+	UInputAction* SendScissorAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
+	UInputAction* SendPaperAction;
+
+
 public:
 	AMyPlayer();
 
@@ -151,6 +160,11 @@ protected:
 
 	// Cheat Key
 	void CheatKey();
+
+	// 가위 바위 보 (임시 테스트용!!)
+	void SendRock();	// Happy
+	void SendScissor();	// Neutral
+	void SendPaper();	// Angry
 
 public:
 	// Inventory에서 Item 삭제
