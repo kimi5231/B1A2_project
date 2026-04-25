@@ -9,6 +9,7 @@
 #include "BaseItem.h"
 #include "BaseDoor.h"
 #include "ToolBarWidget.h"
+#include "BaseMonster.h"
 
 #define BUFSIZE	64
 
@@ -763,14 +764,14 @@ void UMain::RemoveMonster(S_RemoveObject_Packet packet)
 		if (!world)
 			return;
 
-		AActor** foundMonster = _monsters.Find(id);
+		ABaseMonster** foundMonster = _monsters.Find(id);
 		if (!foundMonster || !(*foundMonster))
 		{
 			UE_LOG(LogTemp, Log, TEXT("[Monster] Remove Failed... ID %llu Not found"), id);
 			return;
 		}
 
-		AActor* monster = *foundMonster;
+		ABaseMonster* monster = *foundMonster;
 
 		// Map에서 제거
 		_monsters.Remove(id);
@@ -836,23 +837,18 @@ void UMain::RecvMoveMonster(S_Move_Packet packet)
 {
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
-		UWorld* world = GetWorld();
-		if (!world)
-			return;
+		if (!GetWorld()) return;
 
-		AActor** findMonster = _monsters.Find(packet.objectID);
-		if (!findMonster)
+		ABaseMonster** findMonster = _monsters.Find(packet.objectID);
+		if (findMonster && *findMonster)
 		{
-			//UE_LOG(LogTemp, Error, TEXT("Monster [%d] not in _monsters"), packet.objectID);
-			return;
+			ABaseMonster* monster = (*findMonster);
+
+			FVector pos(packet.pos.x, packet.pos.y, packet.pos.z + 30);
+			FRotator rot(0, packet.rotation.yaw, 0);
+
+			monster->SetTargetTransform(pos, rot);
 		}
-
-		AActor* monster = (*findMonster);
-
-		FVector pos(packet.pos.x, packet.pos.y, packet.pos.z + 30);
-		FRotator rot(0, packet.rotation.yaw, 0);
-		monster->SetActorLocationAndRotation(pos, rot);
-		// UE_LOG(LogTemp, Error, TEXT("Monster [%d] Moved!!!, %f, %f, %f"), packet.objectID, packet.pos.x, packet.pos.y, packet.pos.z);
 	});
 }
 
@@ -1221,21 +1217,22 @@ void UMain::RecvSpawnMonster(S_SpawnMonster_Packet packet)
 		if (!world || !OtherPlayerClass)
 			return;
 
-		AActor* monsterActor;
+		ABaseMonster* monsterActor = nullptr;
 		switch (packet.type)
 		{
 		default:
 		case MonsterType::None:
-			monsterActor = world->SpawnActor<AActor>(TestMonsterClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
+			monsterActor = world->SpawnActor<ABaseMonster>(TestMonsterClass, spawnLocation, spawnRotation);			
 			break;
 		case MonsterType::Spider:
-			monsterActor = world->SpawnActor<AActor>(SpiderClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
+			monsterActor = world->SpawnActor<ABaseMonster>(SpiderClass, spawnLocation, spawnRotation);
 			break;
 		}
 
 		if (monsterActor)
 		{
 			_monsters.Add(id, monsterActor);
+			monsterActor->SetTargetTransform(spawnLocation, spawnRotation);
 			UE_LOG(LogTemp, Log, TEXT("Monster Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
 		}
 		else

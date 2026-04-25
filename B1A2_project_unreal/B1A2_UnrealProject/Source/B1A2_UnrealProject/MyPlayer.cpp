@@ -24,6 +24,7 @@
 
 #include "InventoryWidget.h" 
 #include "ToolBarWidget.h" 
+#include "PlayerStatusWidget.h"
 #include "Blueprint/UserWidget.h"
 
 AMyPlayer::AMyPlayer()
@@ -61,6 +62,9 @@ void AMyPlayer::BeginPlay()
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AMyPlayer::OnItemOverlapBegin);
 	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AMyPlayer::OnItemOverlapEnd);
 
+	// 점프 속도
+	GetCharacterMovement()->JumpZVelocity = 350.f;
+
 	// Tool Bar 위젯 띄우기
 	if (_toolBarWidgetClass)
 	{
@@ -81,6 +85,14 @@ void AMyPlayer::BeginPlay()
 
 		if (_controlExplainWidgetInstance)
 			_controlExplainWidgetInstance->AddToViewport();
+	}
+	// Hp, Stamina 위젯
+	if (_statusWidgetClass)
+	{
+		_statusWidgetInstance = CreateWidget<UUserWidget>(GetWorld(), _statusWidgetClass);
+
+		if (_statusWidgetInstance)
+			_statusWidgetInstance->AddToViewport();
 	}
 
 	// Scan Material 설정
@@ -126,30 +138,40 @@ void AMyPlayer::Tick(float DeltaTime)
 	}
 
 	// 스테미나
-	float weightRatio = _currentWeight / _referenceWeight;
-	float staminaModifier = 1.f + weightRatio;
-
-	if (isRunning && GetVelocity().Size() > 0)
 	{
-		float drainAmount = 5.f * staminaModifier * DeltaTime;
-		_currentStamina = FMath::Max(0.f, _currentStamina - drainAmount);
+		float weightRatio = _currentWeight / _referenceWeight;
+		float staminaModifier = 1.f + weightRatio;
 
-		// 스테미나가 다 떨어지면 강제로 달리기 중지함
-		if (_currentStamina <= 0)
+		if (isRunning && GetVelocity().Size() > 0)
 		{
-			isRunning = false;
-			UpdateMovementStats();
+			float drainAmount = 5.f * staminaModifier * DeltaTime;
+			_currentStamina = FMath::Max(0.f, _currentStamina - drainAmount);
+
+			// 스테미나가 다 떨어지면 강제로 달리기 중지함
+			if (_currentStamina <= 0)
+			{
+				isRunning = false;
+				UpdateMovementStats();
+			}
+
 		}
-		
-	}
-	else
-	{
-		// 달리기 중이 아니거나, 제자리에 서 있을 때 스테미나 회복
-		if (_currentStamina < _maxStamina)
+		else
 		{
-			// 초당 2 회복
-			float recoveryAmount = 2.0f * DeltaTime;
-			_currentStamina = FMath::Min(_maxStamina, _currentStamina + recoveryAmount);
+			// 달리기 중이 아니거나, 제자리에 서 있을 때 스테미나 회복
+			if (_currentStamina < _maxStamina)
+			{
+				// 초당 2 회복
+				float recoveryAmount = 2.0f * DeltaTime;
+				_currentStamina = FMath::Min(_maxStamina, _currentStamina + recoveryAmount);
+			}
+		}
+
+		// 스테미나 UI 업데이트
+		UPlayerStatusWidget* ui = Cast<UPlayerStatusWidget>(_statusWidgetInstance);
+		if (ui)
+		{
+			// 스테미나는 로컬 업데이트(hp는 패킷 받았을 때!)
+			ui->SetStamina(_currentStamina / _maxStamina);
 		}
 	}
 }
@@ -231,10 +253,16 @@ void AMyPlayer::Move(const FInputActionValue& Value)
 void AMyPlayer::Jump()
 {
 	float weightRatio = _currentWeight / _referenceWeight;
+	float staminaModifier = 1.0f + weightRatio;
 	float jumpCost = 3.0f * (1.0f + weightRatio);
 
 	if (_currentStamina >= jumpCost)
 	{
+		// 무게에 따라서 속도 조정
+		float adjustJumpVelocity = _baseJumpVelocity / staminaModifier;
+
+		GetCharacterMovement()->JumpZVelocity = adjustJumpVelocity;
+
 		Super::Jump();
 		_currentStamina -= jumpCost;
 	}

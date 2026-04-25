@@ -190,6 +190,12 @@ protected:
 	UPROPERTY()
 	UUserWidget* _controlExplainWidgetInstance;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<UUserWidget> _statusWidgetClass;
+
+	UPROPERTY()
+	UUserWidget* _statusWidgetInstance;
+
 public:
 	// 로컬 플레이어 모델 업데이트
 	void UpdateToolVisual();
