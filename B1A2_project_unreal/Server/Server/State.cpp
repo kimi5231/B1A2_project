@@ -56,7 +56,7 @@ void RoamingState::Tick(MonsterRef monster, Room* room)
 		monster->SetTargetPos(&goal);
 
 		// 경로를 찾지 못했다면 목적지 재설정
-		if (_path.empty())
+		if (_path.empty()) 
 		{
 			monster->SetTargetPos(nullptr);
 			return;

@@ -141,14 +141,15 @@ const CubeRef Monster::SelectRandomConnectedCube(Room* room)
 	// 현재 위치한 방에 열린 문이 있는지 확인
 	std::vector<int> openDoorCubeID;
 	openDoorCubeID.reserve(currentCube->GetDoors().size());
-	for (const int id : currentCube->GetDoors())
+	for (const int doorID : currentCube->GetDoors())
 	{
-		if (doors[id - 1]->GetState() == ObjectState::OPEN)
+		const DoorRef& door = doors[doorID - 1];
+		if (door->GetState() == ObjectState::OPEN)
 		{
-			if(doors[id - 1]->GetConnectedCubeID() != _currentCubeID)
-				openDoorCubeID.push_back(id);
+			if(door->GetConnectedCubeID() != _currentCubeID)
+				openDoorCubeID.push_back(door->GetConnectedCubeID());
 			else
-				openDoorCubeID.push_back(doors[id - 1]->GetRoomID());
+				openDoorCubeID.push_back(door->GetRoomID());
 		}
 	}
 	
@@ -165,6 +166,7 @@ const CubeRef Monster::SelectRandomConnectedCube(Room* room)
 VectorInt Monster::SelectRandomPosInCube(const CubeRef currentCube)
 {
 	const std::vector<std::vector<std::vector<short>>>& tilemap = g_dataManager->GetTilemap(currentCube->GetCubeType());
+	Vector cubePos = currentCube->GetPos();
 	VectorInt max{ tilemap.size(), tilemap[0].size(), tilemap[0][0].size() };
 	std::uniform_int_distribution<int> X(0, max.x - 1);
 	std::uniform_int_distribution<int> Y(0, max.y - 1);
