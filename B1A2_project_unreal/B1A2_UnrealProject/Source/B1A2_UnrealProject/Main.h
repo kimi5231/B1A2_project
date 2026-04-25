@@ -18,6 +18,7 @@ class AOtherPlayer;
 class AMyPlayer;
 class ABaseItem;
 class ABaseDoor;
+class ABaseMonster;
 
 UCLASS()
 class B1A2_UNREALPROJECT_API UMain : public UGameInstance
@@ -135,9 +136,9 @@ public:
 
 	// 몬스터
 	UPROPERTY(EditDefaultsOnly, Category = "Monster")
-	TSubclassOf<AActor> TestMonsterClass;
+	TSubclassOf<ABaseMonster> TestMonsterClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Monster")
-	TSubclassOf<AActor> SpiderClass;
+	TSubclassOf<ABaseMonster> SpiderClass;
 
 	// Item
 	UPROPERTY(EditDefaultsOnly, Category = "Item")
@@ -195,7 +196,7 @@ private:
 	int _myID{};
 
 	// 몬스터
-	TMap<uint64, AActor*> _monsters;
+	TMap<uint64, ABaseMonster*> _monsters;
 
 	// 아이템
 	TMap<uint64, ABaseItem*> _items;
