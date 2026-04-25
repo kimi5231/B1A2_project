@@ -14,6 +14,10 @@ enum PacketID
 	C_UseKey,
 	C_InteractDoor,
 	C_Emotion,
+	C_TurnOnLantern,
+	C_TurnOffLantern,
+	C_StartStage,
+	C_EndStage,
 
 	//Server
 	S_AddObject,
@@ -31,6 +35,11 @@ enum PacketID
 	S_SpawnParticle,
 	S_InteractDoorNotify,
 	S_SpawnMonster,
+	S_TurnOnLantern,
+	S_TurnOffLantern,
+	S_GetDamage,
+	S_StartStage,
+	S_EndStage,
 };
 
 struct Header
@@ -121,6 +130,28 @@ struct C_Emotion_Packet
 	float sad;
 	float surprise;
 	float neutral;
+};
+
+struct C_TurnOnLantern_Packet
+{
+	int lanternID;
+	int playerID;
+};
+
+struct C_TurnOffLantern_Packet
+{
+	int lanternID;
+	int playerID;
+};
+
+struct C_StartStage_Packet
+{
+	bool result;
+};
+
+struct C_EndStage_Packet
+{
+	bool result;
 };
 
 // Server
@@ -233,4 +264,35 @@ struct S_SpawnMonster_Packet
 	ObjectState state;
 	Vector pos;
 	Rotation rotation;
+};
+
+struct S_TurnOnLantern_Packet
+{
+	int lanternID;
+	int playerID;
+	unsigned char laternBattery;
+	unsigned char laternRange;
+	float laternAngle;
+};
+
+struct S_TurnOffLantern_Packet
+{
+	int lanternID;
+	int playerID;
+	unsigned char laternBattery;
+};
+
+struct S_GetDamage_Packet
+{
+	unsigned char damage;
+};
+
+struct C_StartStage_Packet
+{
+	bool result;
+};
+
+struct C_EndStage_Packet
+{
+	bool result;
 };
