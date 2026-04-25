@@ -7,6 +7,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "GameFramework//CharacterMovementComponent.h"
 #include "Network/UnrealPackets.h"
 
 #include "Engine/EngineTypes.h"     
@@ -107,6 +108,7 @@ void AMyPlayer::Tick(float DeltaTime)
 	_movePacketSendTimer -= DeltaTime;
 	_interactionTimer -= DeltaTime;
 
+	// MovePacket Send
 	if (_movePacketSendTimer <= 0.f)
 	{
 		_movePacketSendTimer = MOVE_PACKET_SEND_DELAY;
@@ -122,17 +124,50 @@ void AMyPlayer::Tick(float DeltaTime)
 
 		UpdateBestInteractableActor();
 	}
+
+	// 스테미나
+	float weightRatio = _currentWeight / _referenceWeight;
+	float staminaModifier = 1.f + weightRatio;
+
+	if (isRunning && GetVelocity().Size() > 0)
+	{
+		float drainAmount = 5.f * staminaModifier * DeltaTime;
+		_currentStamina = FMath::Max(0.f, _currentStamina - drainAmount);
+
+		// 스테미나가 다 떨어지면 강제로 달리기 중지함
+		if (_currentStamina <= 0)
+		{
+			isRunning = false;
+			UpdateMovementStats();
+		}
+		
+	}
+	else
+	{
+		// 달리기 중이 아니거나, 제자리에 서 있을 때 스테미나 회복
+		if (_currentStamina < _maxStamina)
+		{
+			// 초당 2 회복
+			float recoveryAmount = 2.0f * DeltaTime;
+			_currentStamina = FMath::Min(_maxStamina, _currentStamina + recoveryAmount);
+		}
+	}
 }
 
 void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
 		//Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AMyPlayer::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
 		//Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMyPlayer::Move);
+
+		// Running
+		EnhancedInputComponent->BindAction(RunningAction, ETriggerEvent::Started, this, &AMyPlayer::StartRunning);
+		EnhancedInputComponent->BindAction(RunningAction, ETriggerEvent::Completed, this, &AMyPlayer::StopRunning);
+		EnhancedInputComponent->BindAction(RunningAction, ETriggerEvent::Canceled, this, &AMyPlayer::StopRunning);
 
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMyPlayer::Look);
@@ -193,6 +228,18 @@ void AMyPlayer::Move(const FInputActionValue& Value)
 	}
 }
 
+void AMyPlayer::Jump()
+{
+	float weightRatio = _currentWeight / _referenceWeight;
+	float jumpCost = 3.0f * (1.0f + weightRatio);
+
+	if (_currentStamina >= jumpCost)
+	{
+		Super::Jump();
+		_currentStamina -= jumpCost;
+	}
+}
+
 void AMyPlayer::Look(const FInputActionValue& Value)
 {
 	if (IsBusy) return;
@@ -219,7 +266,12 @@ void AMyPlayer::AddItemToInventory(ItemType type, int id, float weight)
 	if (inventory)
 	{
 		inventory->AddItem(id, type, weight);
-		UE_LOG(LogTemp, Display, TEXT("[Inventory] Add Item Success!"));
+
+		// 현재 무게 및 이동 스탯 갱신
+		_currentWeight += weight;
+		UpdateMovementStats();
+
+		//UE_LOG(LogTemp, Display, TEXT("[Inventory] Add Item Success!"));
 	}
 	else
 	{
@@ -355,6 +407,11 @@ void AMyPlayer::ItemOrToolDrop()
 				gameInstance->SendDropItem(gameInstance->GetMyID(), false, info.itemID);
 				UE_LOG(LogTemp, Display, TEXT("[Item] Item Drop Packet Send! ItemID: %d"), info.itemID);
 			}
+
+			// 무게 및 이동 스탯 갱신
+			_currentWeight -= info.weight;
+			_currentWeight = FMath::Max(0.f, _currentWeight);	// 음수 방지
+			UpdateMovementStats();
 		}
 	}
 	// Inventory가 닫혀있을 때, 선택된 장비 버리기
@@ -458,6 +515,40 @@ void AMyPlayer::SendPaper()
 		gameInstance->SendEmotion(1.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f);	// Angry
 
 		UE_LOG(LogTemp, Log, TEXT("[Emotion] Sent C_Emotion Angry"));
+	}
+}
+
+void AMyPlayer::StartRunning()
+{
+	isRunning = true;
+	UpdateMovementStats();		// 무게에 따른 속도 계산
+}
+
+void AMyPlayer::StopRunning()
+{
+	isRunning = false;
+	UpdateMovementStats();	// 원래 걷기 속도로 복귀
+}
+
+void AMyPlayer::UpdateMovementStats()
+{
+	// 이동 속도 공식 = 이동 속도 * ( 1 / ( 1 + ( 현재무게 / 기준무게) ) )
+	float weightRatio = _currentWeight / _referenceWeight;
+	float speedModifier = 1.0f / (1.0f + weightRatio);
+
+	UCharacterMovementComponent* moveComp = GetCharacterMovement();
+	if (moveComp)
+	{
+		// 현재 상태에 맞게 속도 적용
+		moveComp->MaxWalkSpeed = _baseWalkSpeed * speedModifier;
+		moveComp->MaxWalkSpeedCrouched = _baseCrouchSpeed * speedModifier;
+		moveComp->JumpZVelocity = _baseJumpVelocity * speedModifier;
+
+		// 만약 현재 달리기 중이라면 RunSpeed 적용
+		if (isRunning)
+		{
+			moveComp->MaxWalkSpeed = _baseRunSpeed * speedModifier;
+		}
 	}
 }
 

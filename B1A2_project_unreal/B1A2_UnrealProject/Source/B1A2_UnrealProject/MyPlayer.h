@@ -49,6 +49,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* MoveAction;
 
+	// 달리기
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
+	class UInputAction* RunningAction;
+
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
@@ -110,8 +114,9 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	void Move(const FInputActionValue& Value);
+	void Jump();
 	void Look(const FInputActionValue& Value);
-
+	
 public:
 	/** Returns CameraBoom subobject **/
 	//FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -214,6 +219,31 @@ protected:
 		
 	// 랜턴 내리기 애니메이션
 	void LowerLanternState();
+
+protected:
+	// 달리기 시작 / 종료
+	void StartRunning();
+	void StopRunning();
+
+	bool isRunning = false;
+	void UpdateMovementStats();
+
+	// 스테미나, 무게, 이속 등
+	UPROPERTY(BlueprintReadOnly, Category = "Stats")
+	float _currentStamina = 100.0f;
+	const float _maxStamina = 100.0f;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Stats")
+	float _currentWeight = 0.0f;
+	const float _maxWeight = 30.0f;
+	const float _referenceWeight = 15.0f; // 기준무게 (Max / 2)
+
+	// 기본 속도 정의
+	const float _baseWalkSpeed = 500.f;
+	const float _baseRunSpeed = 650.f;
+	const float _baseJumpVelocity = 350.f;
+	const float _baseCrouchSpeed = 400.f;
+
 private:
 	// 아이템 상호작용
 	UFUNCTION()
