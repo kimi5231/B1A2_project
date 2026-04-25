@@ -11,13 +11,17 @@ public:
 	~Monster();
 
 public:
-	void Update(const std::vector<CubeRef>& cubes, const std::vector<DoorRef>& doors);
+	virtual void Update(Room* room);
 
-public:
+public: 
+	const CubeRef SelectRandomConnectedCube(Room* room); 
+	VectorInt SelectRandomPosInCube(const CubeRef currentCube); 
+
 	std::deque<CubeRef> FindCubePath(const CubeRef goalCube, const CubeRef currentCube, const std::vector<CubeRef>& gameRooms);
 	std::deque<VectorInt> FindPath(Vector goal, const CubeRef ccurrentCubeube);
 	
-	VectorInt WorldToLocalIndex(Vector wp, CubeRef cube);
+	VectorInt GetRotationIndex(VectorInt index, VectorInt max, Dir dir);
+	VectorInt PosToIndex(Vector pos, CubeRef cube);
 	Vector IndexToPos(VectorInt index, const CubeRef cube);
 
 	bool IsCanGo(VectorInt index, const CubeRef cube);
@@ -29,24 +33,26 @@ public:
 	virtual bool GetDamage(int damage) override;
 
 public:
-	virtual bool SetState(ObjectState state) override;
+	virtual bool SetState(ObjectState state, bool isSend = true) override;
 	MonsterType GetMonsterType() { return _monsterType; };
 	void SetMonsterType(MonsterType monsterType) { _monsterType = monsterType; };
+	VectorInt* GetTargetPos() { return _targetPos; }
+	void SetTargetPos(VectorInt* pos) { _targetPos = pos; }
 
 protected:
 	MonsterType _monsterType;
 
 	FSM* _fsm;
 	VectorInt* _targetPos;
-	std::deque<CubeRef> _cubePath;
-	std::deque<VectorInt> _path;
+	std::queue<CubeRef> _cubePath;
+	std::queue<VectorInt> _path;
 
 	// °øÅë State
 	IdleState* _idle;
 	RoamingState* _roaming;
-	OpenDoorState* _openDoor;
+	/*OpenDoorState* _openDoor;
 	ChaseState* _chase;
 	AttackState* _attack;
 	HitState* _hit;
-	DeadState* _dead;
+	DeadState* _dead;*/
 };

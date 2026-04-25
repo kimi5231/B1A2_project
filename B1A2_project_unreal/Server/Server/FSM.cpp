@@ -10,13 +10,13 @@ FSM::~FSM()
 {
 }
 
-void FSM::Update()
+void FSM::Update(MonsterRef monster, Room* room)
 {
 	if (_currentState)
-		_currentState->Tick();
+		_currentState->Tick(monster, room);
 }
 
-void FSM::ChangeState(State* state)
+void FSM::ChangeState(State* state, MonsterRef monster)
 {
 	if (_currentState == state || state == nullptr)
 		return;
@@ -24,5 +24,5 @@ void FSM::ChangeState(State* state)
 	if(_currentState)
 		_currentState->Exit();
 	_currentState = state;
-	_currentState->Enter();
+	_currentState->Enter(monster);
 }

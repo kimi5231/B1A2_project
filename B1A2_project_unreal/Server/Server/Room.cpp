@@ -5,6 +5,7 @@
 #include "Door.h"
 #include "Item.h"
 #include "Cutlass.h"
+#include "Spider.h"
 
 Room::Room()
 {
@@ -50,7 +51,13 @@ Room::Room()
 	none1->SetPos({0, 100, 65});
 	none1->SetObjectPoolState(ObjectPoolState::InWorld);
 	_monsters.push_back(none1);
-	MonsterRef none2 = std::make_shared<Monster>(MonsterType::None);
+	MonsterRef spider = std::make_shared<Spider>(MonsterType::Spider);
+	spider->SetID(_generateMonsterID++);
+	spider->SetPos({ 0, 100, 65 });
+	spider->SetObjectPoolState(ObjectPoolState::InWorld);
+	spider->SetState(ObjectState::IDLE);
+	_monsters.push_back(spider);
+	/*MonsterRef none2 = std::make_shared<Monster>(MonsterType::None);
 	none2->SetID(_generateMonsterID++);
 	none2->SetPos({ 0, 200, 65 });
 	none2->SetObjectPoolState(ObjectPoolState::InWorld);
@@ -60,6 +67,7 @@ Room::Room()
 	none3->SetPos({ 0, 0, 65 });
 	none3->SetObjectPoolState(ObjectPoolState::InWorld);
 	_monsters.push_back(none3);
+	*/
 }
 
 Room::~Room()
@@ -82,7 +90,7 @@ void Room::Update()
 
 		// 몬스터 업데이트
 		for (const auto& monster : _monsters)
-			monster->Update(_cubes, _doors);
+			monster->Update(this);
 
 		// 플레이어, 몬스터 충돌 처리
 		/*for (const auto& playerItem : _players)
@@ -142,7 +150,7 @@ void Room::CreateFactoryCubes()
 		}
 	}
 
-	uint generateCubeID = 1;
+	uint generateCubeID = 0;
 	uint generateDoorID = 1;
 
 	// 방 생성(문은 방 안에서 생성 + 비상구)
@@ -190,7 +198,7 @@ void Room::CreateFactoryCubes()
 		// CubeType 선택
 		// 연결할 방의 타입에 따라 가능한 방 타입 다르게 설정
 		CubeType type;
-		CubeType prevRoomType = _cubes[door->GetRoomID() - 1]->GetCubeType();
+		CubeType prevRoomType = _cubes[door->GetRoomID()]->GetCubeType();
 		switch (prevRoomType)
 		{
 		case CubeType::Staircase:
@@ -277,9 +285,9 @@ void Room::CreateFactoryCubes()
 			newCube->SetID(generateCubeID++);
 
 			// 연결된 방끼리 서로 기록
-			newCube->AddConnectedRoom(_cubes[door->GetRoomID() - 1]);
+			newCube->AddConnectedRoom(_cubes[door->GetRoomID()]);
 			newCube->AddDoor(door->GetID());
-			_cubes[door->GetRoomID() - 1]->AddConnectedRoom(newCube);
+			_cubes[door->GetRoomID()]->AddConnectedRoom(newCube);
 
 			_cubes.push_back(newCube);
 			_currentCubeCount[type]++;

@@ -9,8 +9,11 @@ public:
 	virtual ~FSM();
 
 public:
-	virtual void Update();
-	void ChangeState(State* state);
+	virtual void Update(MonsterRef monster, Room* room);
+	void ChangeState(State* state, MonsterRef monster);
+
+public:
+	State* GetCurrentState() { return _currentState; }
 
 private:
 	State* _currentState;

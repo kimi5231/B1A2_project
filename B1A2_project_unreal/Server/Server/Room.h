@@ -4,7 +4,7 @@
 
 class Door;
 
-class Room
+class Room : public std::enable_shared_from_this<Room>
 {
 public:
 	Room();

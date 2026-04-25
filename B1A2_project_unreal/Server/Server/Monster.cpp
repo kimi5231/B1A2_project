@@ -17,11 +17,11 @@ Monster::Monster(MonsterType monsterType)
 	// State 생성
 	_idle = new IdleState();
 	_roaming = new RoamingState();
-	_openDoor = new OpenDoorState();
+	/*_openDoor = new OpenDoorState();
 	_chase = new ChaseState();
 	_attack = new AttackState();
 	_hit = new HitState();
-	_dead = new DeadState();
+	_dead = new DeadState();*/
 
 	_size = { 80, 80, 80 };
 	_rotation = { 0, 0, 0 };
@@ -34,117 +34,153 @@ Monster::~Monster()
 {
 }
 
-void Monster::Update(const std::vector<CubeRef>& cubes, const std::vector<DoorRef>& doors)
+void Monster::Update(Room* room)
 {
-	_fsm->Update();
+	_fsm->Update(dynamic_pointer_cast<Monster>(shared_from_this()), room);
 
-	// 목적지 갱신
-	if (_targetPos == nullptr)
+	//// 목적지 갱신
+	//if (_targetPos == nullptr)
+	//{
+	//	// 목적지 설정
+	//	CubeRef goalCube = SelectRandomConnectedCube(room);
+	//	// 최종 목적지 기록
+	//	_targetPos = new Vector( goalCube->GetPos().x, goalCube->GetPos().y, _pos.z );
+
+	//	// 1차 길찾기
+	//	_cubePath = FindCubePath(goalCube, currentCube, cubes);
+	//}
+
+	//// 경로 갱신
+	//if (_path.empty())
+	//{
+	//	if (_cubePath.size() == 1)
+	//	{
+	//		_targetPos = nullptr;
+	//		return;
+	//	}
+
+	//	// 넘어갈 큐브와 연결된 문 찾기
+	//	DoorRef door;
+	//	for (uint& doorID : _cubePath[0]->GetDoors())
+	//	{
+	//		if (doors[doorID - 1]->GetConnectedCubeID() == _cubePath[1]->GetID() ||
+	//			doors[doorID - 1]->GetRoomID() == _cubePath[1]->GetID())
+	//		{
+	//			door = doors[doorID - 1];
+	//			break;
+	//		}
+	//	}
+
+	//	// 지나갈 문이 닫혀있으면 문 앞까지만 경로 찾기
+	//	if (door->GetState() == ObjectState::CLOSE)
+	//	{
+	//		Vector goal;
+
+	//		// 나중에 문이 있는 방에 따라 방향 바뀌는 거 고려할 것
+	//		switch (door->GetDir())
+	//		{
+	//		case Front:
+	//			goal = { door->GetPos().x, door->GetPos().y + _size.y / 2, _pos.z };
+	//			break;
+	//		case Right:
+	//			goal = { door->GetPos().x - _size.x / 2, door->GetPos().y, _pos.z };
+	//			break;
+	//		case Back:
+	//			goal = { door->GetPos().x, door->GetPos().y - _size.y / 2, _pos.z };
+	//			break;
+	//		case Left:
+	//			goal = { door->GetPos().x + _size.x / 2, door->GetPos().y, _pos.z };
+	//			break;
+	//		}
+
+	//		_path = FindPath(goal, _cubePath[0]);
+	//		
+	//		// 경로를 찾기 못하면 목적지 재설정
+	//		if (_path.empty())
+	//		{
+	//			_targetPos = nullptr;
+	//			return;
+	//		}
+	//	}
+
+	//	// 지나갈 문이 열려 있으면 문의 좌표까지 경로 찾기
+	//	if (door->GetState() == ObjectState::OPEN)
+	//	{
+	//		Vector goal{ _cubePath[1]->GetPos().x, _cubePath[1]->GetPos().y, _pos.z};
+
+	//		_path = FindPath(goal, _cubePath[0]);
+
+	//		// 경로를 찾기 못하면 목적지 재설정
+	//		if (_path.empty())
+	//		{
+	//			_targetPos = nullptr;
+	//			return;
+	//		}
+
+	//		// 지나온 큐브는 경로에서 제외
+	//		_cubePath.pop_front();
+	//	}
+	//}
+
+	//// 최종 목적지까지 도달했다면, 타겟 리셋
+	//if (*_targetPos == _path[0])
+	//	_targetPos = nullptr;
+
+	//// 경로	따라 이동
+	//SetPos(_path[0]);
+	//_path.pop_front();
+	//g_framework->SendMovePacket(shared_from_this(), true);
+}
+
+const CubeRef Monster::SelectRandomConnectedCube(Room* room)
+{
+	const std::vector<CubeRef>& cubes = room->GetCubes();
+	const std::vector<DoorRef>& doors = room->GetDoors();
+	const CubeRef currentCube = cubes[_currentCubeID];
+
+	// 현재 위치한 방에 열린 문이 있는지 확인
+	std::vector<int> openDoorCubeID;
+	openDoorCubeID.reserve(currentCube->GetDoors().size());
+	for (const int doorID : currentCube->GetDoors())
 	{
-		// 목적지 설정
-		// 일단은 자신이 있는 큐브와 연결된 큐브의 좌표로 설정, 추후 수정
-		CubeRef currentCube;
-		for (const CubeRef cube : cubes)
-		{
-			if (cube->GetBoundingBox().CheckInclude(_pos))
-			{
-				currentCube = cube;
-				break;
-			}
-		}
-
-		// 이동할 큐브 랜덤하게 선택
-		std::vector<CubeRef>& connectedCubes = currentCube->GetConnectedCubes();
-		std::uniform_int_distribution<int> selectCube(0, connectedCubes.size() - 1);
-		int index = selectCube(gen);
-		CubeRef goalCube = connectedCubes[index];
-		// 최종 목적지 기록
-		_targetPos = new VectorInt( goalCube->GetPos().x, goalCube->GetPos().y, _pos.z );
-
-		// 1차 길찾기
-		_cubePath = FindCubePath(goalCube, currentCube, cubes);
-	}
-
-	// 경로 갱신
-	if (_path.empty())
-	{
-		if (_cubePath.size() == 1)
-		{
-			_targetPos = nullptr;
-			return;
-		}
-
-		// 넘어갈 큐브와 연결된 문 찾기
-		DoorRef door;
-		for (uint& doorID : _cubePath[0]->GetDoors())
-		{
-			if (doors[doorID - 1]->GetConnectedCubeID() == _cubePath[1]->GetID() ||
-				doors[doorID - 1]->GetRoomID() == _cubePath[1]->GetID())
-			{
-				door = doors[doorID - 1];
-				break;
-			}
-		}
-
-		// 지나갈 문이 닫혀있으면 문 앞까지만 경로 찾기
-		if (door->GetState() == ObjectState::CLOSE)
-		{
-			Vector goal;
-
-			// 나중에 문이 있는 방에 따라 방향 바뀌는 거 고려할 것
-			switch (door->GetDir())
-			{
-			case Front:
-				goal = { door->GetPos().x, door->GetPos().y + _size.y / 2, _pos.z };
-				break;
-			case Right:
-				goal = { door->GetPos().x - _size.x / 2, door->GetPos().y, _pos.z };
-				break;
-			case Back:
-				goal = { door->GetPos().x, door->GetPos().y - _size.y / 2, _pos.z };
-				break;
-			case Left:
-				goal = { door->GetPos().x + _size.x / 2, door->GetPos().y, _pos.z };
-				break;
-			}
-
-			_path = FindPath(goal, _cubePath[0]);
-			
-			// 경로를 찾기 못하면 목적지 재설정
-			if (_path.empty())
-			{
-				_targetPos = nullptr;
-				return;
-			}
-		}
-
-		// 지나갈 문이 열려 있으면 문의 좌표까지 경로 찾기
+		const DoorRef& door = doors[doorID - 1];
 		if (door->GetState() == ObjectState::OPEN)
 		{
-			Vector goal{ _cubePath[1]->GetPos().x, _cubePath[1]->GetPos().y, _pos.z};
-
-			_path = FindPath(goal, _cubePath[0]);
-
-			// 경로를 찾기 못하면 목적지 재설정
-			if (_path.empty())
-			{
-				_targetPos = nullptr;
-				return;
-			}
-
-			// 지나온 큐브는 경로에서 제외
-			_cubePath.pop_front();
+			if(door->GetConnectedCubeID() != _currentCubeID)
+				openDoorCubeID.push_back(door->GetConnectedCubeID());
+			else
+				openDoorCubeID.push_back(door->GetRoomID());
 		}
 	}
+	
+	// 열린 문이 없으면 현재 위치한 큐브 반환
+	if (openDoorCubeID.empty())
+		return currentCube;
 
-	// 최종 목적지까지 도달했다면, 타겟 리셋
-	if (*_targetPos == _path[0])
-		_targetPos = nullptr;
+	// 열린 문이 있다면, 해당 문으로 연결된 방 중 랜덤하게 선택
+	//std::vector<CubeRef>& connectedCubes = currentCube->GetConnectedCubes();
+	std::uniform_int_distribution<int> selectCube(0, openDoorCubeID.size() - 1);
+	return cubes[openDoorCubeID[selectCube(gen)]];
+}
 
-	// 경로	따라 이동
-	SetPos(_path[0]);
-	_path.pop_front();
-	g_framework->SendMovePacket(shared_from_this(), true);
+VectorInt Monster::SelectRandomPosInCube(const CubeRef currentCube)
+{
+	const std::vector<std::vector<std::vector<short>>>& tilemap = g_dataManager->GetTilemap(currentCube->GetCubeType());
+	Vector cubePos = currentCube->GetPos();
+	VectorInt max{ tilemap.size(), tilemap[0].size(), tilemap[0][0].size() };
+	std::uniform_int_distribution<int> X(0, max.x - 1);
+	std::uniform_int_distribution<int> Y(0, max.y - 1);
+
+	VectorInt index{};
+	while (!IsCanGo(index, currentCube))
+	{
+		int x = X(gen);
+		int y = Y(gen);
+		int z = _pos.z / TileSize;
+		index = GetRotationIndex({ x, y, z }, max, currentCube->GetDir());
+	}
+		
+	return IndexToPos(index, currentCube);
 }
 
 // 나중에 잠긴 문도 고려하기
@@ -232,8 +268,8 @@ std::deque<VectorInt> Monster::FindPath(Vector goal, const CubeRef currentCube)
 	std::unordered_set<VectorInt, VectorIntHash> closeList;
 
 	// 시작 위치와 목적지의 인덱스 계산
-	VectorInt startIndex = WorldToLocalIndex(_pos, currentCube);
-	VectorInt goalIndex = WorldToLocalIndex(goal, currentCube);
+	VectorInt startIndex = PosToIndex(_pos, currentCube);
+	VectorInt goalIndex = PosToIndex(goal, currentCube);
 
 	// openList에 시작 노드 추가
 	// 맨해튼 거리로 휴리스틱 계산
@@ -287,7 +323,7 @@ std::deque<VectorInt> Monster::FindPath(Vector goal, const CubeRef currentCube)
 
 				if (cube != currentCube)
 				{
-					VectorInt index = WorldToLocalIndex(IndexToPos(connectedIndex, currentCube), cube);
+					VectorInt index = PosToIndex(IndexToPos(connectedIndex, currentCube), cube);
 					
 					if (!IsCanGo(index, cube) && !IsCanGo(connectedIndex, currentCube))
 						continue;
@@ -317,7 +353,28 @@ std::deque<VectorInt> Monster::FindPath(Vector goal, const CubeRef currentCube)
 	return {};
 }
 
-VectorInt Monster::WorldToLocalIndex(Vector wp, CubeRef cube)
+VectorInt Monster::GetRotationIndex(VectorInt index, VectorInt max, Dir dir)
+{
+	switch (dir)
+	{
+	case Right:
+		index.x = (max.x - 1 - index.y);
+		index.y = index.x;
+		break;
+	case Back:
+		index.x = (max.x - 1 - index.x);
+		index.y = (max.y - 1 - index.y);
+		break;
+	case Left:
+		index.x = index.y;
+		index.y = (max.y - 1 - index.x);
+		break;
+	}
+
+	return index;
+}
+
+VectorInt Monster::PosToIndex(Vector pos, CubeRef cube)
 {
 	Vector cubePos = cube->GetPos();
 	Vector cubeSize = cube->GetSize();
@@ -349,24 +406,20 @@ VectorInt Monster::WorldToLocalIndex(Vector wp, CubeRef cube)
 	const auto& tilemap = g_dataManager->GetTilemap(cube->GetCubeType());
 	VectorInt max{ tilemap[0][0].size(), tilemap[0].size(), tilemap.size() };
 
-	VectorInt index = (wp - startPos)/TileSize;
+	VectorInt index = (pos - startPos)/TileSize;
 
 	VectorInt result = index;
 	switch (cube->GetDir())
 	{
-	case Right: // 90도 회전
-		// 월드에서 계산된 index.x는 로컬의 y축(max.y) 범위에 대응됨
-		// 월드에서 계산된 index.y는 로컬의 x축(max.x) 범위에 대응됨
+	case Right:
 		result.x = (max.x - 1 - index.y);
 		result.y = index.x;
 		break;
-
-	case Back: // 180도 회전
+	case Back:
 		result.x = (max.x - 1 - index.x);
 		result.y = (max.y - 1 - index.y);
 		break;
-
-	case Left: // 270도 회전
+	case Left:
 		result.x = index.y;
 		result.y = (max.y - 1 - index.x);
 		break;
@@ -503,34 +556,34 @@ bool Monster::GetDamage(int damage)
 	return true;
 }
 
-bool Monster::SetState(ObjectState state)
+bool Monster::SetState(ObjectState state, bool isSend)
 {
-	if(!Creature::SetState(state))
+	if(!Creature::SetState(state, isSend))
 		return false;
 
 	switch (state)
 	{
 	case IDLE:
-		_fsm->ChangeState(_idle);
+		_fsm->ChangeState(_idle, dynamic_pointer_cast<Monster>(shared_from_this()));
 		break;
 	case ROAMING:
-		_fsm->ChangeState(_roaming);
+		_fsm->ChangeState(_roaming, dynamic_pointer_cast<Monster>(shared_from_this()));
 		break;
-	case OPEN_DOOR:
-		_fsm->ChangeState(_openDoor);
+	/*case OPEN_DOOR:
+		_fsm->ChangeState(_openDoor, this);
 		break;
 	case CHASE:
-		_fsm->ChangeState(_chase);
+		_fsm->ChangeState(_chase, this);
 		break;
 	case ATTACK:
-		_fsm->ChangeState(_attack);
+		_fsm->ChangeState(_attack, this);
 		break;
 	case HIT:
-		_fsm->ChangeState(_hit);
+		_fsm->ChangeState(_hit, this);
 		break;
 	case DEAD:
-		_fsm->ChangeState(_dead);
-		break;
+		_fsm->ChangeState(_dead, this);
+		break;*/
 	}
 
 	return true;
