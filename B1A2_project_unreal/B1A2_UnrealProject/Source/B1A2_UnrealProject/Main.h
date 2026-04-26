@@ -77,6 +77,8 @@ public:
 	void RecvSpawnParticle(S_SpawnParticle_Packet packet);
 	void RecvInteractDoorNotify(S_InteractDoorNotify_Packet packet);
 	void RecvSpawnMonster(S_SpawnMonster_Packet packet);
+	void RecvTurnOnLantern(S_TurnOnLantern_Packet packet);
+	void RecvTurnOffLantern(S_TurnOffLantern_Packet packet);
 
 	FRotator DirToRotation(Dir dir);
 

@@ -200,6 +200,22 @@ void UMain::ProcessRecv()
 				event->isComplete = true;
 				break;
 			}
+			case S_TurnOnLantern:
+			{
+				S_TurnOnLantern_Packet turnOnLanternPacket;
+				FMemory::Memcpy(&turnOnLanternPacket, event->serializedPacketData.data(), sizeof(S_TurnOnLantern_Packet));
+				RecvTurnOnLantern(turnOnLanternPacket);
+				event->isComplete = true;
+				break;
+			}
+			case S_TurnOffLantern:
+			{
+				S_TurnOffLantern_Packet turnOffLanternPacket;
+				FMemory::Memcpy(&turnOffLanternPacket, event->serializedPacketData.data(), sizeof(S_TurnOffLantern_Packet));
+				RecvTurnOffLantern(turnOffLanternPacket);
+				event->isComplete = true;
+				break;
+			}
 		}
 	}
 }
@@ -1241,6 +1257,14 @@ void UMain::RecvSpawnMonster(S_SpawnMonster_Packet packet)
 			UE_LOG(LogTemp, Error, TEXT("Monster Spawn Failed... ID [%d]"), id);
 		}
 	});
+}
+
+void UMain::RecvTurnOnLantern(S_TurnOnLantern_Packet packet)
+{
+}
+
+void UMain::RecvTurnOffLantern(S_TurnOffLantern_Packet packet)
+{
 }
 
 FRotator UMain::DirToRotation(Dir dir)

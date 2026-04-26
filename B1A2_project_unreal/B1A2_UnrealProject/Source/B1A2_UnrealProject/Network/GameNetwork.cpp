@@ -262,6 +262,26 @@ void GameNetwork::ProcessRecv()
 		_recvEvents.push_back(event);
 		break;
 	}
+	case S_TurnOnLantern:
+	{
+		NetworkEventRef event = std::make_shared<NetworkEvent>();
+		event->packetID = header.id;
+		event->serializedPacketData.resize(packet.size() - sizeof(Header));
+		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), packet.size() - sizeof(Header));
+		std::lock_guard<std::mutex> lock(_recvMutex);
+		_recvEvents.push_back(event);
+		break;
+	}
+	case S_TurnOffLantern:
+	{
+		NetworkEventRef event = std::make_shared<NetworkEvent>();
+		event->packetID = header.id;
+		event->serializedPacketData.resize(packet.size() - sizeof(Header));
+		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), packet.size() - sizeof(Header));
+		std::lock_guard<std::mutex> lock(_recvMutex);
+		_recvEvents.push_back(event);
+		break;
+	}
 	}
 }
 
@@ -440,6 +460,22 @@ void GameNetwork::SendEmotionPacket(float angry, float disgust, float fear, floa
 	event->packetID = C_Emotion;
 	event->serializedPacketData = serializedPacketData;
 
+	std::lock_guard<std::mutex> lock(_sendMutex);
+	_sendEvents.push_back(event);
+}
+
+void GameNetwork::SendUseLanternPacket(int playerID, int lanternID)
+{
+	// Packet Data 持失
+	C_UseLantern_Packet packetData{ lanternID,  playerID };
+	
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+	
+	// SendEvent 持失
+	NetworkEventRef event = std::make_shared<NetworkEvent>();
+	event->packetID = C_UseLantern;
+	event->serializedPacketData = serializedPacketData;
 	std::lock_guard<std::mutex> lock(_sendMutex);
 	_sendEvents.push_back(event);
 }
