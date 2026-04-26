@@ -102,6 +102,9 @@ void Room::Update()
 			}
 		}*/
 
+		for(const auto& item : _processingItems)
+			item.second->Update();
+
 		lastUpdate = now;
 	}
 }

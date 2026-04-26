@@ -26,4 +26,5 @@ private:
     unsigned char _currnetBattery ;
     unsigned char _range;
     float _angle;
+    float _sumTime;
 };

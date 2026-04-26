@@ -14,8 +14,8 @@ public:
 	bool CheckInclude(Vector targetPos, float range, float angle);
 
 public:
-	void SetID(UINT id) { _id = id; }
-	UINT GetID() { return _id; }
+	void SetID(int id) { _id = id; }
+	int GetID() { return _id; }
 	void SetObjectType(ObjectType type) { _type = type; }
 	ObjectType GetObjectType() { return _type; }
 	void SetPos(Vector pos);

@@ -840,7 +840,13 @@ void ServerFramework::ProcessUseLanternPacket(C_UseLantern_Packet packet)
 
 	// 랜턴 작동
 	if (lantern->IsOn())
+	{
 		lantern->TurnOff();
+		_room->RemoveProcessingItem(lantern->GetID());
+	}	
 	else
+	{
 		lantern->TurnOn();
+		_room->AddProcessingItem(lantern);
+	}
 }

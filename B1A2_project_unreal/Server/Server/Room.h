@@ -1,6 +1,7 @@
 #pragma once
 #include "Player.h"
 #include "Monster.h"
+#include "Item.h"
 
 class Door;
 
@@ -24,6 +25,9 @@ public:
 	ItemRef AddItem(bool isTool, ItemType itemType, Vector pos, bool isSend);
 	void RemoveObject(ObjectType type, uint id, bool isSend);
 
+	void AddProcessingItem(ItemRef item) { _processingItems[item->GetID()] = item; }
+	void RemoveProcessingItem(int itemID) { _processingItems.erase(itemID); }
+
 public:
 	GameObjectRef GetGameObject(ObjectType type, uint id);
 	const std::unordered_map<uint, PlayerRef>& GetPlayers() { return _players; }
@@ -31,7 +35,7 @@ public:
 	const std::vector<ItemRef>& GetItems() { return _items; }
 	const std::vector<CubeRef>& GetCubes() { return _cubes; }
 	const std::vector<DoorRef>& GetDoors() { return _doors; }
-
+	
 private:
 	uint _generatePlayerID{};
 	uint _generateMonsterID{};
@@ -42,6 +46,7 @@ private:
 	std::unordered_map<uint, PlayerRef> _players;
 	std::vector<MonsterRef> _monsters;
 	std::vector<ItemRef> _items;
+	std::unordered_map<int, ItemRef> _processingItems;
 
 	uint _playerCount{};
 

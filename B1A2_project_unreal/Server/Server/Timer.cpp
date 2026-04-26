@@ -4,6 +4,7 @@
 Timer::Timer()
 {
     _previousTime = std::chrono::steady_clock::now();
+    _deltaTime = 0.f;
 }
 
 Timer::~Timer()
