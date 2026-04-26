@@ -1,0 +1,102 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "Network/Includes.h"
+#include "Network/UnrealPackets.h"
+#include "CoreMinimal.h"
+#include "GameFramework/Character.h"
+#include "BaseItem.h"
+
+#include "OtherPlayer.generated.h"
+
+
+UCLASS()
+class B1A2_UNREALPROJECT_API AOtherPlayer : public ACharacter
+{
+	GENERATED_BODY()
+
+public:
+	// Sets default values for this character's properties
+	AOtherPlayer();
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+public:	
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	void SetPlayerLocation(FVector location, FRotator rotation);
+	void SetPlayerState(ObjectState state);
+
+	// 아이템 줍기
+	void PlayPickUpAnimation(ABaseItem* item);
+	// 몽타주의 Notify에 도달하면 아이템 삭제
+	UFUNCTION()
+	void PickUpNotifyReached(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
+	UFUNCTION()
+	void PickUpMontageEnded(UAnimMontage* montage, bool bIntererrupted);
+
+	// 장비 떼기
+	void UnequipTool(int itemID);
+
+	void UpdateTool(ItemType type);
+
+	// 장비 사용 애니메이션 - OtherPlayer만(MyPlayer는 UseToolAnimationAndSend() 사용)
+	void PlayUseToolAnimation(ItemType type);
+
+private:
+	FVector _prevPos;
+	FRotator _prevRot;
+	FVector _destPos;
+	FRotator _destRot;
+	
+	ObjectState _state;
+
+	// Animation 현재 속도와 각도
+	float _currentAnimSpeed = 0.f;
+	float _currentAnimAngle = 0.f;
+
+protected:
+	bool _isInterpolation = true;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	EMoveState _eState;
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float InterpolationSpeed = 10.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float AnimSmoothingSpeed = 10.0f;	// Animation 보간 속도
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	float CalculatedSpeed;		// 계산된 속도(ABP 사용)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	float CalculatedAngle;		// 계산된 각도(ABP 사용)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	bool IsAirborne;
+
+	UPROPERTY()
+	class ABaseItem* _currentPickingUpItem;		// 현재 줍는 중인 아이템 or 도구
+
+	// Montage
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
+	UAnimMontage* ComboMontage;
+
+	// 몽타주 재생시 움직임 금지
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
+	bool IsBusy = false;
+
+protected:
+	// Tool 사용 타이머 핸들
+	FTimerHandle ToolChangeTimerHandle;
+	// 현재 손에 들고 있는 Tool Actor
+	UPROPERTY()
+	ABaseItem* _currentAttachedToolActor;
+	
+	TSubclassOf<class ABaseItem> GetToolClass(ItemType Type);
+};

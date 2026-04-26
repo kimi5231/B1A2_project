@@ -23,7 +23,7 @@ GameNetwork::GameNetwork()
 	memset(&addr, 0, sizeof(addr));
 	addr.sin_family = AF_INET;
 	addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-	//addr.sin_addr.s_addr = inet_addr("192.168.18.210");
+	//addr.sin_addr.s_addr = inet_addr("61.255.49.141");
 	addr.sin_port = htons(7777);
 	if (connect(_clientSocket, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR)
 	{

@@ -867,7 +867,7 @@ void AMyPlayer::UseToolAnimationAndSend()
 	case ItemType::Blaster:
 		animName = "Shooting";
 		break;
-	case ItemType::Lantern:
+	case ItemType::LANTERN:
 		IsLanternRaised = !IsLanternRaised;	// 들고 있으면 내림, 내리고 있으면 듦
 		animName = IsLanternRaised ? "LanternRaise" : "LanternLower";
 		animSpeed = 2.f;

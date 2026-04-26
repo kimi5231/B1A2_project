@@ -16,7 +16,7 @@ void UToolSlotWidget::SetSlotInfo(int32 id, ItemType type, float weight)
 		texture = BlasterIcon; break;
 	case ItemType::Key:
 		texture = KeyIcon; break;
-	case ItemType::Lantern:
+	case ItemType::LANTERN:
 		texture = LanternIcon; break;
 	}
 
