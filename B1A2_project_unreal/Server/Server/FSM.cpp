@@ -22,7 +22,7 @@ void FSM::ChangeState(State* state, MonsterRef monster)
 		return;
 
 	if(_currentState)
-		_currentState->Exit();
+		_currentState->Exit(monster);
 	_currentState = state;
 	_currentState->Enter(monster);
 }

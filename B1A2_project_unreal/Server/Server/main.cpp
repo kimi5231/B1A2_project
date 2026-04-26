@@ -10,7 +10,6 @@ int main(void)
 	while (true)
 	{
 		g_framework->Update();
-		g_timer->Update();
 	}
 
 	return 0;

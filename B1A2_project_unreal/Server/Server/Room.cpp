@@ -55,7 +55,8 @@ Room::Room()
 	spider->SetID(_generateMonsterID++);
 	spider->SetPos({ 0, 100, 65 });
 	spider->SetObjectPoolState(ObjectPoolState::InWorld);
-	spider->SetState(ObjectState::IDLE);
+	spider->SetState(ObjectState::DEAD, false);
+	spider->SetState(ObjectState::IDLE, false);
 	_monsters.push_back(spider);
 	/*MonsterRef none2 = std::make_shared<Monster>(MonsterType::None);
 	none2->SetID(_generateMonsterID++);
@@ -84,6 +85,8 @@ void Room::Update()
 	auto now = steady_clock::now();
 	if (now - lastUpdate >= TICK)
 	{
+		g_timer->Update();
+
 		// 플레이어 업데이트
 		for (const auto& item : _players)
 			item.second->Update();

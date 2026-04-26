@@ -10,15 +10,13 @@ public:
 public:
 	virtual void Update(Room* room) override;
 
+	void AddWebCount() { _currentWebCount++; }
+
 public:
 	virtual bool SetState(ObjectState state, bool isSend = true) override;
 
 private:
-	PauseState* _pause;
-	/*MakeWebState* _makeWeb;
-	ReturnState* _return;*/
-
+	float _makeWebTime;
+	unsigned char _maxWebCount;
 	unsigned char _currentWebCount;
-
-	SpiderStatus _status;
 };

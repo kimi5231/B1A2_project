@@ -8,8 +8,11 @@ public:
 public:
 	virtual void Enter(MonsterRef monster) = 0;
 	virtual void Tick(MonsterRef monster, Room* room) = 0;
-	virtual void Exit() = 0;
+	virtual void Exit(MonsterRef monster) = 0;
 };
+
+extern class IdleState* g_idleState;
+extern class RoamingState* g_roamingState;
 
 // Common State
 class IdleState : public State
@@ -19,9 +22,9 @@ public:
 	virtual ~IdleState() {};
 
 public:
-	virtual void Enter(MonsterRef monster) override;
-	virtual void Tick(MonsterRef monster, Room* room) override {};
-	virtual void Exit() override {};
+	virtual void Enter(MonsterRef monster) override {};
+	virtual void Tick(MonsterRef monster, Room* room) override;
+	virtual void Exit(MonsterRef monster) override;
 };
 
 class RoamingState : public State
@@ -31,17 +34,9 @@ public:
 	virtual ~RoamingState() {};
 
 public:
-	virtual void Enter(MonsterRef monster) override;
+	virtual void Enter(MonsterRef monster) override {};
 	virtual void Tick(MonsterRef monster, Room* room) override;
-	virtual void Exit() override {};
-
-public:
-	TimePoint GetStart() { return _start; }
-
-private:
-	TimePoint _start;
-	std::deque<CubeRef> _cubePath;
-	std::deque<VectorInt> _path;
+	virtual void Exit(MonsterRef monster) override;
 };
 
 //class OpenDoorState : public State
@@ -105,36 +100,18 @@ private:
 //};
 
 // Spider State
-class PauseState : public State
+class MakeWebState : public State
 {
 public:
-	PauseState() {};
-	virtual ~PauseState() {};
+	MakeWebState() {};
+	virtual ~MakeWebState() {};
 
 public:
-	virtual void Enter(MonsterRef monster) override;
-	virtual void Tick(MonsterRef monster, Room* room) override {};
-	virtual void Exit() override {};
-
-public:
-	TimePoint GetStart() { return _start; }
-
-private:
-	TimePoint _start;
+	virtual void Enter(MonsterRef monster) override {};
+	virtual void Tick(MonsterRef monster, Room* room) override;
+	virtual void Exit(MonsterRef monster) override;
 };
 
-//class MakeWebState : public State
-//{
-//public:
-//	MakeWebState() {};
-//	virtual ~MakeWebState() {};
-//
-//public:
-//	virtual void Enter() override {};
-//	virtual void Tick() override {};
-//	virtual void Exit() override {};
-//};
-//
 //class ReturnState : public State
 //{
 //public:

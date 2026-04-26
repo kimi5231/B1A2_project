@@ -47,7 +47,6 @@ enum ObjectState
 	CLOSE,
 
 	// Monster
-	PAUSE,
 	MAKE_WEB,
 	ROAMING,
 	CHASE,

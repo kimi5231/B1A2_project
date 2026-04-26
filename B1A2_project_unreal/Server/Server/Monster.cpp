@@ -6,6 +6,7 @@
 #include "DataManager.h"
 #include "FSM.h"
 #include "Door.h"
+#include "State.h"
 
 Monster::Monster(MonsterType monsterType)
 	: _monsterType(monsterType)
@@ -13,15 +14,7 @@ Monster::Monster(MonsterType monsterType)
 	// FSM 생성
 	_fsm = new FSM();
 	_targetPos = nullptr;
-
-	// State 생성
-	_idle = new IdleState();
-	_roaming = new RoamingState();
-	/*_openDoor = new OpenDoorState();
-	_chase = new ChaseState();
-	_attack = new AttackState();
-	_hit = new HitState();
-	_dead = new DeadState();*/
+	_sumTime = 0.f;
 
 	_size = { 80, 80, 80 };
 	_rotation = { 0, 0, 0 };
@@ -221,6 +214,7 @@ std::deque<CubeRef> Monster::FindCubePath(const CubeRef goalCube, const CubeRef 
 					node = node->parent;
 				}
 				std::reverse(path.begin(), path.end());
+				_cubePath = path;
 				return path;
 			}
 
@@ -309,7 +303,8 @@ std::deque<VectorInt> Monster::FindPath(Vector goal, const CubeRef currentCube)
 						node = node->parent;
 					}
 					std::reverse(path.begin(), path.end());
-					return path;
+					_path = path;
+					return _path;
 				}
 
 				// 이미 closeList에 있으면 무시
@@ -564,10 +559,10 @@ bool Monster::SetState(ObjectState state, bool isSend)
 	switch (state)
 	{
 	case IDLE:
-		_fsm->ChangeState(_idle, dynamic_pointer_cast<Monster>(shared_from_this()));
+		_fsm->ChangeState(g_idleState, dynamic_pointer_cast<Monster>(shared_from_this()));
 		break;
 	case ROAMING:
-		_fsm->ChangeState(_roaming, dynamic_pointer_cast<Monster>(shared_from_this()));
+		_fsm->ChangeState(g_roamingState, dynamic_pointer_cast<Monster>(shared_from_this()));
 		break;
 	/*case OPEN_DOOR:
 		_fsm->ChangeState(_openDoor, this);

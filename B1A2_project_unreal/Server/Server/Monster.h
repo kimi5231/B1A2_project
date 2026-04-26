@@ -1,6 +1,5 @@
 #pragma once
 #include "Creature.h"
-#include "State.h"
 
 class FSM;
 
@@ -32,27 +31,33 @@ public:
 	bool IsPointInCube(VectorInt wp, CubeRef cube);
 	virtual bool GetDamage(int damage) override;
 
+	void AddDeltaTime(float deltaTime) { _sumTime += deltaTime; }
+	void InitSumTime() { _sumTime = 0.f; }
+
 public:
 	virtual bool SetState(ObjectState state, bool isSend = true) override;
 	MonsterType GetMonsterType() { return _monsterType; };
 	void SetMonsterType(MonsterType monsterType) { _monsterType = monsterType; };
 	VectorInt* GetTargetPos() { return _targetPos; }
 	void SetTargetPos(VectorInt* pos) { _targetPos = pos; }
+	std::deque<CubeRef>& GetCubePath() { return _cubePath; }
+	std::deque<VectorInt>& GetPath() { return _path; }
 
 protected:
 	MonsterType _monsterType;
 
 	FSM* _fsm;
 	VectorInt* _targetPos;
-	std::queue<CubeRef> _cubePath;
-	std::queue<VectorInt> _path;
+	std::deque<CubeRef> _cubePath;
+	std::deque<VectorInt> _path;
 
-	// °øÅë State
-	IdleState* _idle;
-	RoamingState* _roaming;
-	/*OpenDoorState* _openDoor;
-	ChaseState* _chase;
-	AttackState* _attack;
-	HitState* _hit;
-	DeadState* _dead;*/
+	float _sumTime;
+	float _retargetTime;
+
+	// Status
+	float _speed;
+	float _chaseSpeed;
+	float _chaseTime;
+	float _idleTime;
+	float _roamingTime;
 };

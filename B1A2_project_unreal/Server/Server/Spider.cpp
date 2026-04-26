@@ -6,15 +6,14 @@
 Spider::Spider(MonsterType monsterType)
 	: Monster(monsterType)
 {
-	// State 생성
-	_pause = new PauseState();
-	/*_makeWeb = new MakeWebState();
-	_openDoor = new OpenDoorState();*/
-
 	// Status 초기화
-	_status.maxWebCount = 15;
-	_status.pauseTime = 1.5;
-	_status.roamingTime = 2.5;
+	_speed = 2.5f;
+	_chaseSpeed = 4.f;
+	_idleTime = 1.5f;
+	_roamingTime = 2.5f;
+
+	_makeWebTime = 1.5f;
+	_maxWebCount = 8;
 	_currentWebCount = 0;
 }
 
@@ -27,35 +26,27 @@ void Spider::Update(Room* room)
 {
 	Monster::Update(room);
 
-	if (_state == ObjectState::IDLE && _currentWebCount < _status.maxWebCount)
+	std::cout << _sumTime << std::endl;
+
+	if (_state == ObjectState::IDLE && _currentWebCount < _maxWebCount && _sumTime > _idleTime)
 	{
-		SetState(ObjectState::PAUSE);
+		SetState(ObjectState::ROAMING);
 		return;
 	}
-	
-	if (_state == ObjectState::PAUSE)
+
+	if (_state == ObjectState::ROAMING && _sumTime > _roamingTime)
 	{
-		PauseState* state = dynamic_cast<PauseState*>(_fsm->GetCurrentState());
-		auto duration = std::chrono::steady_clock::now() - state->GetStart();
-		auto seconds = std::chrono::duration_cast<std::chrono::seconds>(duration).count();
-		if (seconds > _status.pauseTime)
-		{
-			SetState(ObjectState::ROAMING);
-			return;
-		}
+		SetState(ObjectState::MAKE_WEB);
+		return;
 	}
 
-	if (_state == ObjectState::ROAMING)
+	if (_state == ObjectState::MAKE_WEB && _sumTime > _makeWebTime)
 	{
-		RoamingState* state = dynamic_cast<RoamingState*>(_fsm->GetCurrentState());
-		auto duration = std::chrono::steady_clock::now() - state->GetStart();
-		auto seconds = std::chrono::duration_cast<std::chrono::seconds>(duration).count();
-		if (seconds > _status.roamingTime)
-		{
-			SetState(ObjectState::MAKE_WEB);
-			return;
-		}
+		SetState(ObjectState::IDLE);
+		return;
 	}
+
+
 }
 
  bool Spider::SetState(ObjectState state, bool isSend)
@@ -65,9 +56,6 @@ void Spider::Update(Room* room)
 
 	switch (state)
 	{
-	case ObjectState::PAUSE:
-		_fsm->ChangeState(_pause, dynamic_pointer_cast<Monster>(shared_from_this()));
-		break;
 	/*case ObjectState::MAKE_WEB:
 		_fsm->ChangeState(_makeWeb, this);
 		break;
