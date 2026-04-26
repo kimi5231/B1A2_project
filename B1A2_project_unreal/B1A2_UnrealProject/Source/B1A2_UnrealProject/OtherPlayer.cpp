@@ -234,7 +234,7 @@ void AOtherPlayer::PlayUseToolAnimation(ItemType type)
 		break;
 	case ItemType::Key:	// 애니메이션 X
 		break;
-	case ItemType::Lantern:
+	case ItemType::LANTERN:
 		break;
 	default:
 		break;
@@ -252,7 +252,7 @@ TSubclassOf<class ABaseItem> AOtherPlayer::GetToolClass(ItemType Type)
 	case ItemType::CUTLASS: return GameInstance->CutlassClass;
 	case ItemType::Blaster: return GameInstance->BlasterClass;
 	case ItemType::Key:     return GameInstance->KeyClass;
-	case ItemType::Lantern: return GameInstance->LanternClass;
+	case ItemType::LANTERN: return GameInstance->LanternClass;
 	default: return nullptr;
 	}
 }

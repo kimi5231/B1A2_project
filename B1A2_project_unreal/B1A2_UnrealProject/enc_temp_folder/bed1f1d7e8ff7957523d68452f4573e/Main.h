@@ -6,7 +6,6 @@
 #include "Network/Includes.h"
 #include "GameFramework/Character.h"
 #include "Engine/StaticMeshActor.h"
-#include "Animation/AnimMontage.h"
 
 #include "Main.generated.h"
 
@@ -69,8 +68,6 @@ public:
 	void RecvMoveMonster(S_Move_Packet packet);
 
 	void RecvUpdateObjectState(S_UpdateObjectState_Packet packet);
-	void RecvUpdateObjectStateMonster(S_UpdateObjectState_Packet packet);
-
 	void RecvCreateCubes(S_CreateCubes_Packet packet);
 	void RecvAddItemToInventory(S_AddItemToInventory_Packet packet);
 	void RecvRemoveItemFromInventory(S_RemoveItemFromInventory_Packet packet);
@@ -144,10 +141,6 @@ public:
 	TSubclassOf<ABaseMonster> TestMonsterClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Monster")
 	TSubclassOf<ABaseMonster> SpiderClass;
-
-	// Monster Montage
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
-	UAnimMontage* SpiderMontage;
 
 	// Item
 	UPROPERTY(EditDefaultsOnly, Category = "Item")

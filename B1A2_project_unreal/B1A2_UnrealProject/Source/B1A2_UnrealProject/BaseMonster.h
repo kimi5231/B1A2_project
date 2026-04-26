@@ -24,8 +24,28 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+protected:
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	float CalculatedSpeed = 0.f;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	float CalculatedAngle = 0.f;
+
+	/*UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	bool IsAirborne = false;*/
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float InterpolationSpeed = 15.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float AnimSmoothingSpeed = 10.0f;
+
 private:
-	FVector _targetLocation;
-	FRotator _targetRotation;
+	FVector _destPos;
+	FRotator _destRot;
 	bool _isHasTarget = false;
+
+	// 내부 보간용
+	float _currentAnimSpeed = 0.f;
+	float _currentAnimAngle = 0.f;
 };

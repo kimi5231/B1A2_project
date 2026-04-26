@@ -870,57 +870,6 @@ void UMain::RecvMoveMonster(S_Move_Packet packet)
 
 void UMain::RecvUpdateObjectState(S_UpdateObjectState_Packet packet)
 {
-	if (packet.type == ObjectType::Monster)
-		RecvUpdateObjectStateMonster(packet);
-}
-
-void UMain::RecvUpdateObjectStateMonster(S_UpdateObjectState_Packet packet)
-{
-	AsyncTask(ENamedThreads::GameThread, [=, this]()
-	{
-		if (!GetWorld()) return;
-
-		ABaseMonster** findMonster = _monsters.Find(packet.objectID);
-		if (findMonster && *findMonster)
-		{
-			ABaseMonster* monster = (*findMonster);
-			UAnimInstance* AnimInstance = monster->GetMesh()->GetAnimInstance();
-
-			if (AnimInstance)
-			{
-				FName name = NAME_None;
-
-				// 패킷 상태에 따른 섹션 이름 결정
-				switch (packet.state)
-				{
-				case ObjectState::ATTACK:
-					name = FName("Attack");
-					break;
-				case ObjectState::HIT:
-					name = FName("Hit");
-					break;
-				/*case ObjectState::DIE:
-					name = FName("Die");
-					break;*/
-				}
-
-				// 유효한 섹션이 결정된 경우에만 재생
-				if (!name.IsNone())
-				{
-					if (!AnimInstance->Montage_IsPlaying(SpiderMontage))
-					{
-						// 몽타주가 실행 중이 아니면 새로 시작
-						monster->PlayAnimMontage(SpiderMontage, 1.0f, name);
-					}
-					else
-					{
-						// 이미 재생 중이면 해당 섹션으로 즉시 점프
-						AnimInstance->Montage_JumpToSection(name, SpiderMontage);
-					}
-				}
-			}
-		}
-	});
 }
 
 void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)

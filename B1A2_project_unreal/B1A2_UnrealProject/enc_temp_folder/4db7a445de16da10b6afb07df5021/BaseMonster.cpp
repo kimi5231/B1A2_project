@@ -60,8 +60,6 @@ void ABaseMonster::Tick(float DeltaTime)
         CalculatedAngle = _currentAnimAngle;
     }
 
-    //UE_LOG(LogTemp, Display, TEXT("[Rotation] %f, %f, %f"), newRotation.Pitch, newRotation.Yaw, newRotation.Roll);
-    
     // 공중 상태는 몬스터 필요 없을듯?
     /*  if (GetCharacterMovement())
     {
