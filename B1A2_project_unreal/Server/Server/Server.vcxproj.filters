@@ -104,6 +104,12 @@
     <ClCompile Include="Creature.cpp">
       <Filter>소스 파일\Game\Object\Creature</Filter>
     </ClCompile>
+    <ClCompile Include="Lantern.cpp">
+      <Filter>소스 파일\Game\Object\Item\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>소스 파일\Main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -171,6 +177,12 @@
     </ClInclude>
     <ClInclude Include="Creature.h">
       <Filter>소스 파일\Game\Object\Creature</Filter>
+    </ClInclude>
+    <ClInclude Include="Lantern.h">
+      <Filter>소스 파일\Game\Object\Item\Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>소스 파일\Main</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -9,5 +9,4 @@ public:
 
 public:
 	virtual void Update();
-	void UseTool();
 };

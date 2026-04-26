@@ -15,18 +15,3 @@ void Tool::Update()
 {
 
 }
-
-void Tool::UseTool()
-{
-	switch (_itemType)
-	{
-	case CUTLASS:
-		// 몬스터와 충돌처리할 바운딩 박스 생성
-		break;
-	case Blaster:
-		// 몬스터와 충돌처리할 총알 생성
-		break;
-	case Lantern:
-		break;
-	}
-}

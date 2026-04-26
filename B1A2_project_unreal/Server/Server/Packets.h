@@ -14,8 +14,7 @@ enum PacketID
 	C_UseKey,
 	C_InteractDoor,
 	C_Emotion,
-	C_TurnOnLantern,
-	C_TurnOffLantern,
+	C_UseLantern,
 	C_StartStage,
 	C_EndStage,
 
@@ -132,13 +131,7 @@ struct C_Emotion_Packet
 	float neutral;
 };
 
-struct C_TurnOnLantern_Packet
-{
-	int lanternID;
-	int playerID;
-};
-
-struct C_TurnOffLantern_Packet
+struct C_UseLantern_Packet
 {
 	int lanternID;
 	int playerID;
@@ -287,12 +280,12 @@ struct S_GetDamage_Packet
 	unsigned char damage;
 };
 
-struct C_StartStage_Packet
+struct S_StartStage_Packet
 {
 	bool result;
 };
 
-struct C_EndStage_Packet
+struct S_EndStage_Packet
 {
 	bool result;
 };

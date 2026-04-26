@@ -6,6 +6,7 @@
 #include "Item.h"
 #include "Tool.h"
 #include "Door.h"
+#include "Lantern.h"
 
 ServerFramework::ServerFramework()
 {
@@ -204,6 +205,11 @@ void ServerFramework::ProcessRecv(ClientRef client)
 		C_Emotion_Packet emotionPacket;
 		memcpy(&emotionPacket, packet.data() + sizeof(Header), sizeof(C_Emotion_Packet));
 		ProcessEmotionPacket(emotionPacket);
+		break;
+	case C_UseLantern:
+		C_UseLantern_Packet useLanternPacket;
+		memcpy(&useLanternPacket, packet.data() + sizeof(Header), sizeof(C_UseLantern_Packet));
+		ProcessUseLanternPacket(useLanternPacket);
 		break;
 	}
 }
@@ -555,6 +561,42 @@ void ServerFramework::SendSpawnMonsterPacket(MonsterRef monster, bool broadcast,
 	_sendEvents.push_back(event);
 }
 
+void ServerFramework::SendTurnOnLanternPacket(LanternRef lantern, int playerID, bool broadcast, SOCKET client)
+{
+	// Packet Data 생성
+	S_TurnOnLantern_Packet packetData{ lantern->GetID(), playerID, lantern->GetCurrentBattery(), lantern->GetRange(), lantern->GetAngle() };
+	
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+	
+	// SendEvent 생성
+	SendEventRef event = std::make_shared<SendEvent>();
+	event->isBroadcast = broadcast;
+	event->clientSocket = client;
+	event->packetID = S_TurnOnLantern;
+	event->serializedPacketData = serializedPacketData;
+	
+	_sendEvents.push_back(event);
+}
+
+void ServerFramework::SendTurnOffLanternPacket(LanternRef lantern, int playerID, bool broadcast, SOCKET client)
+{
+	// Packet Data 생성
+	S_TurnOffLantern_Packet packetData{ lantern->GetID(), playerID, lantern->GetCurrentBattery() };
+	
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+	
+	// SendEvent 생성
+	SendEventRef event = std::make_shared<SendEvent>();
+	event->isBroadcast = broadcast;
+	event->clientSocket = client;
+	event->packetID = S_TurnOffLantern;
+	event->serializedPacketData = serializedPacketData;
+	
+	_sendEvents.push_back(event);
+}
+
 void ServerFramework::Broadcast(PacketID id, const std::vector<char>& packetData)
 {
 	// Room에 있는 모든 Client에게 Packet 송신
@@ -662,6 +704,8 @@ void ServerFramework::ProcessGetItemPacket(SOCKET clientSocket, C_GetItem_Packet
 	{
 		// 획득한 아이템 ObjectPoolState 변경
 		item->SetObjectPoolState(ObjectPoolState::InInventory);
+		// ownerID 설정
+		item->SetOwnerID(player->GetID());
 
 		// 해당 Client에게 알리기
 		SendAddItemToInventoryPacket(item, packet.isTool, false, clientSocket);
@@ -685,6 +729,8 @@ void ServerFramework::ProcessDropItemPacket(C_DropItem_Packet packet)
 		// 떨어뜨린 아이템 ObjectPoolState 변경
 		ItemRef item = std::dynamic_pointer_cast<Item>(_room->GetGameObject(ObjectType::Item, packet.itemID));
 		item->SetObjectPoolState(ObjectPoolState::InWorld);
+		// ownerID 초기화
+		item->SetOwnerID(-1);
 
 		SendDropItemPacket(item, player, packet.isTool, true);
 	}
@@ -776,4 +822,25 @@ void ServerFramework::ProcessInteractDoorPacket(C_InteractDoor_Packet packet)
 void ServerFramework::ProcessEmotionPacket(C_Emotion_Packet packet)
 {
 
+}
+
+void ServerFramework::ProcessUseLanternPacket(C_UseLantern_Packet packet)
+{
+	// Player가 랜턴을 정말 가지고 있는지 확인
+	PlayerRef player = dynamic_pointer_cast<Player>(_room->GetGameObject(ObjectType::Player, packet.playerID));
+	// 가지고 있지 않으면 무시
+	if (!player->ExistItem(true, packet.lanternID))
+		return;
+
+	// 랜턴 배터리 확인
+	LanternRef lantern = dynamic_pointer_cast<Lantern>(_room->GetGameObject(ObjectType::Item, packet.lanternID));
+	// 배터리가 없으면 무시
+	if (lantern->GetCurrentBattery() == 0)
+		return;
+
+	// 랜턴 작동
+	if (lantern->IsOn())
+		lantern->TurnOff();
+	else
+		lantern->TurnOn();
 }

@@ -142,11 +142,13 @@
     <ClInclude Include="Door.h" />
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="Item.h" />
+    <ClInclude Include="Lantern.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="Packets.h" />
     <ClInclude Include="Spider.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="FSM.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="Tool.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="Cube.h" />
@@ -168,6 +170,7 @@
     <ClCompile Include="Global.cpp" />
     <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="Item.cpp" />
+    <ClCompile Include="Lantern.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Monster.cpp" />
@@ -181,6 +184,7 @@
     <ClCompile Include="Spider.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="FSM.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Tool.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
