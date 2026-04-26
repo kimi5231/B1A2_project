@@ -134,7 +134,7 @@ enum ItemType
 	CUTLASS,
 	Blaster,
 	Key,
-	Lantern,
+	LANTERN,
 
 	None,
 
