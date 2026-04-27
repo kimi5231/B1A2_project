@@ -174,8 +174,10 @@ VectorInt Monster::SelectRandomPosInCube(const CubeRef currentCube)
 		int z = _pos.z / TileSize;
 		index = GetRotationIndex({ x, y, z }, max, currentCube->GetDir());
 	}
-		
-	return IndexToPos(index, currentCube);
+	
+	Vector pos = IndexToPos(index, currentCube);
+	pos.z = _pos.z; // 높이는 현재 위치 유지
+	return pos;
 }
 
 // 나중에 잠긴 문도 고려하기
@@ -280,6 +282,7 @@ std::deque<VectorInt> Monster::FindPath(Vector goal, const CubeRef currentCube)
 		TileNode* currentNode = openList.top();
 		openList.pop();
 		openMap.erase(currentNode->index);
+		closeList.insert(currentNode->index);
 
 		// 현재 노드와 연결된 모든 노드 확인
 		// 상하좌우 대각선
@@ -318,13 +321,9 @@ std::deque<VectorInt> Monster::FindPath(Vector goal, const CubeRef currentCube)
 				if (!cube)
 					continue;
 
-				if (cube != currentCube)
-				{
-					VectorInt index = PosToIndex(IndexToPos(connectedIndex, currentCube), cube);
-					
-					if (!IsCanGo(index, cube) && !IsCanGo(connectedIndex, currentCube))
-						continue;
-				}
+				VectorInt index = PosToIndex(IndexToPos(connectedIndex, currentCube), cube);
+				if (!IsCanGo(index, cube) && !IsCanGo(connectedIndex, currentCube))
+					continue;
 
 				//float g = currentNode->g + ((x != 0 && y != 0) ? 1.414f : 1.0f);
 				float g = currentNode->g + 1;
@@ -342,9 +341,6 @@ std::deque<VectorInt> Monster::FindPath(Vector goal, const CubeRef currentCube)
 				continue;
 			}
 		}
-		
-		// 확인한 노드는 closeList에 추가
-		closeList.insert(currentNode->index);
 	}
 
 	return {};
