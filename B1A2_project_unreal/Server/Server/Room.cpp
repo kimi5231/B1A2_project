@@ -340,10 +340,10 @@ void Room::StartStage()
 	g_framework->SendCreateCubesPacket(_cubes, _doors, true);
 
 	AddItem(false, ItemType::CardboardBox, { 0, -50, 25 }, true);
-	AddItem(false, ItemType::CUTLASS, { 0, -100, 25 }, true);
-	AddItem(false, ItemType::Blaster, { 0, 50, 25 }, true);
-	AddItem(false, ItemType::Key, { 0, 100, 25 }, true);
-	AddItem(false, ItemType::LANTERN, { 0, 150, 25 }, true);
+	AddItem(true, ItemType::CUTLASS, { 0, -100, 25 }, true);
+	AddItem(true, ItemType::Blaster, { 0, 50, 25 }, true);
+	AddItem(true, ItemType::Key, { 0, 100, 25 }, true);
+	AddItem(true, ItemType::LANTERN, { 0, 150, 25 }, true);
 
 	AddMonster(MonsterType::None, { 0, 100, 25 }, true);
 	AddMonster(MonsterType::Spider, { 0, 100, 25 }, true);
@@ -354,6 +354,7 @@ void Room::EndStage()
 	_cubes.clear();
 	_doors.clear();
 	_obstacles.clear();
+	_connectableDoors.clear();
 
 	for(MonsterRef monster : _monsters)
 		monster->SetObjectPoolState(ObjectPoolState::Reusable);
