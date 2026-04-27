@@ -211,6 +211,16 @@ void ServerFramework::ProcessRecv(ClientRef client)
 		memcpy(&useLanternPacket, packet.data() + sizeof(Header), sizeof(C_UseLantern_Packet));
 		ProcessUseLanternPacket(useLanternPacket);
 		break;
+	case C_StartStage:
+		C_StartStage_Packet startStagePacket;
+		memcpy(&startStagePacket, packet.data() + sizeof(Header), sizeof(C_StartStage_Packet));
+		ProcessStartStagePacket(startStagePacket);
+		break;
+	case C_EndStage:
+		C_EndStage_Packet endStagePacket;
+		memcpy(&endStagePacket, packet.data() + sizeof(Header), sizeof(C_EndStage_Packet));
+		ProcessEndStagePacket(endStagePacket);
+		break;
 	}
 }
 
@@ -597,6 +607,42 @@ void ServerFramework::SendTurnOffLanternPacket(LanternRef lantern, int playerID,
 	_sendEvents.push_back(event);
 }
 
+void ServerFramework::SendStartStagePacket(bool broadcast, SOCKET client)
+{
+	// Packet Data 생성
+	S_StartStage_Packet packetData{true};
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	// SendEvent 생성
+	SendEventRef event = std::make_shared<SendEvent>();
+	event->isBroadcast = broadcast;
+	event->clientSocket = client;
+	event->packetID = S_StartStage;
+	event->serializedPacketData = serializedPacketData;
+
+	_sendEvents.push_back(event);
+}
+
+void ServerFramework::SendEndStagePacket(bool broadcast, SOCKET client)
+{
+	// Packet Data 생성
+	S_EndStage_Packet packetData{ true };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	// SendEvent 생성
+	SendEventRef event = std::make_shared<SendEvent>();
+	event->isBroadcast = broadcast;
+	event->clientSocket = client;
+	event->packetID = S_EndStage;
+	event->serializedPacketData = serializedPacketData;
+
+	_sendEvents.push_back(event);
+}
+
 void ServerFramework::Broadcast(PacketID id, const std::vector<char>& packetData)
 {
 	// Room에 있는 모든 Client에게 Packet 송신
@@ -849,4 +895,26 @@ void ServerFramework::ProcessUseLanternPacket(C_UseLantern_Packet packet)
 		lantern->TurnOn();
 		_room->AddProcessingItem(lantern);
 	}
+}
+
+void ServerFramework::ProcessStartStagePacket(C_StartStage_Packet packet)
+{
+	SendStartStagePacket(true);
+
+	_room->StartStage();
+}
+
+void ServerFramework::ProcessEndStagePacket(C_EndStage_Packet packet)
+{
+	SendEndStagePacket(true);
+
+	// Player들 처음 위치로 이동
+	std::unordered_map<uint, PlayerRef> players = _room->GetPlayers();
+	for (const auto& item : players)
+	{
+		item.second->SetPos({0, 0, 25});
+		SendMovePacket(item.second, true);
+	}
+
+	_room->EndStage();
 }

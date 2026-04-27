@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Creature.h"
 #include "Cube.h"
+#include "Global.h"
+#include "Room.h"
 
 Creature::Creature()
 {
@@ -14,6 +16,13 @@ bool Creature::GetDamage(int damage)
 
     // 나중에 무적같은 거 확인
     return true;
+}
+
+void Creature::SetPos(Vector pos)
+{
+	GameObject::SetPos(pos);
+    if(g_framework != nullptr)
+        SetCurrentCubeID(g_framework->GetRoom()->GetCubes());
 }
 
 void Creature::SetCurrentCubeID(const std::vector<CubeRef>& cubes)

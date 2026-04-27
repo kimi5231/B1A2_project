@@ -19,6 +19,9 @@ public:
 	void SetupCubeConditions();
 	void CreateFactoryCubes();
 
+	void StartStage();
+	void EndStage();
+
 public:
 	GameObjectRef AddObject(ObjectType type);
 	MonsterRef AddMonster(MonsterType monsterType, Vector pos, bool isSend);
