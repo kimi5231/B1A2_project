@@ -47,6 +47,8 @@ public:
 	void SendUseTool(int playerID, int toolID, Rotation playerRotation);
 	void SendUseKey(int playerID, int toolID, int doorID);
 	void SendEmotion(float angry, float disgust, float fear, float happy, float sad, float surprise, float neutral);
+	void SendEndStage(bool result);
+	void SendStartStage(bool result);
 
 	// Recv
 	void Update();
@@ -85,7 +87,8 @@ public:
 	void RecvTurnOnLantern(S_TurnOnLantern_Packet packet);
 	void RecvTurnOffLantern(S_TurnOffLantern_Packet packet);
 
-	void RecvChangeTool(C_ChangeTool_Packet packet);
+	void RecvEndStage(S_EndStage_Packet packet);
+	void RecvStartStage(S_StartStage_Packet packet);
 
 	FRotator DirToRotation(Dir dir);
 
@@ -215,8 +218,15 @@ private:
 	TMap<uint64, ABaseItem*> _items;
 	// 장비
 	TMap<uint64, ABaseItem*> _tools;
+
+	// 큐브
+	TMap<uint64, AStaticMeshActor*> _cubes;
+
 	// 문
 	TMap<uint64, ABaseDoor*> _doors;
+
+	// MainEntrance가 한 번만 생성되도록 체크하는 플래그
+	bool isMainEntranceAlreadySpawned = false;
 
 public:
 	// 스캔 시 맵에 있는 아이템 + 장비 반환

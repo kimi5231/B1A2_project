@@ -1421,7 +1421,7 @@ void UMain::RecvEndStage(S_EndStage_Packet packet)
 
 void UMain::RecvStartStage(S_StartStage_Packet packet)
 {
-	// 기지(현재는 MainEntrance) 빼고 큐브, 문 다 지우기
+	// 기지(현재는 MainEntrance) 빼고 큐브, 문 싹 지우기
 	AsyncTask(ENamedThreads::GameThread, [this, packet]()
 	{
 		// Cube 제거

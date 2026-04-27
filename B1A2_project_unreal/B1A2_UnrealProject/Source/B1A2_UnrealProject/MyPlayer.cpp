@@ -223,6 +223,9 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(SendRockAction, ETriggerEvent::Started, this, &AMyPlayer::SendRock);
 		EnhancedInputComponent->BindAction(SendScissorAction, ETriggerEvent::Started, this, &AMyPlayer::SendScissor);
 		EnhancedInputComponent->BindAction(SendPaperAction, ETriggerEvent::Started, this, &AMyPlayer::SendPaper);
+		
+		// Laber Cheat Key
+		EnhancedInputComponent->BindAction(InteractLaverAction, ETriggerEvent::Started, this, &AMyPlayer::SendEndStageAndStartStage);
 	}
 }
 
@@ -544,6 +547,37 @@ void AMyPlayer::SendPaper()
 
 		UE_LOG(LogTemp, Log, TEXT("[Emotion] Sent C_Emotion Angry"));
 	}
+}
+
+void AMyPlayer::SendEndStageAndStartStage()
+{
+	// 레버를 처음 당길 때
+	if (laverPullCount == 0)
+	{
+		laverPullCount++;
+
+		if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
+		{
+			gameInstance->SendEndStage(true);
+
+			UE_LOG(LogTemp, Display, TEXT("[Stage] Send C_EndStage_Packet"));
+		}
+	}
+	// 레버를 두 번째 당길 때
+	else if (laverPullCount == 1)
+	{
+		laverPullCount++;
+
+		if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
+		{
+			gameInstance->SendStartStage(true);
+
+			UE_LOG(LogTemp, Display, TEXT("[Stage] Send C_StartStage_Packet"));
+		}
+	}
+	else
+		return;
+	
 }
 
 void AMyPlayer::StartRunning()

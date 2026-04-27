@@ -96,7 +96,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
 	UInputAction* CheatKeyAction;
 
-	// 가위바위보
+	// 가위바위보 Cheat Key
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
 	UInputAction* SendRockAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
@@ -104,6 +104,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
 	UInputAction* SendPaperAction;
 
+	// 레버 당기기 Cheat Key
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
+	UInputAction* InteractLaverAction;
 
 public:
 	AMyPlayer();
@@ -170,6 +173,10 @@ protected:
 	void SendRock();	// Happy
 	void SendScissor();	// Neutral
 	void SendPaper();	// Angry
+
+	// 레버 당기기 Cheat Key (임시 테스트용!!)
+	void SendEndStageAndStartStage();
+	int laverPullCount = 0;
 
 public:
 	// Inventory에서 Item 삭제
