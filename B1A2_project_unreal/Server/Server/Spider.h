@@ -7,15 +7,19 @@ public:
 	Spider(MonsterType monsterType);
 	~Spider();
 
-public:
 	virtual void Update(Room* room) override;
 
-	void AddWebCount() { _currentWebCount++; }
+public:
+	void CreateWeb(Room* room);
 
 public:
 	virtual bool SetState(ObjectState state, bool isSend = true) override;
 
 private:
+	float _aggroRange;
+	float _aggroAngle;
+	float _aggroHeight;
+
 	float _makeWebTime;
 	unsigned char _maxWebCount;
 	unsigned char _currentWebCount;

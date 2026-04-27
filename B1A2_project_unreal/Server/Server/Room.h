@@ -21,8 +21,9 @@ public:
 
 public:
 	GameObjectRef AddObject(ObjectType type);
-	MonsterRef AddIMonster(MonsterType monsterType, Vector pos, bool isSend);
+	MonsterRef AddMonster(MonsterType monsterType, Vector pos, bool isSend);
 	ItemRef AddItem(bool isTool, ItemType itemType, Vector pos, bool isSend);
+	ObstacleRef AddObstacle(ObstacleType obstacleType, Vector pos, bool isSend);
 	void RemoveObject(ObjectType type, uint id, bool isSend);
 
 	void AddProcessingItem(ItemRef item) { _processingItems[item->GetID()] = item; }
@@ -40,9 +41,11 @@ private:
 	uint _generatePlayerID{};
 	uint _generateMonsterID{};
 	uint _generateItemID{};
+	int _generateObstacleID{};
 
 	std::vector<CubeRef> _cubes;
 	std::vector<DoorRef> _doors;
+	std::vector<ObstacleRef> _obstacles;
 	std::unordered_map<uint, PlayerRef> _players;
 	std::vector<MonsterRef> _monsters;
 	std::vector<ItemRef> _items;

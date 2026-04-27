@@ -18,18 +18,11 @@
 #include <queue>
 #include <cmath>
 #include <algorithm>
+#include <optional>
 
 #include "Types.h"
 
 #pragma comment(lib, "ws2_32")
-//#pragma comment(lib, "Recast.lib")
-//#pragma comment(lib, "Detour.lib")
-//#pragma comment(lib, "DetourCrowd.lib")
-//#pragma comment(lib, "DetourTileCache.lib")
-//#pragma comment(lib, "Recast-d.lib")
-//#pragma comment(lib, "Detour-d.lib")
-//#pragma comment(lib, "DetourCrowd-d.lib")
-//#pragma comment(lib, "DetourTileCache-d.lib")
 
 using SendEventRef = std::shared_ptr<class SendEvent>;
 
@@ -44,6 +37,7 @@ using ItemRef = std::shared_ptr<class Item>;
 using ToolRef = std::shared_ptr<class Tool>;
 using DoorRef = std::shared_ptr<class Door>;
 using LanternRef = std::shared_ptr<class Lantern>;
+using ObstacleRef = std::shared_ptr<class Obstacle>;
 
 // 비트연산
 #define LAYER_SHIFT(n) ((n) * 2)

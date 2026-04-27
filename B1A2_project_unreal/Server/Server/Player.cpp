@@ -51,7 +51,7 @@ void Player::Attack(Room* room)
 				continue;
 
 			// 공격 범위 내에 있는지 확인
-			if (CheckInclude(monster->GetPos(), cutlass->GetRange(), cutlass->GetAngle()))
+			if (CheckInclude(monster->GetPos(), cutlass->GetRange(), cutlass->GetAngle(), cutlass->GetHeight()))
 			{
 				// 공격 범위 내에 있다면 데미지 주기
 				monster->GetDamage(cutlass->GetDamage());

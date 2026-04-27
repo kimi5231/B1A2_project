@@ -17,8 +17,12 @@ void GameObject::Update()
 
 }
 
-bool GameObject::CheckInclude(Vector targetPos, float range, float angle)
+bool GameObject::CheckInclude(Vector targetPos, float range, float angle, float height)
 {
+	float heightDiff = abs(targetPos.z - _pos.z);
+	if (heightDiff > height)
+		return false;
+
 	// 거리 내에 있는지 확인
 	Vector diff = targetPos - _pos;
 	diff.z = 0; // 높이 차이 무시
@@ -28,7 +32,6 @@ bool GameObject::CheckInclude(Vector targetPos, float range, float angle)
 		return false;
 
 	// 각도 내에 있는지 확인
-	//
 	Vector forward = GetForwardVector(_rotation.pitch, _rotation.yaw);
 	Vector target = diff / sqrt(disSquare);
 
