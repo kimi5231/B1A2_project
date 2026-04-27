@@ -335,6 +335,18 @@ void UMain::SendUseTool(int playerID, int toolID, Rotation playerRotation)
 	_gameNetwork->SendUseToolPacket(playerID, toolID, playerRotation);
 }
 
+void UMain::SendUseKey(int playerID, int toolID, int doorID)
+{
+	if (_myID == 0 || doorID < 0)
+		return;
+
+	UWorld* world = GetWorld();
+	if (!world)
+		return;
+
+	_gameNetwork->SendUseKeyPacket(playerID, toolID, doorID);
+}
+
 void UMain::SendEmotion(float angry, float disgust, float fear, float happy, float sad, float surprise, float neutral)
 {
 	if (_myID == 0)
@@ -871,10 +883,12 @@ void UMain::RecvMoveMonster(S_Move_Packet packet)
 void UMain::RecvUpdateObjectState(S_UpdateObjectState_Packet packet)
 {
 	if (packet.type == ObjectType::Monster)
-		RecvUpdateObjectStateMonster(packet);
+		RecvUpdateStateMonster(packet);
+	else if (packet.type == ObjectType::Door)
+		RecvUpdateStateDoor(packet);
 }
 
-void UMain::RecvUpdateObjectStateMonster(S_UpdateObjectState_Packet packet)
+void UMain::RecvUpdateStateMonster(S_UpdateObjectState_Packet packet)
 {
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
@@ -919,6 +933,19 @@ void UMain::RecvUpdateObjectStateMonster(S_UpdateObjectState_Packet packet)
 					}
 				}
 			}
+		}
+	});
+}
+
+void UMain::RecvUpdateStateDoor(S_UpdateObjectState_Packet packet)
+{
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		ABaseDoor** foundDoor = _doors.Find(packet.objectID);
+
+		if (foundDoor && *foundDoor)
+		{
+			(*foundDoor)->UpdateDoorState(packet.state);
 		}
 	});
 }
@@ -1100,7 +1127,34 @@ void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 
 void UMain::RecvRemoveItemFromInventory(S_RemoveItemFromInventory_Packet packet)
 {
+	int32 itemID = packet.itemID;
+	bool isTool = packet.isTool;
 
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		if (!_myPlayer)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[RecvRemoveItemFromInventory] MyPlayer is null!"));
+			return;
+		}
+		
+		// 장비 - 들고있는 열쇠 제거
+		if (isTool)
+		{
+			if (UToolBarWidget* toolbar = Cast<UToolBarWidget>(_myPlayer->GetToolBarWidget()))
+			{
+				toolbar->RemoveToolByID(itemID);
+				_myPlayer->OnToolSelectionChanged();
+
+				UE_LOG(LogTemp, Display, TEXT("[RecvRemoveItemFromInventory] Tool %d removed from ToolBar"), itemID);
+			}
+		}
+		// 아이템
+		else
+		{
+			// ...
+		}
+	});
 }
 
 void UMain::RecvItemPickupNotify(S_ItemPickupNotify_Packet packet)
@@ -1316,6 +1370,22 @@ void UMain::RecvTurnOnLantern(S_TurnOnLantern_Packet packet)
 
 void UMain::RecvTurnOffLantern(S_TurnOffLantern_Packet packet)
 {
+}
+
+void UMain::RecvChangeTool(C_ChangeTool_Packet packet)
+{
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		if (packet.playerID == _myID)
+			return;
+	
+		AOtherPlayer** foundPlayer = _otherPlayers.Find(packet.playerID);
+
+		if (foundPlayer && *foundPlayer)
+		{
+			(*foundPlayer)->UnequipTool(packet.toolID);
+		}
+	});
 }
 
 FRotator UMain::DirToRotation(Dir dir)

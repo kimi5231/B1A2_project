@@ -195,7 +195,7 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMyPlayer::Look);
 		EnhancedInputComponent->BindAction(MouseLookAction, ETriggerEvent::Triggered, this, &AMyPlayer::Look);
 
-		// Get Item
+		// Get Item, Door Open & Close
 		EnhancedInputComponent->BindAction(GetItemAction, ETriggerEvent::Started, this, &AMyPlayer::Interact);
 
 		// Use Tool
@@ -837,6 +837,10 @@ void AMyPlayer::Interact()
 	// Door인 경우
 	else if (ABaseDoor* door = Cast<ABaseDoor>(_focusedActor))
 	{
+		// Lock일 때는 E 상호작용 X
+		if (door->GetDoorState() == ObjectState::LOCK)	
+			return;
+
 		gameInstance->SendInteractDoor(gameInstance->GetMyID(), door->GetDoorID());
 	}
 }
@@ -853,6 +857,30 @@ void AMyPlayer::UseToolAnimationAndSend()
 	FDroppedItemInfo ToolInfo = widget->GetSelectedToolBarTool();
 	if (ToolInfo.itemID == -1)
 		return;
+
+	UMain* gameInstance = Cast<UMain>(GetGameInstance());
+	if (!gameInstance)
+		return;
+
+	// 잠긴 문 - 열쇠 사용
+	if (ToolInfo.type == ItemType::Key)
+	{
+		// focusedActor가 문일 때
+		if (ABaseDoor* door = Cast<ABaseDoor>(_focusedActor))
+		{
+			if (door->GetDoorState() == ObjectState::LOCK)
+			{
+				gameInstance->SendUseKey(gameInstance->GetMyID(), ToolInfo.itemID, door->GetDoorID());
+				UE_LOG(LogTemp, Display, TEXT("[Door] Use Key for Locked Door"));
+
+				return;
+			}
+		}
+
+		// 문 상호작용 범위에 있고 좌클릭하면 작동 X
+		return;
+	}
+
 
 	// 애니메이션 필요한 경우 판단(Key 사용, Lantern 사용 지금은 애니메이션 X)
 	bool useAnimation = true;
@@ -872,7 +900,7 @@ void AMyPlayer::UseToolAnimationAndSend()
 		animName = IsLanternRaised ? "LanternRaise" : "LanternLower";
 		animSpeed = 2.f;
 		break;
-	case ItemType::Key:
+	default:
 		useAnimation = false;
 		break;
 	}
@@ -902,21 +930,18 @@ void AMyPlayer::UseToolAnimationAndSend()
 	}
 
 	// 서버에 C_UseTool 송신
-	if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
-	{
-		FRotator rot = GetControlRotation();
-		// - 180 ~ 180 값을 0 ~ 360으로 정규화
-		float normPitch = FRotator::NormalizeAxis(rot.Pitch);
-		if (normPitch < 0) normPitch += 360.0f;
-		float normYaw = FRotator::NormalizeAxis(rot.Yaw);
-		if (normYaw < 0) normYaw += 360.0f;
-		float normRoll = FRotator::NormalizeAxis(rot.Roll);
-		if (normRoll < 0) normRoll += 360.0f;
-		Rotation rotation = { normPitch, normYaw, normRoll };
+	FRotator rot = GetControlRotation();
+	// - 180 ~ 180 값을 0 ~ 360으로 정규화
+	float normPitch = FRotator::NormalizeAxis(rot.Pitch);
+	if (normPitch < 0) normPitch += 360.0f;
+	float normYaw = FRotator::NormalizeAxis(rot.Yaw);
+	if (normYaw < 0) normYaw += 360.0f;
+	float normRoll = FRotator::NormalizeAxis(rot.Roll);
+	if (normRoll < 0) normRoll += 360.0f;
+	Rotation rotation = { normPitch, normYaw, normRoll };
 
-		gameInstance->SendUseTool(gameInstance->GetMyID(), ToolInfo.itemID, rotation);
-		//UE_LOG(LogTemp, Log, TEXT("[Tool] Use Tool, Tool ID: %d, Type: %d"), ToolInfo.itemID, (int32)type);
-	}
+	gameInstance->SendUseTool(gameInstance->GetMyID(), ToolInfo.itemID, rotation);
+	//UE_LOG(LogTemp, Log, TEXT("[Tool] Use Tool, Tool ID: %d, Type: %d"), ToolInfo.itemID, (int32)type);
 }
 
 void AMyPlayer::OnToolMontageEnded(UAnimMontage* Montage, bool bInterrupted)

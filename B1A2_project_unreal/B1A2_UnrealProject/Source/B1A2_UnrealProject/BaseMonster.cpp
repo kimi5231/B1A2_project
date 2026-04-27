@@ -1,13 +1,20 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "BaseMonster.h"
+#include "Components/CapsuleComponent.h"
 
 // Sets default values
 ABaseMonster::ABaseMonster()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+    UCapsuleComponent* capsule = GetCapsuleComponent();
+    if (capsule)
+    {
+        // Pawn과의 충돌 무시
+        capsule->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+    }
 }
 
 void ABaseMonster::SetTargetTransform(FVector Pos, FRotator Rot)
