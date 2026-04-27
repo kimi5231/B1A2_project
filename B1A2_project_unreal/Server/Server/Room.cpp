@@ -6,12 +6,14 @@
 #include "Item.h"
 #include "Cutlass.h"
 #include "Spider.h"
+#include "Obstacle.h"
 
 Room::Room()
 {
 	_generatePlayerID = 1;
 	_generateMonsterID = 1;
 	_generateItemID = 1;
+	_generateObstacleID = 1;
 
 	_currentDifficulty = Difficulty::Easy;
 	_detailDifficulty = Difficulty::Easy;
@@ -58,17 +60,16 @@ Room::Room()
 	spider->SetState(ObjectState::DEAD, false);
 	spider->SetState(ObjectState::IDLE, false);
 	_monsters.push_back(spider);
-	/*MonsterRef none2 = std::make_shared<Monster>(MonsterType::None);
-	none2->SetID(_generateMonsterID++);
-	none2->SetPos({ 0, 200, 65 });
-	none2->SetObjectPoolState(ObjectPoolState::InWorld);
-	_monsters.push_back(none2);
-	MonsterRef none3 = std::make_shared<Monster>(MonsterType::None);
-	none3->SetID(_generateMonsterID++);
-	none3->SetPos({ 0, 0, 65 });
-	none3->SetObjectPoolState(ObjectPoolState::InWorld);
-	_monsters.push_back(none3);
-	*/
+	
+	// 장애물 ObjectPool 미리 확보
+	for (int i = 0; i < 10; i++)
+	{
+		ObstacleRef obstacle = std::make_shared<Obstacle>();
+		obstacle->SetID(_generateObstacleID++);
+		obstacle->SetObstacleType(ObstacleType::None);
+		obstacle->SetObjectPoolState(ObjectPoolState::Reusable);
+		_obstacles.push_back(obstacle);
+	}
 }
 
 Room::~Room()
@@ -352,7 +353,7 @@ GameObjectRef Room::AddObject(ObjectType type)
 	return object;
 }
 
-MonsterRef Room::AddIMonster(MonsterType monsterType, Vector pos, bool isSend)
+MonsterRef Room::AddMonster(MonsterType monsterType, Vector pos, bool isSend)
 {
 	for (auto& monster : _monsters)
 	{
@@ -391,6 +392,28 @@ ItemRef Room::AddItem(bool isTool, ItemType itemType, Vector pos, bool isSend)
 				g_framework->SendAddItemPacket(item, isTool, true);
 
 			return item;
+		}
+	}
+}
+
+ObstacleRef Room::AddObstacle(ObstacleType obstacleType, Vector pos, bool isSend)
+{
+	for (auto& obstacle : _obstacles)
+	{
+		// 재사용 가능한 장애물 찾기
+		if (obstacle->GetObjectPoolState() == ObjectPoolState::Reusable && obstacle->GetObstacleType() == obstacleType)
+		{
+			// 재사용이 가능하면, 정보 재설정
+			obstacle->SetPos(pos);
+			obstacle->SetObstacleType(obstacleType);
+
+			// ObjectPoolState 변경
+			obstacle->SetObjectPoolState(ObjectPoolState::InWorld);
+
+			//if (isSend)
+			//	g_framework->SendSpawnObstaclePacket(obstacle, true);
+
+			return obstacle;
 		}
 	}
 }

@@ -18,7 +18,8 @@ public:
 
 	std::deque<CubeRef> FindCubePath(const CubeRef goalCube, const CubeRef currentCube, const std::vector<CubeRef>& gameRooms);
 	std::deque<VectorInt> FindPath(Vector goal, const CubeRef ccurrentCubeube);
-	
+	void ClearPath() { _cubePath.clear(); _path.clear(); }
+
 	VectorInt GetRotationIndex(VectorInt index, VectorInt max, Dir dir);
 	VectorInt PosToIndex(Vector pos, CubeRef cube);
 	Vector IndexToPos(VectorInt index, const CubeRef cube);
@@ -38,8 +39,10 @@ public:
 	virtual bool SetState(ObjectState state, bool isSend = true) override;
 	MonsterType GetMonsterType() { return _monsterType; };
 	void SetMonsterType(MonsterType monsterType) { _monsterType = monsterType; };
-	VectorInt* GetTargetPos() { return _targetPos; }
-	void SetTargetPos(VectorInt* pos) { _targetPos = pos; }
+	std::optional<VectorInt> GetTargetPos() { return _targetPos; }
+	void SetTargetPos(std::optional<VectorInt> pos) { _targetPos = pos; }
+	PlayerRef GetTarget() { return _target; }
+	void SetTarget(PlayerRef target) { _target = target; }
 	std::deque<CubeRef>& GetCubePath() { return _cubePath; }
 	std::deque<VectorInt>& GetPath() { return _path; }
 
@@ -47,7 +50,8 @@ protected:
 	MonsterType _monsterType;
 
 	FSM* _fsm;
-	VectorInt* _targetPos;
+	std::optional<VectorInt> _targetPos;
+	PlayerRef _target;
 	std::deque<CubeRef> _cubePath;
 	std::deque<VectorInt> _path;
 

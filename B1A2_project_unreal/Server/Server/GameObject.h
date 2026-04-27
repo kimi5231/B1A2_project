@@ -11,7 +11,7 @@ public:
 	virtual void Update();
 
 	bool CheckCollision(BoundingBox other) { return _box.CheckCollision(other.GetBounds()); };
-	bool CheckInclude(Vector targetPos, float range, float angle);
+	bool CheckInclude(Vector targetPos, float range, float angle, float height);
 
 public:
 	void SetID(int id) { _id = id; }
@@ -20,6 +20,8 @@ public:
 	ObjectType GetObjectType() { return _type; }
 	void SetPos(Vector pos);
 	Vector GetPos() { return _pos; }
+	void SetSize(Vector size);
+	Vector GetSize() { return _size; }
 	void SetRotation(Rotation rotation) { _rotation = rotation; }
 	Rotation GetRotation() { return _rotation; }
 	virtual bool SetState(ObjectState state, bool isSend = true);

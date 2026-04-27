@@ -12,12 +12,20 @@ enum class ObjectType : char
 	Monster,
 	Item,
 	Door,
+	Obstacle,
 };
 
 enum class MonsterType : char
 {
 	Spider,
 	
+	None,
+};
+
+enum class ObstacleType : char
+{
+	Web,
+
 	None,
 };
 

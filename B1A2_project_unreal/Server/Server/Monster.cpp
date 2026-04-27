@@ -7,13 +7,15 @@
 #include "FSM.h"
 #include "Door.h"
 #include "State.h"
+#include "Player.h"
 
 Monster::Monster(MonsterType monsterType)
 	: _monsterType(monsterType)
 {
 	// FSM »ý¼º
 	_fsm = new FSM();
-	_targetPos = nullptr;
+	_targetPos = std::nullopt;
+	_target = nullptr;
 	_sumTime = 0.f;
 
 	_size = { 80, 80, 80 };
@@ -566,11 +568,11 @@ bool Monster::SetState(ObjectState state, bool isSend)
 		break;
 	/*case OPEN_DOOR:
 		_fsm->ChangeState(_openDoor, this);
-		break;
+		break;*/
 	case CHASE:
-		_fsm->ChangeState(_chase, this);
+		_fsm->ChangeState(g_chaseState, dynamic_pointer_cast<Monster>(shared_from_this()));
 		break;
-	case ATTACK:
+	/*case ATTACK:
 		_fsm->ChangeState(_attack, this);
 		break;
 	case HIT:

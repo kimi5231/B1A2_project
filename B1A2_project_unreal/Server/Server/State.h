@@ -13,6 +13,8 @@ public:
 
 extern class IdleState* g_idleState;
 extern class RoamingState* g_roamingState;
+extern class MakeWebState* g_makeWebState;
+extern class ChaseState* g_chaseState;
 
 // Common State
 class IdleState : public State
@@ -50,19 +52,19 @@ public:
 //	virtual void Tick() override {};
 //	virtual void Exit() override {};
 //};
-//
-//class ChaseState : public State
-//{
-//public:
-//	ChaseState() {};
-//	virtual ~ChaseState() {};
-//
-//public:
-//	virtual void Enter() override {};
-//	virtual void Tick() override {};
-//	virtual void Exit() override {};
-//};
-//
+
+class ChaseState : public State
+{
+public:
+	ChaseState() {};
+	virtual ~ChaseState() {};
+
+public:
+	virtual void Enter(MonsterRef monster) override {};
+	virtual void Tick(MonsterRef monster, Room* room) override;
+	virtual void Exit(MonsterRef monster) override;
+};
+
 //class AttackState : public State
 //{
 //public:
@@ -74,30 +76,30 @@ public:
 //	virtual void Tick() override {};
 //	virtual void Exit() override {};
 //};
-//
-//class HitState : public State
-//{
-//public:
-//	HitState() {};
-//	virtual ~HitState() {};
-//
-//public:
-//	virtual void Enter() override {};
-//	virtual void Tick() override {};
-//	virtual void Exit() override {};
-//};
-//
-//class DeadState : public State
-//{
-//public:
-//	DeadState() {};
-//	virtual ~DeadState() {};
-//
-//public:
-//	virtual void Enter() override {};
-//	virtual void Tick() override {};
-//	virtual void Exit() override {};
-//};
+
+class HitState : public State
+{
+public:
+	HitState() {};
+	virtual ~HitState() {};
+
+public:
+	virtual void Enter(MonsterRef monster) override {};
+	virtual void Tick(MonsterRef monster, Room* room) override {};
+	virtual void Exit(MonsterRef monster) override {};
+};
+
+class DeadState : public State
+{
+public:
+	DeadState() {};
+	virtual ~DeadState() {};
+
+public:
+	virtual void Enter(MonsterRef monster) override {};
+	virtual void Tick(MonsterRef monster, Room* room) override {};
+	virtual void Exit(MonsterRef monster) override {};
+};
 
 // Spider State
 class MakeWebState : public State
