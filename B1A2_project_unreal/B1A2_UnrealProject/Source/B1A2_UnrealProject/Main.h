@@ -45,6 +45,7 @@ public:
 	void SendChangeTool(int playerID, int toolID);
 	void SendInteractDoor(int playerID, int doorID);
 	void SendUseTool(int playerID, int toolID, Rotation playerRotation);
+	void SendUseKey(int playerID, int toolID, int doorID);
 	void SendEmotion(float angry, float disgust, float fear, float happy, float sad, float surprise, float neutral);
 
 	// Recv
@@ -69,7 +70,8 @@ public:
 	void RecvMoveMonster(S_Move_Packet packet);
 
 	void RecvUpdateObjectState(S_UpdateObjectState_Packet packet);
-	void RecvUpdateObjectStateMonster(S_UpdateObjectState_Packet packet);
+	void RecvUpdateStateMonster(S_UpdateObjectState_Packet packet);
+	void RecvUpdateStateDoor(S_UpdateObjectState_Packet packet);
 
 	void RecvCreateCubes(S_CreateCubes_Packet packet);
 	void RecvAddItemToInventory(S_AddItemToInventory_Packet packet);
@@ -82,6 +84,8 @@ public:
 	void RecvSpawnMonster(S_SpawnMonster_Packet packet);
 	void RecvTurnOnLantern(S_TurnOnLantern_Packet packet);
 	void RecvTurnOffLantern(S_TurnOffLantern_Packet packet);
+
+	void RecvChangeTool(C_ChangeTool_Packet packet);
 
 	FRotator DirToRotation(Dir dir);
 

@@ -46,6 +46,20 @@ void ABaseDoor::BeginPlay()
     FOnTimelineFloat ProgressUpdate;
     ProgressUpdate.BindUFunction(this, FName("UpdateDoorRotation"));
     doorTimeline.AddInterpFloat(doorCurve, ProgressUpdate);
+
+    // 상태에 따라 위젯 변경하도록 신호 보냄
+    int32 state;
+    switch (_currentState)
+    {
+    case ObjectState::CLOSE:
+    case ObjectState::OPEN:
+        state = 0;
+        break;
+    case ObjectState::LOCK:
+        state = 1;
+        break;
+    }
+    K2_UpdateWidgetByState(state);
 }
 
 // Called every frame
@@ -88,9 +102,22 @@ void ABaseDoor::UpdateDoorState(ObjectState newState)
     UE_LOG(LogTemp, Log, TEXT("[Door] State Changed: %d -> %d"), (int)oldState, (int)newState);
 
     // 애니메이션 실행(Open, Close)
-    if (_currentState == ObjectState::LOCK)
-        return;
-    OnStateChanged(oldState, newState);
+    if (_currentState != ObjectState::LOCK)
+        OnStateChanged(oldState, newState);
+
+    // 상태에 따라 위젯 변경하도록 신호 보냄
+    int32 state;
+    switch (_currentState)
+    {
+    case ObjectState::CLOSE:
+    case ObjectState::OPEN:
+        state = 0;
+        break;
+    case ObjectState::LOCK:
+        state = 1;
+        break;
+    }
+    K2_UpdateWidgetByState(state);
 }
 
 void ABaseDoor::SetDoorRotation(ObjectState state)
@@ -131,4 +158,3 @@ void ABaseDoor::UpdateDoorRotation(float value)
     FRotator newRotation = FRotator(0.f, value * rotationAngle, 0.f);
     DoorMesh->SetRelativeRotation(newRotation);
 }
-

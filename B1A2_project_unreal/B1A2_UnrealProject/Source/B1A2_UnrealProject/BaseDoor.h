@@ -80,4 +80,8 @@ protected:
 private:
 	int _doorID;
 	ObjectState _currentState = ObjectState::CLOSE;
+
+protected:
+	UFUNCTION(BlueprintImplementableEvent, Category = "Door|UI")
+	void K2_UpdateWidgetByState(int32 StateIndex);
 };
