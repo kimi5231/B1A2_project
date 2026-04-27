@@ -551,33 +551,23 @@ void AMyPlayer::SendPaper()
 
 void AMyPlayer::SendEndStageAndStartStage()
 {
+	UMain* gameInstance = Cast<UMain>(GetGameInstance());
+	if (!gameInstance) return;
+
 	// 레버를 처음 당길 때
 	if (laverPullCount == 0)
 	{
-		laverPullCount++;
-
-		if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
-		{
-			gameInstance->SendEndStage(true);
-
-			UE_LOG(LogTemp, Display, TEXT("[Stage] Send C_EndStage_Packet"));
-		}
+		laverPullCount = 1;
+		gameInstance->SendEndStage(true);
+		UE_LOG(LogTemp, Display, TEXT("[Stage] Send C_EndStage_Packet (Count: 0->1)"));
 	}
 	// 레버를 두 번째 당길 때
 	else if (laverPullCount == 1)
 	{
-		laverPullCount++;
-
-		if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
-		{
-			gameInstance->SendStartStage(true);
-
-			UE_LOG(LogTemp, Display, TEXT("[Stage] Send C_StartStage_Packet"));
-		}
+		laverPullCount = 0;
+		gameInstance->SendStartStage(true);
+		UE_LOG(LogTemp, Display, TEXT("[Stage] Send C_StartStage_Packet (Count: 1->0)"));
 	}
-	else
-		return;
-	
 }
 
 void AMyPlayer::StartRunning()

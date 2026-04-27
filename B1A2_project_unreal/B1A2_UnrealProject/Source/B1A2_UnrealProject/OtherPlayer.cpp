@@ -99,6 +99,22 @@ void AOtherPlayer::SetPlayerLocation(FVector location, FRotator rotation)
 
 	_destPos = location;
 	_destRot = rotation;
+
+	// 현재 위치와 서버가 보낸 위치의 거리 차이 계산
+	float distance = FVector::Dist(GetActorLocation(), _destPos);
+
+	// 임계값 이상 or MyPlayer인 경우 보간을 안 하므로 즉시 이동
+	const float teleportThreshold = 500.f;
+
+	if (!_isInterpolation || distance > teleportThreshold)
+	{
+		// 보간을 타지 않고 즉시 위치/회전 설정
+		SetActorLocationAndRotation(_destPos, _destRot, false, nullptr, ETeleportType::TeleportPhysics);
+
+		// 보간용 내부 변수들도 즉시 업데이트해서 Tick에서 튀는 현상 방지
+		_currentAnimSpeed = 0.f;
+		CalculatedSpeed = 0.f;
+	}
 }
 
 void AOtherPlayer::SetPlayerState(ObjectState state)
