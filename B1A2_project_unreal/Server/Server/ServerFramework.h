@@ -61,6 +61,8 @@ public:
 	void SendSpawnMonsterPacket(MonsterRef monster, bool broadcast, SOCKET client = 0);
 	void SendTurnOnLanternPacket(LanternRef lantern, int playerID, bool broadcast, SOCKET client = 0);
 	void SendTurnOffLanternPacket(LanternRef lantern, int playerID, bool broadcast, SOCKET client = 0);
+	void SendStartStagePacket(bool broadcast, SOCKET client = 0);
+	void SendEndStagePacket(bool broadcast, SOCKET client = 0);
 	void Broadcast(PacketID id, const std::vector<char>& packetData);
 
 public:
@@ -77,6 +79,8 @@ public:
 	void ProcessInteractDoorPacket(C_InteractDoor_Packet packet);
 	void ProcessEmotionPacket(C_Emotion_Packet packet);
 	void ProcessUseLanternPacket(C_UseLantern_Packet packet);
+	void ProcessStartStagePacket(C_StartStage_Packet packet);
+	void ProcessEndStagePacket(C_EndStage_Packet packet);
 
 public:
 	Room* GetRoom() { return _room; }

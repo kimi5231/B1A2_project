@@ -327,6 +327,38 @@ void Room::CreateFactoryCubes()
 	//g_framework->SendCreateGameRoomPacket(_gameRooms, true);
 }
 
+void Room::StartStage()
+{
+	// Cube »ý¼º
+	CreateFactoryCubes();
+	g_framework->SendCreateCubesPacket(_cubes, _doors, true);
+
+	AddItem(false, ItemType::CardboardBox, { 0, -50, 25 }, true);
+	AddItem(false, ItemType::CUTLASS, { 0, -100, 25 }, true);
+	AddItem(false, ItemType::Blaster, { 0, 50, 25 }, true);
+	AddItem(false, ItemType::Key, { 0, 100, 25 }, true);
+	AddItem(false, ItemType::LANTERN, { 0, 150, 25 }, true);
+
+	AddMonster(MonsterType::None, { 0, 100, 25 }, true);
+	AddMonster(MonsterType::Spider, { 0, 100, 25 }, true);
+}
+
+void Room::EndStage()
+{
+	_cubes.clear();
+	_doors.clear();
+	_obstacles.clear();
+
+	for(MonsterRef monster : _monsters)
+		monster->SetObjectPoolState(ObjectPoolState::Reusable);
+	for(ItemRef item : _items)
+		item->SetObjectPoolState(ObjectPoolState::Reusable);
+
+	_generateMonsterID = 1;
+	_generateItemID = 1;
+	_generateObstacleID = 1;
+}
+
 GameObjectRef Room::AddObject(ObjectType type)
 {
 	GameObjectRef object;
