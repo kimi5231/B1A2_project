@@ -216,6 +216,22 @@ void UMain::ProcessRecv()
 				event->isComplete = true;
 				break;
 			}
+			case S_StartStage:
+			{
+				S_StartStage_Packet startStagePacket;
+				FMemory::Memcpy(&startStagePacket, event->serializedPacketData.data(), sizeof(S_StartStage_Packet));
+				RecvStartStage(startStagePacket);
+				event->isComplete = true;
+				break;
+			}
+			case S_EndStage:
+			{
+				S_EndStage_Packet endStagePacket;
+				FMemory::Memcpy(&endStagePacket, event->serializedPacketData.data(), sizeof(S_EndStage_Packet));
+				RecvEndStage(endStagePacket);
+				event->isComplete = true;
+				break;
+			}
 		}
 	}
 }
@@ -368,7 +384,7 @@ void UMain::SendEndStage(bool result)
 	if (!world)
 		return;
 
-	// _gameNetwork->SendEndStagePacket(result);
+	_gameNetwork->SendEndStagePacket();
 }
 
 void UMain::SendStartStage(bool result)
@@ -380,7 +396,7 @@ void UMain::SendStartStage(bool result)
 	if (!world)
 		return;
 
-	// _gameNetwork->SendStartStagePacket(result);
+	_gameNetwork->SendStartStagePacket();
 }
 
 void UMain::Update()

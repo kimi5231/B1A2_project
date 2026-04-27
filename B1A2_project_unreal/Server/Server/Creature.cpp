@@ -27,6 +27,9 @@ void Creature::SetPos(Vector pos)
 
 void Creature::SetCurrentCubeID(const std::vector<CubeRef>& cubes)
 {
+    if (cubes.empty())
+        return;
+
     // 최초로 지정하는 것이라면 전부 확인
     if (_currentCubeID == -1)
     {

@@ -94,7 +94,13 @@ void Room::Update()
 
 		// 몬스터 업데이트
 		for (const auto& monster : _monsters)
+		{
+			if(monster->GetObjectPoolState() != ObjectPoolState::InWorld)
+				 continue;
+			
 			monster->Update(this);
+		}
+			
 
 		// 플레이어, 몬스터 충돌 처리
 		/*for (const auto& playerItem : _players)

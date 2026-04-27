@@ -36,6 +36,8 @@ public:
 	void SendInteractDoorPacket(int playerID, int doorID);
 	void SendEmotionPacket(float angry, float disgust, float fear, float happy, float sad, float surprise, float neutral);
 	void SendUseLanternPacket(int playerID, int lanternID);
+	void SendStartStagePacket();
+	void SendEndStagePacket();
 
 public:
 	std::vector<NetworkEventRef>& GetRecvEvents() { return _recvEvents; }
