@@ -37,6 +37,9 @@ Spider::Spider(MonsterType monsterType)
 	_stateTable[MAKE_WEB] = IDLE;
 	_stateTable[CHASE] = RETURN;
 	_stateTable[RETURN] = IDLE;
+	_stateTable[ATTACK] = CHASE;
+	_stateTable[HIT] = RETURN;
+	_stateTable[OPEN_DOOR] = CHASE;
 }
 
 Spider::~Spider()
@@ -49,23 +52,22 @@ void Spider::Update(Room* room)
 	Monster::Update(room);
 
 	// 공격 범위 안에 플레이어가 있는지 확인
-	//const std::unordered_map<uint, PlayerRef>& players = room->GetPlayers();
-	//for (auto& [id, player] : players)
-	//{
-	//	/*if (player->GetObjectPoolState() == ObjectPoolState::Reusable)
-	//		continue;*/
+	const std::unordered_map<uint, PlayerRef>& players = room->GetPlayers();
+	for (auto& [id, player] : players)
+	{
+		/*if (player->GetObjectPoolState() == ObjectPoolState::Reusable)
+			continue;*/
 
-	//	// 플레이어가 있으면, 플레이어 위치를 타겟으로 설정
-	//	if (CheckInclude(player->GetPos(), _attackRange, _attackAngle, _attackHeight))
-	//	{
-	//		_target = player;
-	//		SetState(ObjectState::ATTACK);
-	//		return;
-	//	} 
-	//}
+		// 플레이어가 있으면, 플레이어 위치를 타겟으로 설정
+		if (CheckInclude(player->GetPos(), _attackRange, _attackAngle, _attackHeight))
+		{
+			_target = player;
+			SetState(ObjectState::ATTACK);
+			return;
+		} 
+	}
 
 	// 인식 범위 안에 플레이어가 있는지 확인
-	const std::unordered_map<uint, PlayerRef>& players = room->GetPlayers();
 	for (auto& [id, player] : players)
 	{
 		/*if (player->GetObjectPoolState() == ObjectPoolState::Reusable)
@@ -93,6 +95,12 @@ bool Spider::IsReadyNextState()
 		return _sumTime > _makeWebTime;
 	case ObjectState::CHASE:
 		return _sumTime > _chaseTime;
+	/*case ObjectState::RETURN:
+		return _sumTime > _idleTime;*/
+	case ObjectState::ATTACK:
+		return _sumTime > _attackDelay;
+	case ObjectState::HIT:
+		return true;
 	}
 }
 

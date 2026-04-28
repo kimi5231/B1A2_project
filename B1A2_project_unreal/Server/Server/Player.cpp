@@ -55,6 +55,7 @@ void Player::Attack(Room* room)
 			{
 				// 공격 범위 내에 있다면 데미지 주기
 				monster->TackDamage(cutlass->GetDamage());
+				std::cout << "Monster " << monster->GetID() << " HP: " << monster->GetHP() << "\n";
 			}
 		}
 	}

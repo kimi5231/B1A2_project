@@ -229,6 +229,31 @@ void ChaseState::Exit(MonsterRef monster)
 void AttackState::Enter(MonsterRef monster)
 {
 	monster->GetTarget()->TackDamage(monster->GetDamage());
+	std::cout << "Player " << monster->GetTarget()->GetID() << " HP: " << monster->GetTarget()->GetHP() << "\n";
+}
+
+void AttackState::Tick(MonsterRef monster, Room* room)
+{
+	State::Tick(monster, room);
+
+	monster->AddDeltaTime(g_timer->GetDeltaTime());
+}
+
+void AttackState::Exit(MonsterRef monster)
+{
+	monster->InitSumTime();
+}
+
+//--------------Hit--------------
+void HitState::Tick(MonsterRef monster, Room* room)
+{
+	State::Tick(monster, room);
+}
+
+//--------------Dead--------------
+void DeadState::Enter(MonsterRef monster)
+{
+	monster->SetObjectPoolState(ObjectPoolState::Reusable);
 }
 
 // Spider State

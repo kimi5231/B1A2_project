@@ -30,7 +30,6 @@ public:
 	CubeRef FindCubeAtIndex(VectorInt index, CubeRef currentCube);
 
 	bool IsPointInCube(VectorInt wp, CubeRef cube);
-	virtual bool TackDamage(int damage) override;
 
 	void AddDeltaTime(float deltaTime) { _sumTime += deltaTime; }
 	void InitSumTime() { _sumTime = 0.f; }

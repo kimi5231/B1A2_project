@@ -45,18 +45,6 @@ public:
 	virtual void Exit(MonsterRef monster) override;
 };
 
-//class OpenDoorState : public State
-//{
-//public:
-//	OpenDoorState() {};
-//	virtual ~OpenDoorState() {};
-//
-//public:
-//	virtual void Enter() override {};
-//	virtual void Tick() override {};
-//	virtual void Exit() override {};
-//};
-
 class ChaseState : public State
 {
 public:
@@ -89,9 +77,21 @@ public:
 
 public:
 	virtual void Enter(MonsterRef monster) override;
-	virtual void Tick(MonsterRef monster, Room* room) override {};
-	virtual void Exit(MonsterRef monster) override {};
+	virtual void Tick(MonsterRef monster, Room* room) override;
+	virtual void Exit(MonsterRef monster) override;
 };
+
+//class OpenDoorState : public State
+//{
+//public:
+//	OpenDoorState() {};
+//	virtual ~OpenDoorState() {};
+//
+//public:
+//	virtual void Enter() override {};
+//	virtual void Tick() override {};
+//	virtual void Exit() override {};
+//};
 
 class HitState : public State
 {
@@ -101,7 +101,7 @@ public:
 
 public:
 	virtual void Enter(MonsterRef monster) override {};
-	virtual void Tick(MonsterRef monster, Room* room) override {};
+	virtual void Tick(MonsterRef monster, Room* room) override;
 	virtual void Exit(MonsterRef monster) override {};
 };
 
@@ -112,7 +112,7 @@ public:
 	virtual ~DeadState() {};
 
 public:
-	virtual void Enter(MonsterRef monster) override {};
+	virtual void Enter(MonsterRef monster) override;
 	virtual void Tick(MonsterRef monster, Room* room) override {};
 	virtual void Exit(MonsterRef monster) override {};
 };

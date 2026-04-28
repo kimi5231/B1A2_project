@@ -57,7 +57,7 @@ Room::Room()
 	spider->SetID(_generateMonsterID++);
 	spider->SetPos({ 0, 100, 65 });
 	spider->SetObjectPoolState(ObjectPoolState::InWorld);
-	spider->SetState(ObjectState::DEAD, false);
+	spider->SetState(ObjectState::HIT, false);
 	spider->SetState(ObjectState::IDLE, false);
 	_monsters.push_back(spider);
 	

@@ -459,8 +459,6 @@ Vector Monster::IndexToPos(VectorInt index, const CubeRef cube)
 	switch (cube->GetDir()) 
 	{
 	case Right: // 90도 회전
-		// 로컬 y(index.y)가 월드 x가 되고, 로컬 x(index.x)가 월드 y가 됨
-		// 이때 index.y를 반전시킨다면 기준은 반드시 max.y여야 함!
 		pos.x = (float)index.y;
 		pos.y = (float)(max.x - 1 - index.x);
 		break;
@@ -529,16 +527,6 @@ bool Monster::IsPointInCube(VectorInt wp, CubeRef cube)
 	// 단순 AABB 체크
 	return (wp.x >= pos.x - size.x / 2 && wp.x <= pos.x + size.x / 2 &&
 		wp.y >= pos.y - size.y / 2 && wp.y <= pos.y + size.y / 2);
-}
-
-bool Monster::TackDamage(int damage)
-{
-	if (!Creature::TackDamage(damage))
-		return false;
-
-	std::cout << "Monster " << _id << " HP: " << _hp << "\n";
-
-	return true;
 }
 
 bool Monster::SetState(ObjectState state, bool isSend)
