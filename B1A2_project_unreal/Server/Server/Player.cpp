@@ -54,7 +54,7 @@ void Player::Attack(Room* room)
 			if (CheckInclude(monster->GetPos(), cutlass->GetRange(), cutlass->GetAngle(), cutlass->GetHeight()))
 			{
 				// 공격 범위 내에 있다면 데미지 주기
-				monster->GetDamage(cutlass->GetDamage());
+				monster->TackDamage(cutlass->GetDamage());
 			}
 		}
 	}

@@ -30,10 +30,12 @@ public:
 	CubeRef FindCubeAtIndex(VectorInt index, CubeRef currentCube);
 
 	bool IsPointInCube(VectorInt wp, CubeRef cube);
-	virtual bool GetDamage(int damage) override;
+	virtual bool TackDamage(int damage) override;
 
 	void AddDeltaTime(float deltaTime) { _sumTime += deltaTime; }
 	void InitSumTime() { _sumTime = 0.f; }
+
+	virtual bool IsReadyNextState() { return false;  };
 
 public:
 	virtual bool SetState(ObjectState state, bool isSend = true) override;
@@ -45,6 +47,8 @@ public:
 	void SetTarget(PlayerRef target) { _target = target; }
 	std::deque<CubeRef>& GetCubePath() { return _cubePath; }
 	std::deque<VectorInt>& GetPath() { return _path; }
+	unsigned char GetDamage() { return _damage; }
+	const std::unordered_map<ObjectState, ObjectState>& GetStateTable() { return _stateTable; }
 
 protected:
 	MonsterType _monsterType;
@@ -55,6 +59,8 @@ protected:
 	std::deque<CubeRef> _cubePath;
 	std::deque<VectorInt> _path;
 
+	std::unordered_map<ObjectState, ObjectState> _stateTable;
+
 	float _sumTime;
 	float _retargetTime;
 
@@ -64,4 +70,5 @@ protected:
 	float _chaseTime;
 	float _idleTime;
 	float _roamingTime;
+	unsigned char _damage;
 };

@@ -531,21 +531,13 @@ bool Monster::IsPointInCube(VectorInt wp, CubeRef cube)
 		wp.y >= pos.y - size.y / 2 && wp.y <= pos.y + size.y / 2);
 }
 
-bool Monster::GetDamage(int damage)
+bool Monster::TackDamage(int damage)
 {
-	if (!Creature::GetDamage(damage))
+	if (!Creature::TackDamage(damage))
 		return false;
 
-	std::cout << "Monster " << _id << " Get Damage\n";
+	std::cout << "Monster " << _id << " HP: " << _hp << "\n";
 
-	if (_hp <= 0)
-	{
-		SetState(ObjectState::DEAD);
-		SetObjectPoolState(ObjectPoolState::Reusable);
-		return true;
-	}
-
-	SetState(ObjectState::HIT);
 	return true;
 }
 
@@ -568,15 +560,15 @@ bool Monster::SetState(ObjectState state, bool isSend)
 	case CHASE:
 		_fsm->ChangeState(g_chaseState, dynamic_pointer_cast<Monster>(shared_from_this()));
 		break;
-	/*case ATTACK:
-		_fsm->ChangeState(_attack, this);
+	case ATTACK:
+		_fsm->ChangeState(g_attackState, dynamic_pointer_cast<Monster>(shared_from_this()));
 		break;
 	case HIT:
-		_fsm->ChangeState(_hit, this);
+		_fsm->ChangeState(g_hitState, dynamic_pointer_cast<Monster>(shared_from_this()));
 		break;
 	case DEAD:
-		_fsm->ChangeState(_dead, this);
-		break;*/
+		_fsm->ChangeState(g_deadState, dynamic_pointer_cast<Monster>(shared_from_this()));
+		break;
 	}
 
 	return true;

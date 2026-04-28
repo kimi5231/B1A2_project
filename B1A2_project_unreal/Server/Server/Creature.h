@@ -8,7 +8,7 @@ public:
 	virtual ~Creature() {};
 
 public:
-	virtual bool GetDamage(int damage);
+	virtual bool TackDamage(int damage);
 
 public:
 	virtual void SetPos(Vector pos) override;

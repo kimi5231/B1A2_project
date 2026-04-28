@@ -10,15 +10,21 @@ public:
 	virtual void Update(Room* room) override;
 
 public:
+	virtual bool IsReadyNextState() override;
 	void CreateWeb(Room* room);
 
 public:
 	virtual bool SetState(ObjectState state, bool isSend = true) override;
 
 private:
-	float _aggroRange;
+	unsigned short _aggroRange;
 	float _aggroAngle;
-	float _aggroHeight;
+	unsigned short _aggroHeight;
+	unsigned short _attackRange;
+	float _attackAngle;
+	unsigned short _attackHeight;
+
+	float _attackDelay;
 
 	float _makeWebTime;
 	unsigned char _maxWebCount;

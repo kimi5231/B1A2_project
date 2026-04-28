@@ -6,14 +6,26 @@
 #include "Global.h"
 #include "Spider.h"
 
+void State::Tick(MonsterRef monster, Room* room)
+{
+	if (monster->IsReadyNextState())
+		monster->SetState(monster->GetStateTable().at(monster->GetState()));
+}
+
 IdleState* g_idleState = new IdleState();
 RoamingState* g_roamingState = new RoamingState();
 MakeWebState* g_makeWebState = new MakeWebState();
 ChaseState* g_chaseState = new ChaseState();
+AttackState* g_attackState = new AttackState();
+HitState* g_hitState = new HitState();
+DeadState* g_deadState = new DeadState();
+ReturnState* g_returnState = new ReturnState();
 
 //--------------Idle--------------
 void IdleState::Tick(MonsterRef monster, Room* room)
 {
+	State::Tick(monster, room);
+
 	monster->AddDeltaTime(g_timer->GetDeltaTime());
 }
 
@@ -25,6 +37,8 @@ void IdleState::Exit(MonsterRef monster)
 //--------------Roaming--------------
 void RoamingState::Tick(MonsterRef monster, Room* room)
 {
+	State::Tick(monster, room);
+
 	monster->AddDeltaTime(g_timer->GetDeltaTime());
 
 	// 최종 목적지 갱신
@@ -73,7 +87,7 @@ void RoamingState::Tick(MonsterRef monster, Room* room)
 
 	// 최종 목적지까지 도달했다면, 타겟 리셋
 	std::deque<VectorInt>& path = monster->GetPath();
-	if (*(monster->GetTargetPos()) == path[0])
+	if (monster->GetTargetPos() == path[0])
 		monster->SetTargetPos(std::nullopt);
 
 	// 경로	따라 이동
@@ -93,6 +107,8 @@ void RoamingState::Exit(MonsterRef monster)
 //--------------Chase--------------
 void ChaseState::Tick(MonsterRef monster, Room* room)
 {
+	State::Tick(monster, room);
+
 	monster->AddDeltaTime(g_timer->GetDeltaTime());
 
 	// 최종 목적지 갱신
@@ -209,17 +225,25 @@ void ChaseState::Exit(MonsterRef monster)
 	monster->ClearPath();
 }
 
+//--------------Attack--------------
+void AttackState::Enter(MonsterRef monster)
+{
+	monster->GetTarget()->TackDamage(monster->GetDamage());
+}
+
 // Spider State
 //--------------MakeWeb----------------
 void MakeWebState::Tick(MonsterRef monster, Room* room)
 {
+	State::Tick(monster, room);
+
 	monster->AddDeltaTime(g_timer->GetDeltaTime());
 }
 
 void MakeWebState::Exit(MonsterRef monster)
 {
 	SpiderRef spider = std::dynamic_pointer_cast<Spider>(monster);
-	
+
 	// 거미줄 생성
 	//spider->CreateWeb(room);
 
