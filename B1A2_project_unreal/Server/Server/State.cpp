@@ -235,13 +235,11 @@ void AttackState::Enter(MonsterRef monster)
 void AttackState::Tick(MonsterRef monster, Room* room)
 {
 	State::Tick(monster, room);
-
-	monster->AddDeltaTime(g_timer->GetDeltaTime());
 }
 
 void AttackState::Exit(MonsterRef monster)
 {
-	monster->InitSumTime();
+	monster->UpdateNextAttackTime();
 }
 
 //--------------Hit--------------

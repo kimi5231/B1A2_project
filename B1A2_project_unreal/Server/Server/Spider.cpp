@@ -23,7 +23,7 @@ Spider::Spider(MonsterType monsterType)
 	_attackAngle = 90.f;
 	_attackHeight = 400;
 
-	_attackDelay = 1.f;
+	_attackDelay = 3.f;
 
 	_damage = 15;
 
@@ -53,20 +53,23 @@ void Spider::Update(Room* room)
 
 	// 공격 범위 안에 플레이어가 있는지 확인
 	const std::unordered_map<uint, PlayerRef>& players = room->GetPlayers();
-	for (auto& [id, player] : players)
+	if (std::chrono::steady_clock::now() > _nextAttackTime)
 	{
-		/*if (player->GetObjectPoolState() == ObjectPoolState::Reusable)
-			continue;*/
-
-		// 플레이어가 있으면, 플레이어 위치를 타겟으로 설정
-		if (CheckInclude(player->GetPos(), _attackRange, _attackAngle, _attackHeight))
+		for (auto& [id, player] : players)
 		{
-			_target = player;
-			SetState(ObjectState::ATTACK);
-			return;
-		} 
-	}
+			/*if (player->GetObjectPoolState() == ObjectPoolState::Reusable)
+				continue;*/
 
+				// 플레이어가 있으면, 플레이어 위치를 타겟으로 설정
+			if (CheckInclude(player->GetPos(), _attackRange, _attackAngle, _attackHeight))
+			{
+				_target = player;
+				SetState(ObjectState::ATTACK);
+				return;
+			}
+		}
+	}
+	
 	// 인식 범위 안에 플레이어가 있는지 확인
 	for (auto& [id, player] : players)
 	{
@@ -95,10 +98,10 @@ bool Spider::IsReadyNextState()
 		return _sumTime > _makeWebTime;
 	case ObjectState::CHASE:
 		return _sumTime > _chaseTime;
-	/*case ObjectState::RETURN:
-		return _sumTime > _idleTime;*/
+	case ObjectState::RETURN:
+		return _sumTime > _idleTime;
 	case ObjectState::ATTACK:
-		return _sumTime > _attackDelay;
+		return true;
 	case ObjectState::HIT:
 		return true;
 	}

@@ -529,6 +529,15 @@ bool Monster::IsPointInCube(VectorInt wp, CubeRef cube)
 		wp.y >= pos.y - size.y / 2 && wp.y <= pos.y + size.y / 2);
 }
 
+void Monster::UpdateNextAttackTime()
+{
+	auto delay = std::chrono::duration_cast<std::chrono::steady_clock::duration>(
+		std::chrono::duration<float>(_attackDelay)
+	);
+
+	_nextAttackTime = std::chrono::steady_clock::now() + delay;
+}
+
 bool Monster::SetState(ObjectState state, bool isSend)
 {
 	if(!Creature::SetState(state, isSend))

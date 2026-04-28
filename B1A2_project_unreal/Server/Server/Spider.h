@@ -24,8 +24,6 @@ private:
 	float _attackAngle;
 	unsigned short _attackHeight;
 
-	float _attackDelay;
-
 	float _makeWebTime;
 	unsigned char _maxWebCount;
 	unsigned char _currentWebCount;

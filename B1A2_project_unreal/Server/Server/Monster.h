@@ -36,6 +36,8 @@ public:
 
 	virtual bool IsReadyNextState() { return false;  };
 
+	void UpdateNextAttackTime();
+
 public:
 	virtual bool SetState(ObjectState state, bool isSend = true) override;
 	MonsterType GetMonsterType() { return _monsterType; };
@@ -61,7 +63,8 @@ protected:
 	std::unordered_map<ObjectState, ObjectState> _stateTable;
 
 	float _sumTime;
-	float _retargetTime;
+	std::chrono::steady_clock::time_point _nextAttackTime;
+	float _attackDelay;
 
 	// Status
 	float _speed;
