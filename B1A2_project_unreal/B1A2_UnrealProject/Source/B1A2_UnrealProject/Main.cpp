@@ -889,6 +889,7 @@ void UMain::RecvMovePlayer(S_Move_Packet packet)
 				_myPlayer->SetPlayerLocation(pos, rot);
 				_myPlayer->SetPlayerState(packet.state);
 
+				UE_LOG(LogTemp, Display, TEXT("[MyPlayer] Move Packet %f, %f"), packet.pos.x, packet.pos.y);
 			}
 			return; // 내 캐릭터 처리가 끝났으므로 종료
 		}
@@ -900,6 +901,8 @@ void UMain::RecvMovePlayer(S_Move_Packet packet)
 			AOtherPlayer* player = (*findPlayer);
 			player->SetPlayerLocation(pos, rot);
 			player->SetPlayerState(packet.state);
+
+			UE_LOG(LogTemp, Display, TEXT("[OtherPlayer] Move Packet %f, %f"), packet.pos.x, packet.pos.y);
 		}
 		else
 		{
