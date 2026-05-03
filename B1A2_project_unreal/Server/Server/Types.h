@@ -18,7 +18,8 @@ enum class ObjectType : char
 enum class MonsterType : char
 {
 	Spider,
-	
+	EmotionGame,
+	Ghost,
 	None,
 };
 
