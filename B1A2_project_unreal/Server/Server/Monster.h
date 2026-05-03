@@ -56,6 +56,7 @@ protected:
 
 	FSM* _fsm;
 	std::optional<VectorInt> _targetPos;
+	std::optional<VectorInt> _returnPos;
 	PlayerRef _target;
 	std::deque<CubeRef> _cubePath;
 	std::deque<VectorInt> _path;

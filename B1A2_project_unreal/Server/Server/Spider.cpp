@@ -38,7 +38,7 @@ Spider::Spider(MonsterType monsterType)
 	_stateTable[CHASE] = RETURN;
 	_stateTable[RETURN] = IDLE;
 	_stateTable[ATTACK] = CHASE;
-	_stateTable[HIT] = RETURN;
+	_stateTable[HIT] = CHASE;
 	_stateTable[OPEN_DOOR] = CHASE;
 }
 
@@ -52,38 +52,39 @@ void Spider::Update(Room* room)
 	Monster::Update(room);
 
 	// 공격 범위 안에 플레이어가 있는지 확인
-	const std::unordered_map<uint, PlayerRef>& players = room->GetPlayers();
-	if (std::chrono::steady_clock::now() > _nextAttackTime)
-	{
-		for (auto& [id, player] : players)
-		{
-			/*if (player->GetObjectPoolState() == ObjectPoolState::Reusable)
-				continue;*/
+	//const std::unordered_map<uint, PlayerRef>& players = room->GetPlayers();
+	//if (std::chrono::steady_clock::now() > _nextAttackTime)
+	//{
+	//	for (auto& [id, player] : players)
+	//	{
+	//		/*if (player->GetObjectPoolState() == ObjectPoolState::Reusable)
+	//			continue;*/
 
-				// 플레이어가 있으면, 플레이어 위치를 타겟으로 설정
-			if (CheckInclude(player->GetPos(), _attackRange, _attackAngle, _attackHeight))
-			{
-				_target = player;
-				SetState(ObjectState::ATTACK);
-				return;
-			}
-		}
-	}
-	
-	// 인식 범위 안에 플레이어가 있는지 확인
-	for (auto& [id, player] : players)
-	{
-		/*if (player->GetObjectPoolState() == ObjectPoolState::Reusable)
-			continue;*/
+	//			// 플레이어가 있으면, 플레이어 위치를 타겟으로 설정
+	//		if (CheckInclude(player->GetPos(), _attackRange, _attackAngle, _attackHeight))
+	//		{
+	//			_target = player;
+	//			SetState(ObjectState::ATTACK);
+	//			return;
+	//		}
+	//	}
+	//}
+	//
+	//// 인식 범위 안에 플레이어가 있는지 확인
+	//for (auto& [id, player] : players)
+	//{
+	//	/*if (player->GetObjectPoolState() == ObjectPoolState::Reusable)
+	//		continue;*/
 
-		// 플레이어가 있으면, 플레이어 위치를 타겟으로 설정
-		if (CheckInclude(player->GetPos(), _aggroRange, _aggroAngle, _aggroHeight))
-		{
-			_target = player;
-			SetState(ObjectState::CHASE);
-			return;
-		}
-	}
+	//	// 플레이어가 있으면, 플레이어 위치를 타겟으로 설정
+	//	if (CheckInclude(player->GetPos(), _aggroRange, _aggroAngle, _aggroHeight))
+	//	{
+	//		_target = player;
+	//		_returnPos = _pos;
+	//		SetState(ObjectState::CHASE);
+	//		return;
+	//	}
+	//}
 }
 
 bool Spider::IsReadyNextState()
@@ -99,7 +100,7 @@ bool Spider::IsReadyNextState()
 	case ObjectState::CHASE:
 		return _sumTime > _chaseTime;
 	case ObjectState::RETURN:
-		return _sumTime > _idleTime;
+		return !_returnPos;
 	case ObjectState::ATTACK:
 		return true;
 	case ObjectState::HIT:

@@ -15,6 +15,7 @@ Monster::Monster(MonsterType monsterType)
 	// FSM »ý¼º
 	_fsm = new FSM();
 	_targetPos = std::nullopt;
+	_returnPos = _pos;
 	_target = nullptr;
 	_sumTime = 0.f;
 

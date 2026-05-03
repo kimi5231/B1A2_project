@@ -16,10 +16,10 @@ IdleState* g_idleState = new IdleState();
 RoamingState* g_roamingState = new RoamingState();
 MakeWebState* g_makeWebState = new MakeWebState();
 ChaseState* g_chaseState = new ChaseState();
+ReturnState* g_returnState = new ReturnState();
 AttackState* g_attackState = new AttackState();
 HitState* g_hitState = new HitState();
 DeadState* g_deadState = new DeadState();
-ReturnState* g_returnState = new ReturnState();
 
 //--------------Idle--------------
 void IdleState::Tick(MonsterRef monster, Room* room)
@@ -223,6 +223,12 @@ void ChaseState::Exit(MonsterRef monster)
 {
 	monster->InitSumTime();
 	monster->ClearPath();
+}
+
+//--------------Return----------------
+void ReturnState::Tick(MonsterRef monster, Room* room)
+{
+	State::Tick(monster, room);
 }
 
 //--------------Attack--------------
