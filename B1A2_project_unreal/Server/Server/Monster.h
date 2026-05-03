@@ -50,14 +50,18 @@ public:
 	std::deque<VectorInt>& GetPath() { return _path; }
 	unsigned char GetDamage() { return _damage; }
 	const std::unordered_map<ObjectState, ObjectState>& GetStateTable() { return _stateTable; }
+	int GetReturnCubeID() { return _returnCubeID; }
+	Vector GetReturnPos() { return _returnPos; }
+	void SetReturnPos(Vector pos) { _returnPos = pos; }
 
 protected:
 	MonsterType _monsterType;
 
 	FSM* _fsm;
 	std::optional<VectorInt> _targetPos;
-	std::optional<VectorInt> _returnPos;
 	PlayerRef _target;
+	Vector _returnPos;
+	int _returnCubeID;
 	std::deque<CubeRef> _cubePath;
 	std::deque<VectorInt> _path;
 

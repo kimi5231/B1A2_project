@@ -80,7 +80,8 @@ void Spider::Update(Room* room)
 		if (CheckInclude(player->GetPos(), _aggroRange, _aggroAngle, _aggroHeight))
 		{
 			_target = player;
-			_returnPos = _pos;
+			_returnPos = _pos; 
+			_returnCubeID = _currentCubeID;
 			SetState(ObjectState::CHASE);
 			return;
 		}
@@ -100,7 +101,7 @@ bool Spider::IsReadyNextState()
 	case ObjectState::CHASE:
 		return _sumTime > _chaseTime;
 	case ObjectState::RETURN:
-		return !_returnPos;
+		return _returnPos == _pos;
 	case ObjectState::ATTACK:
 		return true;
 	case ObjectState::HIT:
@@ -125,7 +126,7 @@ void Spider::CreateWeb(Room* room)
 		_fsm->ChangeState(g_makeWebState, dynamic_pointer_cast<Monster>(shared_from_this()));
 		break;
 	case ObjectState::RETURN:
-		//_fsm->ChangeState(_return, this);
+		_fsm->ChangeState(g_returnState, dynamic_pointer_cast<Monster>(shared_from_this()));
 		break;
 	}
 
