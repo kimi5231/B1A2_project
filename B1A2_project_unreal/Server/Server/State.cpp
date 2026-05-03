@@ -157,23 +157,35 @@ void ChaseState::Tick(MonsterRef monster, Room* room)
 		if (door->GetState() == ObjectState::CLOSE || door->GetState() == ObjectState::LOCK)
 		{
 			Vector doorPos = door->GetPos();
-			Vector mosnterPos = monster->GetPos();
+			Vector monsterPos = monster->GetPos();
 			Vector monsterSize = monster->GetSize();
 			Vector goal;
 
 			switch (door->GetDir())
 			{
 			case Front:
-				goal = { doorPos.x, doorPos.y + monsterSize.y / 2, mosnterPos.z };
+				if(doorPos.y < monsterPos.y)
+					goal = { doorPos.x, doorPos.y + monsterSize.y / 2, monsterPos.z };
+				else
+					goal = { doorPos.x, doorPos.y - monsterSize.y / 2, monsterPos.z };
 				break;
 			case Right:
-				goal = { doorPos.x - monsterSize.x / 2, doorPos.y, mosnterPos.z };
+				if(doorPos.x < monsterPos.x)
+					goal = { doorPos.x + monsterSize.x / 2, doorPos.y, monsterPos.z };
+				else
+					goal = { doorPos.x - monsterSize.x / 2, doorPos.y, monsterPos.z };
 				break;
 			case Back:
-				goal = { doorPos.x, doorPos.y - monsterSize.y / 2, mosnterPos.z };
+				if(doorPos.y < monsterPos.y)
+					goal = { doorPos.x, doorPos.y - monsterSize.y / 2, monsterPos.z };
+				else
+					goal = { doorPos.x, doorPos.y + monsterSize.y / 2, monsterPos.z };
 				break;
 			case Left:
-				goal = { doorPos.x + monsterSize.x / 2, doorPos.y, mosnterPos.z };
+				if (doorPos.x < monsterPos.x)
+					goal = { doorPos.x - monsterSize.x / 2, doorPos.y, monsterPos.z };
+				else
+					goal = { doorPos.x + monsterSize.x / 2, doorPos.y, monsterPos.z };
 				break;
 			}
 
@@ -190,7 +202,38 @@ void ChaseState::Tick(MonsterRef monster, Room* room)
 		// 지나갈 문이 열려 있으면 문 너머 좌표까지 경로 찾기
 		if (door->GetState() == ObjectState::OPEN)
 		{
-			Vector goal{ cubePath[1]->GetPos().x, cubePath[1]->GetPos().y, monster->GetPos().z };
+			Vector doorPos = door->GetPos();
+			Vector monsterPos = monster->GetPos();
+			Vector monsterSize = monster->GetSize();
+			Vector goal;
+
+			switch (door->GetDir())
+			{
+			case Front:
+				if (doorPos.y < monsterPos.y)
+					goal = { doorPos.x, doorPos.y - monsterSize.y / 2, monsterPos.z };
+				else
+					goal = { doorPos.x, doorPos.y + monsterSize.y / 2, monsterPos.z };
+				break;
+			case Right:
+				if (doorPos.x < monsterPos.x)
+					goal = { doorPos.x - monsterSize.x / 2, doorPos.y, monsterPos.z };
+				else
+					goal = { doorPos.x + monsterSize.x / 2, doorPos.y, monsterPos.z };
+				break;
+			case Back:
+				if (doorPos.y < monsterPos.y)
+					goal = { doorPos.x, doorPos.y - monsterSize.y / 2, monsterPos.z };
+				else
+					goal = { doorPos.x, doorPos.y + monsterSize.y / 2, monsterPos.z };
+				break;
+			case Left:
+				if (doorPos.x < monsterPos.x)
+					goal = { doorPos.x - monsterSize.x / 2, doorPos.y, monsterPos.z };
+				else
+					goal = { doorPos.x + monsterSize.x / 2, doorPos.y, monsterPos.z };
+				break;
+			}
 
 			monster->FindPath(goal, cubePath[0]);
 

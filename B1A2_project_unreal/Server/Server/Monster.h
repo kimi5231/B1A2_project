@@ -17,7 +17,7 @@ public:
 	VectorInt SelectRandomPosInCube(const CubeRef currentCube); 
 
 	std::deque<CubeRef> FindCubePath(const CubeRef goalCube, const CubeRef currentCube, const std::vector<CubeRef>& gameRooms);
-	std::deque<VectorInt> FindPath(Vector goal, const CubeRef ccurrentCubeube);
+	std::deque<VectorInt> FindPath(Vector goal, const CubeRef currentCubeube);
 	void ClearPath() { _cubePath.clear(); _path.clear(); }
 
 	VectorInt GetRotationIndex(VectorInt index, VectorInt max, Dir dir);
