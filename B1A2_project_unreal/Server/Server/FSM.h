@@ -1,6 +1,7 @@
 #pragma once
 
 class State;
+class Room;
 
 class FSM
 {

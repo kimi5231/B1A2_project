@@ -9,7 +9,7 @@
 #include "State.h"
 #include "Player.h"
 
-Monster::Monster(MonsterType monsterType)
+Monster::Monster(MonsterType monsterType, Room* ownerRoom)
 	: _monsterType(monsterType)
 {
 	// FSM »ý¼º

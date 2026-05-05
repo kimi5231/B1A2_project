@@ -61,6 +61,13 @@ enum ObjectState
 	CHASE,
 	ATTACK,
 	RETURN,
+	TELEPORT,
+	GRAB,
+	PLAY,
+	WIN,
+	LOSE,
+	DRAW,
+	RELEASE,
 };
 
 enum class ObjectPoolState 

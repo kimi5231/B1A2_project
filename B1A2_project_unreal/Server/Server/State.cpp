@@ -468,11 +468,18 @@ void MakeWebState::Exit(MonsterRef monster)
 void Teleport::Tick(MonsterRef monster, Room* room)
 {
 	State::Tick(monster, room);
-
-	monster->AddDeltaTime(g_timer->GetDeltaTime());
 }
 
 void Teleport::Exit(MonsterRef monster)
 {
+	std::vector<CubeRef> cubes = monster->GetOwnerRoom()->GetCubes();
 
+	std::uniform_int_distribution<int> selectCube(0, cubes.size() - 1);
+	CubeRef cube = cubes[selectCube(gen)];
+	while (cube->GetID() == monster->GetCurrentCubeID())
+		cube = cubes[selectCube(gen)];
+	
+	// 랜덤한 위치로 순간이동
+	Vector pos = monster->SelectRandomPosInCube(cube);
+	monster->SetPos(pos);
 }

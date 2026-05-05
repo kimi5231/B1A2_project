@@ -2,11 +2,12 @@
 #include "Creature.h"
 
 class FSM;
+class Room;
 
 class Monster : public Creature
 {
 public:
-	Monster(MonsterType monsterType);
+	Monster(MonsterType monsterType, Room* ownerRoom);
 	~Monster();
 
 public:
@@ -53,8 +54,11 @@ public:
 	int GetReturnCubeID() { return _returnCubeID; }
 	Vector GetReturnPos() { return _returnPos; }
 	void SetReturnPos(Vector pos) { _returnPos = pos; }
+	Room* GetOwnerRoom() { return _ownerRoom; }
 
 protected:
+	Room* _ownerRoom;
+
 	MonsterType _monsterType;
 
 	FSM* _fsm;

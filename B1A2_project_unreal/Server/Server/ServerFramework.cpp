@@ -47,6 +47,7 @@ ServerFramework::ServerFramework()
 
 	// Room »ý¼º
 	_room = new Room();
+	_room->Init();
 }
 
 ServerFramework::~ServerFramework()

@@ -4,8 +4,8 @@
 #include "State.h"
 #include "Room.h"
 
-Spider::Spider(MonsterType monsterType)
-	: Monster(monsterType)
+Spider::Spider(MonsterType monsterType, Room* ownerRoom)
+	: Monster(monsterType, ownerRoom)
 {
 	// Status √ ±‚»≠
 	_hp = 60;

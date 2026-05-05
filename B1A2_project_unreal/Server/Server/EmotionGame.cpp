@@ -1,24 +1,28 @@
 #include "pch.h"
 #include "EmotionGame.h"
 
-EmotionGame::EmotionGame(MonsterType monsterType)
-	: Monster(monsterType)
+EmotionGame::EmotionGame(MonsterType monsterType, Room* ownerRoom)
+	: Monster(monsterType, ownerRoom)
 {
 	// Status √ ±‚»≠
 	_hp = 10000;
-	_speed = 2.f;
-	_chaseSpeed = 3.5f;
 	_idleTime = 15.f;
-	_roamingTime = 2.f;
-	_chaseTime = 4.f;
-	_attackDelay = 2.f;
 	_damage = 25;
 
 	// State Table
-	_stateTable[IDLE] = ROAMING;
-	_stateTable[ROAMING] = IDLE;
-	_stateTable[CHASE] = RETURN;
-	_stateTable[RETURN] = IDLE;
-	_stateTable[ATTACK] = CHASE;
-	_stateTable[HIT] = CHASE;
+	_stateTable[IDLE] = TELEPORT;
+	_stateTable[TELEPORT] = IDLE;
+	_stateTable[GRAB] = PLAY;
+	_stateTable[WIN] = RELEASE;
+	_stateTable[LOSE] = RELEASE;
+	_stateTable[DRAW] = RELEASE;
+}
+
+EmotionGame::~EmotionGame()
+{
+}
+
+void EmotionGame::Update(Room* room)
+{
+	Monster::Update(room);
 }

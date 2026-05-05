@@ -5,13 +5,14 @@
 
 class Door;
 
-class Room : public std::enable_shared_from_this<Room>
+class Room
 {
 public:
 	Room();
 	~Room();
 
 public:
+	void Init();
 	void Update();
 
 public:

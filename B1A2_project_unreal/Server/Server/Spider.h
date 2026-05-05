@@ -4,7 +4,7 @@
 class Spider : public Monster
 {
 public:
-	Spider(MonsterType monsterType);
+	Spider(MonsterType monsterType, Room* ownerRoom);
 	~Spider();
 
 	virtual void Update(Room* room) override;

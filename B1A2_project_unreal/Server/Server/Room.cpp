@@ -19,7 +19,14 @@ Room::Room()
 	_detailDifficulty = Difficulty::Easy;
 
 	CreateFactoryCubes();
+}
 
+Room::~Room()
+{
+}
+
+void Room::Init()
+{
 	// 테스트용 아이템 생성
 	ItemRef box = std::make_shared<Item>(ItemType::CardboardBox);
 	box->SetID(_generateItemID++);
@@ -48,19 +55,14 @@ Room::Room()
 	_items.push_back(lantern);
 
 	// 테스트용 몬스터 생성
-	MonsterRef none1 = std::make_shared<Monster>(MonsterType::None);
-	none1->SetID(_generateMonsterID++);
-	none1->SetPos({0, 100, 65});
-	none1->SetObjectPoolState(ObjectPoolState::InWorld);
-	_monsters.push_back(none1);
-	MonsterRef spider = std::make_shared<Spider>(MonsterType::Spider);
+	MonsterRef spider = std::make_shared<Spider>(MonsterType::Spider, this);
 	spider->SetID(_generateMonsterID++);
 	spider->SetPos({ 0, 100, 65 });
 	spider->SetObjectPoolState(ObjectPoolState::InWorld);
 	spider->SetState(ObjectState::HIT, false);
 	spider->SetState(ObjectState::IDLE, false);
 	_monsters.push_back(spider);
-	
+
 	// 장애물 ObjectPool 미리 확보
 	for (int i = 0; i < 10; i++)
 	{
@@ -70,10 +72,6 @@ Room::Room()
 		obstacle->SetObjectPoolState(ObjectPoolState::Reusable);
 		_obstacles.push_back(obstacle);
 	}
-}
-
-Room::~Room()
-{
 }
 
 void Room::Update()
