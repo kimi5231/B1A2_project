@@ -458,7 +458,7 @@ void MakeWebState::Exit(MonsterRef monster)
 	SpiderRef spider = std::dynamic_pointer_cast<Spider>(monster);
 
 	// 거미줄 생성
-	//spider->CreateWeb(room);
+	spider->CreateWeb();
 
 	spider->InitSumTime();
 }

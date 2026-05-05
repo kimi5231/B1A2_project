@@ -11,7 +11,7 @@ public:
 
 public:
 	virtual bool IsReadyNextState() override;
-	void CreateWeb(Room* room);
+	void CreateWeb();
 
 public:
 	virtual bool SetState(ObjectState state, bool isSend = true) override;
