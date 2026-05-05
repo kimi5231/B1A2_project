@@ -462,3 +462,17 @@ void MakeWebState::Exit(MonsterRef monster)
 
 	spider->InitSumTime();
 }
+
+// EmotionGame State
+//--------------Teleport----------------
+void Teleport::Tick(MonsterRef monster, Room* room)
+{
+	State::Tick(monster, room);
+
+	monster->AddDeltaTime(g_timer->GetDeltaTime());
+}
+
+void Teleport::Exit(MonsterRef monster)
+{
+
+}
