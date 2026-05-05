@@ -20,6 +20,7 @@ ReturnState* g_returnState = new ReturnState();
 AttackState* g_attackState = new AttackState();
 HitState* g_hitState = new HitState();
 DeadState* g_deadState = new DeadState();
+Teleport* g_teleportState = new Teleport();
 
 //--------------Idle--------------
 void IdleState::Tick(MonsterRef monster, Room* room)

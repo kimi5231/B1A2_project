@@ -21,6 +21,7 @@ extern class ReturnState* g_returnState;
 extern class AttackState* g_attackState;
 extern class HitState* g_hitState;
 extern class DeadState* g_deadState;
+extern class Teleport* g_teleportState;
 
 // Common State
 class IdleState : public State

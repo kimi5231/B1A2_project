@@ -12,6 +12,10 @@ public:
 	virtual void Update(Room* room) override;
 
 public:
+	virtual bool IsReadyNextState() override;
+
+public:
+	virtual bool SetState(ObjectState state, bool isSend = true) override;
 
 private:
 
