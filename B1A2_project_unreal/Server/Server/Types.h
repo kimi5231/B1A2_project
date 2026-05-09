@@ -65,6 +65,9 @@ enum ObjectState
 	GRAB,
 	PLAY,
 	RELEASE,
+	ABSENT,
+	STARING,
+	VANISHING,
 };
 
 enum class ObjectPoolState 

@@ -1,9 +1,19 @@
 #include "pch.h"
 #include "Ghost.h"
+#include "Player.h"
 
 Ghost::Ghost(MonsterType monsterType, Room* ownerRoom)
 	: Monster(monsterType, ownerRoom)
 {
+	_hp = 10000;
+	_idleTime = 15.f;
+	_waitTime = 180.f;
+	_absentTime = 4.f;
+	_staringTime = 15.f;
+
+	// State Table
+	_stateTable[IDLE] = ABSENT;
+	_stateTable[ABSENT] = STARING;
 }
 
 Ghost::~Ghost()
@@ -12,14 +22,33 @@ Ghost::~Ghost()
 
 void Ghost::Update(Room* room)
 {
+	// Target Player가 죽었다면, 대기 후 Target 재설정
+	/*if (_target && _target->GetState() == DEAD && _sumTime < _waitTime)
+		return;*/
 }
 
 bool Ghost::IsReadyNextState()
 {
-	return false;
+	switch (_state)
+	{
+	case ObjectState::IDLE:
+		return _sumTime > _idleTime;
+	case ObjectState::ABSENT:
+		return _targetPos.has_value();
+	case ObjectState::STARING:
+		return _sumTime > _staringTime;
+	}
 }
 
 bool Ghost::SetState(ObjectState state, bool isSend)
 {
-	return false;
+	if (!Monster::SetState(state, isSend))
+		return false;
+
+	switch (state)
+	{
+	
+	}
+
+	return true;
 }

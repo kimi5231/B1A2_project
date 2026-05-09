@@ -14,7 +14,10 @@ public:
 
 public:
 	virtual bool SetState(ObjectState state, bool isSend = true) override;
+	float GetAbsentTime() { return _absentTime; }
 
 private:
-
+	float _waitTime;
+	float _absentTime;
+	float _staringTime;
 };

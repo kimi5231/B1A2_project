@@ -21,6 +21,7 @@
 #include <optional>
 
 #include "Types.h"
+#include "Utils.h"
 
 #pragma comment(lib, "ws2_32")
 
@@ -33,6 +34,7 @@ using PlayerRef = std::shared_ptr<class Player>;
 using MonsterRef = std::shared_ptr<class Monster>;
 using SpiderRef = std::shared_ptr<class Spider>;
 using EmotionGameRef = std::shared_ptr<class EmotionGame>;
+using GhostRef = std::shared_ptr<class Ghost>;
 using ItemRef = std::shared_ptr<class Item>;
 using ToolRef = std::shared_ptr<class Tool>;
 using DoorRef = std::shared_ptr<class Door>;

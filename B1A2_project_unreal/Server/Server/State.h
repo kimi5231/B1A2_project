@@ -179,13 +179,24 @@ public:
 };
 
 // Ghost State
+class Abesnt : public State
+{
+public:
+	Abesnt() {};
+	virtual ~Abesnt() {}
+public:
+	virtual void Enter(MonsterRef monster) override;
+	virtual void Tick(MonsterRef monster, Room* room) override;
+	virtual void Exit(MonsterRef monster) override;
+};
+
 class Staring : public State
 {
 public:
 	Staring() {};
 	virtual ~Staring() {}
 public:
-	virtual void Enter(MonsterRef monster) override {};
+	virtual void Enter(MonsterRef monster) override;
 	virtual void Tick(MonsterRef monster, Room* room) override;
 	virtual void Exit(MonsterRef monster) override;
 };

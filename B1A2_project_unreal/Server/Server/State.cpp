@@ -6,6 +6,7 @@
 #include "Global.h"
 #include "Spider.h"
 #include "EmotionGame.h"
+#include "Ghost.h"
 
 void State::Tick(MonsterRef monster, Room* room)
 {
@@ -552,11 +553,67 @@ void Release::Exit(MonsterRef monster)
 	monster->InitSumTime();
 }
 
+//--------------Abesnt----------------
+void Abesnt::Enter(MonsterRef monster)
+{
+	// 일단 랜덤으로. 추후, Fear 수치 활용할 것.
+	const std::unordered_map<uint, PlayerRef>& players = monster->GetOwnerRoom()->GetPlayers();
+	std::uniform_int_distribution<int> selectCube(0, players.size() - 1);
+	PlayerRef player = players.at(selectCube(gen));
+	monster->SetTarget(player);
+}
+
+void Abesnt::Tick(MonsterRef monster, Room* room)
+{
+	State::Tick(monster, room);
+
+	monster->AddDeltaTime(g_timer->GetDeltaTime());
+	
+	GhostRef ghost = std::dynamic_pointer_cast<Ghost>(monster);
+	if (ghost->GetAbsentTime() < ghost->GetSumTime())
+	{
+		monster->InitSumTime();
+
+		PlayerRef target = monster->GetTarget();
+		Vector targetPos = target->GetPos();
+		Rotation rotation = target->GetRotation();
+		Vector targetForward = GetForwardVector(rotation.pitch, rotation.yaw);
+		// Player가 바라보는 방향의 반대에서 4m 떨어진 위치 구하기
+		Vector pos = (targetForward * -400) + targetPos;
+		
+		// Player랑 같은 방의 위치인지 확인
+		std::vector<CubeRef> cubes = monster->GetOwnerRoom()->GetCubes();
+		CubeRef targetCube = cubes[target->GetCurrentCubeID()];
+		if (!monster->IsPointInCube(pos, targetCube))
+			return;
+
+		// 같은 방이고, 갈 수 있는 곳이라면 이동
+		if (monster->IsCanGo(pos, targetCube))
+			monster->SetTargetPos(pos);
+	}
+}
+
+void Abesnt::Exit(MonsterRef monster)
+{
+	monster->InitSumTime();
+}
+
 //--------------Staring----------------
+void Staring::Enter(MonsterRef monster)
+{
+	// target로 이동
+	monster->SetPos(monster->GetTargetPos().value());
+	monster->SetTargetPos(std::nullopt);
+}
+
 void Staring::Tick(MonsterRef monster, Room* room)
 {
+	State::Tick(monster, room);
+
+	monster->AddDeltaTime(g_timer->GetDeltaTime());
 }
 
 void Staring::Exit(MonsterRef monster)
 {
+	monster->InitSumTime();
 }
