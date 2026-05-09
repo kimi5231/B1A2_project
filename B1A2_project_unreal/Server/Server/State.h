@@ -177,3 +177,15 @@ public:
 	virtual void Tick(MonsterRef monster, Room* room) override;
 	virtual void Exit(MonsterRef monster) override;
 };
+
+// Ghost State
+class Staring : public State
+{
+public:
+	Staring() {};
+	virtual ~Staring() {}
+public:
+	virtual void Enter(MonsterRef monster) override {};
+	virtual void Tick(MonsterRef monster, Room* room) override;
+	virtual void Exit(MonsterRef monster) override;
+};

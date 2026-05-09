@@ -119,6 +119,9 @@
     <ClCompile Include="EmotionGame.cpp">
       <Filter>소스 파일\Game\Object\Creature\Monster</Filter>
     </ClCompile>
+    <ClCompile Include="Ghost.cpp">
+      <Filter>소스 파일\Game\Object\Creature\Monster</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -197,6 +200,9 @@
       <Filter>소스 파일\Game\Object\Obstacle</Filter>
     </ClInclude>
     <ClInclude Include="EmotionGame.h">
+      <Filter>소스 파일\Game\Object\Creature\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Ghost.h">
       <Filter>소스 파일\Game\Object\Creature\Monster</Filter>
     </ClInclude>
   </ItemGroup>

@@ -551,3 +551,12 @@ void Release::Exit(MonsterRef monster)
 {
 	monster->InitSumTime();
 }
+
+//--------------Staring----------------
+void Staring::Tick(MonsterRef monster, Room* room)
+{
+}
+
+void Staring::Exit(MonsterRef monster)
+{
+}
