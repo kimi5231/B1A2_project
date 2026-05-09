@@ -91,6 +91,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
 	bool IsBusy = false;
 
+	// 랜턴을 들고 있는지?
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	bool IsCarryingLantern = false;
+
 protected:
 	// Tool 사용 타이머 핸들
 	FTimerHandle ToolChangeTimerHandle;

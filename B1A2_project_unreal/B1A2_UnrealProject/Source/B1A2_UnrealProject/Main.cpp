@@ -420,6 +420,18 @@ void UMain::SendStartStage(bool result)
 	_gameNetwork->SendStartStagePacket();
 }
 
+void UMain::SendUseLantern(int playerID, int lanternID)
+{
+	if (_myID == 0)
+		return;
+
+	UWorld* world = GetWorld();
+	if (!world)
+		return;
+
+	_gameNetwork->SendUseLanternPacket(playerID, lanternID);
+}
+
 void UMain::Update()
 {
 	if (!_gameNetwork)
@@ -1458,10 +1470,12 @@ void UMain::RecvSpawnMonster(S_SpawnMonster_Packet packet)
 
 void UMain::RecvTurnOnLantern(S_TurnOnLantern_Packet packet)
 {
+	// 랜턴 킴 + 랜턴 들기 애니메이션
 }
 
 void UMain::RecvTurnOffLantern(S_TurnOffLantern_Packet packet)
 {
+	// 랜턴 끔 + 랜턴 내리기 애니메이션
 }
 
 void UMain::RecvEndStage(S_EndStage_Packet packet)

@@ -52,6 +52,7 @@ public:
 	void SendEmotion(float angry, float disgust, float fear, float happy, float sad, float surprise, float neutral);
 	void SendEndStage(bool result);
 	void SendStartStage(bool result);
+	void SendUseLantern(int playerID, int lanternID);
 
 	// Recv
 	void Update();

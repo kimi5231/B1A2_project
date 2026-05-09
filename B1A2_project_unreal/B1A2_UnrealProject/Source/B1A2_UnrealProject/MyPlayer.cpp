@@ -199,7 +199,7 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(GetItemAction, ETriggerEvent::Started, this, &AMyPlayer::Interact);
 
 		// Use Tool
-		EnhancedInputComponent->BindAction(UseToolAction, ETriggerEvent::Triggered, this, &AMyPlayer::UseToolAnimationAndSend);
+		EnhancedInputComponent->BindAction(UseToolAction, ETriggerEvent::Triggered, this, &AMyPlayer::TurnLanternSendOrUseToolAnimationAndSend);
 
 		// Tool Bar
 		EnhancedInputComponent->BindAction(ToolSlotUpAction, ETriggerEvent::Started, this, &AMyPlayer::ToolSelectUp);
@@ -410,10 +410,6 @@ void AMyPlayer::ToolSelectDown()
 
 void AMyPlayer::OnToolSelectionChanged()
 {
-	// 현재 랜턴을 들고있다면 내리기 몽타주 실행
-	if (IsLanternRaised)
-		LowerLanternState();
-
 	UpdateToolVisual();
 
 	GetWorldTimerManager().ClearTimer(ToolChangeTimerHandle);
@@ -462,6 +458,10 @@ void AMyPlayer::ItemOrToolDrop()
 
 			// 들고 있는 Tool 지우기
 			_currentAttachedToolActor->Destroy();
+			_currentAttachedToolActor = nullptr;
+
+			// 랜턴 들기 상태 해제
+			IsCarryingLantern = false;
 		}
 	}
 }
@@ -667,7 +667,13 @@ void AMyPlayer::UpdateToolVisual()
 
 	// 빈 슬롯이라면 바꾸지 않음
 	if (info.itemID == -1)
+	{
+		IsCarryingLantern = false;	// 랜턴 안 들고 있음
 		return;
+	}
+
+	// 랜턴으로 바꾼다면 들고 있음 확인
+	IsCarryingLantern = (info.type == ItemType::LANTERN);
 
 	TSubclassOf<ABaseItem> ToolClass = GetToolClass(info.type);
 	if (ToolClass)
@@ -708,41 +714,6 @@ void AMyPlayer::UpdateScanEffect()
 	// 카메라 노출
 	FollowCamera->PostProcessSettings.bOverride_AutoExposureBias = true;
 	FollowCamera->PostProcessSettings.AutoExposureBias = CurrentScanAlpha * 2.f;
-}
-
-void AMyPlayer::LowerLanternState()
-{
-	if (!IsLanternRaised)
-		return;
-
-	// 줍기 애니메이션이 실행될 때 - 다른 장비로 바뀌면서 Lower 애니메이션 실행되지 않도록 함!(애니메이션 겹치는 문제 발생)
-	if (IsBusy)
-	{
-		IsLanternRaised = false;
-		return;
-	}
-
-	IsLanternRaised = false;
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	if (AnimInstance && ComboMontage)
-	{
-		IsBusy = true; // 입력 차단 시작
-
-		// 몽타주 실행
-		float duration = PlayAnimMontage(ComboMontage, 2.0f, "LanternLower");
-
-		if (duration > 0.f)
-		{
-			// 타이머 대신 종료 델리게이트 설정
-			FOnMontageEnded EndDelegate;
-			EndDelegate.BindUObject(this, &AMyPlayer::OnToolMontageEnded);
-			AnimInstance->Montage_SetEndDelegate(EndDelegate, ComboMontage);
-		}
-		else
-		{
-			IsBusy = false; // 재생 실패 시 즉시 해제
-		}
-	}
 }
 
 void AMyPlayer::OnItemOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -869,7 +840,7 @@ void AMyPlayer::Interact()
 	}
 }
 
-void AMyPlayer::UseToolAnimationAndSend()
+void AMyPlayer::TurnLanternSendOrUseToolAnimationAndSend()
 {
 	if (IsBusy)
 		return;
@@ -905,6 +876,13 @@ void AMyPlayer::UseToolAnimationAndSend()
 		return;
 	}
 
+	// Lantern 사용 패킷 Send (애니메이션 X)
+	if (ToolInfo.type == ItemType::LANTERN)
+	{
+		gameInstance->SendUseLantern(gameInstance->GetMyID(), ToolInfo.itemID);
+
+		return;
+	}
 
 	// 애니메이션 필요한 경우 판단(Key 사용, Lantern 사용 지금은 애니메이션 X)
 	bool useAnimation = true;
@@ -918,11 +896,6 @@ void AMyPlayer::UseToolAnimationAndSend()
 		break;
 	case ItemType::Blaster:
 		animName = "Shooting";
-		break;
-	case ItemType::LANTERN:
-		IsLanternRaised = !IsLanternRaised;	// 들고 있으면 내림, 내리고 있으면 듦
-		animName = IsLanternRaised ? "LanternRaise" : "LanternLower";
-		animSpeed = 2.f;
 		break;
 	default:
 		useAnimation = false;
