@@ -66,6 +66,25 @@ void UMain::ConnectOpenCV()
 	_emotionExtractionRunnable->Init();
 }
 
+void UMain::CreateBase()
+{
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		UWorld* world = GetWorld();
+		if (!world)
+			return;
+
+		FVector pos(0, 0, 0);
+		FRotator rot(0, 0, 0);
+
+		FActorSpawnParameters params;
+		params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		AStaticMeshActor* BaseActor = world->SpawnActor<AStaticMeshActor>(BaseClass, pos, rot, params);
+		UE_LOG(LogTemp, Log, TEXT("[Base] Base Spawned!"));
+	});
+}
+
 void UMain::ProcessRecv()
 {
 	if (!_gameNetwork)
@@ -164,11 +183,13 @@ void UMain::ProcessRecv()
 				break;
 			}
 			case S_UseTool:
+			{
 				S_UseTool_Packet useToolPacket;
 				FMemory::Memcpy(&useToolPacket, event->serializedPacketData.data(), sizeof(S_UseTool_Packet));
 				RecvUseTool(useToolPacket);
 				event->isComplete = true;
 				break;
+			}
 			case S_SpawnParticle:
 			{
 				S_SpawnParticle_Packet spawnParticlePacket;
@@ -397,6 +418,18 @@ void UMain::SendStartStage(bool result)
 		return;
 
 	_gameNetwork->SendStartStagePacket();
+}
+
+void UMain::SendUseLantern(int playerID, int lanternID)
+{
+	if (_myID == 0)
+		return;
+
+	UWorld* world = GetWorld();
+	if (!world)
+		return;
+
+	_gameNetwork->SendUseLanternPacket(playerID, lanternID);
 }
 
 void UMain::Update()
@@ -940,6 +973,7 @@ void UMain::RecvUpdateObjectState(S_UpdateObjectState_Packet packet)
 
 void UMain::RecvUpdateStateMonster(S_UpdateObjectState_Packet packet)
 {
+	// 상태 별 애니메이션 재생(지금은 Spider 몽타주만 재생!!)
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
 		if (!GetWorld()) return;
@@ -948,38 +982,46 @@ void UMain::RecvUpdateStateMonster(S_UpdateObjectState_Packet packet)
 		if (findMonster && *findMonster)
 		{
 			ABaseMonster* monster = (*findMonster);
-			UAnimInstance* AnimInstance = monster->GetMesh()->GetAnimInstance();
 
-			if (AnimInstance)
+			// Skeletal Mesh가 있는 몬스터라면, 컴포넌트 찾기
+			USkeletalMeshComponent* meshComp = monster->FindComponentByClass<USkeletalMeshComponent>();
+
+			if (meshComp)
 			{
-				FName name = NAME_None;
+				UAnimInstance* AnimInstance = meshComp->GetAnimInstance();
 
-				// 패킷 상태에 따른 섹션 이름 결정
-				switch (packet.state)
+				if (AnimInstance)
 				{
-				case ObjectState::ATTACK:
-					name = FName("Attack");
-					break;
-				case ObjectState::HIT:
-					name = FName("Hit");
-					break;
-				/*case ObjectState::DIE:
-					name = FName("Die");
-					break;*/
-				}
+					FName name = NAME_None;
 
-				// 유효한 섹션이 결정된 경우에만 재생
-				if (!name.IsNone())
-				{
-					if (!AnimInstance->Montage_IsPlaying(SpiderMontage))
+					// 패킷 상태에 따른 섹션 이름 결정
+					switch (packet.state)
 					{
-						// 몽타주가 실행 중이 아니면 새로 시작
-						monster->PlayAnimMontage(SpiderMontage, 1.0f, name);
+					case ObjectState::ATTACK:
+						name = FName("Attack");
+						break;
+					case ObjectState::HIT:
+						name = FName("Hit");
+						break;
+						/*case ObjectState::DIE:
+							name = FName("Die");
+							break;*/
 					}
-					else
+
+					// 유효한 섹션이 결정된 경우에만 재생
+					if (!name.IsNone())
 					{
-						// 이미 재생 중이면 해당 섹션으로 즉시 점프
-						AnimInstance->Montage_JumpToSection(name, SpiderMontage);
+						if (!AnimInstance->Montage_IsPlaying(SpiderMontage))
+						{
+							// 몽타주가 실행 중이 아니면 새로 시작
+							AnimInstance->Montage_Play(SpiderMontage, 1.0f);
+							AnimInstance->Montage_JumpToSection(name, SpiderMontage);
+						}
+						else
+						{
+							// 이미 재생 중이면 해당 섹션으로 즉시 점프
+							AnimInstance->Montage_JumpToSection(name, SpiderMontage);
+						}
 					}
 				}
 			}
@@ -1408,6 +1450,8 @@ void UMain::RecvSpawnMonster(S_SpawnMonster_Packet packet)
 		case MonsterType::Spider:
 			monsterActor = world->SpawnActor<ABaseMonster>(SpiderClass, spawnLocation, spawnRotation);
 			break;
+		case MonsterType::EmotionGame:
+			monsterActor = world->SpawnActor<ABaseMonster>(EmotionGameClass, spawnLocation, spawnRotation);
 		}
 
 		if (monsterActor)
@@ -1426,10 +1470,12 @@ void UMain::RecvSpawnMonster(S_SpawnMonster_Packet packet)
 
 void UMain::RecvTurnOnLantern(S_TurnOnLantern_Packet packet)
 {
+	// 랜턴 킴 + 랜턴 들기 애니메이션
 }
 
 void UMain::RecvTurnOffLantern(S_TurnOffLantern_Packet packet)
 {
+	// 랜턴 끔 + 랜턴 내리기 애니메이션
 }
 
 void UMain::RecvEndStage(S_EndStage_Packet packet)

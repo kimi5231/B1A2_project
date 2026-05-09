@@ -36,6 +36,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ConnectOpenCV();
 
+	// Base 설치 (한 번 설치 후 게임이 완전히 끝날 때까지 삭제 X)
+	void CreateBase();
+
 	// Send
 	void ProcessSend(PacketID id, const void* packetData, int dataSize);
 
@@ -49,6 +52,7 @@ public:
 	void SendEmotion(float angry, float disgust, float fear, float happy, float sad, float surprise, float neutral);
 	void SendEndStage(bool result);
 	void SendStartStage(bool result);
+	void SendUseLantern(int playerID, int lanternID);
 
 	// Recv
 	void Update();
@@ -96,6 +100,10 @@ public:
 	int GetMyID() { return _myID; }
 
 public:
+	// Base Class
+	UPROPERTY(EditDefaultsOnly, Category = "Base")
+	TSubclassOf<AStaticMeshActor> BaseClass;
+
 	// Room Box Class
 	UPROPERTY(EditDefaultsOnly, Category = "Cube")
 	TSubclassOf<AStaticMeshActor> MainEntranceRoomClass;
@@ -149,8 +157,13 @@ public:
 	// 몬스터
 	UPROPERTY(EditDefaultsOnly, Category = "Monster")
 	TSubclassOf<ABaseMonster> TestMonsterClass;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Monster")
 	TSubclassOf<ABaseMonster> SpiderClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Monster")
+	TSubclassOf<ABaseMonster> EmotionGameClass;
+
 
 	// Monster Montage
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")

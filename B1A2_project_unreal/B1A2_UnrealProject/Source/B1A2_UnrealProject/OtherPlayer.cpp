@@ -192,6 +192,8 @@ void AOtherPlayer::PickUpMontageEnded(UAnimMontage* montage, bool bIntererrupted
 
 void AOtherPlayer::UnequipTool(int itemID)
 {
+	IsCarryingLantern = false;
+
 	if (_currentAttachedToolActor)
 	{
 		_currentAttachedToolActor->Destroy();
@@ -201,6 +203,9 @@ void AOtherPlayer::UnequipTool(int itemID)
 
 void AOtherPlayer::UpdateTool(ItemType type)
 {
+	// 서버에서 받은 타입이 랜턴이라면 변수 업데이트
+	IsCarryingLantern = (type == ItemType::LANTERN);
+
 	if (_currentAttachedToolActor)
 	{
 		_currentAttachedToolActor->Destroy();

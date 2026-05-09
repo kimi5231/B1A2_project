@@ -226,14 +226,6 @@ protected:
 	void UpdateScanEffect();
 
 protected:
-	// 현재 렌턴을 들고있는지?	
-	UPROPERTY(BlueprintReadOnly, Category = "Tool")
-	bool IsLanternRaised = false;
-		
-	// 랜턴 내리기 애니메이션
-	void LowerLanternState();
-
-protected:
 	// 달리기 시작 / 종료
 	void StartRunning();
 	void StopRunning();
@@ -270,7 +262,7 @@ private:
 	void UpdateBestInteractableActor();
 
 	void Interact();
-	void UseToolAnimationAndSend();
+	void TurnLanternSendOrUseToolAnimationAndSend();
 	// 몽타주 애니메이션 종료시 호출
 	UFUNCTION()
 	void OnToolMontageEnded(UAnimMontage* Montage, bool bInterrupted);

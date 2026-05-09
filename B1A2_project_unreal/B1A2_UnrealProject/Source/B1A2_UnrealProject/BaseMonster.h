@@ -3,16 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "GameFramework/Pawn.h"
 #include "BaseMonster.generated.h"
 
 UCLASS()
-class B1A2_UNREALPROJECT_API ABaseMonster : public ACharacter
+class B1A2_UNREALPROJECT_API ABaseMonster : public APawn
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	ABaseMonster();
 
 	virtual void BeginPlay();
@@ -23,6 +22,11 @@ public:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+protected:
+	// Root Component
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class USceneComponent* DefaultRoot;
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
