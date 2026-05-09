@@ -7,6 +7,7 @@
 #include "Cutlass.h"
 #include "Spider.h"
 #include "Obstacle.h"
+#include "Lantern.h"
 
 Room::Room()
 {
@@ -48,7 +49,7 @@ void Room::Init()
 	key->SetPos({ 0, 200, 25 });
 	key->SetObjectPoolState(ObjectPoolState::InWorld);
 	_items.push_back(key);
-	ItemRef lantern = std::make_shared<Tool>(ItemType::LANTERN);
+	LanternRef lantern = std::make_shared<Lantern>(ItemType::LANTERN);
 	lantern->SetID(_generateItemID++);
 	lantern->SetPos({ 0, -100, 25 });
 	lantern->SetObjectPoolState(ObjectPoolState::InWorld);
