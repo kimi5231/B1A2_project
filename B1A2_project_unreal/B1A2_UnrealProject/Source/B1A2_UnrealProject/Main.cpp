@@ -66,6 +66,25 @@ void UMain::ConnectOpenCV()
 	_emotionExtractionRunnable->Init();
 }
 
+void UMain::CreateBase()
+{
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		UWorld* world = GetWorld();
+		if (!world)
+			return;
+
+		FVector pos(0, 0, 0);
+		FRotator rot(0, 0, 0);
+
+		FActorSpawnParameters params;
+		params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		AStaticMeshActor* BaseActor = world->SpawnActor<AStaticMeshActor>(BaseClass, pos, rot, params);
+		UE_LOG(LogTemp, Log, TEXT("[Base] Base Spawned!"));
+	});
+}
+
 void UMain::ProcessRecv()
 {
 	if (!_gameNetwork)

@@ -36,6 +36,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ConnectOpenCV();
 
+	// Base 설치 (한 번 설치 후 게임이 완전히 끝날 때까지 삭제 X)
+	void CreateBase();
+
 	// Send
 	void ProcessSend(PacketID id, const void* packetData, int dataSize);
 
@@ -96,6 +99,10 @@ public:
 	int GetMyID() { return _myID; }
 
 public:
+	// Base Class
+	UPROPERTY(EditDefaultsOnly, Category = "Base")
+	TSubclassOf<AStaticMeshActor> BaseClass;
+
 	// Room Box Class
 	UPROPERTY(EditDefaultsOnly, Category = "Cube")
 	TSubclassOf<AStaticMeshActor> MainEntranceRoomClass;
