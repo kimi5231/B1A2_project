@@ -156,8 +156,13 @@ public:
 	// ∏ÛΩ∫≈Õ
 	UPROPERTY(EditDefaultsOnly, Category = "Monster")
 	TSubclassOf<ABaseMonster> TestMonsterClass;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Monster")
 	TSubclassOf<ABaseMonster> SpiderClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Monster")
+	TSubclassOf<ABaseMonster> EmotionGameClass;
+
 
 	// Monster Montage
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
