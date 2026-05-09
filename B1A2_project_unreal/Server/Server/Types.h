@@ -64,9 +64,6 @@ enum ObjectState
 	TELEPORT,
 	GRAB,
 	PLAY,
-	WIN,
-	LOSE,
-	DRAW,
 	RELEASE,
 };
 
@@ -123,6 +120,26 @@ enum Difficulty
 	Hard,
 
 	DifficultyCount,
+};
+
+enum class Emotion
+{
+	Angry,
+	Disgust,
+	Fear,
+	Happy,
+	Sad,
+	Surprise,
+	Neutral ,
+
+	EmotionCount
+};
+
+enum class EmotionGameResult
+{
+	Win,
+	Lose,
+	Draw,
 };
 
 enum TileState : char

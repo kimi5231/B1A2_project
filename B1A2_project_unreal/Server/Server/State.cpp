@@ -5,6 +5,7 @@
 #include "Door.h"
 #include "Global.h"
 #include "Spider.h"
+#include "EmotionGame.h"
 
 void State::Tick(MonsterRef monster, Room* room)
 {
@@ -483,4 +484,70 @@ void Teleport::Exit(MonsterRef monster)
 	// 랜덤한 위치로 순간이동
 	Vector pos = monster->SelectRandomPosInCube(cube);
 	monster->SetPos(pos);
+}
+
+//--------------Grab----------------
+void Grab::Tick(MonsterRef monster, Room* room)
+{
+	State::Tick(monster, room);
+}
+
+void Grab::Exit(MonsterRef monster)
+{
+	// 타겟의 위치로 순간이동
+	monster->SetPos(monster->GetTarget()->GetPos());
+
+	// 보정 필요하면 보정하기
+}
+
+//--------------Play----------------
+void Play::Tick(MonsterRef monster, Room* room)
+{
+	State::Tick(monster, room);
+
+	monster->AddDeltaTime(g_timer->GetDeltaTime());
+}
+
+void Play::Exit(MonsterRef monster)
+{
+	EmotionGameRef emotionGame = std::dynamic_pointer_cast<EmotionGame>(monster);
+	Emotion emotion = emotionGame->SelectEmotion();
+	Emotion targetEmotion = emotionGame->GetTarget()->GetCurrentEmotion();
+	emotionGame->SetResult(EmotionGameResult::Draw);
+
+	// Monster가 이겼을 때
+	if(emotion == Emotion::Happy && targetEmotion == Emotion::Sad ||
+		emotion == Emotion::Sad && targetEmotion == Emotion::Neutral ||
+		emotion == Emotion::Neutral && targetEmotion == Emotion::Happy)
+	{
+		emotionGame->GetTarget()->TackDamage(emotionGame->GetDamage());
+		emotionGame->SetResult(EmotionGameResult::Win);
+	}
+	// 졌을 때
+	else if (emotion == Emotion::Happy && targetEmotion == Emotion::Neutral ||
+		emotion == Emotion::Sad && targetEmotion == Emotion::Happy ||
+		emotion == Emotion::Neutral && targetEmotion == Emotion::Sad)
+	{
+		emotionGame->AddLoseCount();
+		emotionGame->GetTarget()->TackHeal(emotionGame->GetHealValue());
+		emotionGame->SetResult(EmotionGameResult::Lose);
+	}
+
+	// 결과 패킷 보내기
+
+
+	emotionGame->InitSumTime();
+}
+
+//--------------Release----------------
+void Release::Tick(MonsterRef monster, Room* room)
+{
+	State::Tick(monster, room);
+
+	monster->AddDeltaTime(g_timer->GetDeltaTime());
+}
+
+void Release::Exit(MonsterRef monster)
+{
+	monster->InitSumTime();
 }

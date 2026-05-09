@@ -8,6 +8,7 @@ Spider::Spider(MonsterType monsterType, Room* ownerRoom)
 	: Monster(monsterType, ownerRoom)
 {
 	// Status √ ±‚»≠
+	_maxHP = 60;
 	_hp = 60;
 
 	_speed = 2.5f;

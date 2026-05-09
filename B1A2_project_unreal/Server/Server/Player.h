@@ -23,8 +23,11 @@ public:
 public:
 	int GetCurrentTool() { return _currentTool; }
 	void SetCurrentTool(int toolID) { _currentTool = toolID; }
+	Emotion GetCurrentEmotion() { return _currentEmotion; }
+	void SetCurrentEmotion(Emotion emotion) { _currentEmotion = emotion; }
 
 private:
 	Inventory* _inventory{};
 	int _currentTool{};
+	Emotion _currentEmotion{};
 };

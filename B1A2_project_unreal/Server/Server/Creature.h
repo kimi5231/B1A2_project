@@ -9,6 +9,7 @@ public:
 
 public:
 	bool TackDamage(int damage);
+	bool TackHeal(int heal);
 
 public:
 	virtual void SetPos(Vector pos) override;
@@ -19,6 +20,6 @@ public:
 
 protected:
 	int _currentCubeID;
-
+	int _maxHP;
 	int _hp;
 };

@@ -144,3 +144,36 @@ public:
 	virtual void Tick(MonsterRef monster, Room* room) override;
 	virtual void Exit(MonsterRef monster) override;
 };
+
+class Grab : public State
+{
+public:
+	Grab() {};
+	virtual ~Grab() {};
+public:
+	virtual void Enter(MonsterRef monster) override {};
+	virtual void Tick(MonsterRef monster, Room* room) override;
+	virtual void Exit(MonsterRef monster) override;
+};
+
+class Play : public State
+{
+public:
+	Play() {};
+	virtual ~Play(){}
+public:
+	virtual void Enter(MonsterRef monster) override {};
+	virtual void Tick(MonsterRef monster, Room* room) override;
+	virtual void Exit(MonsterRef monster) override;
+};
+
+class Release : public State
+{
+public:
+	Release() {};
+	virtual ~Release() {}
+public:
+	virtual void Enter(MonsterRef monster) override {};
+	virtual void Tick(MonsterRef monster, Room* room) override;
+	virtual void Exit(MonsterRef monster) override;
+};

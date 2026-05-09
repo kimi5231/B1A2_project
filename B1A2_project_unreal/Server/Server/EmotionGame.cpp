@@ -2,22 +2,27 @@
 #include "EmotionGame.h"
 #include "FSM.h"
 #include "State.h"
+#include "Global.h"
 
 EmotionGame::EmotionGame(MonsterType monsterType, Room* ownerRoom)
 	: Monster(monsterType, ownerRoom)
 {
 	// Status ÃÊ±âÈ­
-	_hp = 10000;
+	_maxHP = 10000;
+	_hp = _maxHP;
 	_idleTime = 15.f;
+	_playTime = 3.f;
+	_releaseTime = 3.f;
 	_damage = 25;
+	_healValue = 7;
+	_aggroRange = 500;
 
 	// State Table
 	_stateTable[IDLE] = TELEPORT;
 	_stateTable[TELEPORT] = IDLE;
 	_stateTable[GRAB] = PLAY;
-	_stateTable[WIN] = RELEASE;
-	_stateTable[LOSE] = RELEASE;
-	_stateTable[DRAW] = RELEASE;
+	_stateTable[PLAY] = RELEASE;
+	_stateTable[RELEASE] = TELEPORT;
 }
 
 EmotionGame::~EmotionGame()
@@ -27,6 +32,11 @@ EmotionGame::~EmotionGame()
 void EmotionGame::Update(Room* room)
 {
 	Monster::Update(room);
+
+	if(_loseCount == 3)
+		SetState(DEAD);
+
+
 }
 
 bool EmotionGame::IsReadyNextState()
@@ -35,7 +45,22 @@ bool EmotionGame::IsReadyNextState()
 	{
 	case ObjectState::IDLE:
 		return _sumTime > _idleTime;
+	case ObjectState::TELEPORT:
+		return true;
+	case ObjectState::GRAB:
+		return true;
+	case ObjectState::PLAY:
+		return _sumTime > _playTime;
+	case ObjectState::RELEASE:
+		return _sumTime > _releaseTime;
 	}
+}
+
+Emotion EmotionGame::SelectEmotion()
+{
+	std::uniform_int_distribution<int> selectEmotion(0, 2);
+	Emotion emotion = static_cast<Emotion>(selectEmotion(gen));
+	return emotion;
 }
 
 bool EmotionGame::SetState(ObjectState state, bool isSend)

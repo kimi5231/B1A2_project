@@ -7,7 +7,6 @@
 Creature::Creature()
 {
     _currentCubeID = 0;
-    _hp = 50;
 }
 
 bool Creature::TackDamage(int damage)
@@ -20,6 +19,16 @@ bool Creature::TackDamage(int damage)
     	SetState(ObjectState::HIT);
 
     // 나중에 무적같은 거 확인
+    return true;
+}
+
+bool Creature::TackHeal(int heal)
+{
+    _hp += heal;
+    if(_hp > _maxHP)
+		_hp = _maxHP;
+
+    // 나중에 상태이상같은 거 확인
     return true;
 }
 
