@@ -174,6 +174,18 @@ void AMyPlayer::Tick(float DeltaTime)
 			ui->SetStamina(_currentStamina / _maxStamina);
 		}
 	}
+
+	// Lantern
+	if (_isLanternOn && _currentBattery > 0.f)
+	{
+		_sumTime += DeltaTime;
+		if (_sumTime >= 1.f)
+		{
+			_sumTime = 0.f;
+			_currentBattery -= 1.f;
+			_currentBattery = FMath::Max(0.f, _currentBattery);
+		}
+	}
 }
 
 void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

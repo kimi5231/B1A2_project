@@ -249,6 +249,27 @@ protected:
 	const float _baseJumpVelocity = 350.f;
 	const float _baseCrouchSpeed = 400.f;
 
+protected:
+	// 랜턴의 현재 켜짐/꺼짐 상태
+	UPROPERTY(BlueprintReadOnly, Category = "Lantern")
+	bool _isLanternOn = false;
+
+	// 현재 배터리 잔량
+	UPROPERTY(BlueprintReadOnly, Category = "Lantern")
+	float _currentBattery = 0.0f;
+
+	// 초당 배터리 소모 계산을 위한 누적 시간
+	float _sumTime = 0.0f;
+
+public:
+	// 서버 패킷 수신 시 랜턴 상태와 배터리 설정
+	void SetIsLanternOn(bool isOn) { _isLanternOn = isOn; }
+	void SetCurrentBattery(float battery) { _currentBattery = battery; }
+
+	// UI에서 값을 읽기 위한 Getter
+	bool GetIsLanternOn() const { return _isLanternOn; }
+	float GetCurrentBattery() const { return _currentBattery; }
+
 private:
 	// 아이템 상호작용
 	UFUNCTION()

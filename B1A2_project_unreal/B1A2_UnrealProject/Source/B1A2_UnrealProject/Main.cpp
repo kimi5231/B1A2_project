@@ -7,6 +7,7 @@
 #include "OtherPlayer.h"
 #include "Network/GameNetwork.h"
 #include "BaseItem.h"
+#include "Lantern.h"
 #include "BaseDoor.h"
 #include "ToolBarWidget.h"
 #include "BaseMonster.h"
@@ -1470,12 +1471,96 @@ void UMain::RecvSpawnMonster(S_SpawnMonster_Packet packet)
 
 void UMain::RecvTurnOnLantern(S_TurnOnLantern_Packet packet)
 {
-	// 랜턴 킴 + 랜턴 들기 애니메이션
+	// 랜턴 킴
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		UWorld* world = GetWorld();
+		if (!world) return;
+
+		AOtherPlayer* targetPlayer = nullptr;
+
+		if (packet.playerID == _myID)
+		{
+			targetPlayer = _myPlayer;
+		}
+		else
+		{
+			AOtherPlayer** findPlayer = _otherPlayers.Find(packet.playerID);
+			if (findPlayer && *findPlayer)
+			{
+				targetPlayer = *findPlayer;
+			}
+		}
+
+		if (targetPlayer)
+		{
+			// 현재 장착된 도구를 가져와 ALantern으로 캐스팅
+			ALantern* lantern = Cast<ALantern>(targetPlayer->GetAttacthedToolActor());
+			if (lantern)
+			{
+				// 패킷 데이터 변환 (unsigned char -> float)
+				float range = static_cast<float>(packet.laternRange);
+				float angle = packet.laternAngle;
+
+				lantern->UpdateLantern(true, range);
+			}
+
+			// MyPlayer 전용 추가 로직 (잔량 동기화 및 상태 변수)
+			if (packet.playerID == _myID && _myPlayer)
+			{
+				_myPlayer->SetIsLanternOn(true);
+				_myPlayer->SetCurrentBattery(static_cast<float>(packet.laternBattery));
+
+				UE_LOG(LogTemp, Display, TEXT("[MyPlayer] Lantern ON. Battery: %d"), packet.laternBattery);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Display, TEXT("[OtherPlayer] ID %d Lantern ON"), packet.playerID);
+			}
+		}
+	});
 }
 
 void UMain::RecvTurnOffLantern(S_TurnOffLantern_Packet packet)
 {
-	// 랜턴 끔 + 랜턴 내리기 애니메이션
+	// 랜턴 끔
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		UWorld* world = GetWorld();
+		if (!world) return;
+
+		AOtherPlayer* targetPlayer = nullptr;
+
+		if (packet.playerID == _myID)
+		{
+			targetPlayer = _myPlayer;
+		}
+		else
+		{
+			AOtherPlayer** findPlayer = _otherPlayers.Find(packet.playerID);
+			if (findPlayer && *findPlayer)
+			{
+				targetPlayer = *findPlayer;
+			}
+		}
+
+		if (targetPlayer)
+		{
+			ALantern* lantern = Cast<ALantern>(targetPlayer->GetAttacthedToolActor());
+			if (lantern)
+			{
+				lantern->UpdateLantern(false, 0.f);
+			}
+
+			if (packet.playerID == _myID && _myPlayer)
+			{
+				_myPlayer->SetIsLanternOn(false);
+				_myPlayer->SetCurrentBattery(static_cast<float>(packet.laternBattery));
+
+				UE_LOG(LogTemp, Display, TEXT("[MyPlayer] Lantern OFF. Battery: %d"), packet.laternBattery);
+			}
+		}
+	});
 }
 
 void UMain::RecvEndStage(S_EndStage_Packet packet)
