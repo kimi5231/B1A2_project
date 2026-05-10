@@ -644,6 +644,23 @@ void ServerFramework::SendEndStagePacket(bool broadcast, SOCKET client)
 	_sendEvents.push_back(event);
 }
 
+void ServerFramework::SendGetDamagePacket(uint playerID, unsigned char damage, bool broadcast, SOCKET client)
+{
+	// Packet Data 생성
+	S_GetDamage_Packet packetData{ playerID, damage };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+	
+	// SendEvent 생성
+	SendEventRef event = std::make_shared<SendEvent>();
+	event->isBroadcast = broadcast;
+	event->clientSocket = client;
+	event->packetID = S_GetDamage;
+	event->serializedPacketData = serializedPacketData;
+	_sendEvents.push_back(event);
+}
+
 void ServerFramework::Broadcast(PacketID id, const std::vector<char>& packetData)
 {
 	// Room에 있는 모든 Client에게 Packet 송신

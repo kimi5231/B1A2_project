@@ -277,6 +277,7 @@ struct S_TurnOffLantern_Packet
 
 struct S_GetDamage_Packet
 {
+	int playerID;
 	unsigned char damage;
 };
 

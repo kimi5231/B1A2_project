@@ -63,6 +63,7 @@ public:
 	void SendTurnOffLanternPacket(LanternRef lantern, int playerID, bool broadcast, SOCKET client = 0);
 	void SendStartStagePacket(bool broadcast, SOCKET client = 0);
 	void SendEndStagePacket(bool broadcast, SOCKET client = 0);
+	void SendGetDamagePacket(uint playerID, unsigned char damage, bool broadcast, SOCKET client = 0);
 	void Broadcast(PacketID id, const std::vector<char>& packetData);
 
 public:
