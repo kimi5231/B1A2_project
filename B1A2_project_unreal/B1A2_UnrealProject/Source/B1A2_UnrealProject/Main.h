@@ -94,6 +94,8 @@ public:
 	void RecvEndStage(S_EndStage_Packet packet);
 	void RecvStartStage(S_StartStage_Packet packet);
 
+	void RecvGetDamage(S_GetDamage_Packet packet);
+
 	FRotator DirToRotation(Dir dir);
 
 	// ID

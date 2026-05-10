@@ -254,6 +254,14 @@ void UMain::ProcessRecv()
 				event->isComplete = true;
 				break;
 			}
+			case S_GetDamage:
+			{
+				S_GetDamage_Packet getDamagePacket;
+				FMemory::Memcpy(&getDamagePacket, event->serializedPacketData.data(), sizeof(S_GetDamage_Packet));
+				RecvGetDamage(getDamagePacket);
+				event->isComplete = true;
+				break;
+			}
 		}
 	}
 }
@@ -1632,6 +1640,10 @@ void UMain::RecvStartStage(S_StartStage_Packet packet)
 			It.RemoveCurrent();
 		}
 	});
+}
+
+void UMain::RecvGetDamage(S_GetDamage_Packet packet)
+{
 }
 
 FRotator UMain::DirToRotation(Dir dir)
