@@ -171,7 +171,7 @@ void Room::CreateFactoryCubes()
 		CubeInfo info = g_dataManager->GetCubeInfo(CubeType::MainEntranceRoom);
 
 		// Base와 연결하여 배치
-		Vector pos{0, 350, 0};
+		Vector pos{0, 675, 0};
 
 		CubeRef cube = std::make_shared<Cube>(pos, Front, info);
 		cube->SetID(generateCubeID++);
