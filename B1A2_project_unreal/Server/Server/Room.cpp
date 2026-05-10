@@ -31,34 +31,34 @@ void Room::Init()
 	// 테스트용 아이템 생성
 	ItemRef box = std::make_shared<Item>(ItemType::CardboardBox);
 	box->SetID(_generateItemID++);
-	box->SetPos({ 0, -100, 25 });
+	box->SetPos({ 0, 700, 25 });
 	box->SetObjectPoolState(ObjectPoolState::InWorld);
 	_items.push_back(box);
 	std::shared_ptr<Cutlass> cutlass = std::make_shared<Cutlass>(ItemType::CUTLASS);
 	cutlass->SetID(_generateItemID++);
-	cutlass->SetPos({ 0, -200, 25 });
+	cutlass->SetPos({ 0, 750, 25 });
 	cutlass->SetObjectPoolState(ObjectPoolState::InWorld);
 	_items.push_back(cutlass);
 	ItemRef blaster = std::make_shared<Tool>(ItemType::Blaster);
 	blaster->SetID(_generateItemID++);
-	blaster->SetPos({ 0, 100, 25 });
+	blaster->SetPos({ 0, 650, 25 });
 	blaster->SetObjectPoolState(ObjectPoolState::InWorld);
 	_items.push_back(blaster);
 	ItemRef key = std::make_shared<Tool>(ItemType::Key);
 	key->SetID(_generateItemID++);
-	key->SetPos({ 0, 200, 25 });
+	key->SetPos({ 0, 600, 25 });
 	key->SetObjectPoolState(ObjectPoolState::InWorld);
 	_items.push_back(key);
-	LanternRef lantern = std::make_shared<Lantern>(ItemType::LANTERN);
+	ItemRef lantern = std::make_shared<Lantern>(ItemType::LANTERN);
 	lantern->SetID(_generateItemID++);
-	lantern->SetPos({ 0, -100, 25 });
+	lantern->SetPos({ 0, 550, 25 });
 	lantern->SetObjectPoolState(ObjectPoolState::InWorld);
 	_items.push_back(lantern);
 
 	// 테스트용 몬스터 생성
 	MonsterRef spider = std::make_shared<Spider>(MonsterType::Spider, this);
 	spider->SetID(_generateMonsterID++);
-	spider->SetPos({ 0, 100, 65 });
+	spider->SetPos({ 0, 675, 25 });
 	spider->SetObjectPoolState(ObjectPoolState::InWorld);
 	spider->SetState(ObjectState::HIT, false);
 	spider->SetState(ObjectState::IDLE, false);
@@ -100,16 +100,6 @@ void Room::Update()
 			monster->Update(this);
 		}
 			
-
-		// 플레이어, 몬스터 충돌 처리
-		/*for (const auto& playerItem : _players)
-		{
-			for (const auto& monsterItem : _monsters)
-			{
-				if (playerItem.second->CheckCollision(monsterItem.second->GetBoundingBox()))
-					g_framework->SendRemoveObjectPacket(monsterItem.second->GetObjectType(), monsterItem.second->GetID(), true);
-			}
-		}*/
 
 		for(const auto& item : _processingItems)
 			item.second->Update();

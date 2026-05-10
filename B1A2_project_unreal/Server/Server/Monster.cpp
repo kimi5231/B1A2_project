@@ -406,16 +406,16 @@ VectorInt Monster::PosToIndex(Vector pos, CubeRef cube)
 	switch (cube->GetDir())
 	{
 	case Right:
-		result.x = (max.x - 1 - index.y);
-		result.y = index.x;
+		result.x = index.y;
+		result.y = (max.y - 1 - index.x);
 		break;
 	case Back:
 		result.x = (max.x - 1 - index.x);
 		result.y = (max.y - 1 - index.y);
 		break;
 	case Left:
-		result.x = index.y;
-		result.y = (max.y - 1 - index.x);
+		result.x = (max.x - 1 - index.y);
+		result.y = index.x;
 		break;
 	}
 
@@ -457,21 +457,19 @@ Vector Monster::IndexToPos(VectorInt index, const CubeRef cube)
 	Vector pos = index;
 
 	// Cube 방향에 따라 보정
-	switch (cube->GetDir()) 
+	switch (cube->GetDir())
 	{
-	case Right: // 90도 회전
-		pos.x = (float)index.y;
-		pos.y = (float)(max.x - 1 - index.x);
+	case Right:
+		pos.x = (float)(max.y - 1 - index.y);
+		pos.y = (float)index.x;
 		break;
-
-	case Back: // 180도 회전
+	case Back:
 		pos.x = (float)(max.x - 1 - index.x);
 		pos.y = (float)(max.y - 1 - index.y);
 		break;
-
-	case Left: // 270도 회전
-		pos.x = (float)(max.y - 1 - index.y);
-		pos.y = (float)index.x;
+	case Left:
+		pos.x = (float)index.y;
+		pos.y = (float)(max.x - 1 - index.x);
 		break;
 	}
 
