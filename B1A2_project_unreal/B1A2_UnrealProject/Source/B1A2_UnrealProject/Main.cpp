@@ -262,6 +262,14 @@ void UMain::ProcessRecv()
 				event->isComplete = true;
 				break;
 			}
+			case S_SpawnObstacle:
+			{
+				S_SpawnObstacle_Packet spawnObstaclePacket;
+				FMemory::Memcpy(&spawnObstaclePacket, event->serializedPacketData.data(), sizeof(S_SpawnObstacle_Packet));
+				RecvSpawnObstacle(spawnObstaclePacket);
+				event->isComplete = true;
+				break;
+			}
 		}
 	}
 }
@@ -1643,6 +1651,10 @@ void UMain::RecvStartStage(S_StartStage_Packet packet)
 }
 
 void UMain::RecvGetDamage(S_GetDamage_Packet packet)
+{
+}
+
+void UMain::RecvSpawnObstacle(S_SpawnObstacle_Packet packet)
 {
 }
 

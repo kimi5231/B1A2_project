@@ -59,6 +59,7 @@ public:
 	void SendSpawnParticlePacket(Vector pos, bool broadcast, SOCKET client = 0);
 	void SendInteractDoorNotifyPacket(uint playerID, uint doorID, ObjectState doorState, bool broadcast, SOCKET client = 0);
 	void SendSpawnMonsterPacket(MonsterRef monster, bool broadcast, SOCKET client = 0);
+	void SendSpawnObstaclePacket(ObstacleRef obstacle, bool broadcast, SOCKET client = 0);
 	void SendTurnOnLanternPacket(LanternRef lantern, int playerID, bool broadcast, SOCKET client = 0);
 	void SendTurnOffLanternPacket(LanternRef lantern, int playerID, bool broadcast, SOCKET client = 0);
 	void SendStartStagePacket(bool broadcast, SOCKET client = 0);

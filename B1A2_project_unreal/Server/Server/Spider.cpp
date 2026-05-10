@@ -112,7 +112,7 @@ bool Spider::IsReadyNextState()
 
 void Spider::CreateWeb()
 {
-	//_ownerRoom->AddObstacle(ObstacleType::Web, _pos, true);
+	_ownerRoom->AddObstacle(ObstacleType::Web, _pos, true);
 	_currentWebCount++;
 }
 

@@ -55,6 +55,16 @@ void Room::Init()
 	lantern->SetObjectPoolState(ObjectPoolState::InWorld);
 	_items.push_back(lantern);
 
+	// 장애물 ObjectPool 미리 확보
+	for (int i = 0; i < 10; i++)
+	{
+		ObstacleRef obstacle = std::make_shared<Obstacle>();
+		obstacle->SetID(_generateObstacleID++);
+		obstacle->SetObstacleType(ObstacleType::Web);
+		obstacle->SetObjectPoolState(ObjectPoolState::Reusable);
+		_obstacles.push_back(obstacle);
+	}
+
 	// 테스트용 몬스터 생성
 	MonsterRef spider = std::make_shared<Spider>(MonsterType::Spider, this);
 	spider->SetID(_generateMonsterID++);
@@ -63,16 +73,6 @@ void Room::Init()
 	spider->SetState(ObjectState::HIT, false);
 	spider->SetState(ObjectState::IDLE, false);
 	_monsters.push_back(spider);
-
-	// 장애물 ObjectPool 미리 확보
-	for (int i = 0; i < 10; i++)
-	{
-		ObstacleRef obstacle = std::make_shared<Obstacle>();
-		obstacle->SetID(_generateObstacleID++);
-		obstacle->SetObstacleType(ObstacleType::None);
-		obstacle->SetObjectPoolState(ObjectPoolState::Reusable);
-		_obstacles.push_back(obstacle);
-	}
 }
 
 void Room::Update()
@@ -438,8 +438,8 @@ ObstacleRef Room::AddObstacle(ObstacleType obstacleType, Vector pos, bool isSend
 			// ObjectPoolState 변경
 			obstacle->SetObjectPoolState(ObjectPoolState::InWorld);
 
-			//if (isSend)
-			//	g_framework->SendSpawnObstaclePacket(obstacle, true);
+			if (isSend)
+				g_framework->SendSpawnObstaclePacket(obstacle, true);
 
 			return obstacle;
 		}
@@ -455,6 +455,9 @@ void Room::RemoveObject(ObjectType type, uint id, bool isSend)
 		break;
 	case ObjectType::Item:
 		_items[id]->SetObjectPoolState(ObjectPoolState::Reusable);
+		break;
+	case ObjectType::Obstacle:
+		_obstacles[id]->SetObjectPoolState(ObjectPoolState::Reusable);
 		break;
 	}
 

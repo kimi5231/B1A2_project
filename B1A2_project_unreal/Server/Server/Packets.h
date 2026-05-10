@@ -39,6 +39,7 @@ enum PacketID
 	S_GetDamage,
 	S_StartStage,
 	S_EndStage,
+	S_SpawnObstacle,
 };
 
 struct Header
@@ -289,4 +290,11 @@ struct S_StartStage_Packet
 struct S_EndStage_Packet
 {
 	bool result;
+};
+
+struct S_SpawnObstacle_Packet
+{
+	int id;
+	ObstacleType type;
+	Vector pos;
 };

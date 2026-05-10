@@ -7,6 +7,7 @@
 #include "Tool.h"
 #include "Door.h"
 #include "Lantern.h"
+#include "Obstacle.h"
 
 ServerFramework::ServerFramework()
 {
@@ -569,6 +570,23 @@ void ServerFramework::SendSpawnMonsterPacket(MonsterRef monster, bool broadcast,
 	event->packetID = S_SpawnMonster;
 	event->serializedPacketData = serializedPacketData;
 
+	_sendEvents.push_back(event);
+}
+
+void ServerFramework::SendSpawnObstaclePacket(ObstacleRef obstacle, bool broadcast, SOCKET client)
+{
+	// Packet Data 持失
+	S_SpawnObstacle_Packet packetData{ obstacle->GetID(), obstacle->GetObstacleType(), obstacle->GetPos() };
+	
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+	
+	// SendEvent 持失
+	SendEventRef event = std::make_shared<SendEvent>();
+	event->isBroadcast = broadcast;
+	event->clientSocket = client;
+	event->packetID = S_SpawnObstacle;
+	event->serializedPacketData = serializedPacketData;
 	_sendEvents.push_back(event);
 }
 

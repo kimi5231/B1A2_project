@@ -95,6 +95,7 @@ public:
 	void RecvStartStage(S_StartStage_Packet packet);
 
 	void RecvGetDamage(S_GetDamage_Packet packet);
+	void RecvSpawnObstacle(S_SpawnObstacle_Packet packet);
 
 	FRotator DirToRotation(Dir dir);
 

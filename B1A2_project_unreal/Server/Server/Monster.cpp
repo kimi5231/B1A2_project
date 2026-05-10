@@ -18,6 +18,7 @@ Monster::Monster(MonsterType monsterType, Room* ownerRoom)
 	_returnPos = _pos;
 	_target = nullptr;
 	_sumTime = 0.f;
+	_ownerRoom = ownerRoom;
 
 	_size = { 80, 80, 80 };
 	_rotation = { 0, 0, 0 };
