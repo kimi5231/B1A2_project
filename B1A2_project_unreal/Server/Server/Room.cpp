@@ -58,7 +58,7 @@ void Room::Init()
 	// 테스트용 몬스터 생성
 	MonsterRef spider = std::make_shared<Spider>(MonsterType::Spider, this);
 	spider->SetID(_generateMonsterID++);
-	spider->SetPos({ 0, 100, 65 });
+	spider->SetPos({ 0, 675, 25 });
 	spider->SetObjectPoolState(ObjectPoolState::InWorld);
 	spider->SetState(ObjectState::HIT, false);
 	spider->SetState(ObjectState::IDLE, false);
@@ -100,16 +100,6 @@ void Room::Update()
 			monster->Update(this);
 		}
 			
-
-		// 플레이어, 몬스터 충돌 처리
-		/*for (const auto& playerItem : _players)
-		{
-			for (const auto& monsterItem : _monsters)
-			{
-				if (playerItem.second->CheckCollision(monsterItem.second->GetBoundingBox()))
-					g_framework->SendRemoveObjectPacket(monsterItem.second->GetObjectType(), monsterItem.second->GetID(), true);
-			}
-		}*/
 
 		for(const auto& item : _processingItems)
 			item.second->Update();
