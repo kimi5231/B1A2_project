@@ -617,3 +617,10 @@ void Staring::Exit(MonsterRef monster)
 {
 	monster->InitSumTime();
 }
+
+//--------------Vanishing----------------
+
+void Vanishing::Tick(MonsterRef monster, Room* room)
+{
+	State::Tick(monster, room);
+} 

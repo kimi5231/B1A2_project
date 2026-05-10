@@ -6,7 +6,9 @@ Ghost::Ghost(MonsterType monsterType, Room* ownerRoom)
 	: Monster(monsterType, ownerRoom)
 {
 	_hp = 10000;
+	_chaseSpeed = 4.5f;
 	_idleTime = 15.f;
+	_chaseTime = 20.f;
 	_waitTime = 180.f;
 	_absentTime = 4.f;
 	_staringTime = 15.f;
@@ -14,6 +16,8 @@ Ghost::Ghost(MonsterType monsterType, Room* ownerRoom)
 	// State Table
 	_stateTable[IDLE] = ABSENT;
 	_stateTable[ABSENT] = STARING;
+	_stateTable[STARING] = VANISHING;
+	_stateTable[CHASE] = VANISHING;
 }
 
 Ghost::~Ghost()
@@ -36,7 +40,14 @@ bool Ghost::IsReadyNextState()
 	case ObjectState::ABSENT:
 		return _targetPos.has_value();
 	case ObjectState::STARING:
+	{
+
 		return _sumTime > _staringTime;
+	}
+	case ObjectState::CHASE:
+		return _sumTime > _chaseTime || _target->CheckCollision(_box);
+	case ObjectState::VANISHING:
+		return true;
 	}
 }
 

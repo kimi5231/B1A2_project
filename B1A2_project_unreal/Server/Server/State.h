@@ -200,3 +200,14 @@ public:
 	virtual void Tick(MonsterRef monster, Room* room) override;
 	virtual void Exit(MonsterRef monster) override;
 };
+
+class Vanishing : public State
+{
+public:
+	Vanishing() {};
+	virtual ~Vanishing() {}
+public:
+	virtual void Enter(MonsterRef monster) override {};
+	virtual void Tick(MonsterRef monster, Room* room) override;
+	virtual void Exit(MonsterRef monster) override {};
+};

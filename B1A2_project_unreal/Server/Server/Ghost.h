@@ -11,6 +11,8 @@ public:
 
 public:
 	virtual bool IsReadyNextState() override;
+	void AddLookCount() { _lookCount++; }
+	void AddUnlookCount() { _unlookCount++; }
 
 public:
 	virtual bool SetState(ObjectState state, bool isSend = true) override;
@@ -20,4 +22,7 @@ private:
 	float _waitTime;
 	float _absentTime;
 	float _staringTime;
+
+	unsigned char _lookCount;
+	unsigned char _unlookCount;
 };
