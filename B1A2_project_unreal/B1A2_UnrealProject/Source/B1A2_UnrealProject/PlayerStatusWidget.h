@@ -17,13 +17,20 @@ class B1A2_UNREALPROJECT_API UPlayerStatusWidget : public UUserWidget
 	GENERATED_BODY()
 
 protected:
+	// HP Bar
 	UPROPERTY(meta = (BindWidget))
 	UProgressBar* HealthBar;
 
+	// Staminar Bar
 	UPROPERTY(meta = (BindWidget))
 	UProgressBar* StaminaBar;
+
+	// Battery Bar
+	UPROPERTY(meta = (BindWidget))
+	UProgressBar* BatteryBar;
 
 public:
 	void SetHealth(float Ratio) { if (HealthBar) HealthBar->SetPercent(Ratio); }
 	void SetStamina(float Ratio) { if (StaminaBar) StaminaBar->SetPercent(Ratio); }
+	void SetBattery(float Ratio);
 };

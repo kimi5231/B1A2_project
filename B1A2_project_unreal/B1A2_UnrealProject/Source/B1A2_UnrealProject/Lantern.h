@@ -19,7 +19,12 @@ public:
 
 	void UpdateLantern(bool isOn, float range);
 
+	void SetBattery(float battery) { _currentBattery = battery; }
+	float GetBattery() { return _currentBattery; }
+
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	class UPointLightComponent* PointLight;
+
+	float _currentBattery = 180.f;
 };

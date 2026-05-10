@@ -681,11 +681,18 @@ void UMain::RecvDropItem(S_DropItem_Packet packet)
 			// 장비
 			if (isTool)	
 			{
+				if (packet.itemType == ItemType::LANTERN)
+				{
+					_myPlayer->SetCurrentBattery(0.0f); // 배터리 0으로 초기화 (UI 표시)
+					_myPlayer->SetIsLanternOn(false);	// 조명 끄기
+				};
+
 				// 툴바에서 삭제
 				_myPlayer->RemoveToolInToolBarByID(itemID);
 
 				// 손에 들고 있으면 제거
 				_myPlayer->UnequipTool(itemID);
+
 			}
 			else // 아이템
 			{
@@ -735,6 +742,11 @@ void UMain::RecvDropItem(S_DropItem_Packet packet)
 			case ItemType::LANTERN:
 				tool = world->SpawnActor<ABaseItem>(LanternClass, (spawnLocation.X, spawnLocation.Y, spawnLocation), spawnRotation);
 				tool->SetItemType(ItemType::LANTERN);
+
+				// 여기서 Lanter의 배터리를 설정해줘야 함!!!!!!!!! 패킷에 추가해야 할듯??
+				// ...
+				// ...
+
 				UE_LOG(LogTemp, Log, TEXT("[Tool] Lantern Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
 				break;
 			}
@@ -1202,6 +1214,17 @@ void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 			}
 			// _tools에서 제거
 			_tools.Remove(itemID);
+
+			// 랜턴일 경우 배터리 초기화
+			if (packet.itemType == ItemType::LANTERN)
+			{
+				ALantern* lantern = Cast<ALantern>(tool);
+				if (lantern)
+				{
+					// 바닥에 있던 랜턴의 배터리 잔량
+					_myPlayer->SetCurrentBattery(lantern->GetBattery());
+				}
+			}
 
 			UE_LOG(LogTemp, Display, TEXT("[RecvAddItemToInventory] Tool PickedUp and To ToolBar"));
 		}

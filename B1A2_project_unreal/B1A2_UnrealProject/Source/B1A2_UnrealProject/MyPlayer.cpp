@@ -165,14 +165,6 @@ void AMyPlayer::Tick(float DeltaTime)
 				_currentStamina = FMath::Min(_maxStamina, _currentStamina + recoveryAmount);
 			}
 		}
-
-		// 스테미나 UI 업데이트
-		UPlayerStatusWidget* ui = Cast<UPlayerStatusWidget>(_statusWidgetInstance);
-		if (ui)
-		{
-			// 스테미나는 로컬 업데이트(hp는 패킷 받았을 때!)
-			ui->SetStamina(_currentStamina / _maxStamina);
-		}
 	}
 
 	// Lantern
@@ -185,6 +177,17 @@ void AMyPlayer::Tick(float DeltaTime)
 			_currentBattery -= 1.f;
 			_currentBattery = FMath::Max(0.f, _currentBattery);
 		}
+	}
+	
+	// 스테미나 & Battery UI 업데이트
+	UPlayerStatusWidget* ui = Cast<UPlayerStatusWidget>(_statusWidgetInstance);
+	if (ui)
+	{
+		// 스테미나는 로컬 업데이트(hp는 패킷 받았을 때!)
+		ui->SetStamina(_currentStamina / _maxStamina);
+			
+		// Lantern Battery 업데이트 (로컬, 서버 상관 없을듯 Tick이라서??)
+		ui->SetBattery(_currentBattery / 180.f);
 	}
 }
 
@@ -211,7 +214,7 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(GetItemAction, ETriggerEvent::Started, this, &AMyPlayer::Interact);
 
 		// Use Tool
-		EnhancedInputComponent->BindAction(UseToolAction, ETriggerEvent::Triggered, this, &AMyPlayer::TurnLanternSendOrUseToolAnimationAndSend);
+		EnhancedInputComponent->BindAction(UseToolAction, ETriggerEvent::Started, this, &AMyPlayer::TurnLanternSendOrUseToolAnimationAndSend);
 
 		// Tool Bar
 		EnhancedInputComponent->BindAction(ToolSlotUpAction, ETriggerEvent::Started, this, &AMyPlayer::ToolSelectUp);

@@ -256,7 +256,7 @@ protected:
 
 	// 현재 배터리 잔량
 	UPROPERTY(BlueprintReadOnly, Category = "Lantern")
-	float _currentBattery = 0.0f;
+	float _currentBattery = 0.f;
 
 	// 초당 배터리 소모 계산을 위한 누적 시간
 	float _sumTime = 0.0f;
