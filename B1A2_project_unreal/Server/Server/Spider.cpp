@@ -11,8 +11,8 @@ Spider::Spider(MonsterType monsterType, Room* ownerRoom)
 	_maxHP = 60;
 	_hp = 60;
 
-	_speed = 2.5f;
-	_chaseSpeed = 4.f;
+	_speed = 250.f;
+	_chaseSpeed = 400.f; 
 	_idleTime = 1.5f;
 	_roamingTime = 2.5f;
 	_chaseTime = 5.f;

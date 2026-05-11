@@ -56,6 +56,8 @@ public:
 	void SetReturnPos(Vector pos) { _returnPos = pos; }
 	Room* GetOwnerRoom() { return _ownerRoom; }
 	float GetSumTime() { return _sumTime; }
+	float GetSpeed() { return _speed; }
+	float GetChaseSpeed() { return _chaseSpeed; }
 
 protected:
 	Room* _ownerRoom;

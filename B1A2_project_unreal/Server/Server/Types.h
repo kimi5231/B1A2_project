@@ -260,19 +260,26 @@ struct Vector
 		return (x == other.x && y == other.y && z == other.z);
 	}
 
-	// 2. 벡터의 길이 제곱 (루트 연산보다 빠름 - 거리 체크용)
+	float Length() const
+	{
+		return std::sqrt(x * x + y * y + z * z);
+	}
+
 	float LengthSquared() const {
 		return x * x + y * y + z * z;
 	}
 
-	// 3. 벡터 정규화 (길이를 1로 만듦 - 내적 전 필수)
-	Vector Normalize() const {
-		float len = sqrt(x * x + y * y + z * z);
-		if (len < 0.0001f) return { 0, 0, 0 }; // 0 나누기 방지
-		return { x / len, y / len, z / len };
+	void Normalize()
+	{
+		float len = Length();
+		if (len > 0.0001f) // 0으로 나누기 방지
+		{
+			x /= len;
+			y /= len;
+			z /= len;
+		}
 	}
 
-	// 4. 내적 (Dot Product - 부채꼴 판정의 핵심)
 	float Dot(const Vector& other) const {
 		return x * other.x + y * other.y + z * other.z;
 	}

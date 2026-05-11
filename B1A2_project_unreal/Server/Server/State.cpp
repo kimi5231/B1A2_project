@@ -252,17 +252,56 @@ void ChaseState::Tick(MonsterRef monster, Room* room)
 		}
 	}
 
-	// 최종 목적지까지 도달했다면, 타겟 리셋
 	std::deque<VectorInt>& path = monster->GetPath();
-	if (monster->GetTargetPos() == path[0])
-		monster->SetTargetPos(std::nullopt);
+	if (!path.empty())
+	{
+		// 1. 현재 몬스터가 가야 할 타겟 좌표 (타일 중심점)
+		Vector targetPos = path[0]; // VectorInt가 Vector로 자동 변환된다고 가정
+		Vector currentPos = monster->GetPos();
 
-	// 경로	따라 이동
-	const std::vector<CubeRef>& cubes = room->GetCubes();
-	monster->SetPos(path[0]);
-	monster->SetCurrentCubeID(cubes);
-	path.pop_front();
-	g_framework->SendMovePacket(std::shared_ptr<GameObject>(monster), true);
+		// 2. 방향 및 거리 계산
+		Vector dir = targetPos - currentPos;
+		float distance = dir.Length(); // 현재 타겟까지 남은 거리
+
+		// 3. 이동 속도 적용
+		float moveDist = monster->GetChaseSpeed() * g_timer->GetDeltaTime();
+
+		if (distance <= moveDist)
+		{
+			// 이번 프레임에 타겟 타일에 도착할 수 있다면
+			monster->SetPos(targetPos); // 딱 맞춰서 도착
+			path.pop_front();           // 도착했으니 다음 경로로
+
+			// 타일이 바뀌었을 때만 큐브 ID 체크 (성능 최적화)
+			const std::vector<CubeRef>& cubes = room->GetCubes();
+			monster->SetCurrentCubeID(cubes);
+		}
+		else
+		{
+			// 아직 가는 중이라면 방향벡터만큼 조금만 이동
+			dir.Normalize();
+
+			float angleRad = std::atan2(dir.y, dir.x);
+			float angleDeg = angleRad * (180.0f / 3.14159265f); // 라디안 -> 디그리 변환
+
+			Rotation newRot = { 0.f, angleDeg, 0.f }; // 바닥에서만 도니까 Roll, Pitch는 0
+
+			// 3. monster->SetRotation(Rotation) 호출
+			monster->SetRotation(newRot);
+
+			// 2. 결정된 방향과 속도로 이동
+			monster->SetPos(currentPos + (dir * moveDist));
+		}
+
+		// 4. 이동 패킷 전송 (매 프레임 쏘거나, 일정 거리 이상일 때만 전송)
+		g_framework->SendMovePacket(std::static_pointer_cast<GameObject>(monster), true);
+	}
+
+	// 최종 목적지 도달 체크
+	if (path.empty())
+	{
+		monster->SetTargetPos(std::nullopt);
+	}
 }
 
 void ChaseState::Exit(MonsterRef monster)

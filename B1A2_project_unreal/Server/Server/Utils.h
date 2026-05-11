@@ -12,5 +12,8 @@ inline Vector GetForwardVector(float pitch, float yaw)
     float y_pos = cos(p) * sin(y);
     float z = sin(p);
 
-    return Vector(x, y_pos, z).Normalize();
+    Vector v{ x, y_pos, x };
+    v.Normalize();
+
+    return v;
 }
