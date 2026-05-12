@@ -254,11 +254,11 @@ void UMain::ProcessRecv()
 				event->isComplete = true;
 				break;
 			}
-			case S_GetDamage:
+			case S_UpdateHp:
 			{
-				S_GetDamage_Packet getDamagePacket;
-				FMemory::Memcpy(&getDamagePacket, event->serializedPacketData.data(), sizeof(S_GetDamage_Packet));
-				RecvGetDamage(getDamagePacket);
+				S_UpdateHp_Packet updateHpPacket;
+				FMemory::Memcpy(&updateHpPacket, event->serializedPacketData.data(), sizeof(S_UpdateHp_Packet));
+				RecvUpdateHp(updateHpPacket);
 				event->isComplete = true;
 				break;
 			}
@@ -1650,7 +1650,7 @@ void UMain::RecvStartStage(S_StartStage_Packet packet)
 	});
 }
 
-void UMain::RecvGetDamage(S_GetDamage_Packet packet)
+void UMain::RecvUpdateHp(S_UpdateHp_Packet packet)
 {
 }
 

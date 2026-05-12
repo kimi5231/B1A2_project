@@ -302,7 +302,7 @@ void GameNetwork::ProcessRecv()
 		_recvEvents.push_back(event);
 		break;
 	}
-	case S_GetDamage:
+	case S_UpdateHp:
 	{
 		NetworkEventRef event = std::make_shared<NetworkEvent>();
 		event->packetID = header.id;

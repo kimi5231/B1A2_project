@@ -36,10 +36,10 @@ enum PacketID
 	S_SpawnMonster,
 	S_TurnOnLantern,
 	S_TurnOffLantern,
-	S_GetDamage,
 	S_StartStage,
 	S_EndStage,
 	S_SpawnObstacle,
+	S_UpdateHp,
 };
 
 struct Header
@@ -276,12 +276,6 @@ struct S_TurnOffLantern_Packet
 	unsigned char laternBattery;
 };
 
-struct S_GetDamage_Packet
-{
-	int playerID;
-	unsigned char damage;
-};
-
 struct S_StartStage_Packet
 {
 	bool result;
@@ -297,4 +291,10 @@ struct S_SpawnObstacle_Packet
 	int id;
 	ObstacleType type;
 	Vector pos;
+};
+
+struct S_UpdateHp_Packet
+{
+	int playerID;
+	unsigned char hp;
 };

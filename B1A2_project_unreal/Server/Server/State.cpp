@@ -464,7 +464,7 @@ void ReturnState::Exit(MonsterRef monster)
 void AttackState::Enter(MonsterRef monster)
 {
 	monster->GetTarget()->TackDamage(monster->GetDamage());
-	g_framework->SendGetDamagePacket(monster->GetTarget()->GetID(), monster->GetDamage(), true);
+	g_framework->SendUpdateHpPacket(monster->GetTarget()->GetID(), monster->GetTarget()->GetHP(), true);
 	std::cout << "Player " << monster->GetTarget()->GetID() << " HP: " << monster->GetTarget()->GetHP() << "\n";
 }
 
@@ -568,7 +568,7 @@ void Play::Exit(MonsterRef monster)
 		emotion == Emotion::Neutral && targetEmotion == Emotion::Happy)
 	{
 		emotionGame->GetTarget()->TackDamage(emotionGame->GetDamage());
-		g_framework->SendGetDamagePacket(emotionGame->GetTarget()->GetID(), emotionGame->GetDamage(), true);
+		g_framework->SendUpdateHpPacket(emotionGame->GetTarget()->GetID(), emotionGame->GetTarget()->GetHP(), true);
 		emotionGame->SetResult(EmotionGameResult::Win);
 	}
 	// Á³À» ¶§

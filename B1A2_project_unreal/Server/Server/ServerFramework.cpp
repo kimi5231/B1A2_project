@@ -662,19 +662,19 @@ void ServerFramework::SendEndStagePacket(bool broadcast, SOCKET client)
 	_sendEvents.push_back(event);
 }
 
-void ServerFramework::SendGetDamagePacket(uint playerID, unsigned char damage, bool broadcast, SOCKET client)
+void ServerFramework::SendUpdateHpPacket(int playerID, unsigned char hp, bool broadcast, SOCKET client)
 {
 	// Packet Data 持失
-	S_GetDamage_Packet packetData{ playerID, damage };
+	S_UpdateHp_Packet packetData{ playerID, hp };
 
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);
-	
+
 	// SendEvent 持失
 	SendEventRef event = std::make_shared<SendEvent>();
 	event->isBroadcast = broadcast;
 	event->clientSocket = client;
-	event->packetID = S_GetDamage;
+	event->packetID = S_UpdateHp;
 	event->serializedPacketData = serializedPacketData;
 	_sendEvents.push_back(event);
 }
