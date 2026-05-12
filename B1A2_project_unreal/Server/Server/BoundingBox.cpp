@@ -36,6 +36,12 @@ void BoundingBox::SetBounds(Vector pos, Vector size, Dir dir)
     SetOwnerPos(pos, dir);
 }
 
+void BoundingBox::SetBounds(Vector pos, int size, Dir dir)
+{
+    _ownerSize = Vector(size, size, size);
+    SetOwnerPos(pos, dir);
+}
+
 void BoundingBox::SetOwnerPos(Vector pos, Dir dir)
 {
     _ownerPos = pos;

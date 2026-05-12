@@ -3,6 +3,9 @@
 #include "FSM.h"
 #include "State.h"
 #include "Global.h"
+#include "BoundingBox.h"
+#include "Room.h"
+#include "Player.h"
 
 EmotionGame::EmotionGame(MonsterType monsterType, Room* ownerRoom)
 	: Monster(monsterType, ownerRoom)
@@ -36,7 +39,26 @@ void EmotionGame::Update(Room* room)
 	if(_loseCount == 3)
 		SetState(DEAD);
 
+	if (_state == IDLE)
+	{
+		const std::unordered_map<uint, PlayerRef>& players = room->GetPlayers();
+		for (auto& [id, player] : players)
+		{
+			/*if (player->GetObjectPoolState() == ObjectPoolState::Reusable)
+				continue;*/
 
+			BoundingBox aggroBox;
+			aggroBox.SetBounds(_pos, _aggroRange, Front);
+
+			// 플레이어가 있으면, 플레이어 위치를 타겟으로 설정
+			if (CheckCollision(aggroBox, player->GetBoundingBox()))
+			{
+				_target = player;
+				SetState(ObjectState::GRAB);
+				return;
+			}
+		}
+	}
 }
 
 bool EmotionGame::IsReadyNextState()
@@ -72,6 +94,15 @@ bool EmotionGame::SetState(ObjectState state, bool isSend)
 	{
 	case ObjectState::TELEPORT:
 		_fsm->ChangeState(g_teleportState, dynamic_pointer_cast<Monster>(shared_from_this()));
+		break;
+	case ObjectState::GRAB:
+		_fsm->ChangeState(g_grabState, dynamic_pointer_cast<Monster>(shared_from_this()));
+		break;
+	case ObjectState::PLAY:
+		_fsm->ChangeState(g_playState, dynamic_pointer_cast<Monster>(shared_from_this()));
+		break;
+	case ObjectState::RELEASE:
+		_fsm->ChangeState(g_releaseState, dynamic_pointer_cast<Monster>(shared_from_this()));
 		break;
 	}
 

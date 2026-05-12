@@ -12,6 +12,7 @@ public:
 
 public:
 	void SetBounds(Vector pos, Vector size, Dir dir);
+	void SetBounds(Vector pos, int size, Dir dir);
 	const AABB& GetBounds() { return _bounds; }
 	void SetOwnerPos(Vector pos, Dir dir);
 	const std::array<Vector, CornerCount> GetCorners();

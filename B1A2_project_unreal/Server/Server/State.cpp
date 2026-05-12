@@ -23,6 +23,9 @@ AttackState* g_attackState = new AttackState();
 HitState* g_hitState = new HitState();
 DeadState* g_deadState = new DeadState();
 Teleport* g_teleportState = new Teleport();
+Grab* g_grabState = new Grab();
+Play* g_playState = new Play();
+Release* g_releaseState = new Release();
 
 //--------------Idle--------------
 void IdleState::Tick(MonsterRef monster, Room* room)
@@ -525,6 +528,8 @@ void Teleport::Exit(MonsterRef monster)
 	// 랜덤한 위치로 순간이동
 	Vector pos = monster->SelectRandomPosInCube(cube);
 	monster->SetPos(pos);
+	std::cout << pos.x << " " <<  pos.y << " " << pos.z << std::endl;
+	g_framework->SendMovePacket(monster, true);
 }
 
 //--------------Grab----------------
@@ -537,6 +542,7 @@ void Grab::Exit(MonsterRef monster)
 {
 	// 타겟의 위치로 순간이동
 	monster->SetPos(monster->GetTarget()->GetPos());
+	g_framework->SendMovePacket(monster, true);
 
 	// 보정 필요하면 보정하기
 }
@@ -576,7 +582,7 @@ void Play::Exit(MonsterRef monster)
 	}
 
 	// 결과 패킷 보내기
-
+	
 
 	emotionGame->InitSumTime();
 }
@@ -591,6 +597,7 @@ void Release::Tick(MonsterRef monster, Room* room)
 
 void Release::Exit(MonsterRef monster)
 {
+	monster->SetTarget(nullptr);
 	monster->InitSumTime();
 }
 
@@ -660,7 +667,6 @@ void Staring::Exit(MonsterRef monster)
 }
 
 //--------------Vanishing----------------
-
 void Vanishing::Tick(MonsterRef monster, Room* room)
 {
 	State::Tick(monster, room);

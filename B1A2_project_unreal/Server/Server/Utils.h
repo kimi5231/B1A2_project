@@ -1,6 +1,7 @@
 #pragma once
 #include <cmath>
 #include "Types.h"
+#include "BoundingBox.h"
 
 // 바라보는 방향 벡터
 inline Vector GetForwardVector(float pitch, float yaw)

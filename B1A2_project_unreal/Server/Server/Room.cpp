@@ -8,6 +8,7 @@
 #include "Spider.h"
 #include "Obstacle.h"
 #include "Lantern.h"
+#include "EmotionGame.h"
 
 Room::Room()
 {
@@ -73,6 +74,14 @@ void Room::Init()
 	spider->SetState(ObjectState::HIT, false);
 	spider->SetState(ObjectState::IDLE, false);
 	_monsters.push_back(spider);
+
+	MonsterRef emotionGame = std::make_shared<EmotionGame>(MonsterType::EmotionGame, this);
+	emotionGame->SetID(_generateMonsterID++);
+	emotionGame->SetPos({ 0, 675, 25 });
+	emotionGame->SetObjectPoolState(ObjectPoolState::InWorld);
+	emotionGame->SetState(ObjectState::HIT, false);
+	emotionGame->SetState(ObjectState::IDLE, false);
+	_monsters.push_back(emotionGame);
 }
 
 void Room::Update()
