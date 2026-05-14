@@ -19,8 +19,6 @@ Room::Room()
 
 	_currentDifficulty = Difficulty::Easy;
 	_detailDifficulty = Difficulty::Easy;
-
-	CreateFactoryCubes();
 }
 
 Room::~Room()
@@ -82,6 +80,14 @@ void Room::Init()
 	emotionGame->SetState(ObjectState::HIT, false);
 	emotionGame->SetState(ObjectState::IDLE, false);
 	_monsters.push_back(emotionGame);
+
+	// base 생성
+	CubeInfo info = g_dataManager->GetCubeInfo(CubeType::Base);
+	CubeRef base = std::make_shared<Cube>(Vector{0, 0, 0}, Back, info);
+	base->SetID(0);
+	_base = base;
+
+	CreateFactoryCubes();
 }
 
 void Room::Update()
@@ -271,7 +277,7 @@ void Room::CreateFactoryCubes()
 		for (const CubeRef cube : _cubes)
 		{
 			// 배치하려는 곳에 이미 방이 있으면 생성X
-			if (cube->CheckCollision(newCube->GetBoundingBox()))
+			if (cube->CheckCollision(newCube->GetBoundingBox()) || _base->CheckCollision(newCube->GetBoundingBox()))
 			{
 				isCreate = false;
 				break;

@@ -47,6 +47,7 @@ private:
 	uint _generateItemID{};
 	int _generateObstacleID{};
 
+	CubeRef _base;
 	std::vector<CubeRef> _cubes;
 	std::vector<DoorRef> _doors;
 	std::vector<ObstacleRef> _obstacles;

@@ -107,6 +107,8 @@ enum class CubeType
 
 	Staircase,
 
+	Base,
+
 	GameRoomTypeCount,
 };
 
