@@ -19,10 +19,12 @@
 #include <cmath>
 #include <algorithm>
 #include <optional>
+#include <MSWSock.h>
 
 #include "Types.h"
 #include "Utils.h"
 
+#pragma comment(lib, "MSWSock.lib")
 #pragma comment(lib, "ws2_32")
 
 using SendEventRef = std::shared_ptr<class SendEvent>;
@@ -41,8 +43,9 @@ using DoorRef = std::shared_ptr<class Door>;
 using LanternRef = std::shared_ptr<class Lantern>;
 using ObstacleRef = std::shared_ptr<class Obstacle>;
 
-// 비트연산
-#define LAYER_SHIFT(n) ((n) * 2)
-#define LAYER_MASK(n)  (0b11 << LAYER_SHIFT(n))
-
 #define TileSize 25
+
+#define PORT 7777
+#define BufferSize 5000
+#define MAX_PLAYER 600
+#define MAX_ROOM_PLAYER 4

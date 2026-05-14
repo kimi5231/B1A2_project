@@ -35,7 +35,7 @@ public:
 
 public:
 	GameObjectRef GetGameObject(ObjectType type, uint id);
-	const std::unordered_map<uint, PlayerRef>& GetPlayers() { return _players; }
+	const std::array<PlayerRef, MAX_ROOM_PLAYER>& GetPlayers() { return _players; }
 	const std::vector<MonsterRef>& GetMonsters() { return _monsters; }
 	const std::vector<ItemRef>& GetItems() { return _items; }
 	const std::vector<CubeRef>& GetCubes() { return _cubes; }
@@ -51,7 +51,7 @@ private:
 	std::vector<CubeRef> _cubes;
 	std::vector<DoorRef> _doors;
 	std::vector<ObstacleRef> _obstacles;
-	std::unordered_map<uint, PlayerRef> _players;
+	std::array<PlayerRef, MAX_ROOM_PLAYER> _players;
 	std::vector<MonsterRef> _monsters;
 	std::vector<ItemRef> _items;
 	std::unordered_map<int, ItemRef> _processingItems;

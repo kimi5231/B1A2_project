@@ -6,6 +6,13 @@ using TimePoint = std::chrono::steady_clock::time_point;
 using FloatSec = std::chrono::duration<float>;
 
 //------------------Enums------------------
+enum class IOType
+{
+	Send,
+	Recv,
+	Accept,
+};
+
 enum class ObjectType : char
 {
 	Player,
