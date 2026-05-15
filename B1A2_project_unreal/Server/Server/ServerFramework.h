@@ -1,24 +1,7 @@
 #pragma once
-
 #include "Packets.h"
 
 class Room;
-
-struct Client
-{
-	int id;
-	SOCKET socket;
-	PlayerRef player;
-};
-
-struct SendEvent
-{
-	bool isComplete = false;
-	bool isBroadcast;
-	SOCKET clientSocket;
-	PacketID packetID;
-	std::vector<char> serializedPacketData;
-};
 
 class ServerFramework
 {
@@ -29,9 +12,7 @@ public:
 public:
 	void Update();
 	void ProcessRecv(ClientRef client);
-	void ProcessSend(PacketID id, const std::vector<char>& packetData, SOCKET clientSocket);
-	//std::vector<char> CreatePakcet(PacketID id, const std::vector<char>& packetData);
-
+	
 private:
 	template <class T >
 	std::vector<char> SerializePOD(const T& pod);
@@ -41,30 +22,6 @@ private:
 	
 	template <class T>
 	std::vector<T> DeserializeVector(const std::vector<char>& data);
-
-public:
-	// Send
-	void SendAddItemPacket(ItemRef item, bool isTool, bool broadcast, SOCKET client = 0);
-	void SendRemoveObjectPacket(ObjectType objectType, uint objectID, bool broadcast, SOCKET client = 0);
-	void SendUpdateObjectStatePacket(GameObjectRef object, bool broadcast, SOCKET client = 0);
-	void SendMovePacket(GameObjectRef object, bool broadcast, SOCKET client = 0);
-	void SendCreateCubesPacket(const std::vector<CubeRef>& cubes, const std::vector<DoorRef>& doors, bool broadcast, SOCKET client = 0);
-	void SendAddItemToInventoryPacket(ItemRef item, bool isTool, bool broadcast, SOCKET client = 0);
-	void SendRemoveItemFromInventoryPacket(ItemRef item, bool isTool, bool broadcast, SOCKET client = 0);
-	void SendItemPickupNotifyPacket(ItemRef item, uint playerID, bool isTool, bool broadcast, SOCKET client = 0);
-	void SendDropItemPacket(ItemRef item, PlayerRef player, bool isTool, bool broadcast, SOCKET client = 0);
-	void SendUpdateCurrentToolPacket(uint playerID, uint itemID, ItemType type, bool broadcast, SOCKET client = 0);
-	void SendUseToolPacket(uint playerID, ItemType type, bool broadcast, SOCKET client = 0);
-	void SendSpawnParticlePacket(Vector pos, bool broadcast, SOCKET client = 0);
-	void SendInteractDoorNotifyPacket(uint playerID, uint doorID, ObjectState doorState, bool broadcast, SOCKET client = 0);
-	void SendSpawnMonsterPacket(MonsterRef monster, bool broadcast, SOCKET client = 0);
-	void SendSpawnObstaclePacket(ObstacleRef obstacle, bool broadcast, SOCKET client = 0);
-	void SendTurnOnLanternPacket(LanternRef lantern, int playerID, bool broadcast, SOCKET client = 0);
-	void SendTurnOffLanternPacket(LanternRef lantern, int playerID, bool broadcast, SOCKET client = 0);
-	void SendStartStagePacket(bool broadcast, SOCKET client = 0);
-	void SendEndStagePacket(bool broadcast, SOCKET client = 0);
-	void SendUpdateHpPacket(int playerID, unsigned char hp, bool broadcast, SOCKET client = 0);
-	void Broadcast(PacketID id, const std::vector<char>& packetData);
 
 public:
 	// Recv

@@ -4,6 +4,9 @@
 #include "Session.h"
 #include "ExpOver.h"
 #include "Room.h"
+#include "Obstacle.h"
+#include "Cube.h"
+#include "Door.h"
 
 ServerNetwork::ServerNetwork(ServerFramework* framework)
 {
@@ -170,6 +173,9 @@ void ServerNetwork::ProcessAccept()
 		}
 	}
 
+	// 나중에 삭제하기
+	SendCreateCubesPacket(_clients[clientIndex]->_room->GetCubes(), _clients[clientIndex]->_room->GetDoors(), _clients[clientIndex]);
+
 	_clients[clientIndex]->Recv();
 
 	// accept 다시 걸기
@@ -311,6 +317,30 @@ std::vector<char> ServerNetwork::SerializePOD(const T& pod)
 	return serializedData;
 }
 
+template<class T>
+std::vector<char> ServerNetwork::SerializeVector(const std::vector<T>& vector)
+{
+	int size = vector.size();
+
+	std::vector<char> serializedData(sizeof(int) + vector.size() * sizeof(T));
+	memcpy(serializedData.data(), &size, sizeof(int));
+	memcpy(serializedData.data() + sizeof(int), vector.data(), size * sizeof(T));
+
+	return serializedData;
+}
+
+template<class T>
+std::vector<T> ServerNetwork::DeserializeVector(const std::vector<char>& data)
+{
+	int size;
+	memcpy(&size, data.data(), sizeof(int));
+
+	std::vector<T> vector(size);
+	memcpy(vector.data(), data.data() + sizeof(int), size * sizeof(T));
+
+	return vector;
+}
+
 void ServerNetwork::SendAddPlayerPacket(Player* player, Session* client)
 {
 	// Packet Data 생성
@@ -322,10 +352,43 @@ void ServerNetwork::SendAddPlayerPacket(Player* player, Session* client)
 	client->Send(serializedPacketData);
 }
 
+void ServerNetwork::SendAddMonsterPacket(Monster* monster, Session* client)
+{
+	// Packet Data 생성
+	S_AddMonster_Packet packetData{ sizeof(S_AddMonster_Packet), S_AddMonster, monster->GetID(), monster->GetPos(), monster->GetRotation(), monster->GetMonsterType(), monster->GetState() };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	client->Send(serializedPacketData);
+}
+
+void ServerNetwork::SendAddItemPacket(Item* item, bool isTool, Session* client)
+{
+	// Packet Data 생성
+	S_AddItem_Packet packetData{ sizeof(S_AddItem_Packet), S_AddItem, item->GetID(), isTool, item->GetPos(), item->GetItemType() };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	client->Send(serializedPacketData);
+}
+
+void ServerNetwork::SendAddObstaclePacket(Obstacle* obstacle, Session* client)
+{
+	// Packet Data 생성
+	S_AddObstacle_Packet packetData{ sizeof(S_AddObstacle_Packet), S_AddObstacle, obstacle->GetID(), obstacle->GetPos(), obstacle->GetRotation(), obstacle->GetObstacleType() };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	client->Send(serializedPacketData);
+}
+
 void ServerNetwork::SendRemoveObjectPacket(ObjectType objectType, int objectID, Session* client)
 {
 	// Packet Data 생성
-	S_RemoveObject_Packet packetData{ sizeof(S_RemoveObject_Packet), S_RemoveObject, objectType, objectID };
+	S_RemoveObject_Packet packetData{ sizeof(S_RemoveObject_Packet), S_RemoveObject, objectID, objectType };
 
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);
@@ -348,6 +411,60 @@ void ServerNetwork::SendUpdateObjectStatePacket(GameObject* object, Session* cli
 {
 	// Packet Data 생성
 	S_UpdateObjectState_Packet packetData{ sizeof(S_UpdateObjectState_Packet), S_UpdateObjectState, object->GetID(), object->GetObjectType(), object->GetState() };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	client->Send(serializedPacketData);
+}
+
+void ServerNetwork::SendCreateCubesPacket(const std::vector<CubeRef>& cubes, const std::vector<DoorRef>& doors, Session* client)
+{
+	std::vector<CubeDTO> cubeDTOs;
+	for (auto& cube : cubes)
+	{
+		// Cube 정보 기록
+		CubeDTO DTO{ cube->GetCubeType(), cube->GetPos(), cube->GetDir() };
+		cubeDTOs.push_back(DTO);
+	}
+
+	std::vector<DoorDTO> doorDTOs;
+	for (auto& door : doors)
+	{
+		// Door 정보 기록
+		DoorDTO DTO{ door->GetID(), door->GetPos(), door->GetDir(), door->GetState(), door->GetDoorType() };
+		doorDTOs.push_back(DTO);
+	}
+	
+	// Packet Serialize
+	std::vector<char> cubeData = SerializeVector(cubeDTOs);
+	std::vector<char> doorData = SerializeVector(doorDTOs);
+	unsigned short packetSize = sizeof(unsigned short) + sizeof(PacketID) + cubeData.size() + doorData.size();
+	std::vector<char> serializedPacketData(sizeof(unsigned short));
+
+	memcpy(serializedPacketData.data(), &packetSize, sizeof(unsigned short));
+	serializedPacketData.push_back(S_CreateCubes);
+	serializedPacketData.insert(serializedPacketData.end(), cubeData.begin(), cubeData.end());
+	serializedPacketData.insert(serializedPacketData.end(), doorData.begin(), doorData.end());
+
+	client->Send(serializedPacketData);
+}
+
+void ServerNetwork::SendAddItemToInventoryPacket(Item* item, bool isTool, Session* client)
+{
+	// Packet Data 생성
+	S_AddItemToInventory_Packet packetData{ sizeof(S_AddItemToInventory_Packet), S_AddItemToInventory, item->GetID(), isTool, item->GetItemType(), item->GetWeight() };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	client->Send(serializedPacketData);
+}
+
+void ServerNetwork::SendRemoveItemFromInventoryPacket(Item* item, bool isTool, Session* client)
+{
+	// Packet Data 생성
+	S_RemoveItemFromInventory_Packet packetData{ sizeof(S_RemoveItemFromInventory_Packet), S_RemoveItemFromInventory, item->GetID(), isTool, item->GetItemType() };
 
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);
@@ -389,13 +506,13 @@ void ServerNetwork::ProcessUpdateObjectStatePacket(C_UpdateObjectState_Packet pa
 	// 자신을 제외한 모든 클라이언트에게 알리기
 	for (auto& player : _clients[clientIndex]->_room->GetPlayers())
 	{
-		if (player->GetClient()->_isConnected)
+		if (player->GetClient())
 			continue;
 
 		// 자기 자신 제외
 		if (_clients[clientIndex]->_player == player)
 			continue;
 
-		SendUpdateObjectStatePacket(object, _clients[clientIndex]);
+		SendUpdateObjectStatePacket(object, player->GetClient());
 	}
 }

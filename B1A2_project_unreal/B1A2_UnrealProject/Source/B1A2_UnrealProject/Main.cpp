@@ -108,6 +108,41 @@ void UMain::ProcessRecv()
 			event->isComplete = true;
 			break;
 		}
+		case S_AddMonster:
+		{
+			S_AddMonster_Packet addMonsterPacket;
+			FMemory::Memcpy(&addMonsterPacket, event->serializedPacketData.data(), sizeof(S_AddMonster_Packet));
+			RecvAddMonster(addMonsterPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_AddItem:
+		{
+			S_AddItem_Packet addItemPacket;
+			FMemory::Memcpy(&addItemPacket, event->serializedPacketData.data(), sizeof(S_AddItem_Packet));
+			if (addItemPacket.isTool)
+				RecvAddTool(addItemPacket);
+			else
+				RecvAddItem(addItemPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_AddObstacle:
+		{
+			S_AddObstacle_Packet addobsraclePacket;
+			FMemory::Memcpy(&addobsraclePacket, event->serializedPacketData.data(), sizeof(S_AddObstacle_Packet));
+			RecvAddObstacle(addobsraclePacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_RemoveObject:
+		{
+			S_RemoveObject_Packet removeObjectPacket;
+			FMemory::Memcpy(&removeObjectPacket, event->serializedPacketData.data(), sizeof(S_RemoveObject_Packet));
+			RecvRemoveObject(removeObjectPacket);
+			event->isComplete = true;
+			break;
+		}
 		case S_Move:
 		{
 			S_Move_Packet movePacket;
@@ -116,34 +151,27 @@ void UMain::ProcessRecv()
 			event->isComplete = true;
 			break;
 		}
+		case S_UpdateObjectState:
+		{
+			S_UpdateObjectState_Packet updateObjectStatePacket;
+			FMemory::Memcpy(&updateObjectStatePacket, event->serializedPacketData.data(), sizeof(S_UpdateObjectState_Packet));
+			RecvUpdateObjectState(updateObjectStatePacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_CreateCubes:
+		{
+			unsigned short packetSize;
+			memcpy(&packetSize, event->serializedPacketData.data(), sizeof(unsigned short));
+			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned short) + sizeof(PacketID));
+			UE_LOG(LogTemp, Error, TEXT("%d, %d"), packetSize, event->serializedPacketData.size());
+			S_CreateCubes_Packet createCubesPacket{ packetSize, S_CreateCubes, _gameNetwork->DeserializeVector<CubeDTO>(event->serializedPacketData), _gameNetwork->DeserializeVector<DoorDTO>(event->serializedPacketData)};
+			RecvCreateCubes(createCubesPacket);
+			event->isComplete = true;
+			break;
+		}
 			
-			case S_AddItem:
-			{
-				S_AddItem_Packet addItemPacket;
-				FMemory::Memcpy(&addItemPacket, event->serializedPacketData.data(), sizeof(S_AddItem_Packet));
-				if (addItemPacket.isTool)
-					RecvAddTool(addItemPacket);
-				else
-					RecvAddItem(addItemPacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_RemoveObject:
-			{
-				S_RemoveObject_Packet removeObjectPacket;
-				FMemory::Memcpy(&removeObjectPacket, event->serializedPacketData.data(), sizeof(S_RemoveObject_Packet));
-				RecvRemoveObject(removeObjectPacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_UpdateObjectState:
-			{
-				S_UpdateObjectState_Packet updateObjectStatePacket;
-				FMemory::Memcpy(&updateObjectStatePacket, event->serializedPacketData.data(), sizeof(S_UpdateObjectState_Packet));
-				RecvUpdateObjectState(updateObjectStatePacket);
-				event->isComplete = true;
-				break;
-			}
+			
 			
 			case S_AddItemToInventory:	// MyPlayer의 아이템과 장비를 인벤과 툴바에 넣음 (OtherPlayer는 UpdateObjectState)
 			{
@@ -209,21 +237,8 @@ void UMain::ProcessRecv()
 				event->isComplete = true;
 				break;
 			}
-			case S_CreateCubes:
-			{
-				S_CreateCubes_Packet createCubesPacket{ _gameNetwork->DeserializeVector<CubeDTO>(event->serializedPacketData), _gameNetwork->DeserializeVector<DoorDTO>(event->serializedPacketData) };
-				RecvCreateCubes(createCubesPacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_SpawnMonster:
-			{
-				S_SpawnMonster_Packet spawnMonsterPacket;
-				FMemory::Memcpy(&spawnMonsterPacket, event->serializedPacketData.data(), sizeof(S_SpawnMonster_Packet));
-				RecvSpawnMonster(spawnMonsterPacket);
-				event->isComplete = true;
-				break;
-			}
+			
+			
 			case S_TurnOnLantern:
 			{
 				S_TurnOnLantern_Packet turnOnLanternPacket;
@@ -264,14 +279,7 @@ void UMain::ProcessRecv()
 				event->isComplete = true;
 				break;
 			}
-			case S_SpawnObstacle:
-			{
-				S_SpawnObstacle_Packet spawnObstaclePacket;
-				FMemory::Memcpy(&spawnObstaclePacket, event->serializedPacketData.data(), sizeof(S_SpawnObstacle_Packet));
-				RecvSpawnObstacle(spawnObstaclePacket);
-				event->isComplete = true;
-				break;
-			}
+			
 		}
 	}
 }
@@ -542,15 +550,15 @@ void UMain::RecvAddPlayer(S_AddPlayer_Packet packet)
 
 void UMain::RecvAddItem(S_AddItem_Packet packet)
 {
-	if (_items.Contains(packet.objectID))
+	if (_items.Contains(packet.id))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Item already spawned... object ID: %d"), packet.objectID);
+		UE_LOG(LogTemp, Warning, TEXT("Item already spawned... object ID: %d"), packet.id);
 		return;
 	}
 
 	FVector spawnLocation(packet.pos.x, packet.pos.y, packet.pos.z);
-	FRotator spawnRotation(0, packet.rotation.yaw, 0);
-	int id = packet.objectID;
+	FRotator spawnRotation(0, 0, 0);
+	int id = packet.id;
 
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
@@ -624,15 +632,15 @@ void UMain::RecvAddItem(S_AddItem_Packet packet)
 
 void UMain::RecvAddTool(S_AddItem_Packet packet)
 {
-	if (_tools.Contains(packet.objectID))
+	if (_tools.Contains(packet.id))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Tool already spawned... object ID: %d"), packet.objectID);
+		UE_LOG(LogTemp, Warning, TEXT("Tool already spawned... object ID: %d"), packet.id);
 		return;
 	}
 
 	FVector spawnLocation(packet.pos.x, packet.pos.y, packet.pos.z);
-	FRotator spawnRotation(0, packet.rotation.yaw, 0);
-	int id = packet.objectID;
+	FRotator spawnRotation(0, 0, 0);
+	int id = packet.id;
 
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
@@ -833,7 +841,7 @@ void UMain::RecvDropItem(S_DropItem_Packet packet)
 
 void UMain::RecvRemoveObject(S_RemoveObject_Packet packet)
 {
-	switch (packet.objectType)
+	switch (packet.type)
 	{
 	case ObjectType::Player:
 		RemovePlayer(packet);
@@ -852,7 +860,7 @@ void UMain::RecvRemoveObject(S_RemoveObject_Packet packet)
 
 void UMain::RemovePlayer(S_RemoveObject_Packet packet)
 {
-	int id = packet.objectID;
+	int id = packet.id;
 
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
@@ -880,7 +888,7 @@ void UMain::RemovePlayer(S_RemoveObject_Packet packet)
 
 void UMain::RemoveMonster(S_RemoveObject_Packet packet)
 {
-	int id = packet.objectID;
+	int id = packet.id;
 
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
@@ -1190,7 +1198,7 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 
 void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 {
-	int itemID = packet.itemID;
+	int itemID = packet.id;
 	UE_LOG(LogTemp, Log, TEXT("[RecvAddItemToInventory] ID: %d"), itemID);
 
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
@@ -1209,7 +1217,7 @@ void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 			}
 
 			ABaseItem* tool = *foundTool;
-			int32 toolIndex = _myPlayer->AddToolToToolBar(packet.itemType, itemID, packet.itemWeight);
+			int32 toolIndex = _myPlayer->AddToolToToolBar(packet.itemType, itemID, packet.weight);
 
 			// 장비 줍기 애니메이션 재생 + 월드에서 장비 삭제
 			_myPlayer->PlayPickUpAnimation(tool);
@@ -1252,7 +1260,7 @@ void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 			// 아이템 줍기 애니메이션 재생 + 월드에서 아이템 삭제
 			_myPlayer->PlayPickUpAnimation(item);
 			// 인벤에 넣기
-			_myPlayer->AddItemToInventory(packet.itemType, itemID, packet.itemWeight);
+			_myPlayer->AddItemToInventory(packet.itemType, itemID, packet.weight);
 			// _items에서 제거
 			_items.Remove(itemID);
 
@@ -1263,7 +1271,7 @@ void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 
 void UMain::RecvRemoveItemFromInventory(S_RemoveItemFromInventory_Packet packet)
 {
-	int32 itemID = packet.itemID;
+	int32 itemID = packet.id;
 	bool isTool = packet.isTool;
 
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
@@ -1456,7 +1464,7 @@ void UMain::RecvInteractDoorNotify(S_InteractDoorNotify_Packet packet)
 	});
 }
 
-void UMain::RecvSpawnMonster(S_SpawnMonster_Packet packet)
+void UMain::RecvAddMonster(S_AddMonster_Packet packet)
 {
 	if (_monsters.Contains(packet.id))
 	{
@@ -1475,7 +1483,7 @@ void UMain::RecvSpawnMonster(S_SpawnMonster_Packet packet)
 			return;
 
 		ABaseMonster* monsterActor = nullptr;
-		switch (packet.type)
+		switch (packet.monsterType)
 		{
 		default:
 		case MonsterType::None:
@@ -1648,7 +1656,7 @@ void UMain::RecvUpdateHp(S_UpdateHp_Packet packet)
 {
 }
 
-void UMain::RecvSpawnObstacle(S_SpawnObstacle_Packet packet)
+void UMain::RecvAddObstacle(S_AddObstacle_Packet packet)
 {
 }
 

@@ -5,7 +5,7 @@
 #define PORT 7777
 #define BufferSize 5000
 
-enum PacketID
+enum PacketID : char
 {
 	// Client
 	C_Move,
@@ -23,10 +23,12 @@ enum PacketID
 
 	//Server
 	S_AddPlayer,
+	S_AddMonster,
 	S_AddItem,
+	S_AddObstacle,
 	S_RemoveObject,
-	S_UpdateObjectState,
 	S_Move,
+	S_UpdateObjectState,
 	S_CreateCubes,
 	S_AddItemToInventory,
 	S_RemoveItemFromInventory,
@@ -36,15 +38,14 @@ enum PacketID
 	S_UseTool,
 	S_SpawnParticle,
 	S_InteractDoorNotify,
-	S_SpawnMonster,
 	S_TurnOnLantern,
 	S_TurnOffLantern,
 	S_StartStage,
 	S_EndStage,
-	S_SpawnObstacle,
 	S_UpdateHp,
 };
 
+#pragma pack(push, 1)
 struct CubeDTO
 {
 	CubeType type;
@@ -54,7 +55,7 @@ struct CubeDTO
 
 struct DoorDTO
 {
-	int id;
+	unsigned char id;
 	Vector pos;
 	Dir dir;
 	ObjectState state;
@@ -62,7 +63,6 @@ struct DoorDTO
 };
 
 // Client
-#pragma pack(push, 1)
 struct C_Move_Packet
 {
 	unsigned char size;
@@ -82,8 +82,6 @@ struct C_UpdateObjectState_Packet
 	ObjectType type;
 	ObjectState state;
 };
-
-
 
 struct C_GetItem_Packet
 {
@@ -155,7 +153,7 @@ struct C_EndStage_Packet
 // Server
 struct S_AddPlayer_Packet
 {
-	unsigned char size;
+	unsigned short size;
 	PacketID packetID;
 	unsigned char id;
 	Vector pos;
@@ -164,35 +162,46 @@ struct S_AddPlayer_Packet
 
 struct S_AddMonster_Packet
 {
-	unsigned char size;
+	unsigned short size;
 	PacketID packetID;
 	unsigned char id;
 	Vector pos;
 	Rotation rotation;
-	MonsterType type;
+	MonsterType monsterType;
 	ObjectState state;
 };
 
 struct S_AddItem_Packet
 {
+	unsigned short size;
+	PacketID packetID;
+	unsigned char id;
 	bool isTool;
+	Vector pos;
 	ItemType itemType;
-	int objectID;
+};
+
+struct S_AddObstacle_Packet
+{
+	unsigned short size;
+	PacketID packetID;
+	unsigned char id;
 	Vector pos;
 	Rotation rotation;
+	ObstacleType obstacleType;
 };
 
 struct S_RemoveObject_Packet
 {
-	unsigned char size;
+	unsigned short size;
 	PacketID packetID;
-	ObjectType objectType;
-	int objectID;
+	unsigned char id;
+	ObjectType type;
 };
 
 struct S_Move_Packet
 {
-	unsigned char size;
+	unsigned short size;
 	PacketID packetID;
 	unsigned char id;
 	Vector pos;
@@ -203,7 +212,7 @@ struct S_Move_Packet
 
 struct S_UpdateObjectState_Packet
 {
-	unsigned char size;
+	unsigned short size;
 	PacketID packetID;
 	unsigned char id;
 	ObjectType type;
@@ -212,33 +221,39 @@ struct S_UpdateObjectState_Packet
 
 struct S_CreateCubes_Packet
 {
-	/*unsigned char size;
-	PacketID packetID;*/
+	unsigned short size;
+	PacketID packetID;
 	std::vector<CubeDTO> cubes;
 	std::vector<DoorDTO> doors;
 };
 
 struct S_AddItemToInventory_Packet
 {
+	unsigned short size;
+	PacketID packetID;
+	unsigned char id;
 	bool isTool;
 	ItemType itemType;
-	int itemID;
-	float itemWeight;
+	float weight;
 };
 
 struct S_RemoveItemFromInventory_Packet
 {
+	unsigned short size;
+	PacketID packetID;
+	unsigned char id;
 	bool isTool;
 	ItemType itemType;
-	int itemID;
 };
 
 struct S_ItemPickupNotify_Packet
 {
+	unsigned short size;
+	PacketID packetID;
+	unsigned char itemID;
+	unsigned char playerID;
 	bool isTool;
 	ItemType itemType;
-	int itemID;
-	int playerID;
 };
 
 struct S_DropItem_Packet
@@ -275,15 +290,6 @@ struct S_UseTool_Packet
 	ItemType toolType;
 };
 
-struct S_SpawnMonster_Packet
-{
-	int id;
-	MonsterType type;
-	ObjectState state;
-	Vector pos;
-	Rotation rotation;
-};
-
 struct S_TurnOnLantern_Packet
 {
 	int lanternID;
@@ -308,13 +314,6 @@ struct S_StartStage_Packet
 struct S_EndStage_Packet
 {
 	bool result;
-};
-
-struct S_SpawnObstacle_Packet
-{
-	int id;
-	ObstacleType type;
-	Vector pos;
 };
 
 struct S_UpdateHp_Packet

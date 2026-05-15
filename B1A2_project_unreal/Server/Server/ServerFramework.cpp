@@ -12,41 +12,6 @@
 
 ServerFramework::ServerFramework()
 {
-	//// 윈속 초기화
-	//WSADATA wsa;
-	//if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
-	//{
-	//	std::cout << "윈속 초기화 실패" << std::endl;
-	//	return;
-	//}
-
-	//// listenSocket 생성
-	//_listenSocket = socket(AF_INET, SOCK_STREAM, 0);
-	//if (_listenSocket == INVALID_SOCKET)
-	//{
-	//	std::cout << "listenSocket 생성 실패" << std::endl;
-	//	return;
-	//}
-
-	//// bind
-	//sockaddr_in addr;
-	//memset(&addr, 0, sizeof(addr));
-	//addr.sin_family = AF_INET;
-	//addr.sin_addr.s_addr = htonl(INADDR_ANY);
-	//addr.sin_port = htons(7777);
-	//if (bind(_listenSocket, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR)
-	//{
-	//	std::cout << "bind 실패" << std::endl;
-	//	return;
-	//}
-
-	//// listen
-	//if (listen(_listenSocket, SOMAXCONN) == SOCKET_ERROR)
-	//{
-	//	std::cout << "listen 실패" << std::endl;
-	//	return;
-	//}
-
 	// Room 생성
 	_room = new Room();
 	_room->Init();
@@ -65,85 +30,6 @@ ServerFramework::~ServerFramework()
 
 void ServerFramework::Update()
 {
-	//// socket set 초기화
-	//FD_ZERO(&_readSet);
-	//FD_ZERO(&_writeSet);
-
-	//// readSet에 listenSocket 등록
-	//FD_SET(_listenSocket, &_readSet);
-
-	//// readSet, writeSet에 clientSocket 등록
-	//for (ClientRef client : _clients)
-	//{
-	//	FD_SET(client->socket, &_readSet);
-	//	FD_SET(client->socket, &_writeSet);
-	//}
-
-	//// select
-	//if (select(0, &_readSet, &_writeSet, NULL, 0) == SOCKET_ERROR)
-	//{
-	//	std::cout << "select 실패" << std::endl;
-	//	return;
-	//}
-
-	//// listenSocekt accept 확인
-	//if (FD_ISSET(_listenSocket, &_readSet))
-	//{
-	//	// accept
-	//	SOCKET clientSocket;
-	//	sockaddr_in clientAddr;
-	//	int addrLen = sizeof(clientAddr);
-	//	clientSocket = accept(_listenSocket, (sockaddr*)&clientAddr, &addrLen);
-	//	if (clientSocket == INVALID_SOCKET)
-	//	{
-	//		std::cout << "clientSocket 생성 실패" << std::endl;
-	//	}
-
-	//	ProcessAccept(clientSocket);
-	//}
-
-	//for (ClientRef client : _clients)
-	//{
-	//	if (FD_ISSET(client->socket, &_readSet))
-	//	{
-	//		ProcessRecv(client);
-	//	}
-
-	//	// send가 가능할 때마다 true
-	//	if (FD_ISSET(client->socket, &_writeSet))
-	//	{
-	//		for (SendEventRef event : _sendEvents)
-	//		{
-	//			if (event->isBroadcast)
-	//			{
-	//				Broadcast(event->packetID, event->serializedPacketData);
-	//				event->isComplete = true;
-	//				break;
-	//			}
-
-	//			if (client->socket == event->clientSocket)
-	//			{
-	//				ProcessSend(event->packetID, event->serializedPacketData, event->clientSocket);
-	//				event->isComplete = true;
-	//			}
-	//		}
-
-	//		_sendEvents.erase(std::remove_if(_sendEvents.begin(), _sendEvents.end(),
-	//			[](SendEventRef event) {
-	//				return event->isComplete;
-	//			}), _sendEvents.end());
-	//	}
-	//}
-
-	//// 연결 끊긴 Client 제거
-	//for (ClientRef client : _removeClients)
-	//{
-	//	closesocket(client->socket);
-	//	_clients.erase(std::find(_clients.begin(), _clients.end(), client));
-	//}
-
-	//_removeClients.clear();
-
 	_room->Update();
 }
 
@@ -227,32 +113,6 @@ void ServerFramework::ProcessRecv(ClientRef client)
 	//}
 }
 
-void ServerFramework::ProcessSend(PacketID id, const std::vector<char>& packetData, SOCKET clientSocket)
-{
-	//std::vector<char> packet = CreatePakcet(id, packetData);
-	//int packetSize = packet.size();
-
-	//// packetSize 송신(고정 길이)
-	//send(clientSocket, (char*)&packetSize, sizeof(int), 0);
-	//// packet 송신(가변 데이터)
-	//send(clientSocket, packet.data(), packetSize, 0);
-}
-
-//std::vector<char> ServerFramework::CreatePakcet(PacketID id, const std::vector<char>& packetData)
-//{
-//	// Header
-//	Header header;
-//	header.id = id;
-//	header.dataSize = packetData.size();
-//
-//	// Packet
-//	std::vector<char> packet(sizeof(Header) + header.dataSize);
-//	memcpy(packet.data(), &header, sizeof(Header));
-//	memcpy(packet.data() + sizeof(Header), packetData.data(), header.dataSize);
-//
-//	return packet;
-//}
-
 template<class T>
 std::vector<char> ServerFramework::SerializePOD(const T& pod)
 {
@@ -284,389 +144,6 @@ std::vector<T> ServerFramework::DeserializeVector(const std::vector<char>& data)
 	memcpy(vector.data(), data.data() + sizeof(int), size * sizeof(T));
 
 	return vector;
-}
-
-void ServerFramework::SendAddItemPacket(ItemRef item, bool isTool, bool broadcast, SOCKET client)
-{
-	// Packet Data 생성
-	S_AddItem_Packet packetData{ isTool, item->GetItemType(), item->GetID(), item->GetPos(), item->GetRotation() };
-
-	// Packet Serialize
-	std::vector<char> serializedPacketData = SerializePOD(packetData);
-
-	// SendEvent 생성
-	SendEventRef event = std::make_shared<SendEvent>();
-	event->isBroadcast = broadcast;
-	event->clientSocket = client;
-	event->packetID = S_AddItem;
-	event->serializedPacketData = serializedPacketData;
-
-	_sendEvents.push_back(event);
-}
-
-void ServerFramework::SendRemoveObjectPacket(ObjectType objectType, uint objectID, bool broadcast, SOCKET client)
-{
-	//// Packet Data 생성
-	//S_RemoveObject_Packet packetData{ objectType, objectID };
-
-	//// Packet Serialize
-	//std::vector<char> serializedPacketData = SerializePOD(packetData);
-
-	//// SendEvent 생성
-	//SendEventRef event = std::make_shared<SendEvent>();
-	//event->isBroadcast = broadcast;
-	//event->clientSocket = client;
-	//event->packetID = S_RemoveObject;
-	//event->serializedPacketData = serializedPacketData;
-
-	//_sendEvents.push_back(event);
-}
-
-void ServerFramework::SendUpdateObjectStatePacket(GameObjectRef object, bool broadcast, SOCKET client)
-{
-	//// Packet Data 생성
-	//S_UpdateObjectState_Packet packetData{ object->GetID(), object->GetObjectType(), object->GetState() };
-
-	//// Packet Serialize
-	//std::vector<char> serializedPacketData = SerializePOD(packetData);
-
-	//// SendEvent 생성
-	//SendEventRef event = std::make_shared<SendEvent>();
-	//event->isBroadcast = broadcast;
-	//event->clientSocket = client;
-	//event->packetID = S_UpdateObjectState;
-	//event->serializedPacketData = serializedPacketData;
-
-	//_sendEvents.push_back(event);
-}
-
-void ServerFramework::SendMovePacket(GameObjectRef object, bool broadcast, SOCKET client)
-{
-	//// Packet Data 생성
-	//S_Move_Packet packetData{ object->GetObjectType(), object->GetID(), object->GetPos(), object->GetRotation(), object->GetState() };
-
-	//// Packet Serialize
-	//std::vector<char> serializedPacketData = SerializePOD(packetData);
-
-	//// SendEvent 생성
-	//SendEventRef event = std::make_shared<SendEvent>();
-	//event->isBroadcast = broadcast;
-	//event->clientSocket = client;
-	//event->packetID = S_Move;
-	//event->serializedPacketData = serializedPacketData;
-
-	//_sendEvents.push_back(event);
-}
-
-void ServerFramework::SendCreateCubesPacket(const std::vector<CubeRef>& cubes, const std::vector<DoorRef>& doors, bool broadcast, SOCKET client)
-{
-	std::vector<CubeDTO> cubeDTOs;
-	for (const CubeRef cube : cubes)
-	{
-		// Cube 정보 기록
-		CubeDTO DTO{ cube->GetCubeType(), cube->GetPos(), cube->GetDir() };
-		cubeDTOs.push_back(DTO);
-	}
-
-	std::vector<DoorDTO> doorDTOs;
-	for (const DoorRef door : doors)
-	{
-		// Door 정보 기록
-		DoorDTO DTO{ door->GetID(), door->GetPos(), door->GetDir(), door->GetState(), door->GetDoorType() };
-		doorDTOs.push_back(DTO);
-	}
-	
-	// Packet Serialize
-	std::vector<char> cubeData = SerializeVector(cubeDTOs);
-	std::vector<char> doorData = SerializeVector(doorDTOs);
-	std::vector<char> serializedPacketData;
-
-	serializedPacketData.insert(serializedPacketData.end(), cubeData.begin(), cubeData.end());
-	serializedPacketData.insert(serializedPacketData.end(), doorData.begin(), doorData.end());
-
-	// SendEvent 생성
-	SendEventRef event = std::make_shared<SendEvent>();
-	event->isBroadcast = broadcast;
-	event->clientSocket = client;
-	event->packetID = S_CreateCubes;
-	event->serializedPacketData = serializedPacketData;
-
-	_sendEvents.push_back(event);
-}
-
-void ServerFramework::SendAddItemToInventoryPacket(ItemRef item, bool isTool, bool broadcast, SOCKET client)
-{
-	// Packet Data 생성
-	S_AddItemToInventory_Packet packetData{ isTool, item->GetItemType(), item->GetID(), item->GetWeight()};
-
-	// Packet Serialize
-	std::vector<char> serializedPacketData = SerializePOD(packetData);
-
-	// SendEvent 생성
-	SendEventRef event = std::make_shared<SendEvent>();
-	event->isBroadcast = broadcast;
-	event->clientSocket = client;
-	event->packetID = S_AddItemToInventory;
-	event->serializedPacketData = serializedPacketData;
-
-	_sendEvents.push_back(event);
-}
-
-void ServerFramework::SendRemoveItemFromInventoryPacket(ItemRef item, bool isTool, bool broadcast, SOCKET client)
-{
-	// Packet Data 생성
-	S_RemoveItemFromInventory_Packet packetData{ isTool, item->GetItemType(), item->GetID() };
-
-	// Packet Serialize
-	std::vector<char> serializedPacketData = SerializePOD(packetData);
-
-	// SendEvent 생성
-	SendEventRef event = std::make_shared<SendEvent>();
-	event->isBroadcast = broadcast;
-	event->clientSocket = client;
-	event->packetID = S_RemoveItemFromInventory;
-	event->serializedPacketData = serializedPacketData;
-
-	_sendEvents.push_back(event);
-}
-
-void ServerFramework::SendItemPickupNotifyPacket(ItemRef item, uint playerID, bool isTool, bool broadcast, SOCKET client)
-{
-	// Packet Data 생성
-	S_ItemPickupNotify_Packet packetData{ isTool, item->GetItemType(), item->GetID(), playerID };
-
-	// Packet Serialize
-	std::vector<char> serializedPacketData = SerializePOD(packetData);
-
-	// SendEvent 생성
-	SendEventRef event = std::make_shared<SendEvent>();
-	event->isBroadcast = broadcast;
-	event->clientSocket = client;
-	event->packetID = S_ItemPickupNotify;
-	event->serializedPacketData = serializedPacketData;
-
-	_sendEvents.push_back(event);
-}
-
-void ServerFramework::SendDropItemPacket(ItemRef item, PlayerRef player, bool isTool, bool broadcast, SOCKET client)
-{
-	// Packet Data 생성
-	S_DropItem_Packet packetData{ player->GetID(), isTool, item->GetItemType(), item->GetID(), player->GetPos() };
-
-	// Packet Serialize
-	std::vector<char> serializedPacketData = SerializePOD(packetData);
-
-	// SendEvent 생성
-	SendEventRef event = std::make_shared<SendEvent>();
-	event->isBroadcast = broadcast;
-	event->clientSocket = client;
-	event->packetID = S_DropItem;
-	event->serializedPacketData = serializedPacketData;
-
-	_sendEvents.push_back(event);
-}
-
-void ServerFramework::SendUpdateCurrentToolPacket(uint playerID, uint itemID, ItemType type, bool broadcast, SOCKET client)
-{
-	// Packet Data 생성
-	S_UpdateCurrentTool_Packet packetData{ playerID, itemID, type };
-
-	// Packet Serialize
-	std::vector<char> serializedPacketData = SerializePOD(packetData);
-
-	// SendEvent 생성
-	SendEventRef event = std::make_shared<SendEvent>();
-	event->isBroadcast = broadcast;
-	event->clientSocket = client;
-	event->packetID = S_UpdateCurrentTool;
-	event->serializedPacketData = serializedPacketData;
-
-	_sendEvents.push_back(event);
-}
-
-void ServerFramework::SendUseToolPacket(uint playerID, ItemType type, bool broadcast, SOCKET client)
-{
-	// Packet Data 생성
-	S_UpdateCurrentTool_Packet packetData{ playerID, type };
-
-	// Packet Serialize
-	std::vector<char> serializedPacketData = SerializePOD(packetData);
-
-	// SendEvent 생성
-	SendEventRef event = std::make_shared<SendEvent>();
-	event->isBroadcast = broadcast;
-	event->clientSocket = client;
-	event->packetID = S_UseTool;
-	event->serializedPacketData = serializedPacketData;
-
-	_sendEvents.push_back(event);
-}
-
-void ServerFramework::SendSpawnParticlePacket(Vector pos, bool broadcast, SOCKET client)
-{
-	// Packet Data 생성
-	S_SpawnParticle_Packet packetData{ pos };
-
-	// Packet Serialize
-	std::vector<char> serializedPacketData = SerializePOD(packetData);
-
-	// SendEvent 생성
-	SendEventRef event = std::make_shared<SendEvent>();
-	event->isBroadcast = broadcast;
-	event->clientSocket = client;
-	event->packetID = S_SpawnParticle;
-	event->serializedPacketData = serializedPacketData;
-
-	_sendEvents.push_back(event);
-}
-
-void ServerFramework::SendInteractDoorNotifyPacket(uint playerID, uint doorID, ObjectState doorState, bool broadcast, SOCKET client)
-{
-	// Packet Data 생성
-	S_InteractDoorNotify_Packet packetData{ playerID, doorID, doorState };
-
-	// Packet Serialize
-	std::vector<char> serializedPacketData = SerializePOD(packetData);
-
-	// SendEvent 생성
-	SendEventRef event = std::make_shared<SendEvent>();
-	event->isBroadcast = broadcast;
-	event->clientSocket = client;
-	event->packetID = S_InteractDoorNotify;
-	event->serializedPacketData = serializedPacketData;
-
-	_sendEvents.push_back(event);
-}
-
-void ServerFramework::SendSpawnMonsterPacket(MonsterRef monster, bool broadcast, SOCKET client)
-{
-	// Packet Data 생성
-	S_SpawnMonster_Packet packetData{ monster->GetID(), monster->GetMonsterType(), monster->GetState(), monster->GetPos(), monster->GetRotation()};
-
-	// Packet Serialize
-	std::vector<char> serializedPacketData = SerializePOD(packetData);
-
-	// SendEvent 생성
-	SendEventRef event = std::make_shared<SendEvent>();
-	event->isBroadcast = broadcast;
-	event->clientSocket = client;
-	event->packetID = S_SpawnMonster;
-	event->serializedPacketData = serializedPacketData;
-
-	_sendEvents.push_back(event);
-}
-
-void ServerFramework::SendSpawnObstaclePacket(ObstacleRef obstacle, bool broadcast, SOCKET client)
-{
-	// Packet Data 생성
-	S_SpawnObstacle_Packet packetData{ obstacle->GetID(), obstacle->GetObstacleType(), obstacle->GetPos() };
-	
-	// Packet Serialize
-	std::vector<char> serializedPacketData = SerializePOD(packetData);
-	
-	// SendEvent 생성
-	SendEventRef event = std::make_shared<SendEvent>();
-	event->isBroadcast = broadcast;
-	event->clientSocket = client;
-	event->packetID = S_SpawnObstacle;
-	event->serializedPacketData = serializedPacketData;
-	_sendEvents.push_back(event);
-}
-
-void ServerFramework::SendTurnOnLanternPacket(LanternRef lantern, int playerID, bool broadcast, SOCKET client)
-{
-	// Packet Data 생성
-	S_TurnOnLantern_Packet packetData{ lantern->GetID(), playerID, lantern->GetCurrentBattery(), lantern->GetRange(), lantern->GetAngle() };
-	
-	// Packet Serialize
-	std::vector<char> serializedPacketData = SerializePOD(packetData);
-	
-	// SendEvent 생성
-	SendEventRef event = std::make_shared<SendEvent>();
-	event->isBroadcast = broadcast;
-	event->clientSocket = client;
-	event->packetID = S_TurnOnLantern;
-	event->serializedPacketData = serializedPacketData;
-	
-	_sendEvents.push_back(event);
-}
-
-void ServerFramework::SendTurnOffLanternPacket(LanternRef lantern, int playerID, bool broadcast, SOCKET client)
-{
-	// Packet Data 생성
-	S_TurnOffLantern_Packet packetData{ lantern->GetID(), playerID, lantern->GetCurrentBattery() };
-	
-	// Packet Serialize
-	std::vector<char> serializedPacketData = SerializePOD(packetData);
-	
-	// SendEvent 생성
-	SendEventRef event = std::make_shared<SendEvent>();
-	event->isBroadcast = broadcast;
-	event->clientSocket = client;
-	event->packetID = S_TurnOffLantern;
-	event->serializedPacketData = serializedPacketData;
-	
-	_sendEvents.push_back(event);
-}
-
-void ServerFramework::SendStartStagePacket(bool broadcast, SOCKET client)
-{
-	// Packet Data 생성
-	S_StartStage_Packet packetData{true};
-
-	// Packet Serialize
-	std::vector<char> serializedPacketData = SerializePOD(packetData);
-
-	// SendEvent 생성
-	SendEventRef event = std::make_shared<SendEvent>();
-	event->isBroadcast = broadcast;
-	event->clientSocket = client;
-	event->packetID = S_StartStage;
-	event->serializedPacketData = serializedPacketData;
-
-	_sendEvents.push_back(event);
-}
-
-void ServerFramework::SendEndStagePacket(bool broadcast, SOCKET client)
-{
-	// Packet Data 생성
-	S_EndStage_Packet packetData{ true };
-
-	// Packet Serialize
-	std::vector<char> serializedPacketData = SerializePOD(packetData);
-
-	// SendEvent 생성
-	SendEventRef event = std::make_shared<SendEvent>();
-	event->isBroadcast = broadcast;
-	event->clientSocket = client;
-	event->packetID = S_EndStage;
-	event->serializedPacketData = serializedPacketData;
-
-	_sendEvents.push_back(event);
-}
-
-void ServerFramework::SendUpdateHpPacket(int playerID, unsigned char hp, bool broadcast, SOCKET client)
-{
-	// Packet Data 생성
-	S_UpdateHp_Packet packetData{ playerID, hp };
-
-	// Packet Serialize
-	std::vector<char> serializedPacketData = SerializePOD(packetData);
-
-	// SendEvent 생성
-	SendEventRef event = std::make_shared<SendEvent>();
-	event->isBroadcast = broadcast;
-	event->clientSocket = client;
-	event->packetID = S_UpdateHp;
-	event->serializedPacketData = serializedPacketData;
-	_sendEvents.push_back(event);
-}
-
-void ServerFramework::Broadcast(PacketID id, const std::vector<char>& packetData)
-{
-	// Room에 있는 모든 Client에게 Packet 송신
-	for (ClientRef client : _clients)
-		ProcessSend(id, packetData, client->socket);
 }
 
 void ServerFramework::ProcessAccept(SOCKET clientSocket)
@@ -755,133 +232,133 @@ void ServerFramework::ProcessMovePacket(C_Move_Packet packet)
 
 void ServerFramework::ProcessGetItemPacket(SOCKET clientSocket, C_GetItem_Packet packet)
 {
-	// Player가 요청한 아이템이 얻을 수 있는 것인지 확인
-	ItemRef item = std::dynamic_pointer_cast<Item>(_room->GetGameObject(ObjectType::Item, packet.itemID));
-	if (item->GetObjectPoolState() != ObjectPoolState::InWorld)
-		return;
+	//// Player가 요청한 아이템이 얻을 수 있는 것인지 확인
+	//ItemRef item = std::dynamic_pointer_cast<Item>(_room->GetGameObject(ObjectType::Item, packet.itemID));
+	//if (item->GetObjectPoolState() != ObjectPoolState::InWorld)
+	//	return;
 
-	// 아이템을 얻을 수 있는 조건인지 확인(거리)
-	
-	// 얻을 수 있는 아이템이라면 Player 인벤토리에 추가
-	PlayerRef player = std::dynamic_pointer_cast<Player>(_room->GetGameObject(ObjectType::Player, packet.playerID));
-	// 아이템이 제대로 추가되었다면
-	if (player->AddItemToInventory(packet.isTool, packet.itemID))
-	{
-		// 획득한 아이템 ObjectPoolState 변경
-		item->SetObjectPoolState(ObjectPoolState::InInventory);
-		// ownerID 설정
-		item->SetOwnerID(player->GetID());
+	//// 아이템을 얻을 수 있는 조건인지 확인(거리)
+	//
+	//// 얻을 수 있는 아이템이라면 Player 인벤토리에 추가
+	//PlayerRef player = std::dynamic_pointer_cast<Player>(_room->GetGameObject(ObjectType::Player, packet.playerID));
+	//// 아이템이 제대로 추가되었다면
+	//if (player->AddItemToInventory(packet.isTool, packet.itemID))
+	//{
+	//	// 획득한 아이템 ObjectPoolState 변경
+	//	item->SetObjectPoolState(ObjectPoolState::InInventory);
+	//	// ownerID 설정
+	//	item->SetOwnerID(player->GetID());
 
-		// 해당 Client에게 알리기
-		SendAddItemToInventoryPacket(item, packet.isTool, false, clientSocket);
+	//	// 해당 Client에게 알리기
+	//	SendAddItemToInventoryPacket(item, packet.isTool, false, clientSocket);
 
-		// 다른 Client에게도 알리기
-		for (ClientRef client : _clients)
-		{
-			if (client->socket != clientSocket)
-				SendItemPickupNotifyPacket(item, player->GetID(), packet.isTool, false, client->socket);
-		}
-	}
+	//	// 다른 Client에게도 알리기
+	//	for (ClientRef client : _clients)
+	//	{
+	//		if (client->socket != clientSocket)
+	//			SendItemPickupNotifyPacket(item, player->GetID(), packet.isTool, false, client->socket);
+	//	}
+	//}
 }
 
 void ServerFramework::ProcessDropItemPacket(C_DropItem_Packet packet)
 {
-	// Player 인벤토리에서 아이템 제거
-	PlayerRef player = dynamic_pointer_cast<Player>(_room->GetGameObject(ObjectType::Player, packet.playerID));
-	// 아이템이 제대로 제거되었다면
-	if (player->RemoveItemFromInventory(packet.isTool, packet.itemID))
-	{
-		// 떨어뜨린 아이템 ObjectPoolState 변경
-		ItemRef item = std::dynamic_pointer_cast<Item>(_room->GetGameObject(ObjectType::Item, packet.itemID));
-		item->SetObjectPoolState(ObjectPoolState::InWorld);
-		// ownerID 초기화
-		item->SetOwnerID(-1);
+	//// Player 인벤토리에서 아이템 제거
+	//PlayerRef player = dynamic_pointer_cast<Player>(_room->GetGameObject(ObjectType::Player, packet.playerID));
+	//// 아이템이 제대로 제거되었다면
+	//if (player->RemoveItemFromInventory(packet.isTool, packet.itemID))
+	//{
+	//	// 떨어뜨린 아이템 ObjectPoolState 변경
+	//	ItemRef item = std::dynamic_pointer_cast<Item>(_room->GetGameObject(ObjectType::Item, packet.itemID));
+	//	item->SetObjectPoolState(ObjectPoolState::InWorld);
+	//	// ownerID 초기화
+	//	item->SetOwnerID(-1);
 
-		SendDropItemPacket(item, player, packet.isTool, true);
-	}
+	//	SendDropItemPacket(item, player, packet.isTool, true);
+	//}
 }
 
 void ServerFramework::ProcessChangeToolPacket(C_ChangeTool_Packet packet)
 {
-	PlayerRef player = dynamic_pointer_cast<Player>(_room->GetGameObject(ObjectType::Player, packet.playerID));
+	//PlayerRef player = dynamic_pointer_cast<Player>(_room->GetGameObject(ObjectType::Player, packet.playerID));
 
-	// toolID가 0이면 도구를 들지 않는 것
-	if(packet.toolID == 0)
-	{
-		player->SetCurrentTool(0);
-		SendUpdateCurrentToolPacket(packet.playerID, packet.toolID, ItemType::None, true);
-		return;
-	}
+	//// toolID가 0이면 도구를 들지 않는 것
+	//if(packet.toolID == 0)
+	//{
+	//	player->SetCurrentTool(0);
+	//	SendUpdateCurrentToolPacket(packet.playerID, packet.toolID, ItemType::None, true);
+	//	return;
+	//}
 
-	// Player 인벤토리에 해당 도구가 존재하는지 확인
-	if (player->ExistItem(true, packet.toolID))
-	{
-		// 도구가 존재하면 해당 도구를 들도록 설정
-		player->SetCurrentTool(packet.toolID);
-		ItemRef item = std::dynamic_pointer_cast<Item>(_room->GetGameObject(ObjectType::Item, packet.toolID));
-		SendUpdateCurrentToolPacket(packet.playerID, packet.toolID, item->GetItemType(), true);
-	}
+	//// Player 인벤토리에 해당 도구가 존재하는지 확인
+	//if (player->ExistItem(true, packet.toolID))
+	//{
+	//	// 도구가 존재하면 해당 도구를 들도록 설정
+	//	player->SetCurrentTool(packet.toolID);
+	//	ItemRef item = std::dynamic_pointer_cast<Item>(_room->GetGameObject(ObjectType::Item, packet.toolID));
+	//	SendUpdateCurrentToolPacket(packet.playerID, packet.toolID, item->GetItemType(), true);
+	//}
 }
 
 void ServerFramework::ProcessUseToolPacket(C_UseTool_Packet packet)
 {
-	// 요청된 도구가 Player가 들고 있는 도구가 맞는지 확인
-	PlayerRef player = dynamic_pointer_cast<Player>(_room->GetGameObject(ObjectType::Player, packet.playerID));
-	if (player->GetCurrentTool() == packet.toolID)
-	{
-		// 도구 사용 처리
-		player->SetRotation(packet.playerRotation);
-		player->Attack(_room);
+	//// 요청된 도구가 Player가 들고 있는 도구가 맞는지 확인
+	//PlayerRef player = dynamic_pointer_cast<Player>(_room->GetGameObject(ObjectType::Player, packet.playerID));
+	//if (player->GetCurrentTool() == packet.toolID)
+	//{
+	//	// 도구 사용 처리
+	//	player->SetRotation(packet.playerRotation);
+	//	player->Attack(_room);
 
-		// 도구 사용 알리기
-		ToolRef tool = std::dynamic_pointer_cast<Tool>(_room->GetGameObject(ObjectType::Item, packet.toolID));
-		SendUseToolPacket(packet.playerID, tool->GetItemType(), true);
-	}
+	//	// 도구 사용 알리기
+	//	ToolRef tool = std::dynamic_pointer_cast<Tool>(_room->GetGameObject(ObjectType::Item, packet.toolID));
+	//	SendUseToolPacket(packet.playerID, tool->GetItemType(), true);
+	//}
 }
 
 void ServerFramework::ProcessUseKeyPacket(SOCKET clientSocket, C_UseKey_Packet packet)
 {
-	// Player가 열쇠를 정말 가지고 있는지 확인
-	PlayerRef player = dynamic_pointer_cast<Player>(_room->GetGameObject(ObjectType::Player, packet.playerID));
-	// 가지고 있지 않으면 무시
-	if (!player->ExistItem(true, packet.toolID))
-		return;
+	//// Player가 열쇠를 정말 가지고 있는지 확인
+	//PlayerRef player = dynamic_pointer_cast<Player>(_room->GetGameObject(ObjectType::Player, packet.playerID));
+	//// 가지고 있지 않으면 무시
+	//if (!player->ExistItem(true, packet.toolID))
+	//	return;
 
-	// 요청한 Door가 닫힌 상태인지 확인
-	DoorRef door = dynamic_pointer_cast<Door>(_room->GetGameObject(ObjectType::Door, packet.doorID));
-	// 이미 열린 상태면 무시
-	if (door->GetState() == ObjectState::OPEN)
-		return;
+	//// 요청한 Door가 닫힌 상태인지 확인
+	//DoorRef door = dynamic_pointer_cast<Door>(_room->GetGameObject(ObjectType::Door, packet.doorID));
+	//// 이미 열린 상태면 무시
+	//if (door->GetState() == ObjectState::OPEN)
+	//	return;
 
-	// 요청한 Player가 열쇠를 사용할 수 있는 거리인지 확인
-	
+	//// 요청한 Player가 열쇠를 사용할 수 있는 거리인지 확인
+	//
 
-	// 사용 가능한 거리라면 Door State 변경
-	door->SetState(ObjectState::OPEN);
+	//// 사용 가능한 거리라면 Door State 변경
+	//door->SetState(ObjectState::OPEN);
 
-	// Player 인벤토리에서 열쇠 제거
-	ItemRef item = dynamic_pointer_cast<Item>(_room->GetGameObject(ObjectType::Item, packet.toolID));
-	player->RemoveItemFromInventory(true, packet.toolID);
+	//// Player 인벤토리에서 열쇠 제거
+	//ItemRef item = dynamic_pointer_cast<Item>(_room->GetGameObject(ObjectType::Item, packet.toolID));
+	//player->RemoveItemFromInventory(true, packet.toolID);
 
-	SendRemoveItemFromInventoryPacket(item, true, false, clientSocket);
-	SendUpdateObjectStatePacket(door, true);
+	//SendRemoveItemFromInventoryPacket(item, true, false, clientSocket);
+	//SendUpdateObjectStatePacket(door, true);
 }
 
 void ServerFramework::ProcessInteractDoorPacket(C_InteractDoor_Packet packet)
 {
-	// 요청한 Player와 Door가 상호작용 가능 거리인지 확인
-	PlayerRef player = dynamic_pointer_cast<Player>(_room->GetGameObject(ObjectType::Player, packet.playerID));
-	DoorRef door = dynamic_pointer_cast<Door>(_room->GetGameObject(ObjectType::Door, packet.doorID));
+	//// 요청한 Player와 Door가 상호작용 가능 거리인지 확인
+	//PlayerRef player = dynamic_pointer_cast<Player>(_room->GetGameObject(ObjectType::Player, packet.playerID));
+	//DoorRef door = dynamic_pointer_cast<Door>(_room->GetGameObject(ObjectType::Door, packet.doorID));
 
-	// 거리 확인 코드 추가하기
+	//// 거리 확인 코드 추가하기
 
-	// 상호작용 가능하면 Door State 변경
-	if (door->GetState() == ObjectState::OPEN)
-		door->SetState(ObjectState::CLOSE);
-	else
-		door->SetState(ObjectState::OPEN);
+	//// 상호작용 가능하면 Door State 변경
+	//if (door->GetState() == ObjectState::OPEN)
+	//	door->SetState(ObjectState::CLOSE);
+	//else
+	//	door->SetState(ObjectState::OPEN);
 
-	SendInteractDoorNotifyPacket(packet.playerID, packet.doorID, door->GetState(), true);
+	//SendInteractDoorNotifyPacket(packet.playerID, packet.doorID, door->GetState(), true);
 }
 
 void ServerFramework::ProcessEmotionPacket(C_Emotion_Packet packet)
@@ -918,7 +395,7 @@ void ServerFramework::ProcessUseLanternPacket(C_UseLantern_Packet packet)
 
 void ServerFramework::ProcessStartStagePacket(C_StartStage_Packet packet)
 {
-	SendStartStagePacket(true);
+	//SendStartStagePacket(true);
 
 	_room->StartStage();
 }

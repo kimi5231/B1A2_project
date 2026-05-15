@@ -86,7 +86,7 @@ public:
 	void RecvUseTool(S_UseTool_Packet packet);
 	void RecvSpawnParticle(S_SpawnParticle_Packet packet);
 	void RecvInteractDoorNotify(S_InteractDoorNotify_Packet packet);
-	void RecvSpawnMonster(S_SpawnMonster_Packet packet);
+	void RecvAddMonster(S_AddMonster_Packet packet);
 	void RecvTurnOnLantern(S_TurnOnLantern_Packet packet);
 	void RecvTurnOffLantern(S_TurnOffLantern_Packet packet);
 
@@ -94,7 +94,7 @@ public:
 	void RecvStartStage(S_StartStage_Packet packet);
 
 	void RecvUpdateHp(S_UpdateHp_Packet packet);
-	void RecvSpawnObstacle(S_SpawnObstacle_Packet packet);
+	void RecvAddObstacle(S_AddObstacle_Packet packet);
 
 	FRotator DirToRotation(Dir dir);
 
