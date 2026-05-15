@@ -9,6 +9,7 @@
 #include "Obstacle.h"
 #include "Lantern.h"
 #include "EmotionGame.h"
+#include "Session.h"
 
 Room::Room()
 {
@@ -53,6 +54,14 @@ void Room::Init()
 	lantern->SetPos({ 0, 550, 25 });
 	lantern->SetObjectPoolState(ObjectPoolState::InWorld);
 	_items.push_back(lantern);
+
+	// Player ObjectPool 미리 확보
+	for (int i = 0; i < MAX_ROOM_PLAYER; ++i)
+	{
+		_players[i] = new Player();
+		_players[i]->SetID(i);
+		_players[i]->SetObjectPoolState(ObjectPoolState::Reusable);
+	}
 
 	// 장애물 ObjectPool 미리 확보
 	for (int i = 0; i < 10; i++)
@@ -102,9 +111,9 @@ void Room::Update()
 	{
 		g_timer->Update();
 
-		// 플레이어 업데이트
-		for (const auto& item : _players)
-			item.second->Update();
+		// Player Update
+		for (const auto& player : _players)
+			player->Update();
 
 		// 몬스터 업데이트
 		for (const auto& monster : _monsters)
@@ -370,30 +379,25 @@ void Room::EndStage()
 	_generateObstacleID = 1;
 }
 
-GameObjectRef Room::AddObject(ObjectType type)
+Player* Room::AddPlayer()
 {
-	GameObjectRef object;
-
-	// 나중에 코드 정리하기
-	switch (type) 
+	for (int i = 0; i < MAX_ROOM_PLAYER; ++i)
 	{
-	case ObjectType::Player:
-	{
-		_players[_generatePlayerID] = std::make_shared<Player>();
-		object = _players[_generatePlayerID];
-		// temp
-		Vector pos = object->GetPos();
-		pos.x += _playerCount * 100;
-		object->SetPos(pos);
-		object->SetID(_generatePlayerID++);
-		_playerCount++;
-	}
-		break;
-	}
+		// 재사용 가능한 플레이어 찾기
+		if (_players[i]->GetObjectPoolState() == ObjectPoolState::Reusable)
+		{
+			// ObjectPoolState 변경
+			_players[i]->SetObjectPoolState(ObjectPoolState::InWorld);
 
-	g_framework->SendAddObjectPacket(object, true);
-
-	return object;
+			for (auto& player : _players)
+			{
+				if(player->GetClient())
+					g_network->SendAddPlayerPacket(_players[i], player->GetClient());
+			}
+				
+			return _players[i];
+		}
+	}
 }
 
 MonsterRef Room::AddMonster(MonsterType monsterType, Vector pos, bool isSend)
@@ -461,12 +465,12 @@ ObstacleRef Room::AddObstacle(ObstacleType obstacleType, Vector pos, bool isSend
 	}
 }
 
-void Room::RemoveObject(ObjectType type, uint id, bool isSend)
+void Room::RemoveObject(ObjectType type, int id)
 {
 	switch (type)
 	{
 	case ObjectType::Player:
-		_players.erase(id);
+		_players[id]->SetObjectPoolState(ObjectPoolState::Reusable);
 		break;
 	case ObjectType::Item:
 		_items[id]->SetObjectPoolState(ObjectPoolState::Reusable);
@@ -476,17 +480,17 @@ void Room::RemoveObject(ObjectType type, uint id, bool isSend)
 		break;
 	}
 
-	if(isSend)
-		g_framework->SendRemoveObjectPacket(type, id, true);
+	for (auto& player : _players)
+	{
+		if (player->GetClient()->_isConnected)
+			g_network->SendRemoveObjectPacket(type, id, player->GetClient());
+	}		
 }
 
 GameObjectRef Room::GetGameObject(ObjectType type, uint id)
 {
 	switch (type)
 	{
-	case ObjectType::Player:
-		return _players[id];
-		break;
 	case ObjectType::Monster:
 		return _monsters[id];
 		break;
@@ -495,6 +499,16 @@ GameObjectRef Room::GetGameObject(ObjectType type, uint id)
 		break;
 	case ObjectType::Door:
 		return _doors[id - 1];
+		break;
+	}
+}
+
+GameObject* Room::GetPlayer(ObjectType type, uint id)
+{
+	switch (type)
+	{
+	case ObjectType::Player:
+		return _players[id];
 		break;
 	}
 }

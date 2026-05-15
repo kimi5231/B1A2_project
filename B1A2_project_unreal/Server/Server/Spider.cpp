@@ -53,10 +53,10 @@ void Spider::Update(Room* room)
 	Monster::Update(room);
 
 	// 공격 범위 안에 플레이어가 있는지 확인
-	const std::unordered_map<uint, PlayerRef>& players = room->GetPlayers();
+	const std::array<Player*, MAX_ROOM_PLAYER>& players = room->GetPlayers();
 	if (std::chrono::steady_clock::now() > _nextAttackTime)
 	{
-		for (auto& [id, player] : players)
+		for (auto& player : players)
 		{
 			/*if (player->GetObjectPoolState() == ObjectPoolState::Reusable)
 				continue;*/
@@ -72,7 +72,7 @@ void Spider::Update(Room* room)
 	}
 	
 	// 인식 범위 안에 플레이어가 있는지 확인
-	for (auto& [id, player] : players)
+	for (auto& player : players)
 	{
 		/*if (player->GetObjectPoolState() == ObjectPoolState::Reusable)
 			continue;*/

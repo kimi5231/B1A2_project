@@ -19,6 +19,7 @@ enum PacketID
 	C_EndStage,
 
 	//Server
+	S_AddPlayer,
 	S_AddObject,
 	S_AddItem,
 	S_RemoveObject,
@@ -65,6 +66,18 @@ struct DoorDTO
 };
 
 // Client
+#pragma pack(push, 1)
+struct C_Move_Packet
+{
+	unsigned char size;
+	PacketID packetID;
+	unsigned char id;
+	Vector pos;
+	Rotation rotation;
+	ObjectType type;
+	ObjectState state;
+};
+
 struct C_UpdateObjectState_Packet
 {
 	uint objectID;
@@ -72,14 +85,7 @@ struct C_UpdateObjectState_Packet
 	ObjectState state;
 };
 
-struct C_Move_Packet
-{
-	ObjectType type;
-	int objectID;
-	Vector pos;
-	Rotation rotation;
-	ObjectState state;
-};
+
 
 struct C_GetItem_Packet
 {
@@ -149,12 +155,24 @@ struct C_EndStage_Packet
 };
 
 // Server
-struct S_AddObject_Packet
+struct S_AddPlayer_Packet
 {
-	ObjectType type;
-	int objectID;
+	unsigned char size;
+	PacketID packetID;
+	unsigned char id;
 	Vector pos;
 	Rotation rotation;
+};
+
+struct S_AddMonster_Packet
+{
+	unsigned char size;
+	PacketID packetID;
+	unsigned char id;
+	Vector pos;
+	Rotation rotation;
+	MonsterType type;
+	ObjectState state;
 };
 
 struct S_AddItem_Packet
@@ -168,9 +186,24 @@ struct S_AddItem_Packet
 
 struct S_RemoveObject_Packet
 {
+	unsigned char size;
+	PacketID packetID;
 	ObjectType objectType;
 	int objectID;
 };
+
+
+struct S_AddObject_Packet
+{
+	ObjectType type;
+	int objectID;
+	Vector pos;
+	Rotation rotation;
+};
+
+
+
+
 
 struct S_UpdateObjectState_Packet
 {
@@ -181,10 +214,12 @@ struct S_UpdateObjectState_Packet
 
 struct S_Move_Packet
 {
-	ObjectType type;
-	int objectID;
+	unsigned char size;
+	PacketID packetID;
+	unsigned char id;
 	Vector pos;
 	Rotation rotation;
+	ObjectType type;
 	ObjectState state;
 };
 
@@ -298,3 +333,4 @@ struct S_UpdateHp_Packet
 	int playerID;
 	unsigned char hp;
 };
+#pragma pack(pop)

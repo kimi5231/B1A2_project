@@ -91,7 +91,7 @@ void GameNetwork::ProcessRecv()
 {
 	// PacketSize 수신(고정 길이)
 	int packetSize{};
-	if (recv(_clientSocket, (char*)&packetSize, sizeof(int), MSG_WAITALL) <= 0)
+	if (recv(_clientSocket, (char*)&packetSize, sizeof(char), MSG_WAITALL) <= 0)
 	{
 		//ProcessDisconnect(client);
 		return;
@@ -99,30 +99,32 @@ void GameNetwork::ProcessRecv()
 
 	// Packet 수신(가변 데이터)
 	std::vector<char> packet(5000);
-	if (recv(_clientSocket, packet.data(), packetSize, MSG_WAITALL) <= 0)
+	if (recv(_clientSocket, packet.data(), packetSize - sizeof(char), MSG_WAITALL) <= 0)
 	{
 		//ProcessDisconnect(client);
 		return;
 	}
 
 	// Header 추출
-	Header header;
-	memcpy(&header, packet.data(), sizeof(Header));
+	PacketID id;
+	memcpy(&id, packet.data(), sizeof(PacketID));
+
+	UE_LOG(LogTemp, Log, TEXT("%d"), id);
 
 	// Data 추출
-	switch (header.id)
+	switch (id)
 	{
-	case S_AddObject:
+	case S_AddPlayer:
 	{
 		NetworkEventRef event = std::make_shared<NetworkEvent>();
-		event->packetID = header.id;
-		event->serializedPacketData.resize(sizeof(S_AddObject_Packet));
-		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), sizeof(S_AddObject_Packet));
+		event->packetID = id;
+		event->serializedPacketData.resize(sizeof(S_AddPlayer_Packet));
+		memcpy(event->serializedPacketData.data(), packet.data(), sizeof(S_AddPlayer_Packet));
 		std::lock_guard<std::mutex> lock(_recvMutex);
 		_recvEvents.push_back(event);
 		break;
 	}
-	case S_AddItem:
+	/*case S_AddItem:
 	{
 		NetworkEventRef event = std::make_shared<NetworkEvent>();
 		event->packetID = header.id;
@@ -321,7 +323,7 @@ void GameNetwork::ProcessRecv()
 		std::lock_guard<std::mutex> lock(_recvMutex);
 		_recvEvents.push_back(event);
 		break;
-	}
+	}*/
 	}
 }
 
@@ -371,7 +373,7 @@ void GameNetwork::SendUpdateObjectStatePacket(int id, ObjectType type, ObjectSta
 void GameNetwork::SendMovePacket(ObjectType type, int id, Vector pos, Rotation rotation, ObjectState state)
 {
 	// Packet Data 생성
-	C_Move_Packet packetData{ type, id, pos, rotation, state };
+	C_Move_Packet packetData{ sizeof(C_Move_Packet), C_Move, id, pos, rotation, type, state };
 
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);

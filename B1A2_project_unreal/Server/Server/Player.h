@@ -26,7 +26,8 @@ public:
 	void SetCurrentTool(int toolID) { _currentTool = toolID; }
 	Emotion GetCurrentEmotion() { return _currentEmotion; }
 	void SetCurrentEmotion(Emotion emotion) { _currentEmotion = emotion; }
-	Session* GetSession() { return _client; }
+	Session* GetClient() { return _client; }
+	void SetClient(Session* client) { _client = client; }
 
 private:
 	Session* _client;

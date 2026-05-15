@@ -41,8 +41,8 @@ void EmotionGame::Update(Room* room)
 
 	if (_state == IDLE)
 	{
-		const std::unordered_map<uint, PlayerRef>& players = room->GetPlayers();
-		for (auto& [id, player] : players)
+		const std::array<Player*, MAX_ROOM_PLAYER>& players = room->GetPlayers();
+		for (auto& player : players)
 		{
 			/*if (player->GetObjectPoolState() == ObjectPoolState::Reusable)
 				continue;*/

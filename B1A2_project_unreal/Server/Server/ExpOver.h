@@ -5,7 +5,8 @@ public:
 	ExpOver()
 	{
 		ZeroMemory(&_over, sizeof(_over));
-		_wsaBuffer.buf = _buffer;
+		_buffer.reserve(BufferSize);
+		_wsaBuffer.buf = reinterpret_cast<char*>(_buffer.data());
 		_wsaBuffer.len = BufferSize;
 	}
 
@@ -13,12 +14,13 @@ public:
 		: _ioType(ioType)
 	{
 		ZeroMemory(&_over, sizeof(_over));
-		_wsaBuffer.buf = _buffer;
+		_buffer.reserve(BufferSize);
+		_wsaBuffer.buf = reinterpret_cast<char*>(_buffer.data());
 		_wsaBuffer.len = BufferSize;
 	}
 
 	WSAOVERLAPPED _over;
 	IOType  _ioType;
 	WSABUF	_wsaBuffer;
-	char  _buffer[BufferSize];
+	std::vector<char> _buffer;
 };

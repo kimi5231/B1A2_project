@@ -605,9 +605,9 @@ void Release::Exit(MonsterRef monster)
 void Abesnt::Enter(MonsterRef monster)
 {
 	// 일단 랜덤으로. 추후, Fear 수치 활용할 것.
-	const std::unordered_map<uint, PlayerRef>& players = monster->GetOwnerRoom()->GetPlayers();
+	const std::array<Player*, MAX_ROOM_PLAYER>& players = monster->GetOwnerRoom()->GetPlayers();
 	std::uniform_int_distribution<int> selectCube(0, players.size() - 1);
-	PlayerRef player = players.at(selectCube(gen));
+	Player* player = players[selectCube(gen)];
 	monster->SetTarget(player);
 }
 
@@ -622,7 +622,7 @@ void Abesnt::Tick(MonsterRef monster, Room* room)
 	{
 		monster->InitSumTime();
 
-		PlayerRef target = monster->GetTarget();
+		Player* target = monster->GetTarget();
 		Vector targetPos = target->GetPos();
 		Rotation rotation = target->GetRotation();
 		Vector targetForward = GetForwardVector(rotation.pitch, rotation.yaw);

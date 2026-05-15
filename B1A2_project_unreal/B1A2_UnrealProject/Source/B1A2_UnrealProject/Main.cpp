@@ -100,6 +100,14 @@ void UMain::ProcessRecv()
 	{
 		switch (event->packetID)
 		{
+		case S_AddPlayer:
+		{
+			S_AddPlayer_Packet addPlayerPacket;
+			FMemory::Memcpy(&addPlayerPacket, event->serializedPacketData.data(), sizeof(S_AddPlayer_Packet));
+			AddPlayer(addPlayerPacket);
+			event->isComplete = true;
+			break;
+		}
 			case S_AddObject:
 			{
 				S_AddObject_Packet addObjectPacket;
@@ -466,18 +474,18 @@ void UMain::Update()
 
 void UMain::RecvAddObject(S_AddObject_Packet packet)
 {
-	if (packet.type == ObjectType::Player)
-		AddPlayer(packet);
+	/*if (packet.type == ObjectType::Player)
+		AddPlayer(packet);*/
 }
 
-void UMain::AddPlayer(S_AddObject_Packet packet)
+void UMain::AddPlayer(S_AddPlayer_Packet packet)
 {
-	UE_LOG(LogTemp, Log, TEXT("AddObject Packet [%d], %f, %f, %f"), packet.objectID, packet.pos.x, packet.pos.y, packet.pos.z);
+	UE_LOG(LogTemp, Log, TEXT("AddObject Packet [%d], %f, %f, %f"), packet.id, packet.pos.x, packet.pos.y, packet.pos.z);
 
 	if (_myID == 0)
 	{
 		// 자신의 ID 설정
-		_myID = packet.objectID;
+		_myID = packet.id;
 
 		// Spawn
 		AsyncTask(ENamedThreads::GameThread, [=, this]()
@@ -505,25 +513,25 @@ void UMain::AddPlayer(S_AddObject_Packet packet)
 
 			_myPlayer = player;
 
-			UE_LOG(LogTemp, Log, TEXT("My Player Spawned! [%d], %f, %f, %f"), packet.objectID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 98.f);
+			UE_LOG(LogTemp, Log, TEXT("My Player Spawned! [%d], %f, %f, %f"), packet.id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 98.f);
 		});
 		return;
 	}
 
-	if (packet.objectID == _myID)
+	if (packet.id == _myID)
 		return;
 
 	// 이미 존재하는 객체인지 확인
-	if (_otherPlayers.Contains(packet.objectID))
+	if (_otherPlayers.Contains(packet.id))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Other Player already spawned... object ID: %d"), packet.objectID);
+		UE_LOG(LogTemp, Warning, TEXT("Other Player already spawned... object ID: %d"), packet.id);
 		return;
 	}
 
 	// 다른 플레이어 Spawn
 	FVector spawnLocation(packet.pos.x, packet.pos.y, packet.pos.z + 98.f);
 	FRotator spawnRotation(0, packet.rotation.yaw, 0);
-	int id = packet.objectID;
+	int id = packet.id;
 
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
@@ -944,7 +952,7 @@ void UMain::RecvMovePlayer(S_Move_Packet packet)
 		FRotator rot(0, packet.rotation.yaw, 0);
 
 		// MyPlayer인 경우
-		if (packet.objectID == _myID)
+		if (packet.id == _myID)
 		{
 			if (_myPlayer)
 			{
@@ -957,7 +965,7 @@ void UMain::RecvMovePlayer(S_Move_Packet packet)
 		}
 
 		// OtherPlayer인 경우
-		AOtherPlayer** findPlayer = _otherPlayers.Find(packet.objectID);
+		AOtherPlayer** findPlayer = _otherPlayers.Find(packet.id);
 		if (findPlayer && *findPlayer)
 		{
 			AOtherPlayer* player = (*findPlayer);
@@ -968,7 +976,7 @@ void UMain::RecvMovePlayer(S_Move_Packet packet)
 		}
 		else
 		{
-			UE_LOG(LogTemp, Error, TEXT("Other Player [%d] not found"), packet.objectID);
+			UE_LOG(LogTemp, Error, TEXT("Other Player [%d] not found"), packet.id);
 		}
 	});
 }
@@ -979,7 +987,7 @@ void UMain::RecvMoveMonster(S_Move_Packet packet)
 	{
 		if (!GetWorld()) return;
 
-		ABaseMonster** findMonster = _monsters.Find(packet.objectID);
+		ABaseMonster** findMonster = _monsters.Find(packet.id);
 		if (findMonster && *findMonster)
 		{
 			ABaseMonster* monster = (*findMonster);

@@ -44,7 +44,7 @@ private:
 
 public:
 	// Send
-	void SendAddObjectPacket(GameObjectRef object, bool broadcast, SOCKET client = 0);
+	void SendAddObjectPacket(Player* player, bool broadcast, SOCKET client = 0);
 	void SendAddItemPacket(ItemRef item, bool isTool, bool broadcast, SOCKET client = 0);
 	void SendRemoveObjectPacket(ObjectType objectType, uint objectID, bool broadcast, SOCKET client = 0);
 	void SendUpdateObjectStatePacket(GameObjectRef object, bool broadcast, SOCKET client = 0);

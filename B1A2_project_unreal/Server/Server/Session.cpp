@@ -28,10 +28,11 @@ void Session::Recv()
 	WSARecv(_clientSocket, &_recvOver._wsaBuffer, 1, 0, &recvFlag, &_recvOver._over, nullptr);
 }
 
-void Session::Send(const std::vector<char>& packetData)
+void Session::Send(const std::vector<char>& packet)
 {
-	ExpOver* o = new ExpOver(IOType::Send);
-	o->m_wsa.len = num_bytes;
-	memcpy(o->m_buff, packetData, num_bytes);
-	WSASend(_clientSocket, &o->m_wsa, 1, 0, 0, &o->m_over, nullptr);
+	ExpOver* over = new ExpOver(IOType::Send);
+	over->_wsaBuffer.len = packet.size();
+	over->_buffer.insert(over->_buffer.end(), packet.begin(), packet.end());
+	over->_wsaBuffer.buf = (char*)over->_buffer.data();
+	WSASend(_clientSocket, &over->_wsaBuffer, 1, 0, 0, &over->_over, nullptr);
 }

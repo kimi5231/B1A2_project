@@ -1,16 +1,22 @@
 #pragma once
 #include "Packets.h"
+#include "ExpOver.h"
+
+class ServerFramework;
+class ExpOver;
+class Session;
 
 class ServerNetwork
 {
 public:
-	ServerNetwork();
+	ServerNetwork(ServerFramework* framework);
 	~ServerNetwork();
 
 public:
 	void Update();
-	void ProcessRecv(ClientRef client);
-	void ProcessSend(PacketID id, const std::vector<char>& packetData, SOCKET clientSocket);
+	void ProcessAccept();
+	void ProcessRecv(int clientIndex, int numByte, ExpOver* expOver);
+	void ProcessPacket(std::vector<char>& packet, int clientIndex);
 	std::vector<char> CreatePakcet(PacketID id, const std::vector<char>& packetData);
 
 private:
@@ -25,11 +31,11 @@ private:
 
 public:
 	// Send
-	void SendAddObjectPacket(GameObjectRef object, bool broadcast, SOCKET client = 0);
+	void SendAddPlayerPacket(Player* player, Session* client);
 	void SendAddItemPacket(ItemRef item, bool isTool, bool broadcast, SOCKET client = 0);
-	void SendRemoveObjectPacket(ObjectType objectType, uint objectID, bool broadcast, SOCKET client = 0);
+	void SendRemoveObjectPacket(ObjectType objectType, int objectID, Session* client);
 	void SendUpdateObjectStatePacket(GameObjectRef object, bool broadcast, SOCKET client = 0);
-	void SendMovePacket(GameObjectRef object, bool broadcast, SOCKET client = 0);
+	void SendMovePacket(GameObject* object, Session* client);
 	void SendCreateCubesPacket(const std::vector<CubeRef>& cubes, const std::vector<DoorRef>& doors, bool broadcast, SOCKET client = 0);
 	void SendAddItemToInventoryPacket(ItemRef item, bool isTool, bool broadcast, SOCKET client = 0);
 	void SendRemoveItemFromInventoryPacket(ItemRef item, bool isTool, bool broadcast, SOCKET client = 0);
@@ -46,14 +52,12 @@ public:
 	void SendStartStagePacket(bool broadcast, SOCKET client = 0);
 	void SendEndStagePacket(bool broadcast, SOCKET client = 0);
 	void SendUpdateHpPacket(int playerID, unsigned char hp, bool broadcast, SOCKET client = 0);
-	void Broadcast(PacketID id, const std::vector<char>& packetData);
 
 public:
 	// Recv
-	void ProcessAccept(SOCKET clientSocket);
-	void ProcessDisconnect(ClientRef client);
+	void ProcessMovePacket(C_Move_Packet packet, int clientIndex);
 	void ProcessUpdateObjectStatePacket(C_UpdateObjectState_Packet packet);
-	void ProcessMovePacket(C_Move_Packet packet);
+	
 	void ProcessGetItemPacket(SOCKET clientSocket, C_GetItem_Packet packet);
 	void ProcessDropItemPacket(C_DropItem_Packet packet);
 	void ProcessChangeToolPacket(C_ChangeTool_Packet packet);
@@ -67,6 +71,10 @@ public:
 
 private:
 	SOCKET _listenSocket{};
+	SOCKET _tempSocket{};
+	ExpOver _acceptOver{};
 	HANDLE _iocp{};
-	std::array<class Session, MAX_PLAYER> _clients;
+	std::array<class Session*, MAX_PLAYER> _clients;
+
+	ServerFramework* _framework;
 };

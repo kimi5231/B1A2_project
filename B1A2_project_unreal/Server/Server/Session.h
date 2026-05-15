@@ -1,5 +1,6 @@
 #pragma once
-class ExpOver;
+#include "ExpOver.h"
+
 class Room;
 
 class Session
@@ -10,7 +11,7 @@ public:
 
 public:
 	void Recv();
-	void Send();
+	void Send(const std::vector<char>& packetData);
 
 	SOCKET _clientSocket;
 	int _id;
@@ -20,4 +21,3 @@ public:
 	Room* _room;
 	Player* _player;
 };
-

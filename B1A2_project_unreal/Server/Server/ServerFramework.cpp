@@ -8,43 +8,44 @@
 #include "Door.h"
 #include "Lantern.h"
 #include "Obstacle.h"
+#include "ServerNetwork.h"
 
 ServerFramework::ServerFramework()
 {
-	// 윈속 초기화
-	WSADATA wsa;
-	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
-	{
-		std::cout << "윈속 초기화 실패" << std::endl;
-		return;
-	}
+	//// 윈속 초기화
+	//WSADATA wsa;
+	//if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
+	//{
+	//	std::cout << "윈속 초기화 실패" << std::endl;
+	//	return;
+	//}
 
-	// listenSocket 생성
-	_listenSocket = socket(AF_INET, SOCK_STREAM, 0);
-	if (_listenSocket == INVALID_SOCKET)
-	{
-		std::cout << "listenSocket 생성 실패" << std::endl;
-		return;
-	}
+	//// listenSocket 생성
+	//_listenSocket = socket(AF_INET, SOCK_STREAM, 0);
+	//if (_listenSocket == INVALID_SOCKET)
+	//{
+	//	std::cout << "listenSocket 생성 실패" << std::endl;
+	//	return;
+	//}
 
-	// bind
-	sockaddr_in addr;
-	memset(&addr, 0, sizeof(addr));
-	addr.sin_family = AF_INET;
-	addr.sin_addr.s_addr = htonl(INADDR_ANY);
-	addr.sin_port = htons(7777);
-	if (bind(_listenSocket, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR)
-	{
-		std::cout << "bind 실패" << std::endl;
-		return;
-	}
+	//// bind
+	//sockaddr_in addr;
+	//memset(&addr, 0, sizeof(addr));
+	//addr.sin_family = AF_INET;
+	//addr.sin_addr.s_addr = htonl(INADDR_ANY);
+	//addr.sin_port = htons(7777);
+	//if (bind(_listenSocket, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR)
+	//{
+	//	std::cout << "bind 실패" << std::endl;
+	//	return;
+	//}
 
-	// listen
-	if (listen(_listenSocket, SOMAXCONN) == SOCKET_ERROR)
-	{
-		std::cout << "listen 실패" << std::endl;
-		return;
-	}
+	//// listen
+	//if (listen(_listenSocket, SOMAXCONN) == SOCKET_ERROR)
+	//{
+	//	std::cout << "listen 실패" << std::endl;
+	//	return;
+	//}
 
 	// Room 생성
 	_room = new Room();
@@ -64,84 +65,84 @@ ServerFramework::~ServerFramework()
 
 void ServerFramework::Update()
 {
-	// socket set 초기화
-	FD_ZERO(&_readSet);
-	FD_ZERO(&_writeSet);
+	//// socket set 초기화
+	//FD_ZERO(&_readSet);
+	//FD_ZERO(&_writeSet);
 
-	// readSet에 listenSocket 등록
-	FD_SET(_listenSocket, &_readSet);
+	//// readSet에 listenSocket 등록
+	//FD_SET(_listenSocket, &_readSet);
 
-	// readSet, writeSet에 clientSocket 등록
-	for (ClientRef client : _clients)
-	{
-		FD_SET(client->socket, &_readSet);
-		FD_SET(client->socket, &_writeSet);
-	}
+	//// readSet, writeSet에 clientSocket 등록
+	//for (ClientRef client : _clients)
+	//{
+	//	FD_SET(client->socket, &_readSet);
+	//	FD_SET(client->socket, &_writeSet);
+	//}
 
-	// select
-	if (select(0, &_readSet, &_writeSet, NULL, 0) == SOCKET_ERROR)
-	{
-		std::cout << "select 실패" << std::endl;
-		return;
-	}
+	//// select
+	//if (select(0, &_readSet, &_writeSet, NULL, 0) == SOCKET_ERROR)
+	//{
+	//	std::cout << "select 실패" << std::endl;
+	//	return;
+	//}
 
-	// listenSocekt accept 확인
-	if (FD_ISSET(_listenSocket, &_readSet))
-	{
-		// accept
-		SOCKET clientSocket;
-		sockaddr_in clientAddr;
-		int addrLen = sizeof(clientAddr);
-		clientSocket = accept(_listenSocket, (sockaddr*)&clientAddr, &addrLen);
-		if (clientSocket == INVALID_SOCKET)
-		{
-			std::cout << "clientSocket 생성 실패" << std::endl;
-		}
+	//// listenSocekt accept 확인
+	//if (FD_ISSET(_listenSocket, &_readSet))
+	//{
+	//	// accept
+	//	SOCKET clientSocket;
+	//	sockaddr_in clientAddr;
+	//	int addrLen = sizeof(clientAddr);
+	//	clientSocket = accept(_listenSocket, (sockaddr*)&clientAddr, &addrLen);
+	//	if (clientSocket == INVALID_SOCKET)
+	//	{
+	//		std::cout << "clientSocket 생성 실패" << std::endl;
+	//	}
 
-		ProcessAccept(clientSocket);
-	}
+	//	ProcessAccept(clientSocket);
+	//}
 
-	for (ClientRef client : _clients)
-	{
-		if (FD_ISSET(client->socket, &_readSet))
-		{
-			ProcessRecv(client);
-		}
+	//for (ClientRef client : _clients)
+	//{
+	//	if (FD_ISSET(client->socket, &_readSet))
+	//	{
+	//		ProcessRecv(client);
+	//	}
 
-		// send가 가능할 때마다 true
-		if (FD_ISSET(client->socket, &_writeSet))
-		{
-			for (SendEventRef event : _sendEvents)
-			{
-				if (event->isBroadcast)
-				{
-					Broadcast(event->packetID, event->serializedPacketData);
-					event->isComplete = true;
-					break;
-				}
+	//	// send가 가능할 때마다 true
+	//	if (FD_ISSET(client->socket, &_writeSet))
+	//	{
+	//		for (SendEventRef event : _sendEvents)
+	//		{
+	//			if (event->isBroadcast)
+	//			{
+	//				Broadcast(event->packetID, event->serializedPacketData);
+	//				event->isComplete = true;
+	//				break;
+	//			}
 
-				if (client->socket == event->clientSocket)
-				{
-					ProcessSend(event->packetID, event->serializedPacketData, event->clientSocket);
-					event->isComplete = true;
-				}
-			}
+	//			if (client->socket == event->clientSocket)
+	//			{
+	//				ProcessSend(event->packetID, event->serializedPacketData, event->clientSocket);
+	//				event->isComplete = true;
+	//			}
+	//		}
 
-			_sendEvents.erase(std::remove_if(_sendEvents.begin(), _sendEvents.end(),
-				[](SendEventRef event) {
-					return event->isComplete;
-				}), _sendEvents.end());
-		}
-	}
+	//		_sendEvents.erase(std::remove_if(_sendEvents.begin(), _sendEvents.end(),
+	//			[](SendEventRef event) {
+	//				return event->isComplete;
+	//			}), _sendEvents.end());
+	//	}
+	//}
 
-	// 연결 끊긴 Client 제거
-	for (ClientRef client : _removeClients)
-	{
-		closesocket(client->socket);
-		_clients.erase(std::find(_clients.begin(), _clients.end(), client));
-	}
+	//// 연결 끊긴 Client 제거
+	//for (ClientRef client : _removeClients)
+	//{
+	//	closesocket(client->socket);
+	//	_clients.erase(std::find(_clients.begin(), _clients.end(), client));
+	//}
 
-	_removeClients.clear();
+	//_removeClients.clear();
 
 	_room->Update();
 }
@@ -285,10 +286,10 @@ std::vector<T> ServerFramework::DeserializeVector(const std::vector<char>& data)
 	return vector;
 }
 
-void ServerFramework::SendAddObjectPacket(GameObjectRef object, bool broadcast, SOCKET client)
+void ServerFramework::SendAddObjectPacket(Player* player, bool broadcast, SOCKET client)
 {
 	// Packet Data 생성
-	S_AddObject_Packet packetData{ object->GetObjectType(), object->GetID(), object->GetPos(), object->GetRotation()};
+	S_AddObject_Packet packetData{ player->GetObjectType(), player->GetID(), player->GetPos(), player->GetRotation()};
 
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);
@@ -323,20 +324,20 @@ void ServerFramework::SendAddItemPacket(ItemRef item, bool isTool, bool broadcas
 
 void ServerFramework::SendRemoveObjectPacket(ObjectType objectType, uint objectID, bool broadcast, SOCKET client)
 {
-	// Packet Data 생성
-	S_RemoveObject_Packet packetData{ objectType, objectID };
+	//// Packet Data 생성
+	//S_RemoveObject_Packet packetData{ objectType, objectID };
 
-	// Packet Serialize
-	std::vector<char> serializedPacketData = SerializePOD(packetData);
+	//// Packet Serialize
+	//std::vector<char> serializedPacketData = SerializePOD(packetData);
 
-	// SendEvent 생성
-	SendEventRef event = std::make_shared<SendEvent>();
-	event->isBroadcast = broadcast;
-	event->clientSocket = client;
-	event->packetID = S_RemoveObject;
-	event->serializedPacketData = serializedPacketData;
+	//// SendEvent 생성
+	//SendEventRef event = std::make_shared<SendEvent>();
+	//event->isBroadcast = broadcast;
+	//event->clientSocket = client;
+	//event->packetID = S_RemoveObject;
+	//event->serializedPacketData = serializedPacketData;
 
-	_sendEvents.push_back(event);
+	//_sendEvents.push_back(event);
 }
 
 void ServerFramework::SendUpdateObjectStatePacket(GameObjectRef object, bool broadcast, SOCKET client)
@@ -359,20 +360,20 @@ void ServerFramework::SendUpdateObjectStatePacket(GameObjectRef object, bool bro
 
 void ServerFramework::SendMovePacket(GameObjectRef object, bool broadcast, SOCKET client)
 {
-	// Packet Data 생성
-	S_Move_Packet packetData{ object->GetObjectType(), object->GetID(), object->GetPos(), object->GetRotation(), object->GetState() };
+	//// Packet Data 생성
+	//S_Move_Packet packetData{ object->GetObjectType(), object->GetID(), object->GetPos(), object->GetRotation(), object->GetState() };
 
-	// Packet Serialize
-	std::vector<char> serializedPacketData = SerializePOD(packetData);
+	//// Packet Serialize
+	//std::vector<char> serializedPacketData = SerializePOD(packetData);
 
-	// SendEvent 생성
-	SendEventRef event = std::make_shared<SendEvent>();
-	event->isBroadcast = broadcast;
-	event->clientSocket = client;
-	event->packetID = S_Move;
-	event->serializedPacketData = serializedPacketData;
+	//// SendEvent 생성
+	//SendEventRef event = std::make_shared<SendEvent>();
+	//event->isBroadcast = broadcast;
+	//event->clientSocket = client;
+	//event->packetID = S_Move;
+	//event->serializedPacketData = serializedPacketData;
 
-	_sendEvents.push_back(event);
+	//_sendEvents.push_back(event);
 }
 
 void ServerFramework::SendCreateCubesPacket(const std::vector<CubeRef>& cubes, const std::vector<DoorRef>& doors, bool broadcast, SOCKET client)
@@ -688,53 +689,53 @@ void ServerFramework::Broadcast(PacketID id, const std::vector<char>& packetData
 
 void ServerFramework::ProcessAccept(SOCKET clientSocket)
 {
-	// 접속한 Client를 나타낼 Player 추가
-	GameObjectRef player = _room->AddObject(ObjectType::Player);
+	//// 접속한 Client를 나타낼 Player 추가
+	//GameObjectRef player = _room->AddPlayer(ObjectType::Player);
 
-	ClientRef newClient = std::make_shared<Client>();
-	newClient->socket = clientSocket;
-	newClient->player = std::dynamic_pointer_cast<Player>(player);
+	//ClientRef newClient = std::make_shared<Client>();
+	//newClient->socket = clientSocket;
+	//newClient->player = std::dynamic_pointer_cast<Player>(player);
 
-	_clients.push_back(newClient);
+	//_clients.push_back(newClient);
 
-	std::cout << "Client 접속" << std::endl;
+	//std::cout << "Client 접속" << std::endl;
 
-	// 추후 게임 시작 시 broadcast로 보내도록 코드 옮기기
-	// GameRoom 정보 송신
-	SendCreateCubesPacket(_room->GetCubes(), _room->GetDoors(), false, newClient->socket);
+	//// 추후 게임 시작 시 broadcast로 보내도록 코드 옮기기
+	//// GameRoom 정보 송신
+	//SendCreateCubesPacket(_room->GetCubes(), _room->GetDoors(), false, newClient->socket);
 
-	// 새로 접속한 Client에게 Room에 있는 모든 Object 정보 송신
-	const std::unordered_map<uint, PlayerRef>& players = _room->GetPlayers();
-	for (const auto& item : players)
-		SendAddObjectPacket(item.second, false, newClient->socket);
-	const std::vector<MonsterRef>& monsters = _room->GetMonsters();
-	for (const auto& monster : monsters)
-	{
-		if (monster->GetObjectPoolState() == ObjectPoolState::InWorld)
-			SendSpawnMonsterPacket(monster, false, newClient->socket);
-	}
-	const std::vector<ItemRef>& items = _room->GetItems();
-	for (const auto& item : items)
-	{
-		if (item->GetObjectPoolState() == ObjectPoolState::InWorld)
-		{
-			if (std::dynamic_pointer_cast<Tool>(item))
-				SendAddItemPacket(item, true, newClient->socket);
-			else
-				SendAddItemPacket(item, false, newClient->socket);
-		}
-	}
+	//// 새로 접속한 Client에게 Room에 있는 모든 Object 정보 송신
+	//const std::array<PlayerRef, MAX_ROOM_PLAYER>& players = _room->GetPlayers();
+	//for (const auto& player : players)
+	//	SendAddObjectPacket(player, false, newClient->socket);
+	//const std::vector<MonsterRef>& monsters = _room->GetMonsters();
+	//for (const auto& monster : monsters)
+	//{
+	//	if (monster->GetObjectPoolState() == ObjectPoolState::InWorld)
+	//		SendSpawnMonsterPacket(monster, false, newClient->socket);
+	//}
+	//const std::vector<ItemRef>& items = _room->GetItems();
+	//for (const auto& item : items)
+	//{
+	//	if (item->GetObjectPoolState() == ObjectPoolState::InWorld)
+	//	{
+	//		if (std::dynamic_pointer_cast<Tool>(item))
+	//			SendAddItemPacket(item, true, newClient->socket);
+	//		else
+	//			SendAddItemPacket(item, false, newClient->socket);
+	//	}
+	//}
 }
 
 void ServerFramework::ProcessDisconnect(ClientRef client)
 {
-	// 연결 끊긴 Client를 나타내는 Player 제거
-	_room->RemoveObject(ObjectType::Player, client->player->GetID(), true);
+	//// 연결 끊긴 Client를 나타내는 Player 제거
+	//_room->RemoveObject(ObjectType::Player, client->player->GetID(), true);
 
-	std::cout << "Client 접속 종료" << std::endl;
+	//std::cout << "Client 접속 종료" << std::endl;
 
-	// 연결 끊긴 Client 삭제 예약
-	_removeClients.push_back(client);
+	//// 연결 끊긴 Client 삭제 예약
+	//_removeClients.push_back(client);
 }
 
 void ServerFramework::ProcessUpdateObjectStatePacket(C_UpdateObjectState_Packet packet)
@@ -753,21 +754,21 @@ void ServerFramework::ProcessUpdateObjectStatePacket(C_UpdateObjectState_Packet 
 
 void ServerFramework::ProcessMovePacket(C_Move_Packet packet)
 {
-	GameObjectRef object = _room->GetGameObject(packet.type, packet.objectID);
+	//GameObjectRef object = _room->GetGameObject(packet.type, packet.objectID);
 
-	if (object == nullptr)
-		return;
+	//if (object == nullptr)
+	//	return;
 
-	object->SetPos(packet.pos);
-	object->SetRotation(packet.rotation);
-	object->SetState(packet.state);
+	//object->SetPos(packet.pos);
+	//object->SetRotation(packet.rotation);
+	//object->SetState(packet.state);
 
-	// 자신을 제외한 모든 클라이언트에게 알리기
-	for (ClientRef client : _clients)
-	{
-		if (client->player->GetID() != packet.objectID)
-			SendMovePacket(object, false, client->socket);
-	}
+	//// 자신을 제외한 모든 클라이언트에게 알리기
+	//for (ClientRef client : _clients)
+	//{
+	//	if (client->player->GetID() != packet.objectID)
+	//		SendMovePacket(object, false, client->socket);
+	//}
 }
 
 void ServerFramework::ProcessGetItemPacket(SOCKET clientSocket, C_GetItem_Packet packet)
@@ -942,15 +943,15 @@ void ServerFramework::ProcessStartStagePacket(C_StartStage_Packet packet)
 
 void ServerFramework::ProcessEndStagePacket(C_EndStage_Packet packet)
 {
-	SendEndStagePacket(true);
+	//SendEndStagePacket(true);
 
-	// Player들 처음 위치로 이동
-	std::unordered_map<uint, PlayerRef> players = _room->GetPlayers();
-	for (const auto& item : players)
-	{
-		item.second->SetPos({0, 0, 25});
-		SendMovePacket(item.second, true);
-	}
+	//// Player들 처음 위치로 이동
+	//std::array<PlayerRef, MAX_ROOM_PLAYER> players = _room->GetPlayers();
+	//for (auto& player : players)
+	//{
+	//	player->SetPos({0, 0, 25});
+	//	SendMovePacket(player, true);
+	//}
 
-	_room->EndStage();
+	//_room->EndStage();
 }
