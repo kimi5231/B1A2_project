@@ -1684,6 +1684,35 @@ void UMain::RecvUpdateHp(S_UpdateHp_Packet packet)
 
 void UMain::RecvSpawnObstacle(S_SpawnObstacle_Packet packet)
 {
+	if (_webs.Contains(packet.id))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Web already spawned... object ID: %d"), packet.id);
+		return;
+	}
+
+	FVector spawnLocation(packet.pos.x, packet.pos.y, packet.pos.z);
+	FRotator spawnRotation(0, 0, 0);
+	int id = packet.id;
+
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		UWorld* world = GetWorld();
+		if (!world) return;
+
+		AActor* webActor = world->SpawnActor<AActor>(WebClass, spawnLocation, spawnRotation);
+
+		if (webActor)
+		{
+			_webs.Add(id, webActor);
+			webActor->SetActorLocation(spawnLocation);
+			UE_LOG(LogTemp, Log, TEXT("Web Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+		}
+		else
+		{
+			_webs.Remove(id);
+			UE_LOG(LogTemp, Display, TEXT("Web Spawn Failed... ID [%d]"), id);
+		}
+	});
 }
 
 //void UMain::RecvEmotionGameResult(S_EmotionGameResult_Packet packet)

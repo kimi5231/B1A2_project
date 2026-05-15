@@ -248,6 +248,12 @@ private:
 	TMap<uint64, ABaseDoor*> _doors;
 	ABaseHatch* _hatch;
 
+	// 거미줄
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> WebClass;
+
+	TMap<uint64, AActor*> _webs;
+
 	// MainEntrance가 한 번만 생성되도록 체크하는 플래그
 	bool isMainEntranceAlreadySpawned = false;
 
