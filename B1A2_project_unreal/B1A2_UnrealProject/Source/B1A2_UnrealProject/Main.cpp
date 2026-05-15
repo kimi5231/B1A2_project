@@ -9,6 +9,7 @@
 #include "BaseItem.h"
 #include "Lantern.h"
 #include "BaseDoor.h"
+#include "BaseHatch.h"
 #include "ToolBarWidget.h"
 #include "BaseMonster.h"
 #include "BaseEmotionGame.h"
@@ -1200,6 +1201,18 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 
 				UE_LOG(LogTemp, Log, TEXT("[Room] Door Spawned [%d] pos = %f, %f, %f, dir = %d"), i, door.pos.x, door.pos.y, door.pos.z, door.dir);
 			}
+			// Hatch 추가되면 주석 풀기!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		/*	else if (door.doorType == DoorType::Hatch)
+			{
+				ABaseHatch* hatchActor = world->SpawnActor<Z_Construct_UClass_ABaseHatch_Statics>(HatchClass, pos, rot, params);
+				hatchActor->SetHatchState(packet.doors[i].state);
+				hatchActor->SetHatchID(packet.doors[i].id);
+				hatchActor->SetHatchRotation(packet.doors[i].state);
+
+				_hatch = hatchActor;
+
+				UE_LOG(LogTemp, Log, TEXT("[Room] Hatch Spawned [%d] pos = %f, %f, %f, dir = %d"), i, door.pos.x, door.pos.y, door.pos.z, door.dir);
+			}*/
 			else if (door.doorType == DoorType::Wall)
 			{
 				AStaticMeshActor* wallActor = world->SpawnActor<AStaticMeshActor>(Wall_FillerClass, pos, rot, params);

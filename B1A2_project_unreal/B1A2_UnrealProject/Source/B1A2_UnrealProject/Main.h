@@ -19,6 +19,7 @@ class AOtherPlayer;
 class AMyPlayer;
 class ABaseItem;
 class ABaseDoor;
+class ABaseHatch;
 class ABaseMonster;
 
 UCLASS()
@@ -157,8 +158,10 @@ public:
 	TSubclassOf<AStaticMeshActor> 	Wall_FillerClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Cube")
-
 	TSubclassOf<ABaseDoor> DoorClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Cube")
+	TSubclassOf<ABaseHatch> HatchClass;
 
 	// 몬스터
 	UPROPERTY(EditDefaultsOnly, Category = "Monster")
@@ -243,6 +246,7 @@ private:
 
 	// 문
 	TMap<uint64, ABaseDoor*> _doors;
+	ABaseHatch* _hatch;
 
 	// MainEntrance가 한 번만 생성되도록 체크하는 플래그
 	bool isMainEntranceAlreadySpawned = false;
