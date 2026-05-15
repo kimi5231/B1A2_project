@@ -97,6 +97,9 @@ public:
 	void RecvUpdateHp(S_UpdateHp_Packet packet);
 	void RecvSpawnObstacle(S_SpawnObstacle_Packet packet);
 
+	// 패킷 추가되면 주석 풀기!!!!!!!!
+	// void RecvEmotionGameResult(S_EmotionGameResult_Packet packet);
+
 	FRotator DirToRotation(Dir dir);
 
 	// ID

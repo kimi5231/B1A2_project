@@ -11,6 +11,7 @@
 #include "BaseDoor.h"
 #include "ToolBarWidget.h"
 #include "BaseMonster.h"
+#include "BaseEmotionGame.h"
 
 #define BUFSIZE	64
 
@@ -1012,6 +1013,20 @@ void UMain::RecvUpdateStateMonster(S_UpdateObjectState_Packet packet)
 		{
 			ABaseMonster* monster = (*findMonster);
 
+			// EmotionGame이 Grab 상태라면 모니터 바꾸기
+			if (packet.state == ObjectState::GRAB)
+			{
+				// EmotionGame 몬스터로 캐스팅
+				ABaseEmotionGame* emotionGame = Cast<ABaseEmotionGame>(monster);
+
+				// 캐스팅 성공시 카운트다운 시작하여 내부적으로 모니터 3 - 2 - 1로 변경
+				if (emotionGame)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("[EmotionGame] Monster Grabbed Player! Starting Countdown..."));
+					emotionGame->StartGrabCountdown();
+				}
+			}
+
 			// Skeletal Mesh가 있는 몬스터라면, 컴포넌트 찾기
 			USkeletalMeshComponent* meshComp = monster->FindComponentByClass<USkeletalMeshComponent>();
 
@@ -1657,6 +1672,35 @@ void UMain::RecvUpdateHp(S_UpdateHp_Packet packet)
 void UMain::RecvSpawnObstacle(S_SpawnObstacle_Packet packet)
 {
 }
+
+//void UMain::RecvEmotionGameResult(S_EmotionGameResult_Packet packet)
+//{
+//	AsyncTask(ENamedThreads::GameThread, [=, this]()
+//	{
+//		if (!GetWorld()) return;
+//
+//		ABaseMonster** findMonster = _monsters.Find(packet.monsterID);
+//		if (findMonster && *findMonster)
+//		{
+//			ABaseEmotionGame* emotionMonster = Cast<ABaseEmotionGame>(*findMonster);
+//			if (emotionMonster)
+//			{
+//				// enum -> Fstring
+//				FString ResultString = TEXT("Idle");
+//
+//				switch (packet.result)
+//				{
+//				case EmotionGameResult::Win:  ResultString = TEXT("Win"); break;
+//				case EmotionGameResult::Lose: ResultString = TEXT("Lose"); break;
+//				case EmotionGameResult::Draw: ResultString = TEXT("Draw"); break;
+//				}
+//
+//				// 문자열로 호출
+//				emotionMonster->DisplayGameResult(ResultString);
+//			}
+//		}
+//	});
+//}
 
 FRotator UMain::DirToRotation(Dir dir)
 {
