@@ -101,7 +101,7 @@ void RoamingState::Tick(MonsterRef monster, Room* room)
 	monster->SetPos(path[0]);
 	monster->SetCurrentCubeID(cubes);
 	path.pop_front();
-	g_framework->SendMovePacket(std::shared_ptr<GameObject>(monster), true);
+	//g_framework->SendMovePacket(std::shared_ptr<GameObject>(monster), true);
 }
 
 void RoamingState::Exit(MonsterRef monster)
@@ -297,7 +297,7 @@ void ChaseState::Tick(MonsterRef monster, Room* room)
 		}
 
 		// 4. 이동 패킷 전송 (매 프레임 쏘거나, 일정 거리 이상일 때만 전송)
-		g_framework->SendMovePacket(std::static_pointer_cast<GameObject>(monster), true);
+		//g_framework->SendMovePacket(std::static_pointer_cast<GameObject>(monster), true);
 	}
 
 	// 최종 목적지 도달 체크
@@ -452,7 +452,7 @@ void ReturnState::Tick(MonsterRef monster, Room* room)
 	monster->SetPos(path[0]);
 	monster->SetCurrentCubeID(cubes);
 	path.pop_front();
-	g_framework->SendMovePacket(std::shared_ptr<GameObject>(monster), true);
+	//g_framework->SendMovePacket(std::shared_ptr<GameObject>(monster), true);
 }
 
 void ReturnState::Exit(MonsterRef monster)
@@ -464,7 +464,7 @@ void ReturnState::Exit(MonsterRef monster)
 void AttackState::Enter(MonsterRef monster)
 {
 	monster->GetTarget()->TackDamage(monster->GetDamage());
-	g_framework->SendUpdateHpPacket(monster->GetTarget()->GetID(), monster->GetTarget()->GetHP(), true);
+	//g_framework->SendUpdateHpPacket(monster->GetTarget()->GetID(), monster->GetTarget()->GetHP(), true);
 	std::cout << "Player " << monster->GetTarget()->GetID() << " HP: " << monster->GetTarget()->GetHP() << "\n";
 }
 
@@ -529,7 +529,7 @@ void Teleport::Exit(MonsterRef monster)
 	Vector pos = monster->SelectRandomPosInCube(cube);
 	monster->SetPos(pos);
 	std::cout << pos.x << " " <<  pos.y << " " << pos.z << std::endl;
-	g_framework->SendMovePacket(monster, true);
+	//g_framework->SendMovePacket(monster, true);
 }
 
 //--------------Grab----------------
@@ -542,7 +542,7 @@ void Grab::Exit(MonsterRef monster)
 {
 	// 타겟의 위치로 순간이동
 	monster->SetPos(monster->GetTarget()->GetPos());
-	g_framework->SendMovePacket(monster, true);
+	//g_framework->SendMovePacket(monster, true);
 
 	// 보정 필요하면 보정하기
 }
@@ -568,7 +568,7 @@ void Play::Exit(MonsterRef monster)
 		emotion == Emotion::Neutral && targetEmotion == Emotion::Happy)
 	{
 		emotionGame->GetTarget()->TackDamage(emotionGame->GetDamage());
-		g_framework->SendUpdateHpPacket(emotionGame->GetTarget()->GetID(), emotionGame->GetTarget()->GetHP(), true);
+		//g_framework->SendUpdateHpPacket(emotionGame->GetTarget()->GetID(), emotionGame->GetTarget()->GetHP(), true);
 		emotionGame->SetResult(EmotionGameResult::Win);
 	}
 	// 졌을 때

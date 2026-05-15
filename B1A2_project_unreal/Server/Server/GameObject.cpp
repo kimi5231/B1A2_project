@@ -55,8 +55,8 @@ bool GameObject::SetState(ObjectState state, bool isSend)
 		return false;
 
 	_state = state;
-	if(isSend)
-		g_framework->SendUpdateObjectStatePacket(shared_from_this(), true);
+	//if(isSend)
+	//	g_framework->SendUpdateObjectStatePacket(shared_from_this(), true);
 	return true;
 }
 
@@ -67,6 +67,6 @@ void GameObject::SetObjectPoolState(ObjectPoolState objectPoolState)
 
 	_objectPoolState = objectPoolState;
 
-	if(_objectPoolState == ObjectPoolState::Reusable)
-		g_framework->SendRemoveObjectPacket(_type, _id, true);
+	//if(_objectPoolState == ObjectPoolState::Reusable)
+	//	g_framework->SendRemoveObjectPacket(_type, _id, true);
 }

@@ -149,109 +149,109 @@ void ServerFramework::Update()
 
 void ServerFramework::ProcessRecv(ClientRef client)
 {
-	// PacketSize 수신(고정 길이)
-	int packetSize{};
-	if (recv(client->socket, (char*)&packetSize, sizeof(int), MSG_WAITALL) <= 0)
-	{
-		ProcessDisconnect(client);
-		return;
-	}
+	//// PacketSize 수신(고정 길이)
+	//int packetSize{};
+	//if (recv(client->socket, (char*)&packetSize, sizeof(int), MSG_WAITALL) <= 0)
+	//{
+	//	ProcessDisconnect(client);
+	//	return;
+	//}
 
-	// Packet 수신(가변 데이터)
-	std::vector<char> packet(512);
-	if (recv(client->socket, packet.data(), packetSize, MSG_WAITALL) <= 0)
-	{
-		ProcessDisconnect(client);
-		return;
-	}
+	//// Packet 수신(가변 데이터)
+	//std::vector<char> packet(512);
+	//if (recv(client->socket, packet.data(), packetSize, MSG_WAITALL) <= 0)
+	//{
+	//	ProcessDisconnect(client);
+	//	return;
+	//}
 
-	// Header 추출
-	Header header;
-	memcpy(&header, packet.data(), sizeof(Header));
+	//// Header 추출
+	//Header header;
+	//memcpy(&header, packet.data(), sizeof(Header));
 
-	// Data 추출
-	switch (header.id)
-	{
-	case C_Move:
-	{
-		C_Move_Packet movePacket;
-		memcpy(&movePacket, packet.data() + sizeof(Header), sizeof(C_Move_Packet));
-		ProcessMovePacket(movePacket);
-	}
-		break;
-	case C_GetItem:
-		C_GetItem_Packet getItemPacket;
-		memcpy(&getItemPacket, packet.data() + sizeof(Header), sizeof(C_GetItem_Packet));
-		ProcessGetItemPacket(client->socket, getItemPacket);
-		break;
-	case C_DropItem:
-		C_DropItem_Packet dropItemPacket;
-		memcpy(&dropItemPacket, packet.data() + sizeof(Header), sizeof(C_DropItem_Packet));
-		ProcessDropItemPacket(dropItemPacket);
-		break;
-	case C_ChangeTool:
-		C_ChangeTool_Packet changeToolPacket;
-		memcpy(&changeToolPacket, packet.data() + sizeof(Header), sizeof(C_ChangeTool_Packet));
-		ProcessChangeToolPacket(changeToolPacket);
-		break;
-	case C_UseTool:
-		C_UseTool_Packet useToolPacket;
-		memcpy(&useToolPacket, packet.data() + sizeof(Header), sizeof(C_UseTool_Packet));
-		ProcessUseToolPacket(useToolPacket);
-		break;
-	case C_InteractDoor:
-		C_InteractDoor_Packet interactDoorPacket;
-		memcpy(&interactDoorPacket, packet.data() + sizeof(Header), sizeof(C_InteractDoor_Packet));
-		ProcessInteractDoorPacket(interactDoorPacket);
-		break;
-	case C_Emotion:
-		C_Emotion_Packet emotionPacket;
-		memcpy(&emotionPacket, packet.data() + sizeof(Header), sizeof(C_Emotion_Packet));
-		ProcessEmotionPacket(emotionPacket);
-		break;
-	case C_UseLantern:
-		C_UseLantern_Packet useLanternPacket;
-		memcpy(&useLanternPacket, packet.data() + sizeof(Header), sizeof(C_UseLantern_Packet));
-		ProcessUseLanternPacket(useLanternPacket);
-		break;
-	case C_StartStage:
-		C_StartStage_Packet startStagePacket;
-		memcpy(&startStagePacket, packet.data() + sizeof(Header), sizeof(C_StartStage_Packet));
-		ProcessStartStagePacket(startStagePacket);
-		break;
-	case C_EndStage:
-		C_EndStage_Packet endStagePacket;
-		memcpy(&endStagePacket, packet.data() + sizeof(Header), sizeof(C_EndStage_Packet));
-		ProcessEndStagePacket(endStagePacket);
-		break;
-	}
+	//// Data 추출
+	//switch (header.id)
+	//{
+	//case C_Move:
+	//{
+	//	C_Move_Packet movePacket;
+	//	memcpy(&movePacket, packet.data() + sizeof(Header), sizeof(C_Move_Packet));
+	//	ProcessMovePacket(movePacket);
+	//}
+	//	break;
+	//case C_GetItem:
+	//	C_GetItem_Packet getItemPacket;
+	//	memcpy(&getItemPacket, packet.data() + sizeof(Header), sizeof(C_GetItem_Packet));
+	//	ProcessGetItemPacket(client->socket, getItemPacket);
+	//	break;
+	//case C_DropItem:
+	//	C_DropItem_Packet dropItemPacket;
+	//	memcpy(&dropItemPacket, packet.data() + sizeof(Header), sizeof(C_DropItem_Packet));
+	//	ProcessDropItemPacket(dropItemPacket);
+	//	break;
+	//case C_ChangeTool:
+	//	C_ChangeTool_Packet changeToolPacket;
+	//	memcpy(&changeToolPacket, packet.data() + sizeof(Header), sizeof(C_ChangeTool_Packet));
+	//	ProcessChangeToolPacket(changeToolPacket);
+	//	break;
+	//case C_UseTool:
+	//	C_UseTool_Packet useToolPacket;
+	//	memcpy(&useToolPacket, packet.data() + sizeof(Header), sizeof(C_UseTool_Packet));
+	//	ProcessUseToolPacket(useToolPacket);
+	//	break;
+	//case C_InteractDoor:
+	//	C_InteractDoor_Packet interactDoorPacket;
+	//	memcpy(&interactDoorPacket, packet.data() + sizeof(Header), sizeof(C_InteractDoor_Packet));
+	//	ProcessInteractDoorPacket(interactDoorPacket);
+	//	break;
+	//case C_Emotion:
+	//	C_Emotion_Packet emotionPacket;
+	//	memcpy(&emotionPacket, packet.data() + sizeof(Header), sizeof(C_Emotion_Packet));
+	//	ProcessEmotionPacket(emotionPacket);
+	//	break;
+	//case C_UseLantern:
+	//	C_UseLantern_Packet useLanternPacket;
+	//	memcpy(&useLanternPacket, packet.data() + sizeof(Header), sizeof(C_UseLantern_Packet));
+	//	ProcessUseLanternPacket(useLanternPacket);
+	//	break;
+	//case C_StartStage:
+	//	C_StartStage_Packet startStagePacket;
+	//	memcpy(&startStagePacket, packet.data() + sizeof(Header), sizeof(C_StartStage_Packet));
+	//	ProcessStartStagePacket(startStagePacket);
+	//	break;
+	//case C_EndStage:
+	//	C_EndStage_Packet endStagePacket;
+	//	memcpy(&endStagePacket, packet.data() + sizeof(Header), sizeof(C_EndStage_Packet));
+	//	ProcessEndStagePacket(endStagePacket);
+	//	break;
+	//}
 }
 
 void ServerFramework::ProcessSend(PacketID id, const std::vector<char>& packetData, SOCKET clientSocket)
 {
-	std::vector<char> packet = CreatePakcet(id, packetData);
-	int packetSize = packet.size();
+	//std::vector<char> packet = CreatePakcet(id, packetData);
+	//int packetSize = packet.size();
 
-	// packetSize 송신(고정 길이)
-	send(clientSocket, (char*)&packetSize, sizeof(int), 0);
-	// packet 송신(가변 데이터)
-	send(clientSocket, packet.data(), packetSize, 0);
+	//// packetSize 송신(고정 길이)
+	//send(clientSocket, (char*)&packetSize, sizeof(int), 0);
+	//// packet 송신(가변 데이터)
+	//send(clientSocket, packet.data(), packetSize, 0);
 }
 
-std::vector<char> ServerFramework::CreatePakcet(PacketID id, const std::vector<char>& packetData)
-{
-	// Header
-	Header header;
-	header.id = id;
-	header.dataSize = packetData.size();
-
-	// Packet
-	std::vector<char> packet(sizeof(Header) + header.dataSize);
-	memcpy(packet.data(), &header, sizeof(Header));
-	memcpy(packet.data() + sizeof(Header), packetData.data(), header.dataSize);
-
-	return packet;
-}
+//std::vector<char> ServerFramework::CreatePakcet(PacketID id, const std::vector<char>& packetData)
+//{
+//	// Header
+//	Header header;
+//	header.id = id;
+//	header.dataSize = packetData.size();
+//
+//	// Packet
+//	std::vector<char> packet(sizeof(Header) + header.dataSize);
+//	memcpy(packet.data(), &header, sizeof(Header));
+//	memcpy(packet.data() + sizeof(Header), packetData.data(), header.dataSize);
+//
+//	return packet;
+//}
 
 template<class T>
 std::vector<char> ServerFramework::SerializePOD(const T& pod)
@@ -284,24 +284,6 @@ std::vector<T> ServerFramework::DeserializeVector(const std::vector<char>& data)
 	memcpy(vector.data(), data.data() + sizeof(int), size * sizeof(T));
 
 	return vector;
-}
-
-void ServerFramework::SendAddObjectPacket(Player* player, bool broadcast, SOCKET client)
-{
-	// Packet Data 생성
-	S_AddObject_Packet packetData{ player->GetObjectType(), player->GetID(), player->GetPos(), player->GetRotation()};
-
-	// Packet Serialize
-	std::vector<char> serializedPacketData = SerializePOD(packetData);
-
-	// SendEvent 생성
-	SendEventRef event = std::make_shared<SendEvent>();
-	event->isBroadcast = broadcast;
-	event->clientSocket = client;
-	event->packetID = S_AddObject;
-	event->serializedPacketData = serializedPacketData;
-
-	_sendEvents.push_back(event);
 }
 
 void ServerFramework::SendAddItemPacket(ItemRef item, bool isTool, bool broadcast, SOCKET client)
@@ -342,20 +324,20 @@ void ServerFramework::SendRemoveObjectPacket(ObjectType objectType, uint objectI
 
 void ServerFramework::SendUpdateObjectStatePacket(GameObjectRef object, bool broadcast, SOCKET client)
 {
-	// Packet Data 생성
-	S_UpdateObjectState_Packet packetData{ object->GetID(), object->GetObjectType(), object->GetState() };
+	//// Packet Data 생성
+	//S_UpdateObjectState_Packet packetData{ object->GetID(), object->GetObjectType(), object->GetState() };
 
-	// Packet Serialize
-	std::vector<char> serializedPacketData = SerializePOD(packetData);
+	//// Packet Serialize
+	//std::vector<char> serializedPacketData = SerializePOD(packetData);
 
-	// SendEvent 생성
-	SendEventRef event = std::make_shared<SendEvent>();
-	event->isBroadcast = broadcast;
-	event->clientSocket = client;
-	event->packetID = S_UpdateObjectState;
-	event->serializedPacketData = serializedPacketData;
+	//// SendEvent 생성
+	//SendEventRef event = std::make_shared<SendEvent>();
+	//event->isBroadcast = broadcast;
+	//event->clientSocket = client;
+	//event->packetID = S_UpdateObjectState;
+	//event->serializedPacketData = serializedPacketData;
 
-	_sendEvents.push_back(event);
+	//_sendEvents.push_back(event);
 }
 
 void ServerFramework::SendMovePacket(GameObjectRef object, bool broadcast, SOCKET client)
@@ -740,16 +722,16 @@ void ServerFramework::ProcessDisconnect(ClientRef client)
 
 void ServerFramework::ProcessUpdateObjectStatePacket(C_UpdateObjectState_Packet packet)
 {
-	GameObjectRef object = _room->GetGameObject(packet.type, packet.objectID);
+	//GameObjectRef object = _room->GetGameObject(packet.type, packet.objectID);
 
-	object->SetState(packet.state);
+	//object->SetState(packet.state);
 
-	// 자신을 제외한 모든 클라이언트에게 알리기
-	for (ClientRef client : _clients)
-	{
-		if (client->player->GetID() != packet.objectID)
-			SendUpdateObjectStatePacket(object, false, client->socket);
-	}
+	//// 자신을 제외한 모든 클라이언트에게 알리기
+	//for (ClientRef client : _clients)
+	//{
+	//	if (client->player->GetID() != packet.objectID)
+	//		SendUpdateObjectStatePacket(object, false, client->socket);
+	//}
 }
 
 void ServerFramework::ProcessMovePacket(C_Move_Packet packet)

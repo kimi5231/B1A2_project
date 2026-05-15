@@ -45,7 +45,5 @@ using ObstacleRef = std::shared_ptr<class Obstacle>;
 
 #define TileSize 25
 
-#define PORT 7777
-#define BufferSize 5000
 #define MAX_PLAYER 600
 #define MAX_ROOM_PLAYER 4

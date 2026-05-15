@@ -12,8 +12,6 @@ public:
 	
 private:
 	void ProcessRecv();
-	void ProcessSend(PacketID id, const std::vector<char>& packetData);
-	std::vector<char> CreatePakcet(PacketID id, const std::vector<char>& packetData);
 
 public:
 	template <class T >
@@ -26,8 +24,9 @@ public:
 	std::vector<T> DeserializeVector(std::vector<char>& data);
 
 public:
-	void SendUpdateObjectStatePacket(int id, ObjectType type, ObjectState state);
 	void SendMovePacket(ObjectType type, int id, Vector pos, Rotation rotation, ObjectState state);
+	void SendUpdateObjectStatePacket(int id, ObjectType type, ObjectState state);
+	
 	void SendGetItemPacket(int itemID, bool isTool, int playerID);
 	void SendDropItemPacket(int itemID, bool isTool, int playerID);
 	void SendChangeToolPacket(int playerID, int toolID);

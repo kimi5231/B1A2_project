@@ -3,7 +3,6 @@
 #include "ExpOver.h"
 
 class ServerFramework;
-class ExpOver;
 class Session;
 
 class ServerNetwork
@@ -15,6 +14,7 @@ public:
 public:
 	void Update();
 	void ProcessAccept();
+	void ProcessDisconnected(int clientIndex);
 	void ProcessRecv(int clientIndex, int numByte, ExpOver* expOver);
 	void ProcessPacket(std::vector<char>& packet, int clientIndex);
 	std::vector<char> CreatePakcet(PacketID id, const std::vector<char>& packetData);
@@ -32,10 +32,14 @@ private:
 public:
 	// Send
 	void SendAddPlayerPacket(Player* player, Session* client);
+	
 	void SendAddItemPacket(ItemRef item, bool isTool, bool broadcast, SOCKET client = 0);
 	void SendRemoveObjectPacket(ObjectType objectType, int objectID, Session* client);
-	void SendUpdateObjectStatePacket(GameObjectRef object, bool broadcast, SOCKET client = 0);
+	
+	// GetPlayer 함수 GetObject 함수로 수정 필요
 	void SendMovePacket(GameObject* object, Session* client);
+	void SendUpdateObjectStatePacket(GameObject* object, Session* client);
+	
 	void SendCreateCubesPacket(const std::vector<CubeRef>& cubes, const std::vector<DoorRef>& doors, bool broadcast, SOCKET client = 0);
 	void SendAddItemToInventoryPacket(ItemRef item, bool isTool, bool broadcast, SOCKET client = 0);
 	void SendRemoveItemFromInventoryPacket(ItemRef item, bool isTool, bool broadcast, SOCKET client = 0);
@@ -56,7 +60,7 @@ public:
 public:
 	// Recv
 	void ProcessMovePacket(C_Move_Packet packet, int clientIndex);
-	void ProcessUpdateObjectStatePacket(C_UpdateObjectState_Packet packet);
+	void ProcessUpdateObjectStatePacket(C_UpdateObjectState_Packet packet, int clientIndex);
 	
 	void ProcessGetItemPacket(SOCKET clientSocket, C_GetItem_Packet packet);
 	void ProcessDropItemPacket(C_DropItem_Packet packet);

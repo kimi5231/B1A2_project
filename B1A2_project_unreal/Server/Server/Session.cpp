@@ -9,7 +9,7 @@ Session::Session()
 	_clientSocket = INVALID_SOCKET;
 	_isConnected = false;
 	_id = -1;
-	_recvOver._ioType = IOType::Accept;
+	_recvOver._ioType = IOType::Recv;
 	_prevRecv = 0;
 	_room = nullptr;
 	_player = nullptr;
@@ -24,15 +24,33 @@ Session::~Session()
 void Session::Recv()
 {
 	DWORD recvFlag = 0;
+	DWORD bytesReceived = 0;
 	memset(&_recvOver._over, 0, sizeof(_recvOver._over));
-	WSARecv(_clientSocket, &_recvOver._wsaBuffer, 1, 0, &recvFlag, &_recvOver._over, nullptr);
+	_recvOver._wsaBuffer.buf = _recvOver._buffer.data();
+	_recvOver._wsaBuffer.len = _recvOver._buffer.size();
+	int result = WSARecv(_clientSocket, &_recvOver._wsaBuffer, 1, &bytesReceived, &recvFlag, &_recvOver._over, nullptr);
+
+	if (result == SOCKET_ERROR)
+	{
+		int err = WSAGetLastError();
+		if (err != WSA_IO_PENDING)
+		{
+			// 여기서 에러가 찍힌다면 예약 자체가 실패한 것임!
+			printf("WSARecv Failed: %d\n", err);
+		}
+		else
+		{
+			// 997이 찍힌다면 예약은 성공, 클라가 안 보낸 것임
+			// printf("WSARecv Pending...\n");
+		}
+	}
 }
 
 void Session::Send(const std::vector<char>& packet)
 {
 	ExpOver* over = new ExpOver(IOType::Send);
-	over->_wsaBuffer.len = packet.size();
-	over->_buffer.insert(over->_buffer.end(), packet.begin(), packet.end());
+	memcpy(over->_buffer.data(), packet.data(), packet.size());
 	over->_wsaBuffer.buf = (char*)over->_buffer.data();
+	over->_wsaBuffer.len = packet.size();
 	WSASend(_clientSocket, &over->_wsaBuffer, 1, 0, 0, &over->_over, nullptr);
 }

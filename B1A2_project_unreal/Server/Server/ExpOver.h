@@ -1,11 +1,13 @@
 #pragma once
+#include "Packets.h"
+
 class ExpOver
 {
 public:
 	ExpOver()
 	{
 		ZeroMemory(&_over, sizeof(_over));
-		_buffer.reserve(BufferSize);
+		_buffer.resize(BufferSize);
 		_wsaBuffer.buf = reinterpret_cast<char*>(_buffer.data());
 		_wsaBuffer.len = BufferSize;
 	}
@@ -14,7 +16,7 @@ public:
 		: _ioType(ioType)
 	{
 		ZeroMemory(&_over, sizeof(_over));
-		_buffer.reserve(BufferSize);
+		_buffer.resize(BufferSize);
 		_wsaBuffer.buf = reinterpret_cast<char*>(_buffer.data());
 		_wsaBuffer.len = BufferSize;
 	}

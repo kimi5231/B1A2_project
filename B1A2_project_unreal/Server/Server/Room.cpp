@@ -350,7 +350,7 @@ void Room::StartStage()
 {
 	// Cube 생성
 	CreateFactoryCubes();
-	g_framework->SendCreateCubesPacket(_cubes, _doors, true);
+	//g_framework->SendCreateCubesPacket(_cubes, _doors, true);
 
 	AddItem(false, ItemType::CardboardBox, { 0, -50, 25 }, true);
 	AddItem(true, ItemType::CUTLASS, { 0, -100, 25 }, true);
@@ -413,8 +413,8 @@ MonsterRef Room::AddMonster(MonsterType monsterType, Vector pos, bool isSend)
 			// ObjectPoolState 변경
 			monster->SetObjectPoolState(ObjectPoolState::InWorld);
 
-			if (isSend)
-				g_framework->SendSpawnMonsterPacket(monster, true);
+			/*if (isSend)
+				g_framework->SendSpawnMonsterPacket(monster, true);*/
 
 			return monster;
 		}
@@ -435,8 +435,8 @@ ItemRef Room::AddItem(bool isTool, ItemType itemType, Vector pos, bool isSend)
 			// ObjectPoolState 변경
 			item->SetObjectPoolState(ObjectPoolState::InWorld);
 
-			if (isSend)
-				g_framework->SendAddItemPacket(item, isTool, true);
+			/*if (isSend)
+				g_framework->SendAddItemPacket(item, isTool, true);*/
 
 			return item;
 		}
@@ -457,8 +457,8 @@ ObstacleRef Room::AddObstacle(ObstacleType obstacleType, Vector pos, bool isSend
 			// ObjectPoolState 변경
 			obstacle->SetObjectPoolState(ObjectPoolState::InWorld);
 
-			if (isSend)
-				g_framework->SendSpawnObstaclePacket(obstacle, true);
+			/*if (isSend)
+				g_framework->SendSpawnObstaclePacket(obstacle, true);*/
 
 			return obstacle;
 		}
@@ -482,7 +482,7 @@ void Room::RemoveObject(ObjectType type, int id)
 
 	for (auto& player : _players)
 	{
-		if (player->GetClient()->_isConnected)
+		if (player->GetClient())
 			g_network->SendRemoveObjectPacket(type, id, player->GetClient());
 	}		
 }

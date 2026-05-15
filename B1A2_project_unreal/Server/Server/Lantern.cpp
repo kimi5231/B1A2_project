@@ -36,12 +36,12 @@ void Lantern::TurnOn()
 {
 	_isOn = true;
 	_sumTime = 0.f;
-	g_framework->SendTurnOnLanternPacket(dynamic_pointer_cast<Lantern>(shared_from_this()), _ownerID, true);
+	//g_framework->SendTurnOnLanternPacket(dynamic_pointer_cast<Lantern>(shared_from_this()), _ownerID, true);
 }
 
 void Lantern::TurnOff()
 {
 	_isOn = false;
 	_sumTime = 0.f;
-	g_framework->SendTurnOffLanternPacket(dynamic_pointer_cast<Lantern>(shared_from_this()), _ownerID, true);
+	//g_framework->SendTurnOffLanternPacket(dynamic_pointer_cast<Lantern>(shared_from_this()), _ownerID, true);
 }

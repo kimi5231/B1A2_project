@@ -104,18 +104,19 @@ void UMain::ProcessRecv()
 		{
 			S_AddPlayer_Packet addPlayerPacket;
 			FMemory::Memcpy(&addPlayerPacket, event->serializedPacketData.data(), sizeof(S_AddPlayer_Packet));
-			AddPlayer(addPlayerPacket);
+			RecvAddPlayer(addPlayerPacket);
 			event->isComplete = true;
 			break;
 		}
-			case S_AddObject:
-			{
-				S_AddObject_Packet addObjectPacket;
-				FMemory::Memcpy(&addObjectPacket, event->serializedPacketData.data(), sizeof(S_AddObject_Packet));
-				RecvAddObject(addObjectPacket);
-				event->isComplete = true;
-				break;
-			}
+		case S_Move:
+		{
+			S_Move_Packet movePacket;
+			FMemory::Memcpy(&movePacket, event->serializedPacketData.data(), sizeof(S_Move_Packet));
+			RecvMoveObject(movePacket);
+			event->isComplete = true;
+			break;
+		}
+			
 			case S_AddItem:
 			{
 				S_AddItem_Packet addItemPacket;
@@ -143,14 +144,7 @@ void UMain::ProcessRecv()
 				event->isComplete = true;
 				break;
 			}
-			case S_Move:
-			{
-				S_Move_Packet movePacket;
-				FMemory::Memcpy(&movePacket, event->serializedPacketData.data(), sizeof(S_Move_Packet));
-				RecvMoveObject(movePacket);
-				event->isComplete = true;
-				break;
-			}
+			
 			case S_AddItemToInventory:	// MyPlayer의 아이템과 장비를 인벤과 툴바에 넣음 (OtherPlayer는 UpdateObjectState)
 			{
 				S_AddItemToInventory_Packet addItemToInventoryPacket;
@@ -288,7 +282,7 @@ void UMain::ProcessSend(PacketID id, const void* packetData, int dataSize)
 
 void UMain::SendLocalPosition()
 {
-	if (_myID == 0)
+	if (_myID == -1)
 		return;
 
 	UWorld* world = GetWorld();
@@ -470,19 +464,11 @@ void UMain::Update()
 	ProcessRecv();
 }
 
-
-
-void UMain::RecvAddObject(S_AddObject_Packet packet)
-{
-	/*if (packet.type == ObjectType::Player)
-		AddPlayer(packet);*/
-}
-
-void UMain::AddPlayer(S_AddPlayer_Packet packet)
+void UMain::RecvAddPlayer(S_AddPlayer_Packet packet)
 {
 	UE_LOG(LogTemp, Log, TEXT("AddObject Packet [%d], %f, %f, %f"), packet.id, packet.pos.x, packet.pos.y, packet.pos.z);
 
-	if (_myID == 0)
+	if (_myID == -1)
 	{
 		// 자신의 ID 설정
 		_myID = packet.id;
@@ -1015,7 +1001,7 @@ void UMain::RecvUpdateStateMonster(S_UpdateObjectState_Packet packet)
 	{
 		if (!GetWorld()) return;
 
-		ABaseMonster** findMonster = _monsters.Find(packet.objectID);
+		ABaseMonster** findMonster = _monsters.Find(packet.id);
 		if (findMonster && *findMonster)
 		{
 			ABaseMonster* monster = (*findMonster);
@@ -1070,7 +1056,7 @@ void UMain::RecvUpdateStateDoor(S_UpdateObjectState_Packet packet)
 {
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
-		ABaseDoor** foundDoor = _doors.Find(packet.objectID);
+		ABaseDoor** foundDoor = _doors.Find(packet.id);
 
 		if (foundDoor && *foundDoor)
 		{

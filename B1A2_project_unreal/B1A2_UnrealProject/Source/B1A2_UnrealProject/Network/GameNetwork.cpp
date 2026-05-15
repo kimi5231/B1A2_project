@@ -69,7 +69,7 @@ void GameNetwork::Update()
 		std::lock_guard<std::mutex> lock(_sendMutex);
 		for (NetworkEventRef event : _sendEvents)
 		{
-			ProcessSend(event->packetID, event->serializedPacketData);
+			send(_clientSocket, event->serializedPacketData.data(), event->serializedPacketData.size(), 0);
 			event->isComplete = true;
 		}
 
@@ -89,27 +89,14 @@ void GameNetwork::Update()
 
 void GameNetwork::ProcessRecv()
 {
-	// PacketSize 수신(고정 길이)
-	int packetSize{};
-	if (recv(_clientSocket, (char*)&packetSize, sizeof(char), MSG_WAITALL) <= 0)
-	{
-		//ProcessDisconnect(client);
-		return;
-	}
-
-	// Packet 수신(가변 데이터)
-	std::vector<char> packet(5000);
-	if (recv(_clientSocket, packet.data(), packetSize - sizeof(char), MSG_WAITALL) <= 0)
-	{
-		//ProcessDisconnect(client);
-		return;
-	}
-
-	// Header 추출
+	// 나중에 재조립하기
+	unsigned char packetSize{};
+	recv(_clientSocket, (char*)&packetSize, sizeof(char), MSG_WAITALL);
+	std::vector<char> packet(BufferSize);
+	recv(_clientSocket, packet.data(), packetSize - sizeof(char), MSG_WAITALL);
+	
 	PacketID id;
 	memcpy(&id, packet.data(), sizeof(PacketID));
-
-	UE_LOG(LogTemp, Log, TEXT("%d"), id);
 
 	// Data 추출
 	switch (id)
@@ -119,11 +106,24 @@ void GameNetwork::ProcessRecv()
 		NetworkEventRef event = std::make_shared<NetworkEvent>();
 		event->packetID = id;
 		event->serializedPacketData.resize(sizeof(S_AddPlayer_Packet));
-		memcpy(event->serializedPacketData.data(), packet.data(), sizeof(S_AddPlayer_Packet));
+		memcpy(event->serializedPacketData.data(), &packetSize, sizeof(unsigned char));
+		memcpy(event->serializedPacketData.data() + sizeof(unsigned char), packet.data(), packetSize - sizeof(unsigned char));
 		std::lock_guard<std::mutex> lock(_recvMutex);
 		_recvEvents.push_back(event);
 		break;
 	}
+	case S_Move:
+	{
+		NetworkEventRef event = std::make_shared<NetworkEvent>();
+		event->packetID = id;
+		event->serializedPacketData.resize(sizeof(S_Move_Packet));
+		memcpy(event->serializedPacketData.data(), &packetSize, sizeof(unsigned char));
+		memcpy(event->serializedPacketData.data() + sizeof(unsigned char), packet.data(), packetSize - sizeof(unsigned char));
+		std::lock_guard<std::mutex> lock(_recvMutex);
+		_recvEvents.push_back(event);
+		break;
+	}
+
 	/*case S_AddItem:
 	{
 		NetworkEventRef event = std::make_shared<NetworkEvent>();
@@ -327,49 +327,6 @@ void GameNetwork::ProcessRecv()
 	}
 }
 
-void GameNetwork::ProcessSend(PacketID id, const std::vector<char>& packetData)
-{
-	std::vector<char> packet = CreatePakcet(id, packetData);
-	int packetSize = packet.size();
-
-	// packetSize 송신(고정 길이)
-	send(_clientSocket, (char*)&packetSize, sizeof(int), 0);
-	// packet 송신(가변 데이터)
-	send(_clientSocket, packet.data(), packetSize, 0);
-}
-
-std::vector<char> GameNetwork::CreatePakcet(PacketID id, const std::vector<char>& packetData)
-{
-	// Header
-	Header header;
-	header.id = id;
-	header.dataSize = packetData.size();
-
-	// Packet
-	std::vector<char> packet(sizeof(Header) + header.dataSize);
-	memcpy(packet.data(), &header, sizeof(Header));
-	memcpy(packet.data() + sizeof(Header), packetData.data(), header.dataSize);
-
-	return packet;
-}
-
-void GameNetwork::SendUpdateObjectStatePacket(int id, ObjectType type, ObjectState state)
-{
-	// Packet Data 생성
-	C_UpdateObjectState_Packet packetData{ id, type, state };
-
-	// Packet Serialize
-	std::vector<char> serializedPacketData = SerializePOD(packetData);
-
-	// SendEvent 생성
-	NetworkEventRef event = std::make_shared<NetworkEvent>();
-	event->packetID = C_UpdateObjectState;
-	event->serializedPacketData = serializedPacketData;
-
-	std::lock_guard<std::mutex> lock(_sendMutex);
-	_sendEvents.push_back(event);
-}
-
 void GameNetwork::SendMovePacket(ObjectType type, int id, Vector pos, Rotation rotation, ObjectState state)
 {
 	// Packet Data 생성
@@ -381,6 +338,23 @@ void GameNetwork::SendMovePacket(ObjectType type, int id, Vector pos, Rotation r
 	// SendEvent 생성
 	NetworkEventRef event = std::make_shared<NetworkEvent>();
 	event->packetID = C_Move;
+	event->serializedPacketData = serializedPacketData;
+
+	std::lock_guard<std::mutex> lock(_sendMutex);
+	_sendEvents.push_back(event);
+}
+
+void GameNetwork::SendUpdateObjectStatePacket(int id, ObjectType type, ObjectState state)
+{
+	// Packet Data 생성
+	C_UpdateObjectState_Packet packetData{ sizeof(C_UpdateObjectState_Packet), C_UpdateObjectState, id, type, state };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	// SendEvent 생성
+	NetworkEventRef event = std::make_shared<NetworkEvent>();
+	event->packetID = C_UpdateObjectState;
 	event->serializedPacketData = serializedPacketData;
 
 	std::lock_guard<std::mutex> lock(_sendMutex);

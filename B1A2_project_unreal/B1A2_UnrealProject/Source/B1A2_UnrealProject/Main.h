@@ -58,8 +58,7 @@ public:
 	void Update();
 	void ProcessRecv();
 	
-	void RecvAddObject(S_AddObject_Packet packet);
-	void AddPlayer(S_AddPlayer_Packet packet);
+	void RecvAddPlayer(S_AddPlayer_Packet packet);
 
 	void RecvAddItem(S_AddItem_Packet packet);
 	void RecvAddTool(S_AddItem_Packet packet);
@@ -225,7 +224,7 @@ private:
 
 	// 내 플레이어
 	AMyPlayer* _myPlayer;
-	int _myID{};
+	int _myID{-1};
 
 	// 몬스터
 	TMap<uint64, ABaseMonster*> _monsters;

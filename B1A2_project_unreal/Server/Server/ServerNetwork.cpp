@@ -53,7 +53,7 @@ ServerNetwork::ServerNetwork(ServerFramework* framework)
 	// accept
 	_tempSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
 	_acceptOver._ioType = IOType::Accept;
-	AcceptEx(_listenSocket, _tempSocket, _acceptOver._buffer.data(), 0, sizeof(SOCKADDR_IN) + 16, sizeof(SOCKADDR_IN) + 16, 0, &_acceptOver._over);
+	AcceptEx(_listenSocket, _tempSocket, _acceptOver._buffer.data(), 0, sizeof(SOCKADDR_IN) + 16, sizeof(SOCKADDR_IN) + 16, NULL, &_acceptOver._over);
 
 	for (int i = 0; i < MAX_PLAYER; ++i)
 		_clients[i] = new Session();
@@ -61,8 +61,9 @@ ServerNetwork::ServerNetwork(ServerFramework* framework)
 
 ServerNetwork::~ServerNetwork()
 {
-	// listenSocket 종료
+	// socket close
 	closesocket(_listenSocket);
+	closesocket(_tempSocket);
 
 	// 윈속 종료
 	WSACleanup();
@@ -79,6 +80,8 @@ void ServerNetwork::Update()
 	{
 		if (key == -1)
 			exit(-1);
+
+		ProcessDisconnected(static_cast<int>(key));
 		
 		std::cout << "client[" << key << "] 접속 종료\n";
 		_clients[key]->_isConnected = false;
@@ -95,6 +98,7 @@ void ServerNetwork::Update()
 		ProcessAccept();
 		break;
 	case IOType::Recv:
+		printf("ID[%lld]로부터 %d 바이트 받음\n", key, numByte);
 		ProcessRecv(static_cast<int>(key), numByte, expOver);
 		break;
 	case IOType::Send:
@@ -138,7 +142,7 @@ void ServerNetwork::ProcessAccept()
 	_clients[clientIndex]->_id = clientIndex;
 	_clients[clientIndex]->_isConnected = true;
 	_clients[clientIndex]->_prevRecv = 0;
-
+	
 	// 나중에 nullptr로 초기화하기
 	_clients[clientIndex]->_room = _framework->GetRoom();
 
@@ -149,17 +153,18 @@ void ServerNetwork::ProcessAccept()
 		_clients[clientIndex]->_player = _clients[clientIndex]->_room->AddPlayer();
 		_clients[clientIndex]->_player->SetClient(_clients[clientIndex]);
 
+		// 새로 접속한 Client에게 자신을 나타낼 Player 정보 전송
+		SendAddPlayerPacket(_clients[clientIndex]->_player, _clients[clientIndex]);
+
 		// 새로 접속한 Client에게 기존에 있던 Player 정보 전송
 		for (auto& player : _clients[clientIndex]->_room->GetPlayers())
 		{
 			if (!player->GetClient())
 				continue;
 
-			SendAddPlayerPacket(_clients[clientIndex]->_player, player->GetClient());
-
 			// 자기 자신 제외
 			if (_clients[clientIndex]->_player == player)
-				continue;
+				continue;  
 
 			SendAddPlayerPacket(player, _clients[clientIndex]);
 		}
@@ -171,6 +176,11 @@ void ServerNetwork::ProcessAccept()
 	_tempSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
 	_acceptOver._ioType = IOType::Accept;
 	AcceptEx(_listenSocket, _tempSocket, _acceptOver._buffer.data(), 0, sizeof(SOCKADDR_IN) + 16, sizeof(SOCKADDR_IN) + 16, NULL, &_acceptOver._over);
+}
+
+void ServerNetwork::ProcessDisconnected(int clientIndex)
+{
+
 }
 
 void ServerNetwork::ProcessRecv(int clientIndex, int numByte, ExpOver* expOver)
@@ -188,15 +198,14 @@ void ServerNetwork::ProcessRecv(int clientIndex, int numByte, ExpOver* expOver)
 
 	// 처리해야할 데이터 조합하기
 	std::vector<char> packet;
-	packet.insert(packet.end(), _clients[clientIndex]->_recvOver._buffer.begin(), _clients[clientIndex]->_recvOver._buffer.end());
-	packet.insert(packet.end(), expOver->_buffer.begin(), expOver->_buffer.end());
-	_clients[clientIndex]->_recvOver._buffer.clear();
-
+	packet.insert(packet.end(), _clients[clientIndex]->_recvOver._buffer.begin(), _clients[clientIndex]->_recvOver._buffer.begin() + _clients[clientIndex]->_prevRecv);
+	packet.insert(packet.end(), expOver->_buffer.begin(), expOver->_buffer.begin() + numByte);
+	
 	int dataSize = numByte + _clients[clientIndex]->_prevRecv;
 	while (dataSize > 0)
 	{
 		// packetSize 추출
-		int packetSize;
+		char packetSize;
 		memcpy(&packetSize, packet.data(), sizeof(char));
 
 		// 남은 데이터의 사이즈가 패킷의 사이즈보다 작으면 중단
@@ -212,7 +221,7 @@ void ServerNetwork::ProcessRecv(int clientIndex, int numByte, ExpOver* expOver)
 	// 남은 데이터 저장
 	if (dataSize > 0)
 	{
-		_clients[clientIndex]->_recvOver._buffer.insert(_clients[clientIndex]->_recvOver._buffer.end(), packet.begin(), packet.end());
+		memmove(_clients[clientIndex]->_recvOver._buffer.data(), packet.data(), dataSize);
 		_clients[clientIndex]->_prevRecv = dataSize;
 	}
 
@@ -235,7 +244,14 @@ void ServerNetwork::ProcessPacket(std::vector<char>& packet, int clientIndex)
 		ProcessMovePacket(movePacket, clientIndex);
 	}
 	break;
-
+	case C_UpdateObjectState:
+	{
+		C_UpdateObjectState_Packet updateObjectPacket;
+		memcpy(&updateObjectPacket, packet.data(), sizeof(C_UpdateObjectState_Packet));
+		packet.erase(packet.begin(), packet.begin() + sizeof(C_UpdateObjectState_Packet));
+		ProcessUpdateObjectStatePacket(updateObjectPacket, clientIndex);
+	}
+	break;
 
 
 	/*case C_GetItem:
@@ -328,9 +344,20 @@ void ServerNetwork::SendMovePacket(GameObject* object, Session* client)
 	client->Send(serializedPacketData);
 }
 
+void ServerNetwork::SendUpdateObjectStatePacket(GameObject* object, Session* client)
+{
+	// Packet Data 생성
+	S_UpdateObjectState_Packet packetData{ sizeof(S_UpdateObjectState_Packet), S_UpdateObjectState, object->GetID(), object->GetObjectType(), object->GetState() };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	client->Send(serializedPacketData);
+}
+
 void ServerNetwork::ProcessMovePacket(C_Move_Packet packet, int clientIndex)
 {
-	GameObjectRef object = _clients[clientIndex]->_room->GetGameObject(packet.type, packet.id);
+	GameObject* object = _clients[clientIndex]->_room->GetPlayer(packet.type, packet.id);
 
 	if (object == nullptr)
 		return;
@@ -342,6 +369,26 @@ void ServerNetwork::ProcessMovePacket(C_Move_Packet packet, int clientIndex)
 	// 자신을 제외한 모든 Client들에게 알리기
 	for (auto& player : _clients[clientIndex]->_room->GetPlayers())
 	{
+		if (!player->GetClient())
+			continue;
+
+		// 자기 자신 제외
+		if (_clients[clientIndex]->_player == player)
+			continue;
+
+		SendMovePacket(object, player->GetClient());
+	}
+}
+
+void ServerNetwork::ProcessUpdateObjectStatePacket(C_UpdateObjectState_Packet packet, int clientIndex)
+{
+	GameObject* object = _clients[clientIndex]->_room->GetPlayer(packet.type, packet.id);
+
+	object->SetState(packet.state);
+
+	// 자신을 제외한 모든 클라이언트에게 알리기
+	for (auto& player : _clients[clientIndex]->_room->GetPlayers())
+	{
 		if (player->GetClient()->_isConnected)
 			continue;
 
@@ -349,6 +396,6 @@ void ServerNetwork::ProcessMovePacket(C_Move_Packet packet, int clientIndex)
 		if (_clients[clientIndex]->_player == player)
 			continue;
 
-		SendAddPlayerPacket(player, _clients[clientIndex]);
+		SendUpdateObjectStatePacket(object, _clients[clientIndex]);
 	}
 }

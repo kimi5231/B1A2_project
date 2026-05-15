@@ -2,11 +2,14 @@
 #include "Types.h"
 #include <vector>
 
+#define PORT 7777
+#define BufferSize 5000
+
 enum PacketID
 {
 	// Client
-	C_UpdateObjectState,
 	C_Move,
+	C_UpdateObjectState,
 	C_GetItem,
 	C_DropItem,
 	C_ChangeTool,
@@ -20,7 +23,6 @@ enum PacketID
 
 	//Server
 	S_AddPlayer,
-	S_AddObject,
 	S_AddItem,
 	S_RemoveObject,
 	S_UpdateObjectState,
@@ -41,12 +43,6 @@ enum PacketID
 	S_EndStage,
 	S_SpawnObstacle,
 	S_UpdateHp,
-};
-
-struct Header
-{
-	PacketID id;
-	int dataSize;
 };
 
 struct CubeDTO
@@ -80,7 +76,9 @@ struct C_Move_Packet
 
 struct C_UpdateObjectState_Packet
 {
-	uint objectID;
+	unsigned char size;
+	PacketID packetID;
+	unsigned char id;
 	ObjectType type;
 	ObjectState state;
 };
@@ -192,26 +190,6 @@ struct S_RemoveObject_Packet
 	int objectID;
 };
 
-
-struct S_AddObject_Packet
-{
-	ObjectType type;
-	int objectID;
-	Vector pos;
-	Rotation rotation;
-};
-
-
-
-
-
-struct S_UpdateObjectState_Packet
-{
-	int objectID;
-	ObjectType type;
-	ObjectState state;
-};
-
 struct S_Move_Packet
 {
 	unsigned char size;
@@ -223,8 +201,19 @@ struct S_Move_Packet
 	ObjectState state;
 };
 
+struct S_UpdateObjectState_Packet
+{
+	unsigned char size;
+	PacketID packetID;
+	unsigned char id;
+	ObjectType type;
+	ObjectState state;
+};
+
 struct S_CreateCubes_Packet
 {
+	/*unsigned char size;
+	PacketID packetID;*/
 	std::vector<CubeDTO> cubes;
 	std::vector<DoorDTO> doors;
 };

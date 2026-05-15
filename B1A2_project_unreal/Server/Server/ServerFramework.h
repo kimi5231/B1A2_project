@@ -30,7 +30,7 @@ public:
 	void Update();
 	void ProcessRecv(ClientRef client);
 	void ProcessSend(PacketID id, const std::vector<char>& packetData, SOCKET clientSocket);
-	std::vector<char> CreatePakcet(PacketID id, const std::vector<char>& packetData);
+	//std::vector<char> CreatePakcet(PacketID id, const std::vector<char>& packetData);
 
 private:
 	template <class T >
@@ -44,7 +44,6 @@ private:
 
 public:
 	// Send
-	void SendAddObjectPacket(Player* player, bool broadcast, SOCKET client = 0);
 	void SendAddItemPacket(ItemRef item, bool isTool, bool broadcast, SOCKET client = 0);
 	void SendRemoveObjectPacket(ObjectType objectType, uint objectID, bool broadcast, SOCKET client = 0);
 	void SendUpdateObjectStatePacket(GameObjectRef object, bool broadcast, SOCKET client = 0);
