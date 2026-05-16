@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Door.h"
 
-Door::Door(Vector pos, Dir dir, uint roomID, Dir roomDir)
+Door::Door(Vector pos, Dir dir, int roomID, Dir roomDir)
 	: _roomID(roomID), _isConnectable(true)
 {
 	_pos = pos;

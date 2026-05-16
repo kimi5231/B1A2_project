@@ -4,7 +4,7 @@
 class Door : public GameObject
 {
 public:
-	Door(Vector pos, Dir dir, uint roomID, Dir roomDir);
+	Door(Vector pos, Dir dir, int roomID, Dir roomDir);
 	~Door() {};
 
 public:
@@ -12,16 +12,16 @@ public:
 
 public:
 	Dir GetDir() { return _dir; }
-	uint GetRoomID() { return _roomID; }
-	void SetConnectedCubeID(uint connectedCubeID) { _connectedCubeID = connectedCubeID; }
-	uint GetConnectedCubeID() { return _connectedCubeID; }
+	int GetRoomID() { return _roomID; }
+	void SetConnectedCubeID(int connectedCubeID) { _connectedCubeID = connectedCubeID; }
+	int GetConnectedCubeID() { return _connectedCubeID; }
 	void SetDoorType(DoorType doorType) { _doorType = doorType;  }
 	DoorType GetDoorType() { return _doorType;  }
 	void SetConnectable(bool isConnectable) { _isConnectable = isConnectable; }
 
 private:
-	uint _roomID{};
-	uint _connectedCubeID;
+	int _roomID{};
+	int _connectedCubeID;
 	Dir _dir{};
 	DoorType _doorType;
 	bool _isConnectable;

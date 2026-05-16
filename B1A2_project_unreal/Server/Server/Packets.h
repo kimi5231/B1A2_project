@@ -2,9 +2,6 @@
 #include "Types.h"
 #include <vector>
 
-#define PORT 7777
-#define BufferSize 5000
-
 enum PacketID : char
 {
 	// Client
@@ -119,8 +116,8 @@ struct C_UseKey_Packet
 
 struct C_InteractDoor_Packet
 {
-	uint playerID;
-	uint doorID;
+	int playerID;
+	int doorID;
 };
 
 struct C_Emotion_Packet
@@ -258,42 +255,39 @@ struct S_ItemPickupNotify_Packet
 
 struct S_DropItem_Packet
 {
-	int playerID;
+	unsigned short size;
+	PacketID packetID;
+	unsigned char itemID;
+	unsigned char playerID;
 	bool isTool;
 	ItemType itemType;
-	int itemID;
 	Vector itemPos;
+	// 임시로 배터리 추가 예정
 };
 
 struct S_UpdateCurrentTool_Packet
 {
-	int playerID;
-	int itemID;
+	unsigned short size;
+	PacketID packetID;
+	unsigned char itemID;
+	unsigned char playerID;
 	ItemType itemType;
-};
-
-struct S_SpawnParticle_Packet
-{
-	Vector pos;
-};
-
-struct S_InteractDoorNotify_Packet
-{
-	int playerID;
-	int doorID;
-	ObjectState doorState;
 };
 
 struct S_UseTool_Packet
 {
-	int playerID;
+	unsigned short size;
+	PacketID packetID;
+	unsigned char playerID;
 	ItemType toolType;
 };
 
 struct S_TurnOnLantern_Packet
 {
-	int lanternID;
-	int playerID;
+	unsigned short size;
+	PacketID packetID;
+	unsigned char lanternID;
+	unsigned char playerID;
 	unsigned char laternBattery;
 	unsigned char laternRange;
 	float laternAngle;
@@ -301,24 +295,46 @@ struct S_TurnOnLantern_Packet
 
 struct S_TurnOffLantern_Packet
 {
-	int lanternID;
-	int playerID;
+	unsigned short size;
+	PacketID packetID;
+	unsigned char lanternID;
+	unsigned char playerID;
 	unsigned char laternBattery;
 };
 
-struct S_StartStage_Packet
+struct S_InteractDoorNotify_Packet
 {
-	bool result;
-};
-
-struct S_EndStage_Packet
-{
-	bool result;
+	unsigned short size;
+	PacketID packetID;
+	unsigned char doorID;
+	unsigned char playerID;
+	ObjectState doorState;
 };
 
 struct S_UpdateHp_Packet
 {
-	int playerID;
+	unsigned short size;
+	PacketID packetID;
+	unsigned char playerID;
 	unsigned char hp;
+};
+
+struct S_SpawnParticle_Packet
+{
+	unsigned short size;
+	PacketID packetID;
+	Vector pos;
+};
+
+struct S_StartStage_Packet
+{
+	unsigned short size;
+	PacketID packetID;
+};
+
+struct S_EndStage_Packet
+{
+	unsigned short size;
+	PacketID packetID;
 };
 #pragma pack(pop)

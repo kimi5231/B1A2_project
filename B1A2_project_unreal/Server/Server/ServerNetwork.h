@@ -42,17 +42,18 @@ public:
 	void SendCreateCubesPacket(const std::vector<CubeRef>& cubes, const std::vector<DoorRef>& doors, Session* client);
 	void SendAddItemToInventoryPacket(Item* item, bool isTool, Session* client);
 	void SendRemoveItemFromInventoryPacket(Item* item, bool isTool, Session* client);
-	void SendItemPickupNotifyPacket(Item* item, uint playerID, bool isTool, Session* client);
-	void SendDropItemPacket(ItemRef item, PlayerRef player, bool isTool, bool broadcast, SOCKET client = 0);
-	void SendUpdateCurrentToolPacket(uint playerID, uint itemID, ItemType type, bool broadcast, SOCKET client = 0);
-	void SendUseToolPacket(uint playerID, ItemType type, bool broadcast, SOCKET client = 0);
-	void SendSpawnParticlePacket(Vector pos, bool broadcast, SOCKET client = 0);
-	void SendInteractDoorNotifyPacket(uint playerID, uint doorID, ObjectState doorState, bool broadcast, SOCKET client = 0);
-	void SendTurnOnLanternPacket(LanternRef lantern, int playerID, bool broadcast, SOCKET client = 0);
-	void SendTurnOffLanternPacket(LanternRef lantern, int playerID, bool broadcast, SOCKET client = 0);
-	void SendStartStagePacket(bool broadcast, SOCKET client = 0);
-	void SendEndStagePacket(bool broadcast, SOCKET client = 0);
-	void SendUpdateHpPacket(int playerID, unsigned char hp, bool broadcast, SOCKET client = 0);
+	void SendItemPickupNotifyPacket(Item* item, int playerID, bool isTool, Session* client);
+	void SendDropItemPacket(Item* item, int playerID, Vector playerPos, bool isTool, Session* client);
+	void SendUpdateCurrentToolPacket(int itemID, int playerID, ItemType type, Session* client);
+	void SendUseToolPacket(int playerID, ItemType type, Session* client);
+	void SendTurnOnLanternPacket(Lantern* lantern, int playerID, Session* client);
+	void SendTurnOffLanternPacket(Lantern* lantern, int playerID, Session* client);
+	void SendInteractDoorNotifyPacket(int playerID, int doorID, ObjectState doorState, Session* client);
+	void SendUpdateHpPacket(int playerID, int hp, bool broadcast, Session* client);
+	void SendSpawnParticlePacket(Vector pos, Session* client);
+	void SendStartStagePacket(Session* client);
+	void SendEndStagePacket(Session* client);
+	
 
 public:
 	// Recv

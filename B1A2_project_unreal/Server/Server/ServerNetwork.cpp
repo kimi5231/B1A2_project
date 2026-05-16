@@ -7,7 +7,7 @@
 #include "Obstacle.h"
 #include "Cube.h"
 #include "Door.h"
-#include "Tool.h"
+#include "Lantern.h"
 
 ServerNetwork::ServerNetwork(ServerFramework* framework)
 {
@@ -485,10 +485,120 @@ void ServerNetwork::SendRemoveItemFromInventoryPacket(Item* item, bool isTool, S
 	client->Send(serializedPacketData);
 }
 
-void ServerNetwork::SendItemPickupNotifyPacket(Item* item, uint playerID, bool isTool, Session* client)
+void ServerNetwork::SendItemPickupNotifyPacket(Item* item, int playerID, bool isTool, Session* client)
 {
 	// Packet Data 持失
 	S_ItemPickupNotify_Packet packetData{ sizeof(S_ItemPickupNotify_Packet), S_ItemPickupNotify, item->GetID(), playerID, isTool, item->GetItemType() };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	client->Send(serializedPacketData);
+}
+
+void ServerNetwork::SendDropItemPacket(Item* item, int playerID, Vector playerPos, bool isTool, Session* client)
+{
+	// Packet Data 持失
+	S_DropItem_Packet packetData{ sizeof(S_DropItem_Packet), S_DropItem, item->GetID(), playerID, isTool, item->GetItemType(), playerPos };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	client->Send(serializedPacketData);
+}
+
+void ServerNetwork::SendUpdateCurrentToolPacket(int itemID, int playerID, ItemType type, Session* client)
+{
+	// Packet Data 持失
+	S_UpdateCurrentTool_Packet packetData{ sizeof(S_UpdateCurrentTool_Packet), S_UpdateCurrentTool, itemID, playerID, type };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	client->Send(serializedPacketData);
+}
+
+void ServerNetwork::SendUseToolPacket(int playerID, ItemType type, Session* client)
+{
+	// Packet Data 持失
+	S_UseTool_Packet packetData{ sizeof(S_UseTool_Packet), S_UseTool, playerID, type };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	client->Send(serializedPacketData);
+}
+
+void ServerNetwork::SendTurnOnLanternPacket(Lantern* lantern, int playerID, Session* client)
+{
+	// Packet Data 持失
+	S_TurnOnLantern_Packet packetData{ sizeof(S_TurnOnLantern_Packet), S_TurnOnLantern, lantern->GetID(), playerID, lantern->GetCurrentBattery(), lantern->GetRange(), lantern->GetRange() };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	client->Send(serializedPacketData);
+}
+
+void ServerNetwork::SendTurnOffLanternPacket(Lantern* lantern, int playerID, Session* client)
+{
+	// Packet Data 持失
+	S_TurnOffLantern_Packet packetData{ sizeof(S_TurnOffLantern_Packet), S_TurnOffLantern, lantern->GetID(), playerID, lantern->GetCurrentBattery() };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	client->Send(serializedPacketData);
+}
+
+void ServerNetwork::SendInteractDoorNotifyPacket(int playerID, int doorID, ObjectState doorState, Session* client)
+{
+	// Packet Data 持失
+	S_InteractDoorNotify_Packet packetData{ sizeof(S_InteractDoorNotify_Packet), S_InteractDoorNotify, doorID, playerID, doorState };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	client->Send(serializedPacketData);
+}
+
+void ServerNetwork::SendUpdateHpPacket(int playerID, int hp, bool broadcast, Session* client)
+{
+	// Packet Data 持失
+	S_UpdateHp_Packet packetData{ sizeof(S_UpdateHp_Packet), S_UpdateHp, playerID, hp };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	client->Send(serializedPacketData);
+}
+
+void ServerNetwork::SendSpawnParticlePacket(Vector pos, Session* client)
+{
+	// Packet Data 持失
+	S_SpawnParticle_Packet packetData{ sizeof(S_SpawnParticle_Packet), S_SpawnParticle, pos };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	client->Send(serializedPacketData);
+}
+
+void ServerNetwork::SendStartStagePacket(Session* client)
+{
+	// Packet Data 持失
+	S_StartStage_Packet packetData{ sizeof(S_StartStage_Packet), S_StartStage };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	client->Send(serializedPacketData);
+}
+
+void ServerNetwork::SendEndStagePacket(Session* client)
+{
+	// Packet Data 持失
+	S_EndStage_Packet packetData{ sizeof(S_EndStage_Packet), S_EndStage };
 
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);

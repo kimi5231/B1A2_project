@@ -157,7 +157,7 @@ void Room::CreateFactoryCubes()
 
 	// 층수 정하기
 	std::uniform_int_distribution<int> selectFloor(conditions.floor.first, conditions.floor.second);
-	uint currentFloor = selectFloor(gen);
+	int currentFloor = selectFloor(gen);
 	 
 	// 층마다 플래그 켜서 이거 킬때 옆에꺼 켜져있는지 확인하고 개수만큼 킬것
 	_minFloor = F1_Base;
@@ -180,8 +180,8 @@ void Room::CreateFactoryCubes()
 		}
 	}
 
-	uint generateCubeID = 0;
-	uint generateDoorID = 1;
+	int generateCubeID = 0;
+	int generateDoorID = 1;
 
 	// 방 생성(문은 방 안에서 생성 + 비상구)
 	// MainEntranceRoom 생성
@@ -502,7 +502,7 @@ void Room::RemoveObject(ObjectType type, int id)
 	}		
 }
 
-GameObjectRef Room::GetDoor(ObjectType type, uint id)
+GameObjectRef Room::GetDoor(ObjectType type, int id)
 {
 	switch (type)
 	{
@@ -512,7 +512,7 @@ GameObjectRef Room::GetDoor(ObjectType type, uint id)
 	}
 }
 
-GameObject* Room::GetGameObject(ObjectType type, uint id)
+GameObject* Room::GetGameObject(ObjectType type, int id)
 {
 	switch (type)
 	{

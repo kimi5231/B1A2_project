@@ -1,6 +1,7 @@
 #pragma once
 
-using uint = unsigned int;
+#define PORT 7777
+#define BufferSize 5000
 
 using TimePoint = std::chrono::steady_clock::time_point;
 using FloatSec = std::chrono::duration<float>;
@@ -432,8 +433,8 @@ struct CubeInfo
 	Vector size;
 	bool isCreateItem;
 	bool isCreateExit;
-	std::unordered_map<Difficulty, uint> minCreateCount;
-	std::unordered_map<Difficulty, uint> maxCreateCount;
+	std::unordered_map<Difficulty, int> minCreateCount;
+	std::unordered_map<Difficulty, int> maxCreateCount;
 	std::unordered_map<Difficulty, float> spawnChance;
 	/*std::pair<uint, uint> f1DoorCount;
 	std::pair<uint, uint> f2DoorCount;
@@ -446,11 +447,11 @@ struct CubeInfo
 
 struct CubeConditionInfo
 {
-	uint totalCubeCount;
-	std::pair<uint, uint> createItemCount;
-	std::pair<uint, uint> createExitCount;
-	std::pair<uint, uint> exitPos;
-	std::pair<uint, uint> floor;
+	int totalCubeCount;
+	std::pair<int, int> createItemCount;
+	std::pair<int, int> createExitCount;
+	std::pair<int, int> exitPos;
+	std::pair<int, int> floor;
 };
 
 struct SpiderStatus

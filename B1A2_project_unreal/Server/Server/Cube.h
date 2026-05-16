@@ -18,7 +18,7 @@ public:
 	bool CheckInclude(BoundingBox other) { return _box.CheckInclude(other.GetBounds()); }
 
 	void AddConnectedRoom(CubeRef gameRoom) { _connetedCube.push_back(gameRoom); }
-	void AddDoor(uint doorID) { _doors.push_back(doorID); }
+	void AddDoor(int doorID) { _doors.push_back(doorID); }
 
 public:
 	void SetCubeInfo(CubeInfo info) { _info = info; }
@@ -32,17 +32,17 @@ public:
 	void SetDir(Dir dir) { _dir = dir; }
 	Dir GetDir() { return _dir; }
 	BoundingBox GetBoundingBox() { return _box; }
-	void SetID(uint id) { _id = id; }
-	uint GetID() { return _id; }
-	std::vector<uint>& GetDoors() { return _doors; }
+	void SetID(int id) { _id = id; }
+	int GetID() { return _id; }
+	std::vector<int>& GetDoors() { return _doors; }
 	std::vector<CubeRef>& GetConnectedCubes() { return _connetedCube; }
 
 private:
 	CubeInfo _info{};
-	uint _id{};
+	int _id{};
 	Vector _pos{};
 	Dir _dir{};
 	BoundingBox _box;
-	std::vector<uint> _doors;
+	std::vector<int> _doors;
 	std::vector<CubeRef> _connetedCube;
 };

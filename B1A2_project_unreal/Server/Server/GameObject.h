@@ -32,7 +32,7 @@ public:
 	ObjectPoolState GetObjectPoolState() { return _objectPoolState; }
 
 protected:
-	uint _id{};
+	int _id{};
 	ObjectType _type{};
 	Vector _pos{};
 	Vector _size{};

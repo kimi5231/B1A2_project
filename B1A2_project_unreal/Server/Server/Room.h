@@ -34,8 +34,8 @@ public:
 	void RemoveProcessingItem(int itemID) { _processingItems.erase(itemID); }
 
 public:
-	GameObjectRef GetDoor(ObjectType type, uint id);
-	GameObject* GetGameObject(ObjectType type, uint id);
+	GameObjectRef GetDoor(ObjectType type, int id);
+	GameObject* GetGameObject(ObjectType type, int id);
 	const std::array<Player*, MAX_ROOM_PLAYER>& GetPlayers() { return _players; }
 	const std::array<Monster*, MAX_MONSTER>& GetMonsters() { return _monsters; }
 	const std::array<Item*, MAX_ITEM>& GetItems() { return _items; }
@@ -43,9 +43,9 @@ public:
 	const std::vector<DoorRef>& GetDoors() { return _doors; }
 	
 private:
-	uint _generatePlayerID{};
-	uint _generateMonsterID{};
-	uint _generateItemID{};
+	int _generatePlayerID{};
+	int _generateMonsterID{};
+	int _generateItemID{};
 	int _generateObstacleID{};
 
 	CubeRef _base;
@@ -57,15 +57,13 @@ private:
 	std::array<Item*, MAX_ITEM> _items;
 	std::unordered_map<int, ItemRef> _processingItems;
 
-	uint _playerCount{};
-
 private:
 	// 현재 맵의 난이도
 	Difficulty _currentDifficulty{};
 	// 세부 난이도
 	Difficulty _detailDifficulty{};
 
-	std::unordered_map<CubeType, uint> _currentCubeCount;
+	std::unordered_map<CubeType, int> _currentCubeCount;
 
 	std::unordered_map<Dir, std::vector<DoorRef>> _connectableDoors;
 
