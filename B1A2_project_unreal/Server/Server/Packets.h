@@ -12,9 +12,9 @@ enum PacketID : char
 	C_ChangeTool,
 	C_UseTool,
 	C_UseKey,
-	C_InteractDoor,
-	C_Emotion,
 	C_UseLantern,
+	C_InteractDoor,
+	C_EmotionResult,
 	C_StartStage,
 	C_EndStage,
 
@@ -33,13 +33,13 @@ enum PacketID : char
 	S_DropItem,
 	S_UpdateCurrentTool,
 	S_UseTool,
-	S_SpawnParticle,
-	S_InteractDoorNotify,
 	S_TurnOnLantern,
 	S_TurnOffLantern,
+	S_InteractDoorNotify,
+	S_UpdateHp,
+	S_SpawnParticle,
 	S_StartStage,
 	S_EndStage,
-	S_UpdateHp,
 };
 
 #pragma pack(push, 1)
@@ -82,69 +82,87 @@ struct C_UpdateObjectState_Packet
 
 struct C_GetItem_Packet
 {
-	int playerID;
+	unsigned char size;
+	PacketID packetID;
+	unsigned int itemID;
+	unsigned int playerID;
 	bool isTool;
-	int itemID;
 };
 
 struct C_DropItem_Packet
 {
-	int playerID;
+	unsigned char size;
+	PacketID packetID;
+	unsigned int itemID;
+	unsigned int playerID;
 	bool isTool;
-	int itemID;
 };
 
 struct C_ChangeTool_Packet
 {
-	int playerID;
-	int toolID;
+	unsigned char size;
+	PacketID packetID;
+	unsigned int toolID;
+	unsigned int playerID;
 };
 
 struct C_UseTool_Packet
 {
-	int playerID;
-	int toolID;
+	unsigned char size;
+	PacketID packetID;
+	unsigned int toolID;
+	unsigned int playerID;
 	Rotation playerRotation;
 };
 
 struct C_UseKey_Packet
 {
-	int playerID;
-	int toolID;
-	int doorID;
-};
-
-struct C_InteractDoor_Packet
-{
-	int playerID;
-	int doorID;
-};
-
-struct C_Emotion_Packet
-{
-	float angry;
-	float disgust;
-	float fear;
-	float happy;
-	float sad;
-	float surprise;
-	float neutral;
+	unsigned char size;
+	PacketID packetID;
+	unsigned int toolID;
+	unsigned int doorID;
+	unsigned int playerID;
 };
 
 struct C_UseLantern_Packet
 {
-	int lanternID;
-	int playerID;
+	unsigned char size;
+	PacketID packetID;
+	unsigned int lanternID;
+	unsigned int playerID;
+};
+
+struct C_InteractDoor_Packet
+{
+	unsigned char size;
+	PacketID packetID;
+	unsigned int doorID;
+	unsigned int playerID;
+};
+
+struct C_EmotionResult_Packet
+{
+	unsigned char size;
+	PacketID packetID;
+	float angryTime;
+	float disgustTime;
+	float fearTime;
+	float happyTime;
+	float sadTime;
+	float surpriseTime;
+	float neutralTime;
 };
 
 struct C_StartStage_Packet
 {
-	bool result;
+	unsigned char size;
+	PacketID packetID;
 };
 
 struct C_EndStage_Packet
 {
-	bool result;
+	unsigned char size;
+	PacketID packetID;
 };
 
 // Server
