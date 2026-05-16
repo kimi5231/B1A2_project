@@ -132,7 +132,7 @@ void Monster::Update(Room* room)
 const CubeRef Monster::SelectRandomConnectedCube(Room* room)
 {
 	const std::vector<CubeRef>& cubes = room->GetCubes();
-	const std::vector<DoorRef>& doors = room->GetDoors();
+	const std::vector<Door*>& doors = room->GetDoors();
 	const CubeRef currentCube = cubes[_currentCubeID];
 
 	// 현재 위치한 방에 열린 문이 있는지 확인
@@ -140,7 +140,7 @@ const CubeRef Monster::SelectRandomConnectedCube(Room* room)
 	openDoorCubeID.reserve(currentCube->GetDoors().size());
 	for (const int doorID : currentCube->GetDoors())
 	{
-		const DoorRef& door = doors[doorID - 1];
+		Door* door = doors[doorID - 1];
 		if (door->GetState() == ObjectState::OPEN)
 		{
 			if(door->GetConnectedCubeID() != _currentCubeID)

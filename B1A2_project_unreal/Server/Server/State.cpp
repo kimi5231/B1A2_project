@@ -147,8 +147,8 @@ void ChaseState::Tick(Monster* monster)
 		}
 
 		// 넘어갈 큐브와 연결된 문 찾기
-		const std::vector<DoorRef>& doors = monster->GetOwnerRoom()->GetDoors();
-		DoorRef door;
+		const std::vector<Door*>& doors = monster->GetOwnerRoom()->GetDoors();
+		Door* door{};
 		for (int doorID : cubePath[0]->GetDoors())
 		{
 			if (doors[doorID - 1]->GetConnectedCubeID() == cubePath[1]->GetID() ||
@@ -347,8 +347,8 @@ void ReturnState::Tick(Monster* monster)
 		}
 
 		// 넘어갈 큐브와 연결된 문 찾기
-		const std::vector<DoorRef>& doors = monster->GetOwnerRoom()->GetDoors();
-		DoorRef door;
+		const std::vector<Door*>& doors = monster->GetOwnerRoom()->GetDoors();
+		Door* door{};
 		for (int doorID : cubePath[0]->GetDoors())
 		{
 			if (doors[doorID - 1]->GetConnectedCubeID() == cubePath[1]->GetID() ||

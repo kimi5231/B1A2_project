@@ -30,17 +30,16 @@ public:
 	ObstacleRef AddObstacle(ObstacleType obstacleType, Vector pos, bool isSend);
 	void RemoveObject(ObjectType type, int id);
 
-	void AddProcessingItem(ItemRef item) { _processingItems[item->GetID()] = item; }
+	void AddProcessingItem(Item* item) { _processingItems[item->GetID()] = item; }
 	void RemoveProcessingItem(int itemID) { _processingItems.erase(itemID); }
 
 public:
-	GameObjectRef GetDoor(ObjectType type, int id);
 	GameObject* GetGameObject(ObjectType type, int id);
 	const std::array<Player*, MAX_ROOM_PLAYER>& GetPlayers() { return _players; }
 	const std::array<Monster*, MAX_MONSTER>& GetMonsters() { return _monsters; }
 	const std::array<Item*, MAX_ITEM>& GetItems() { return _items; }
 	const std::vector<CubeRef>& GetCubes() { return _cubes; }
-	const std::vector<DoorRef>& GetDoors() { return _doors; }
+	const std::vector<Door*>& GetDoors() { return _doors; }
 	
 private:
 	int _generatePlayerID{};
@@ -50,12 +49,12 @@ private:
 
 	CubeRef _base;
 	std::vector<CubeRef> _cubes;
-	std::vector<DoorRef> _doors;
+	std::vector<Door*> _doors;
 	std::vector<ObstacleRef> _obstacles;
 	std::array<Player*, MAX_ROOM_PLAYER> _players;
 	std::array<Monster*, MAX_MONSTER> _monsters;
 	std::array<Item*, MAX_ITEM> _items;
-	std::unordered_map<int, ItemRef> _processingItems;
+	std::unordered_map<int, Item*> _processingItems;
 
 private:
 	// 현재 맵의 난이도
@@ -65,7 +64,7 @@ private:
 
 	std::unordered_map<CubeType, int> _currentCubeCount;
 
-	std::unordered_map<Dir, std::vector<DoorRef>> _connectableDoors;
+	std::unordered_map<Dir, std::vector<Door*>> _connectableDoors;
 
 	// 각 방향별로 방이 생성될 확률
 	std::unordered_map < Dir, float> _roomSpawnChance;

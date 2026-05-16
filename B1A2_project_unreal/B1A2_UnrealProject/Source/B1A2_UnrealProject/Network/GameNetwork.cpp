@@ -406,7 +406,7 @@ void GameNetwork::SendDropItemPacket(int itemID, bool isTool, int playerID)
 void GameNetwork::SendChangeToolPacket(int playerID, int toolID)
 {
 	// Packet Data »ý¼º
-	C_ChangeTool_Packet packetData{ sizeof(C_ChangeTool_Packet), C_ChangeTool, playerID, toolID };
+	C_ChangeTool_Packet packetData{ sizeof(C_ChangeTool_Packet), C_ChangeTool, toolID, playerID };
 
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);

@@ -1,6 +1,8 @@
 #pragma once
 #include "Tool.h"
 
+class Room;
+
 class Lantern : public Tool
 {
 public:
@@ -19,6 +21,7 @@ public:
 	unsigned char GetCurrentBattery() { return _currnetBattery; }
 	unsigned char GetRange() { return _range; }
 	float GetAngle() { return _angle; }
+    void SetOwnerRoom(Room* room) { _ownerRoom = room; }
 
 private:
     bool _isOn = false;
@@ -27,4 +30,6 @@ private:
     unsigned char _range;
     float _angle;
     float _sumTime;
+
+    Room* _ownerRoom;
 };

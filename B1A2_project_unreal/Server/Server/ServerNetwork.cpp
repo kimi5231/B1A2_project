@@ -102,7 +102,7 @@ void ServerNetwork::Update()
 		ProcessAccept();
 		break;
 	case IOType::Recv:
-		printf("ID[%lld]로부터 %d 바이트 받음\n", key, numByte);
+		//printf("ID[%lld]로부터 %d 바이트 받음\n", key, numByte);
 		ProcessRecv(static_cast<int>(key), numByte, expOver);
 		break;
 	case IOType::Send:
@@ -261,63 +261,96 @@ void ServerNetwork::ProcessPacket(std::vector<char>& packet, int clientIndex)
 		memcpy(&movePacket, packet.data(), sizeof(C_Move_Packet));
 		packet.erase(packet.begin(), packet.begin() + sizeof(C_Move_Packet));
 		ProcessMovePacket(movePacket, clientIndex);
+		break;
 	}
-	break;
 	case C_UpdateObjectState:
 	{
 		C_UpdateObjectState_Packet updateObjectPacket;
 		memcpy(&updateObjectPacket, packet.data(), sizeof(C_UpdateObjectState_Packet));
 		packet.erase(packet.begin(), packet.begin() + sizeof(C_UpdateObjectState_Packet));
 		ProcessUpdateObjectStatePacket(updateObjectPacket, clientIndex);
+		break;
 	}
-	break;
-
-
-	/*case C_GetItem:
+	case C_GetItem:
+	{
 		C_GetItem_Packet getItemPacket;
-		memcpy(&getItemPacket, packet.data() + sizeof(Header), sizeof(C_GetItem_Packet));
-		ProcessGetItemPacket(client->socket, getItemPacket);
+		memcpy(&getItemPacket, packet.data(), sizeof(C_GetItem_Packet));
+		packet.erase(packet.begin(), packet.begin() + sizeof(C_GetItem_Packet));
+		ProcessGetItemPacket(getItemPacket, clientIndex);
 		break;
+	}
 	case C_DropItem:
+	{
 		C_DropItem_Packet dropItemPacket;
-		memcpy(&dropItemPacket, packet.data() + sizeof(Header), sizeof(C_DropItem_Packet));
-		ProcessDropItemPacket(dropItemPacket);
+		memcpy(&dropItemPacket, packet.data(), sizeof(C_DropItem_Packet));
+		packet.erase(packet.begin(), packet.begin() + sizeof(C_DropItem_Packet));
+		ProcessDropItemPacket(dropItemPacket, clientIndex);
 		break;
+	}
 	case C_ChangeTool:
+	{
 		C_ChangeTool_Packet changeToolPacket;
-		memcpy(&changeToolPacket, packet.data() + sizeof(Header), sizeof(C_ChangeTool_Packet));
-		ProcessChangeToolPacket(changeToolPacket);
+		memcpy(&changeToolPacket, packet.data(), sizeof(C_ChangeTool_Packet));
+		packet.erase(packet.begin(), packet.begin() + sizeof(C_ChangeTool_Packet));
+		ProcessChangeToolPacket(changeToolPacket, clientIndex);
 		break;
+	}
 	case C_UseTool:
+	{
 		C_UseTool_Packet useToolPacket;
-		memcpy(&useToolPacket, packet.data() + sizeof(Header), sizeof(C_UseTool_Packet));
-		ProcessUseToolPacket(useToolPacket);
+		memcpy(&useToolPacket, packet.data(), sizeof(C_UseTool_Packet));
+		packet.erase(packet.begin(), packet.begin() + sizeof(C_UseTool_Packet));
+		ProcessUseToolPacket(useToolPacket, clientIndex);
 		break;
-	case C_InteractDoor:
-		C_InteractDoor_Packet interactDoorPacket;
-		memcpy(&interactDoorPacket, packet.data() + sizeof(Header), sizeof(C_InteractDoor_Packet));
-		ProcessInteractDoorPacket(interactDoorPacket);
+	}
+	case C_UseKey:
+	{
+		C_UseKey_Packet useKeyPacket;
+		memcpy(&useKeyPacket, packet.data(), sizeof(C_UseKey_Packet));
+		packet.erase(packet.begin(), packet.begin() + sizeof(C_UseKey_Packet));
+		ProcessUseKeyPacket(useKeyPacket, clientIndex);
 		break;
-	case C_Emotion:
-		C_Emotion_Packet emotionPacket;
-		memcpy(&emotionPacket, packet.data() + sizeof(Header), sizeof(C_Emotion_Packet));
-		ProcessEmotionPacket(emotionPacket);
-		break;
+	}
 	case C_UseLantern:
+	{
 		C_UseLantern_Packet useLanternPacket;
-		memcpy(&useLanternPacket, packet.data() + sizeof(Header), sizeof(C_UseLantern_Packet));
-		ProcessUseLanternPacket(useLanternPacket);
+		memcpy(&useLanternPacket, packet.data(), sizeof(C_UseLantern_Packet));
+		packet.erase(packet.begin(), packet.begin() + sizeof(C_UseLantern_Packet));
+		ProcessUseLanternPacket(useLanternPacket, clientIndex);
 		break;
+	}
+	case C_InteractDoor:
+	{
+		C_InteractDoor_Packet interactDoorPacket;
+		memcpy(&interactDoorPacket, packet.data(), sizeof(C_InteractDoor_Packet));
+		packet.erase(packet.begin(), packet.begin() + sizeof(C_InteractDoor_Packet));
+		ProcessInteractDoorPacket(interactDoorPacket, clientIndex);
+		break;
+	}
+	case C_EmotionResult:
+	{
+		C_EmotionResult_Packet emotionResultPacket;
+		memcpy(&emotionResultPacket, packet.data(), sizeof(C_EmotionResult_Packet));
+		packet.erase(packet.begin(), packet.begin() + sizeof(C_EmotionResult_Packet));
+		ProcessEmotionResultPacket(emotionResultPacket, clientIndex);
+		break;
+	}
 	case C_StartStage:
+	{
 		C_StartStage_Packet startStagePacket;
-		memcpy(&startStagePacket, packet.data() + sizeof(Header), sizeof(C_StartStage_Packet));
-		ProcessStartStagePacket(startStagePacket);
+		memcpy(&startStagePacket, packet.data(), sizeof(C_StartStage_Packet));
+		packet.erase(packet.begin(), packet.begin() + sizeof(C_StartStage_Packet));
+		ProcessStartStagePacket(startStagePacket, clientIndex);
 		break;
+	}
 	case C_EndStage:
+	{
 		C_EndStage_Packet endStagePacket;
-		memcpy(&endStagePacket, packet.data() + sizeof(Header), sizeof(C_EndStage_Packet));
-		ProcessEndStagePacket(endStagePacket);
-		break;*/
+		memcpy(&endStagePacket, packet.data(), sizeof(C_EndStage_Packet));
+		packet.erase(packet.begin(), packet.begin() + sizeof(C_EndStage_Packet));
+		ProcessEndStagePacket(endStagePacket, clientIndex);
+		break;
+	}
 	}
 }
 
@@ -431,7 +464,7 @@ void ServerNetwork::SendUpdateObjectStatePacket(GameObject* object, Session* cli
 	client->Send(serializedPacketData);
 }
 
-void ServerNetwork::SendCreateCubesPacket(const std::vector<CubeRef>& cubes, const std::vector<DoorRef>& doors, Session* client)
+void ServerNetwork::SendCreateCubesPacket(const std::vector<CubeRef>& cubes, const std::vector<Door*>& doors, Session* client)
 {
 	std::vector<CubeDTO> cubeDTOs;
 	for (auto& cube : cubes)
@@ -649,4 +682,244 @@ void ServerNetwork::ProcessUpdateObjectStatePacket(C_UpdateObjectState_Packet pa
 
 		SendUpdateObjectStatePacket(object, player->GetClient());
 	}
+}
+
+void ServerNetwork::ProcessGetItemPacket(C_GetItem_Packet packet, int clientIndex)
+{
+	// Player가 요청한 아이템이 얻을 수 있는 것인지 확인
+	Item* item = dynamic_cast<Item*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::Item, packet.itemID));
+	if (item->GetObjectPoolState() != ObjectPoolState::InWorld)
+		return;
+
+	// 아이템을 얻을 수 있는 조건인지 확인(거리)
+	
+	// 얻을 수 있는 아이템이라면 Player 인벤토리에 추가
+	Player* player = dynamic_cast<Player*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::Player, packet.playerID));
+	// 아이템이 제대로 추가되었다면
+	if (player->AddItemToInventory(packet.isTool, packet.itemID))
+	{
+		// 획득한 아이템 ObjectPoolState 변경
+		item->SetObjectPoolState(ObjectPoolState::InInventory);
+		// ownerID 설정
+		item->SetOwnerID(player->GetID());
+
+		// Broadcast
+		for (auto& p : _clients[clientIndex]->_room->GetPlayers())
+		{
+			if (!p->GetClient())
+				continue;
+
+			SendAddItemToInventoryPacket(item, packet.isTool, p->GetClient());
+		}
+	}
+}
+
+void ServerNetwork::ProcessDropItemPacket(C_DropItem_Packet packet, int clientIndex)
+{
+	// Player 인벤토리에서 아이템 제거
+	Player* player = dynamic_cast<Player*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::Player, packet.playerID));
+	// 아이템이 제대로 제거되었다면
+	if (player->RemoveItemFromInventory(packet.isTool, packet.itemID))
+	{
+		// 떨어뜨린 아이템 ObjectPoolState 변경
+		Item* item = dynamic_cast<Item*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::Item, packet.itemID));
+		item->SetObjectPoolState(ObjectPoolState::InWorld);
+		// ownerID 초기화
+		item->SetOwnerID(-1);
+
+		// Broadcast
+		for (auto& p : _clients[clientIndex]->_room->GetPlayers())
+		{
+			if (!p->GetClient())
+				continue;
+
+			SendDropItemPacket(item, player->GetID(), player->GetPos(), packet.isTool,  p->GetClient());
+		}
+	}
+}
+
+void ServerNetwork::ProcessChangeToolPacket(C_ChangeTool_Packet packet, int clientIndex)
+{
+	Player* player = dynamic_cast<Player*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::Player, packet.playerID));
+
+	// toolID가 0이면 도구를 들지 않는 것
+	if(packet.toolID == 0)
+	{
+		player->SetCurrentTool(0);
+
+		// Broadcast
+		for (auto& p : _clients[clientIndex]->_room->GetPlayers())
+		{
+			if (!p->GetClient())
+				continue;
+
+			SendUpdateCurrentToolPacket(packet.toolID, packet.playerID, ItemType::None, p->GetClient());
+		}
+		return;
+	}
+
+	// Player 인벤토리에 해당 도구가 존재하는지 확인
+	if (player->ExistItem(true, packet.toolID))
+	{
+		// 도구가 존재하면 해당 도구를 들도록 설정
+		player->SetCurrentTool(packet.toolID);
+		Item* item = dynamic_cast<Item*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::Item, packet.toolID));
+		
+		// Broadcast
+		for (auto& p : _clients[clientIndex]->_room->GetPlayers())
+		{
+			if (!p->GetClient())
+				continue;
+
+			SendUpdateCurrentToolPacket(packet.toolID, packet.playerID, item->GetItemType(), p->GetClient());
+		}
+	}
+}
+
+void ServerNetwork::ProcessUseToolPacket(C_UseTool_Packet packet, int clientIndex)
+{
+	// 요청된 도구가 Player가 들고 있는 도구가 맞는지 확인
+	Player* player = dynamic_cast<Player*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::Player, packet.playerID));
+	if (player->GetCurrentTool() == packet.toolID)
+	{
+		// 도구 사용 처리
+		player->SetRotation(packet.playerRotation);
+		player->Attack(_clients[clientIndex]->_room);
+
+		// 도구 사용 알리기
+		Tool* tool = dynamic_cast<Tool*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::Item, packet.toolID));
+		
+		// Broadcast
+		for (auto& p : _clients[clientIndex]->_room->GetPlayers())
+		{
+			if (!p->GetClient())
+				continue;
+
+			SendUseToolPacket(packet.playerID, tool->GetItemType(), p->GetClient());
+		}
+	}
+}
+
+void ServerNetwork::ProcessUseKeyPacket(C_UseKey_Packet packet, int clientIndex)
+{
+	// Player가 열쇠를 정말 가지고 있는지 확인
+	Player* player = dynamic_cast<Player*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::Player, packet.playerID));
+	// 가지고 있지 않으면 무시
+	if (!player->ExistItem(true, packet.toolID))
+		return;
+
+	// 요청한 Door가 닫힌 상태인지 확인
+	Door* door = dynamic_cast<Door*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::Door, packet.doorID));
+	// 이미 열린 상태면 무시
+	if (door->GetState() == ObjectState::OPEN)
+		return;
+
+	// 요청한 Player가 열쇠를 사용할 수 있는 거리인지 확인
+	
+
+	// 사용 가능한 거리라면 Door State 변경
+	door->SetState(ObjectState::OPEN);
+
+	// Player 인벤토리에서 열쇠 제거
+	Item* item = dynamic_cast<Item*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::Item, packet.toolID));
+	player->RemoveItemFromInventory(true, packet.toolID);
+
+	// 해당 Client에게 Item을 인벤토리에서 제거하라고 알림
+	SendRemoveItemFromInventoryPacket(item, true, _clients[clientIndex]);
+	
+	// Broadcast
+	for (auto& p : _clients[clientIndex]->_room->GetPlayers())
+	{
+		if (!p->GetClient())
+			continue;
+
+		SendUpdateObjectStatePacket(door, p->GetClient());
+	}
+}
+
+void ServerNetwork::ProcessUseLanternPacket(C_UseLantern_Packet packet, int clientIndex)
+{
+	// Player가 랜턴을 정말 가지고 있는지 확인
+	Player* player = dynamic_cast<Player*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::Player, packet.playerID));
+	// 가지고 있지 않으면 무시
+	if (!player->ExistItem(true, packet.lanternID))
+		return;
+
+	// 랜턴 배터리 확인
+	Lantern* lantern = dynamic_cast<Lantern*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::Item, packet.lanternID));
+	// 배터리가 없으면 무시
+	if (lantern->GetCurrentBattery() == 0)
+		return;
+
+	// 랜턴 작동
+	if (lantern->IsOn())
+	{
+		lantern->TurnOff();
+		_clients[clientIndex]->_room->RemoveProcessingItem(lantern->GetID());
+	}	
+	else
+	{
+		lantern->TurnOn();
+		_clients[clientIndex]->_room->AddProcessingItem(lantern);
+	}
+}
+
+void ServerNetwork::ProcessInteractDoorPacket(C_InteractDoor_Packet packet, int clientIndex)
+{
+	// 요청한 Player와 Door가 상호작용 가능 거리인지 확인
+	Player* player = dynamic_cast<Player*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::Player, packet.playerID));
+	Door* door = dynamic_cast<Door*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::Door, packet.doorID));
+
+	// 거리 확인 코드 추가하기
+
+	// 상호작용 가능하면 Door State 변경
+	if (door->GetState() == ObjectState::OPEN)
+		door->SetState(ObjectState::CLOSE);
+	else
+		door->SetState(ObjectState::OPEN);
+
+	// Broadcast
+	for (auto& p : _clients[clientIndex]->_room->GetPlayers())
+	{
+		if (!p->GetClient())
+			continue;
+
+		SendInteractDoorNotifyPacket(packet.playerID, packet.doorID, door->GetState(), p->GetClient());
+	}
+}
+
+void ServerNetwork::ProcessEmotionResultPacket(C_EmotionResult_Packet packet, int clientIndex)
+{
+}
+
+void ServerNetwork::ProcessStartStagePacket(C_StartStage_Packet packet, int clientIndex)
+{
+	// Broadcast
+	for (auto& p : _clients[clientIndex]->_room->GetPlayers())
+	{
+		if (!p->GetClient())
+			continue;
+
+		SendStartStagePacket(p->GetClient());
+	}
+	
+	_clients[clientIndex]->_room->StartStage();
+}
+
+void ServerNetwork::ProcessEndStagePacket(C_EndStage_Packet packet, int clientIndex)
+{
+	// Broadcast
+	for (auto& p : _clients[clientIndex]->_room->GetPlayers())
+	{
+		if (!p->GetClient())
+			continue;
+
+		// Player들 처음 위치로 이동
+		p->SetPos({ 0, 0, 25 });
+		SendMovePacket(p, p->GetClient());
+
+		SendEndStagePacket(p->GetClient());
+	}
+
+	_clients[clientIndex]->_room->EndStage();
 }

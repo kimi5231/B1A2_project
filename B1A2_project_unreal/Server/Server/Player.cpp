@@ -41,11 +41,11 @@ bool Player::ExistItem(bool isTool, int id)
 
 void Player::Attack(Room* room)
 {
-	ToolRef currentTool = dynamic_pointer_cast<Tool>(room->GetDoor(ObjectType::Item, _currentTool));
+	Tool* currentTool = dynamic_cast<Tool*>(room->GetGameObject(ObjectType::Item, _currentTool));
 
 	if (currentTool->GetItemType() == ItemType::CUTLASS)
 	{
-		std::shared_ptr<Cutlass> cutlass = dynamic_pointer_cast<Cutlass>(currentTool);
+		Cutlass* cutlass = dynamic_cast<Cutlass*>(currentTool);
 		const std::array<Monster*, MAX_MONSTER>& monsters = room->GetMonsters();
 		for (auto& monster : monsters)
 		{

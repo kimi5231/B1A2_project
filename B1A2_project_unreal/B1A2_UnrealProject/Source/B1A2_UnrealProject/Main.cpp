@@ -335,7 +335,7 @@ void UMain::SendLocalPosition()
 
 void UMain::SendGetItem(int itemID, bool isTool, int playerID)
 {
-	if (_myID == 0 || itemID == 0)
+	if (_myID == -1 || itemID == -1)
 		return;
 
 	UWorld* world = GetWorld();
@@ -346,7 +346,7 @@ void UMain::SendGetItem(int itemID, bool isTool, int playerID)
 
 void UMain::SendDropItem(int playerID, bool isTool, int itemID)
 {
-	if (_myID == 0 || itemID == 0)
+	if (_myID == -1 || itemID == -1)
 		return;
 
 	UWorld* world = GetWorld();
@@ -358,7 +358,7 @@ void UMain::SendDropItem(int playerID, bool isTool, int itemID)
 
 void UMain::SendChangeTool(int playerID, int toolID)
 {
-	if (_myID == 0 || toolID < 0)
+	if (_myID == -1 || toolID < 0)
 		return;
 
 	UWorld* world = GetWorld();
@@ -370,7 +370,7 @@ void UMain::SendChangeTool(int playerID, int toolID)
 
 void UMain::SendInteractDoor(int playerID, int doorID)
 {
-	if (_myID == 0 || doorID < 0)
+	if (_myID == -1 || doorID < 0)
 		return;
 
 	UWorld* world = GetWorld();
@@ -382,7 +382,7 @@ void UMain::SendInteractDoor(int playerID, int doorID)
 
 void UMain::SendUseTool(int playerID, int toolID, Rotation playerRotation)
 {
-	if (_myID == 0)
+	if (_myID == -1)
 		return;
 
 	UWorld* world = GetWorld();
@@ -394,7 +394,7 @@ void UMain::SendUseTool(int playerID, int toolID, Rotation playerRotation)
 
 void UMain::SendUseKey(int playerID, int toolID, int doorID)
 {
-	if (_myID == 0 || doorID < 0)
+	if (_myID == -1 || doorID < 0)
 		return;
 
 	UWorld* world = GetWorld();
@@ -406,7 +406,7 @@ void UMain::SendUseKey(int playerID, int toolID, int doorID)
 
 void UMain::SendEmotion(float angry, float disgust, float fear, float happy, float sad, float surprise, float neutral)
 {
-	if (_myID == 0)
+	if (_myID == -1)
 		return;
 
 	UWorld* world = GetWorld();
@@ -418,7 +418,7 @@ void UMain::SendEmotion(float angry, float disgust, float fear, float happy, flo
 
 void UMain::SendEndStage(bool result)
 {
-	if (_myID == 0)
+	if (_myID == -1)
 		return;
 
 	UWorld* world = GetWorld();
@@ -430,7 +430,7 @@ void UMain::SendEndStage(bool result)
 
 void UMain::SendStartStage(bool result)
 {
-	if (_myID == 0)
+	if (_myID == -1)
 		return;
 
 	UWorld* world = GetWorld();
@@ -442,7 +442,7 @@ void UMain::SendStartStage(bool result)
 
 void UMain::SendUseLantern(int playerID, int lanternID)
 {
-	if (_myID == 0)
+	if (_myID == -1)
 		return;
 
 	UWorld* world = GetWorld();

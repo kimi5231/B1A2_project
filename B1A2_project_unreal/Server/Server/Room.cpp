@@ -1,23 +1,17 @@
 #include "pch.h"
 #include "Room.h"
 #include "Global.h"
+#include "Session.h"
 #include "Cube.h"
 #include "Door.h"
-#include "Item.h"
 #include "Cutlass.h"
 #include "Spider.h"
 #include "Obstacle.h"
 #include "Lantern.h"
 #include "EmotionGame.h"
-#include "Session.h"
 
 Room::Room()
 {
-	_generatePlayerID = 1;
-	_generateMonsterID = 1;
-	_generateItemID = 1;
-	_generateObstacleID = 1;
-
 	_currentDifficulty = Difficulty::Easy;
 	_detailDifficulty = Difficulty::Easy;
 }
@@ -54,10 +48,15 @@ void Room::Init()
 		{
 		// 도구 타입 따라 클래스 다르게 생성 필요
 		case ItemType::CUTLASS:
+			_items[i] = new Cutlass(type);
+			break;
 		case ItemType::Blaster:
 		case ItemType::Key:
-		case ItemType::LANTERN:
 			_items[i] = new Tool(type);
+			break;
+		case ItemType::LANTERN:
+			_items[i] = new Lantern(type);
+			dynamic_cast<Lantern*>(_items[i])->SetOwnerRoom(this);
 			break;
 		default:
 			_items[i] = new Item(type);
@@ -84,7 +83,8 @@ void Room::Init()
 	AddItem(true, ItemType::Blaster, { 0, 650, 25 });
 	AddItem(true, ItemType::Key, { 0, 600, 25 });
 	AddItem(true, ItemType::LANTERN, { 0, 550, 25 });
-	
+
+
 	// 테스트용 몬스터 생성
 	Monster* spider = AddMonster(MonsterType::Spider, { 0, 675, 25 });
 	spider->SetState(ObjectState::HIT, false);
@@ -128,7 +128,6 @@ void Room::Update()
 			monster->Update(this);
 		}
 			
-
 		for(const auto& item : _processingItems)
 			item.second->Update();
 
@@ -194,8 +193,8 @@ void Room::CreateFactoryCubes()
 		CubeRef cube = std::make_shared<Cube>(pos, Front, info);
 		cube->SetID(generateCubeID++);
 
-		std::vector<DoorRef> doors = cube->CreateDoors();
-		for (const DoorRef door : doors)
+		std::vector<Door*> doors = cube->CreateDoors();
+		for (auto& door : doors)
 		{
 			door->SetID(generateDoorID++);
 			cube->AddDoor(door->GetID());
@@ -223,7 +222,7 @@ void Room::CreateFactoryCubes()
 
 		// 연결할 방향에 맞는 문 선택
 		std::uniform_int_distribution<int> selectDoor(0, _connectableDoors[connectDir].size() - 1);
-		DoorRef door = _connectableDoors[connectDir][selectDoor(gen)];
+		Door* door = _connectableDoors[connectDir][selectDoor(gen)];
 
 		// CubeType 선택
 		// 연결할 방의 타입에 따라 가능한 방 타입 다르게 설정
@@ -323,8 +322,8 @@ void Room::CreateFactoryCubes()
 			_currentCubeCount[type]++;
 
 			// 문 생성
-			std::vector<DoorRef> doors = newCube->CreateDoors();
-			for (const DoorRef door : doors)
+			std::vector<Door*> doors = newCube->CreateDoors();
+			for (auto& door : doors)
 			{
 				door->SetID(generateDoorID++);
 				newCube->AddDoor(door->GetID());
@@ -502,28 +501,17 @@ void Room::RemoveObject(ObjectType type, int id)
 	}		
 }
 
-GameObjectRef Room::GetDoor(ObjectType type, int id)
-{
-	switch (type)
-	{
-	case ObjectType::Door:
-		return _doors[id - 1];
-		break;
-	}
-}
-
 GameObject* Room::GetGameObject(ObjectType type, int id)
 {
 	switch (type)
 	{
 	case ObjectType::Player:
 		return _players[id];
-		break;
 	case ObjectType::Monster:
 		return _monsters[id];
-		break;
 	case ObjectType::Item:
 		return _items[id];
-		break;
+	case ObjectType::Door:
+		return _doors[id];
 	}
 }

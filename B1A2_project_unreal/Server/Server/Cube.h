@@ -13,7 +13,7 @@ public:
 	void Update();
 
 public:
-	std::vector<DoorRef> CreateDoors();
+	std::vector<Door*> CreateDoors();
 	bool CheckCollision(BoundingBox other) { return _box.CheckCollision(other.GetBounds()); };
 	bool CheckInclude(BoundingBox other) { return _box.CheckInclude(other.GetBounds()); }
 

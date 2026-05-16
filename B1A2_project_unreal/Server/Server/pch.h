@@ -33,7 +33,6 @@ using MonsterRef = std::shared_ptr<class Monster>;
 using ItemRef = std::shared_ptr<class Item>;
 using ToolRef = std::shared_ptr<class Tool>;
 using DoorRef = std::shared_ptr<class Door>;
-using LanternRef = std::shared_ptr<class Lantern>;
 using ObstacleRef = std::shared_ptr<class Obstacle>;
 
 #define TileSize 25

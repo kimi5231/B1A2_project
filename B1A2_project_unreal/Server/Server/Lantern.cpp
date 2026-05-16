@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Lantern.h"
 #include "Global.h"
+#include "Session.h"
+#include "Room.h"
 
 Lantern::Lantern(ItemType itemType)
 	: Tool(itemType)
@@ -36,12 +38,28 @@ void Lantern::TurnOn()
 {
 	_isOn = true;
 	_sumTime = 0.f;
-	//g_framework->SendTurnOnLanternPacket(dynamic_pointer_cast<Lantern>(shared_from_this()), _ownerID, true);
+
+	// Broadcast
+	for (auto& p : _ownerRoom->GetPlayers())
+	{
+		if (!p->GetClient())
+			continue;
+
+		g_network->SendTurnOnLanternPacket(dynamic_cast<Lantern*>(this), _ownerID, p->GetClient());
+	}
 }
 
 void Lantern::TurnOff()
 {
 	_isOn = false;
 	_sumTime = 0.f;
-	//g_framework->SendTurnOffLanternPacket(dynamic_pointer_cast<Lantern>(shared_from_this()), _ownerID, true);
+
+	// Broadcast
+	for (auto& p : _ownerRoom->GetPlayers())
+	{
+		if (!p->GetClient())
+			continue;
+
+		g_network->SendTurnOffLanternPacket(dynamic_cast<Lantern*>(this), _ownerID, p->GetClient());
+	}
 }

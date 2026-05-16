@@ -4,6 +4,7 @@
 
 class ServerFramework;
 class Session;
+class Lantern;
 
 class ServerNetwork
 {
@@ -35,11 +36,9 @@ public:
 	void SendAddItemPacket(Item* item, bool isTool, Session* client);
 	void SendAddObstaclePacket(Obstacle* obstacle, Session* client);
 	void SendRemoveObjectPacket(ObjectType objectType, int objectID, Session* client);
-	
-	// GetPlayer 함수 GetObject 함수로 수정 필요
 	void SendMovePacket(GameObject* object, Session* client);
 	void SendUpdateObjectStatePacket(GameObject* object, Session* client);
-	void SendCreateCubesPacket(const std::vector<CubeRef>& cubes, const std::vector<DoorRef>& doors, Session* client);
+	void SendCreateCubesPacket(const std::vector<CubeRef>& cubes, const std::vector<Door*>& doors, Session* client);
 	void SendAddItemToInventoryPacket(Item* item, bool isTool, Session* client);
 	void SendRemoveItemFromInventoryPacket(Item* item, bool isTool, Session* client);
 	void SendItemPickupNotifyPacket(Item* item, int playerID, bool isTool, Session* client);
@@ -59,17 +58,16 @@ public:
 	// Recv
 	void ProcessMovePacket(C_Move_Packet packet, int clientIndex);
 	void ProcessUpdateObjectStatePacket(C_UpdateObjectState_Packet packet, int clientIndex);
-	
-	void ProcessGetItemPacket(SOCKET clientSocket, C_GetItem_Packet packet);
-	void ProcessDropItemPacket(C_DropItem_Packet packet);
-	void ProcessChangeToolPacket(C_ChangeTool_Packet packet);
-	void ProcessUseToolPacket(C_UseTool_Packet packet);
-	void ProcessUseKeyPacket(SOCKET clientSocket, C_UseKey_Packet packet);
-	void ProcessInteractDoorPacket(C_InteractDoor_Packet packet);
-	void ProcessEmotionPacket(C_Emotion_Packet packet);
-	void ProcessUseLanternPacket(C_UseLantern_Packet packet);
-	void ProcessStartStagePacket(C_StartStage_Packet packet);
-	void ProcessEndStagePacket(C_EndStage_Packet packet);
+	void ProcessGetItemPacket(C_GetItem_Packet packet, int clientIndex);
+	void ProcessDropItemPacket(C_DropItem_Packet packet, int clientIndex);
+	void ProcessChangeToolPacket(C_ChangeTool_Packet packet, int clientIndex);
+	void ProcessUseToolPacket(C_UseTool_Packet packet, int clientIndex);
+	void ProcessUseKeyPacket(C_UseKey_Packet packet, int clientIndex);
+	void ProcessUseLanternPacket(C_UseLantern_Packet packet, int clientIndex);
+	void ProcessInteractDoorPacket(C_InteractDoor_Packet packet, int clientIndex);
+	void ProcessEmotionResultPacket(C_EmotionResult_Packet packet, int clientIndex);
+	void ProcessStartStagePacket(C_StartStage_Packet packet, int clientIndex);
+	void ProcessEndStagePacket(C_EndStage_Packet packet, int clientIndex);
 
 private:
 	SOCKET _listenSocket{};
