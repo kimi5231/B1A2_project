@@ -141,6 +141,7 @@
     <ClInclude Include="DataManager.h" />
     <ClInclude Include="Door.h" />
     <ClInclude Include="EmotionGame.h" />
+    <ClInclude Include="ExpOver.h" />
     <ClInclude Include="Ghost.h" />
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="Item.h" />
@@ -148,6 +149,8 @@
     <ClInclude Include="Monster.h" />
     <ClInclude Include="Obstacle.h" />
     <ClInclude Include="Packets.h" />
+    <ClInclude Include="ServerNetwork.h" />
+    <ClInclude Include="Session.h" />
     <ClInclude Include="Spider.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="FSM.h" />
@@ -171,6 +174,7 @@
     <ClCompile Include="Door.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="EmotionGame.cpp" />
+    <ClCompile Include="ExpOver.cpp" />
     <ClCompile Include="Ghost.cpp" />
     <ClCompile Include="Global.cpp" />
     <ClCompile Include="Inventory.cpp" />
@@ -187,6 +191,8 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="ServerFramework.cpp" />
+    <ClCompile Include="ServerNetwork.cpp" />
+    <ClCompile Include="Session.cpp" />
     <ClCompile Include="Spider.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="FSM.cpp" />

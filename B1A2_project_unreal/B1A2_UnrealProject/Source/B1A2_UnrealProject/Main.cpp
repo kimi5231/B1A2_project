@@ -103,176 +103,179 @@ void UMain::ProcessRecv()
 	{
 		switch (event->packetID)
 		{
-			case S_AddObject:
-			{
-				S_AddObject_Packet addObjectPacket;
-				FMemory::Memcpy(&addObjectPacket, event->serializedPacketData.data(), sizeof(S_AddObject_Packet));
-				RecvAddObject(addObjectPacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_AddItem:
-			{
-				S_AddItem_Packet addItemPacket;
-				FMemory::Memcpy(&addItemPacket, event->serializedPacketData.data(), sizeof(S_AddItem_Packet));
-				if (addItemPacket.isTool)
-					RecvAddTool(addItemPacket);
-				else
-					RecvAddItem(addItemPacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_RemoveObject:
-			{
-				S_RemoveObject_Packet removeObjectPacket;
-				FMemory::Memcpy(&removeObjectPacket, event->serializedPacketData.data(), sizeof(S_RemoveObject_Packet));
-				RecvRemoveObject(removeObjectPacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_UpdateObjectState:
-			{
-				S_UpdateObjectState_Packet updateObjectStatePacket;
-				FMemory::Memcpy(&updateObjectStatePacket, event->serializedPacketData.data(), sizeof(S_UpdateObjectState_Packet));
-				RecvUpdateObjectState(updateObjectStatePacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_Move:
-			{
-				S_Move_Packet movePacket;
-				FMemory::Memcpy(&movePacket, event->serializedPacketData.data(), sizeof(S_Move_Packet));
-				RecvMoveObject(movePacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_AddItemToInventory:	// MyPlayer의 아이템과 장비를 인벤과 툴바에 넣음 (OtherPlayer는 UpdateObjectState)
-			{
-				S_AddItemToInventory_Packet addItemToInventoryPacket;
-				FMemory::Memcpy(&addItemToInventoryPacket, event->serializedPacketData.data(), sizeof(S_AddItemToInventory_Packet));
-				RecvAddItemToInventory(addItemToInventoryPacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_RemoveItemFromInventory:
-			{
-				S_RemoveItemFromInventory_Packet removeItemFromInventoryPacket;
-				FMemory::Memcpy(&removeItemFromInventoryPacket, event->serializedPacketData.data(), sizeof(S_RemoveItemFromInventory_Packet));
-				RecvRemoveItemFromInventory(removeItemFromInventoryPacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_ItemPickupNotify:
-			{
-				S_ItemPickupNotify_Packet itemPickupNotifyPacket;
-				FMemory::Memcpy(&itemPickupNotifyPacket, event->serializedPacketData.data(), sizeof(S_ItemPickupNotify_Packet));
-				RecvItemPickupNotify(itemPickupNotifyPacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_DropItem:
-			{
-				S_DropItem_Packet dropItemPacket;
-				FMemory::Memcpy(&dropItemPacket, event->serializedPacketData.data(), sizeof(S_DropItem_Packet));
-				RecvDropItem(dropItemPacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_UpdateCurrentTool:
-			{
-				S_UpdateCurrentTool_Packet updateCurrentToolPacket;
-				FMemory::Memcpy(&updateCurrentToolPacket, event->serializedPacketData.data(), sizeof(S_UpdateCurrentTool_Packet));
-				RecvUpdateCurrentTool(updateCurrentToolPacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_UseTool:
-			{
-				S_UseTool_Packet useToolPacket;
-				FMemory::Memcpy(&useToolPacket, event->serializedPacketData.data(), sizeof(S_UseTool_Packet));
-				RecvUseTool(useToolPacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_SpawnParticle:
-			{
-				S_SpawnParticle_Packet spawnParticlePacket;
-				FMemory::Memcpy(&spawnParticlePacket, event->serializedPacketData.data(), sizeof(S_SpawnParticle_Packet));
-				RecvSpawnParticle(spawnParticlePacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_InteractDoorNotify:
-			{
-				S_InteractDoorNotify_Packet interactDoorNotifyPacket;
-				FMemory::Memcpy(&interactDoorNotifyPacket, event->serializedPacketData.data(), sizeof(S_InteractDoorNotify_Packet));
-				RecvInteractDoorNotify(interactDoorNotifyPacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_CreateCubes:
-			{
-				S_CreateCubes_Packet createCubesPacket{ _gameNetwork->DeserializeVector<CubeDTO>(event->serializedPacketData), _gameNetwork->DeserializeVector<DoorDTO>(event->serializedPacketData) };
-				RecvCreateCubes(createCubesPacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_SpawnMonster:
-			{
-				S_SpawnMonster_Packet spawnMonsterPacket;
-				FMemory::Memcpy(&spawnMonsterPacket, event->serializedPacketData.data(), sizeof(S_SpawnMonster_Packet));
-				RecvSpawnMonster(spawnMonsterPacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_TurnOnLantern:
-			{
-				S_TurnOnLantern_Packet turnOnLanternPacket;
-				FMemory::Memcpy(&turnOnLanternPacket, event->serializedPacketData.data(), sizeof(S_TurnOnLantern_Packet));
-				RecvTurnOnLantern(turnOnLanternPacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_TurnOffLantern:
-			{
-				S_TurnOffLantern_Packet turnOffLanternPacket;
-				FMemory::Memcpy(&turnOffLanternPacket, event->serializedPacketData.data(), sizeof(S_TurnOffLantern_Packet));
-				RecvTurnOffLantern(turnOffLanternPacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_StartStage:
-			{
-				S_StartStage_Packet startStagePacket;
-				FMemory::Memcpy(&startStagePacket, event->serializedPacketData.data(), sizeof(S_StartStage_Packet));
-				RecvStartStage(startStagePacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_EndStage:
-			{
-				S_EndStage_Packet endStagePacket;
-				FMemory::Memcpy(&endStagePacket, event->serializedPacketData.data(), sizeof(S_EndStage_Packet));
-				RecvEndStage(endStagePacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_UpdateHp:
-			{
-				S_UpdateHp_Packet updateHpPacket;
-				FMemory::Memcpy(&updateHpPacket, event->serializedPacketData.data(), sizeof(S_UpdateHp_Packet));
-				RecvUpdateHp(updateHpPacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_SpawnObstacle:
-			{
-				S_SpawnObstacle_Packet spawnObstaclePacket;
-				FMemory::Memcpy(&spawnObstaclePacket, event->serializedPacketData.data(), sizeof(S_SpawnObstacle_Packet));
-				RecvSpawnObstacle(spawnObstaclePacket);
-				event->isComplete = true;
-				break;
-			}
+		case S_AddPlayer:
+		{
+			S_AddPlayer_Packet addPlayerPacket;
+			FMemory::Memcpy(&addPlayerPacket, event->serializedPacketData.data(), sizeof(S_AddPlayer_Packet));
+			RecvAddPlayer(addPlayerPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_AddMonster:
+		{
+			S_AddMonster_Packet addMonsterPacket;
+			FMemory::Memcpy(&addMonsterPacket, event->serializedPacketData.data(), sizeof(S_AddMonster_Packet));
+			RecvAddMonster(addMonsterPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_AddItem:
+		{
+			S_AddItem_Packet addItemPacket;
+			FMemory::Memcpy(&addItemPacket, event->serializedPacketData.data(), sizeof(S_AddItem_Packet));
+			if (addItemPacket.isTool)
+				RecvAddTool(addItemPacket);
+			else
+				RecvAddItem(addItemPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_AddObstacle:
+		{
+			S_AddObstacle_Packet addobsraclePacket;
+			FMemory::Memcpy(&addobsraclePacket, event->serializedPacketData.data(), sizeof(S_AddObstacle_Packet));
+			RecvAddObstacle(addobsraclePacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_RemoveObject:
+		{
+			S_RemoveObject_Packet removeObjectPacket;
+			FMemory::Memcpy(&removeObjectPacket, event->serializedPacketData.data(), sizeof(S_RemoveObject_Packet));
+			RecvRemoveObject(removeObjectPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_Move:
+		{
+			S_Move_Packet movePacket;
+			FMemory::Memcpy(&movePacket, event->serializedPacketData.data(), sizeof(S_Move_Packet));
+			RecvMoveObject(movePacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_UpdateObjectState:
+		{
+			S_UpdateObjectState_Packet updateObjectStatePacket;
+			FMemory::Memcpy(&updateObjectStatePacket, event->serializedPacketData.data(), sizeof(S_UpdateObjectState_Packet));
+			RecvUpdateObjectState(updateObjectStatePacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_CreateCubes:
+		{
+			unsigned short packetSize;
+			memcpy(&packetSize, event->serializedPacketData.data(), sizeof(unsigned short));
+			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned short) + sizeof(PacketID));
+			S_CreateCubes_Packet createCubesPacket{ packetSize, S_CreateCubes, _gameNetwork->DeserializeVector<CubeDTO>(event->serializedPacketData), _gameNetwork->DeserializeVector<DoorDTO>(event->serializedPacketData)};
+			RecvCreateCubes(createCubesPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_AddItemToInventory:	// MyPlayer의 아이템과 장비를 인벤과 툴바에 넣음 (OtherPlayer는 UpdateObjectState)
+		{
+			S_AddItemToInventory_Packet addItemToInventoryPacket;
+			FMemory::Memcpy(&addItemToInventoryPacket, event->serializedPacketData.data(), sizeof(S_AddItemToInventory_Packet));
+			RecvAddItemToInventory(addItemToInventoryPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_RemoveItemFromInventory:
+		{
+			S_RemoveItemFromInventory_Packet removeItemFromInventoryPacket;
+			FMemory::Memcpy(&removeItemFromInventoryPacket, event->serializedPacketData.data(), sizeof(S_RemoveItemFromInventory_Packet));
+			RecvRemoveItemFromInventory(removeItemFromInventoryPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_ItemPickupNotify:
+		{
+			S_ItemPickupNotify_Packet itemPickupNotifyPacket;
+			FMemory::Memcpy(&itemPickupNotifyPacket, event->serializedPacketData.data(), sizeof(S_ItemPickupNotify_Packet));
+			RecvItemPickupNotify(itemPickupNotifyPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_DropItem:
+		{
+			S_DropItem_Packet dropItemPacket;
+			FMemory::Memcpy(&dropItemPacket, event->serializedPacketData.data(), sizeof(S_DropItem_Packet));
+			RecvDropItem(dropItemPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_UpdateCurrentTool:
+		{
+			S_UpdateCurrentTool_Packet updateCurrentToolPacket;
+			FMemory::Memcpy(&updateCurrentToolPacket, event->serializedPacketData.data(), sizeof(S_UpdateCurrentTool_Packet));
+			RecvUpdateCurrentTool(updateCurrentToolPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_UseTool:
+		{
+			S_UseTool_Packet useToolPacket;
+			FMemory::Memcpy(&useToolPacket, event->serializedPacketData.data(), sizeof(S_UseTool_Packet));
+			RecvUseTool(useToolPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_TurnOnLantern:
+		{
+			S_TurnOnLantern_Packet turnOnLanternPacket;
+			FMemory::Memcpy(&turnOnLanternPacket, event->serializedPacketData.data(), sizeof(S_TurnOnLantern_Packet));
+			RecvTurnOnLantern(turnOnLanternPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_TurnOffLantern:
+		{
+			S_TurnOffLantern_Packet turnOffLanternPacket;
+			FMemory::Memcpy(&turnOffLanternPacket, event->serializedPacketData.data(), sizeof(S_TurnOffLantern_Packet));
+			RecvTurnOffLantern(turnOffLanternPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_InteractDoorNotify:
+		{
+			S_InteractDoorNotify_Packet interactDoorNotifyPacket;
+			FMemory::Memcpy(&interactDoorNotifyPacket, event->serializedPacketData.data(), sizeof(S_InteractDoorNotify_Packet));
+			RecvInteractDoorNotify(interactDoorNotifyPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_UpdateHp:
+		{
+			S_UpdateHp_Packet updateHpPacket;
+			FMemory::Memcpy(&updateHpPacket, event->serializedPacketData.data(), sizeof(S_UpdateHp_Packet));
+			RecvUpdateHp(updateHpPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_SpawnParticle:
+		{
+			S_SpawnParticle_Packet spawnParticlePacket;
+			FMemory::Memcpy(&spawnParticlePacket, event->serializedPacketData.data(), sizeof(S_SpawnParticle_Packet));
+			RecvSpawnParticle(spawnParticlePacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_StartStage:
+		{
+			S_StartStage_Packet startStagePacket;
+			FMemory::Memcpy(&startStagePacket, event->serializedPacketData.data(), sizeof(S_StartStage_Packet));
+			RecvStartStage(startStagePacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_EndStage:
+		{
+			S_EndStage_Packet endStagePacket;
+			FMemory::Memcpy(&endStagePacket, event->serializedPacketData.data(), sizeof(S_EndStage_Packet));
+			RecvEndStage(endStagePacket);
+			event->isComplete = true;
+			break;
+		}
 		}
 	}
 }
@@ -283,7 +286,7 @@ void UMain::ProcessSend(PacketID id, const void* packetData, int dataSize)
 
 void UMain::SendLocalPosition()
 {
-	if (_myID == 0)
+	if (_myID == -1)
 		return;
 
 	UWorld* world = GetWorld();
@@ -335,7 +338,7 @@ void UMain::SendLocalPosition()
 
 void UMain::SendGetItem(int itemID, bool isTool, int playerID)
 {
-	if (_myID == 0 || itemID == 0)
+	if (_myID == -1 || itemID == -1)
 		return;
 
 	UWorld* world = GetWorld();
@@ -346,7 +349,7 @@ void UMain::SendGetItem(int itemID, bool isTool, int playerID)
 
 void UMain::SendDropItem(int playerID, bool isTool, int itemID)
 {
-	if (_myID == 0 || itemID == 0)
+	if (_myID == -1 || itemID == -1)
 		return;
 
 	UWorld* world = GetWorld();
@@ -358,7 +361,7 @@ void UMain::SendDropItem(int playerID, bool isTool, int itemID)
 
 void UMain::SendChangeTool(int playerID, int toolID)
 {
-	if (_myID == 0 || toolID < 0)
+	if (_myID == -1 || toolID < 0)
 		return;
 
 	UWorld* world = GetWorld();
@@ -370,7 +373,7 @@ void UMain::SendChangeTool(int playerID, int toolID)
 
 void UMain::SendInteractDoor(int playerID, int doorID)
 {
-	if (_myID == 0 || doorID < 0)
+	if (_myID == -1 || doorID < 0)
 		return;
 
 	UWorld* world = GetWorld();
@@ -382,7 +385,7 @@ void UMain::SendInteractDoor(int playerID, int doorID)
 
 void UMain::SendUseTool(int playerID, int toolID, Rotation playerRotation)
 {
-	if (_myID == 0)
+	if (_myID == -1)
 		return;
 
 	UWorld* world = GetWorld();
@@ -394,7 +397,7 @@ void UMain::SendUseTool(int playerID, int toolID, Rotation playerRotation)
 
 void UMain::SendUseKey(int playerID, int toolID, int doorID)
 {
-	if (_myID == 0 || doorID < 0)
+	if (_myID == -1 || doorID < 0)
 		return;
 
 	UWorld* world = GetWorld();
@@ -406,7 +409,7 @@ void UMain::SendUseKey(int playerID, int toolID, int doorID)
 
 void UMain::SendEmotion(float angry, float disgust, float fear, float happy, float sad, float surprise, float neutral)
 {
-	if (_myID == 0)
+	if (_myID == -1)
 		return;
 
 	UWorld* world = GetWorld();
@@ -418,7 +421,7 @@ void UMain::SendEmotion(float angry, float disgust, float fear, float happy, flo
 
 void UMain::SendEndStage(bool result)
 {
-	if (_myID == 0)
+	if (_myID == -1)
 		return;
 
 	UWorld* world = GetWorld();
@@ -430,7 +433,7 @@ void UMain::SendEndStage(bool result)
 
 void UMain::SendStartStage(bool result)
 {
-	if (_myID == 0)
+	if (_myID == -1)
 		return;
 
 	UWorld* world = GetWorld();
@@ -442,7 +445,7 @@ void UMain::SendStartStage(bool result)
 
 void UMain::SendUseLantern(int playerID, int lanternID)
 {
-	if (_myID == 0)
+	if (_myID == -1)
 		return;
 
 	UWorld* world = GetWorld();
@@ -465,22 +468,14 @@ void UMain::Update()
 	ProcessRecv();
 }
 
-
-
-void UMain::RecvAddObject(S_AddObject_Packet packet)
+void UMain::RecvAddPlayer(S_AddPlayer_Packet packet)
 {
-	if (packet.type == ObjectType::Player)
-		AddPlayer(packet);
-}
+	UE_LOG(LogTemp, Log, TEXT("AddObject Packet [%d], %f, %f, %f"), packet.id, packet.pos.x, packet.pos.y, packet.pos.z);
 
-void UMain::AddPlayer(S_AddObject_Packet packet)
-{
-	UE_LOG(LogTemp, Log, TEXT("AddObject Packet [%d], %f, %f, %f"), packet.objectID, packet.pos.x, packet.pos.y, packet.pos.z);
-
-	if (_myID == 0)
+	if (_myID == -1)
 	{
 		// 자신의 ID 설정
-		_myID = packet.objectID;
+		_myID = packet.id;
 
 		// Spawn
 		AsyncTask(ENamedThreads::GameThread, [=, this]()
@@ -508,25 +503,25 @@ void UMain::AddPlayer(S_AddObject_Packet packet)
 
 			_myPlayer = player;
 
-			UE_LOG(LogTemp, Log, TEXT("My Player Spawned! [%d], %f, %f, %f"), packet.objectID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 98.f);
+			UE_LOG(LogTemp, Log, TEXT("My Player Spawned! [%d], %f, %f, %f"), packet.id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 98.f);
 		});
 		return;
 	}
 
-	if (packet.objectID == _myID)
+	if (packet.id == _myID)
 		return;
 
 	// 이미 존재하는 객체인지 확인
-	if (_otherPlayers.Contains(packet.objectID))
+	if (_otherPlayers.Contains(packet.id))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Other Player already spawned... object ID: %d"), packet.objectID);
+		UE_LOG(LogTemp, Warning, TEXT("Other Player already spawned... object ID: %d"), packet.id);
 		return;
 	}
 
 	// 다른 플레이어 Spawn
 	FVector spawnLocation(packet.pos.x, packet.pos.y, packet.pos.z + 98.f);
 	FRotator spawnRotation(0, packet.rotation.yaw, 0);
-	int id = packet.objectID;
+	int id = packet.id;
 
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
@@ -551,15 +546,15 @@ void UMain::AddPlayer(S_AddObject_Packet packet)
 
 void UMain::RecvAddItem(S_AddItem_Packet packet)
 {
-	if (_items.Contains(packet.objectID))
+	if (_items.Contains(packet.id))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Item already spawned... object ID: %d"), packet.objectID);
+		UE_LOG(LogTemp, Warning, TEXT("Item already spawned... object ID: %d"), packet.id);
 		return;
 	}
 
 	FVector spawnLocation(packet.pos.x, packet.pos.y, packet.pos.z);
-	FRotator spawnRotation(0, packet.rotation.yaw, 0);
-	int id = packet.objectID;
+	FRotator spawnRotation(0, 0, 0);
+	int id = packet.id;
 
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
@@ -633,15 +628,15 @@ void UMain::RecvAddItem(S_AddItem_Packet packet)
 
 void UMain::RecvAddTool(S_AddItem_Packet packet)
 {
-	if (_tools.Contains(packet.objectID))
+	if (_tools.Contains(packet.id))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Tool already spawned... object ID: %d"), packet.objectID);
+		UE_LOG(LogTemp, Warning, TEXT("Tool already spawned... object ID: %d"), packet.id);
 		return;
 	}
 
 	FVector spawnLocation(packet.pos.x, packet.pos.y, packet.pos.z);
-	FRotator spawnRotation(0, packet.rotation.yaw, 0);
-	int id = packet.objectID;
+	FRotator spawnRotation(0, 0, 0);
+	int id = packet.id;
 
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
@@ -842,7 +837,7 @@ void UMain::RecvDropItem(S_DropItem_Packet packet)
 
 void UMain::RecvRemoveObject(S_RemoveObject_Packet packet)
 {
-	switch (packet.objectType)
+	switch (packet.type)
 	{
 	case ObjectType::Player:
 		RemovePlayer(packet);
@@ -861,7 +856,7 @@ void UMain::RecvRemoveObject(S_RemoveObject_Packet packet)
 
 void UMain::RemovePlayer(S_RemoveObject_Packet packet)
 {
-	int id = packet.objectID;
+	int id = packet.id;
 
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
@@ -889,7 +884,7 @@ void UMain::RemovePlayer(S_RemoveObject_Packet packet)
 
 void UMain::RemoveMonster(S_RemoveObject_Packet packet)
 {
-	int id = packet.objectID;
+	int id = packet.id;
 
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
@@ -947,7 +942,7 @@ void UMain::RecvMovePlayer(S_Move_Packet packet)
 		FRotator rot(0, packet.rotation.yaw, 0);
 
 		// MyPlayer인 경우
-		if (packet.objectID == _myID)
+		if (packet.id == _myID)
 		{
 			if (_myPlayer)
 			{
@@ -960,7 +955,7 @@ void UMain::RecvMovePlayer(S_Move_Packet packet)
 		}
 
 		// OtherPlayer인 경우
-		AOtherPlayer** findPlayer = _otherPlayers.Find(packet.objectID);
+		AOtherPlayer** findPlayer = _otherPlayers.Find(packet.id);
 		if (findPlayer && *findPlayer)
 		{
 			AOtherPlayer* player = (*findPlayer);
@@ -971,7 +966,7 @@ void UMain::RecvMovePlayer(S_Move_Packet packet)
 		}
 		else
 		{
-			UE_LOG(LogTemp, Error, TEXT("Other Player [%d] not found"), packet.objectID);
+			UE_LOG(LogTemp, Error, TEXT("Other Player [%d] not found"), packet.id);
 		}
 	});
 }
@@ -982,7 +977,7 @@ void UMain::RecvMoveMonster(S_Move_Packet packet)
 	{
 		if (!GetWorld()) return;
 
-		ABaseMonster** findMonster = _monsters.Find(packet.objectID);
+		ABaseMonster** findMonster = _monsters.Find(packet.id);
 		if (findMonster && *findMonster)
 		{
 			ABaseMonster* monster = (*findMonster);
@@ -1010,7 +1005,7 @@ void UMain::RecvUpdateStateMonster(S_UpdateObjectState_Packet packet)
 	{
 		if (!GetWorld()) return;
 
-		ABaseMonster** findMonster = _monsters.Find(packet.objectID);
+		ABaseMonster** findMonster = _monsters.Find(packet.id);
 		if (findMonster && *findMonster)
 		{
 			ABaseMonster* monster = (*findMonster);
@@ -1079,7 +1074,7 @@ void UMain::RecvUpdateStateDoor(S_UpdateObjectState_Packet packet)
 {
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
-		ABaseDoor** foundDoor = _doors.Find(packet.objectID);
+		ABaseDoor** foundDoor = _doors.Find(packet.id);
 
 		if (foundDoor && *foundDoor)
 		{
@@ -1225,7 +1220,7 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 
 void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 {
-	int itemID = packet.itemID;
+	int itemID = packet.id;
 	UE_LOG(LogTemp, Log, TEXT("[RecvAddItemToInventory] ID: %d"), itemID);
 
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
@@ -1244,7 +1239,7 @@ void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 			}
 
 			ABaseItem* tool = *foundTool;
-			int32 toolIndex = _myPlayer->AddToolToToolBar(packet.itemType, itemID, packet.itemWeight);
+			int32 toolIndex = _myPlayer->AddToolToToolBar(packet.itemType, itemID, packet.weight);
 
 			// 장비 줍기 애니메이션 재생 + 월드에서 장비 삭제
 			_myPlayer->PlayPickUpAnimation(tool);
@@ -1287,7 +1282,7 @@ void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 			// 아이템 줍기 애니메이션 재생 + 월드에서 아이템 삭제
 			_myPlayer->PlayPickUpAnimation(item);
 			// 인벤에 넣기
-			_myPlayer->AddItemToInventory(packet.itemType, itemID, packet.itemWeight);
+			_myPlayer->AddItemToInventory(packet.itemType, itemID, packet.weight);
 			// _items에서 제거
 			_items.Remove(itemID);
 
@@ -1298,7 +1293,7 @@ void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 
 void UMain::RecvRemoveItemFromInventory(S_RemoveItemFromInventory_Packet packet)
 {
-	int32 itemID = packet.itemID;
+	int32 itemID = packet.id;
 	bool isTool = packet.isTool;
 
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
@@ -1491,7 +1486,7 @@ void UMain::RecvInteractDoorNotify(S_InteractDoorNotify_Packet packet)
 	});
 }
 
-void UMain::RecvSpawnMonster(S_SpawnMonster_Packet packet)
+void UMain::RecvAddMonster(S_AddMonster_Packet packet)
 {
 	if (_monsters.Contains(packet.id))
 	{
@@ -1510,12 +1505,9 @@ void UMain::RecvSpawnMonster(S_SpawnMonster_Packet packet)
 			return;
 
 		ABaseMonster* monsterActor = nullptr;
-		switch (packet.type)
+		switch (packet.monsterType)
 		{
 		default:
-		case MonsterType::None:
-			monsterActor = world->SpawnActor<ABaseMonster>(TestMonsterClass, spawnLocation, spawnRotation);			
-			break;
 		case MonsterType::Spider:
 			monsterActor = world->SpawnActor<ABaseMonster>(SpiderClass, spawnLocation, spawnRotation);
 			break;
@@ -1683,7 +1675,7 @@ void UMain::RecvUpdateHp(S_UpdateHp_Packet packet)
 {
 }
 
-void UMain::RecvSpawnObstacle(S_SpawnObstacle_Packet packet)
+void UMain::RecvAddObstacle(S_AddObstacle_Packet packet)
 {
 	if (_webs.Contains(packet.id))
 	{

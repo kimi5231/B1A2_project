@@ -35,8 +35,8 @@ bool Creature::TackHeal(int heal)
 void Creature::SetPos(Vector pos)
 {
 	GameObject::SetPos(pos);
-    if(g_framework != nullptr)
-        SetCurrentCubeID(g_framework->GetRoom()->GetCubes());
+    /*if(g_network != nullptr)
+        SetCurrentCubeID(g_framework->GetRoom()->GetCubes());*/
 }
 
 void Creature::SetCurrentCubeID(const std::vector<CubeRef>& cubes)

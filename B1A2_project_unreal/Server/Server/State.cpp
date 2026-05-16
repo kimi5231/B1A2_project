@@ -8,7 +8,7 @@
 #include "EmotionGame.h"
 #include "Ghost.h"
 
-void State::Tick(MonsterRef monster, Room* room)
+void State::Tick(Monster* monster)
 {
 	if (monster->IsReadyNextState())
 		monster->SetState(monster->GetStateTable().at(monster->GetState()));
@@ -16,43 +16,43 @@ void State::Tick(MonsterRef monster, Room* room)
 
 IdleState* g_idleState = new IdleState();
 RoamingState* g_roamingState = new RoamingState();
-MakeWebState* g_makeWebState = new MakeWebState();
 ChaseState* g_chaseState = new ChaseState();
 ReturnState* g_returnState = new ReturnState();
 AttackState* g_attackState = new AttackState();
 HitState* g_hitState = new HitState();
 DeadState* g_deadState = new DeadState();
+MakeWebState* g_makeWebState = new MakeWebState();
 Teleport* g_teleportState = new Teleport();
 Grab* g_grabState = new Grab();
 Play* g_playState = new Play();
 Release* g_releaseState = new Release();
 
 //--------------Idle--------------
-void IdleState::Tick(MonsterRef monster, Room* room)
+void IdleState::Tick(Monster* monster)
 {
-	State::Tick(monster, room);
+	State::Tick(monster);
 
 	monster->AddDeltaTime(g_timer->GetDeltaTime());
 }
 
-void IdleState::Exit(MonsterRef monster)
+void IdleState::Exit(Monster* monster)
 {
 	monster->InitSumTime();
 }
 
 //--------------Roaming--------------
-void RoamingState::Tick(MonsterRef monster, Room* room)
+void RoamingState::Tick(Monster* monster)
 {
-	State::Tick(monster, room);
+	State::Tick(monster);
 
 	monster->AddDeltaTime(g_timer->GetDeltaTime());
 
 	// 최종 목적지 갱신
 	if (!monster->GetTargetPos())
 	{
-		const std::vector<CubeRef>& cubes = room->GetCubes();
+		const std::vector<CubeRef>& cubes = monster->GetOwnerRoom()->GetCubes();
 		const CubeRef currentCube = cubes[monster->GetCurrentCubeID()];
-		const CubeRef goalCube = monster->SelectRandomConnectedCube(room);
+		const CubeRef goalCube = monster->SelectRandomConnectedCube(monster->GetOwnerRoom());
 		
 		// 갈 수 있는 큐브가 없으면 큐브 내에서 목적지 설정
 		if (goalCube == currentCube)
@@ -97,30 +97,38 @@ void RoamingState::Tick(MonsterRef monster, Room* room)
 		monster->SetTargetPos(std::nullopt);
 
 	// 경로	따라 이동
-	const std::vector<CubeRef>& cubes = room->GetCubes();
+	const std::vector<CubeRef>& cubes = monster->GetOwnerRoom()->GetCubes();
 	monster->SetPos(path[0]);
 	monster->SetCurrentCubeID(cubes);
 	path.pop_front();
-	g_framework->SendMovePacket(std::shared_ptr<GameObject>(monster), true);
+
+	// Broadcast
+	for (auto& p : monster->GetOwnerRoom()->GetPlayers())
+	{
+		if (!p->GetClient())
+			continue;
+
+		g_network->SendMovePacket(monster, p->GetClient());
+	}
 }
 
-void RoamingState::Exit(MonsterRef monster)
+void RoamingState::Exit(Monster* monster)
 {
 	monster->InitSumTime();
 	monster->ClearPath();
 }
 
 //--------------Chase--------------
-void ChaseState::Tick(MonsterRef monster, Room* room)
+void ChaseState::Tick(Monster* monster)
 {
-	State::Tick(monster, room);
+	State::Tick(monster);
 
 	monster->AddDeltaTime(g_timer->GetDeltaTime());
 
 	// 최종 목적지 갱신
 	if (!monster->GetTargetPos())
 	{
-		const std::vector<CubeRef>& cubes = room->GetCubes();
+		const std::vector<CubeRef>& cubes = monster->GetOwnerRoom()->GetCubes();
 		const CubeRef currentCube = cubes[monster->GetCurrentCubeID()];
 		const CubeRef goalCube = cubes[monster->GetTarget()->GetCurrentCubeID()];
 
@@ -147,8 +155,8 @@ void ChaseState::Tick(MonsterRef monster, Room* room)
 		}
 
 		// 넘어갈 큐브와 연결된 문 찾기
-		const std::vector<DoorRef>& doors = room->GetDoors();
-		DoorRef door;
+		const std::vector<Door*>& doors = monster->GetOwnerRoom()->GetDoors();
+		Door* door{};
 		for (int doorID : cubePath[0]->GetDoors())
 		{
 			if (doors[doorID - 1]->GetConnectedCubeID() == cubePath[1]->GetID() ||
@@ -276,7 +284,7 @@ void ChaseState::Tick(MonsterRef monster, Room* room)
 			path.pop_front();           // 도착했으니 다음 경로로
 
 			// 타일이 바뀌었을 때만 큐브 ID 체크 (성능 최적화)
-			const std::vector<CubeRef>& cubes = room->GetCubes();
+			const std::vector<CubeRef>& cubes = monster->GetOwnerRoom()->GetCubes();
 			monster->SetCurrentCubeID(cubes);
 		}
 		else
@@ -289,15 +297,19 @@ void ChaseState::Tick(MonsterRef monster, Room* room)
 
 			Rotation newRot = { 0.f, angleDeg, 0.f }; // 바닥에서만 도니까 Roll, Pitch는 0
 
-			// 3. monster->SetRotation(Rotation) 호출
 			monster->SetRotation(newRot);
 
-			// 2. 결정된 방향과 속도로 이동
 			monster->SetPos(currentPos + (dir * moveDist));
 		}
 
-		// 4. 이동 패킷 전송 (매 프레임 쏘거나, 일정 거리 이상일 때만 전송)
-		g_framework->SendMovePacket(std::static_pointer_cast<GameObject>(monster), true);
+		// Broadcast
+		for (auto& p : monster->GetOwnerRoom()->GetPlayers())
+		{
+			if (!p->GetClient())
+				continue;
+
+			g_network->SendMovePacket(monster, p->GetClient());
+		}
 	}
 
 	// 최종 목적지 도달 체크
@@ -307,21 +319,21 @@ void ChaseState::Tick(MonsterRef monster, Room* room)
 	}
 }
 
-void ChaseState::Exit(MonsterRef monster)
+void ChaseState::Exit(Monster* monster)
 {
 	monster->InitSumTime();
 	monster->ClearPath();
 }
 
 //--------------Return----------------
-void ReturnState::Tick(MonsterRef monster, Room* room)
+void ReturnState::Tick(Monster* monster)
 {
-	State::Tick(monster, room);
+	State::Tick(monster);
 
 	// returnPos로 목적지 설정
 	if (monster->GetPath().empty())
 	{
-		const std::vector<CubeRef>& cubes = room->GetCubes();
+		const std::vector<CubeRef>& cubes = monster->GetOwnerRoom()->GetCubes();
 		const CubeRef currentCube = cubes[monster->GetCurrentCubeID()];
 		const CubeRef goalCube = cubes[monster->GetReturnCubeID()];
 
@@ -347,8 +359,8 @@ void ReturnState::Tick(MonsterRef monster, Room* room)
 		}
 
 		// 넘어갈 큐브와 연결된 문 찾기
-		const std::vector<DoorRef>& doors = room->GetDoors();
-		DoorRef door;
+		const std::vector<Door*>& doors = monster->GetOwnerRoom()->GetDoors();
+		Door* door{};
 		for (int doorID : cubePath[0]->GetDoors())
 		{
 			if (doors[doorID - 1]->GetConnectedCubeID() == cubePath[1]->GetID() ||
@@ -448,60 +460,77 @@ void ReturnState::Tick(MonsterRef monster, Room* room)
 	std::deque<VectorInt>& path = monster->GetPath();
 
 	// 경로	따라 이동
-	const std::vector<CubeRef>& cubes = room->GetCubes();
+	const std::vector<CubeRef>& cubes = monster->GetOwnerRoom()->GetCubes();
 	monster->SetPos(path[0]);
 	monster->SetCurrentCubeID(cubes);
 	path.pop_front();
-	g_framework->SendMovePacket(std::shared_ptr<GameObject>(monster), true);
+
+	// Broadcast
+	for (auto& p : monster->GetOwnerRoom()->GetPlayers())
+	{
+		if (!p->GetClient())
+			continue;
+
+		g_network->SendMovePacket(monster, p->GetClient());
+	}
 }
 
-void ReturnState::Exit(MonsterRef monster)
+void ReturnState::Exit(Monster* monster)
 {
 	monster->ClearPath();
 }
 
 //--------------Attack--------------
-void AttackState::Enter(MonsterRef monster)
+void AttackState::Enter(Monster* monster)
 {
 	monster->GetTarget()->TackDamage(monster->GetDamage());
-	g_framework->SendUpdateHpPacket(monster->GetTarget()->GetID(), monster->GetTarget()->GetHP(), true);
+
+	// Broadcast
+	for (auto& p : monster->GetOwnerRoom()->GetPlayers())
+	{
+		if (!p->GetClient())
+			continue;
+
+		g_network->SendUpdateHpPacket(monster->GetTarget()->GetID(), monster->GetTarget()->GetHP(), p->GetClient());
+	}
+
 	std::cout << "Player " << monster->GetTarget()->GetID() << " HP: " << monster->GetTarget()->GetHP() << "\n";
 }
 
-void AttackState::Tick(MonsterRef monster, Room* room)
+void AttackState::Tick(Monster* monster)
 {
-	State::Tick(monster, room);
+	State::Tick(monster);
 }
 
-void AttackState::Exit(MonsterRef monster)
+void AttackState::Exit(Monster* monster)
 {
 	monster->UpdateNextAttackTime();
 }
 
 //--------------Hit--------------
-void HitState::Tick(MonsterRef monster, Room* room)
+void HitState::Tick(Monster* monster)
 {
-	State::Tick(monster, room);
+	State::Tick(monster);
 }
-
+ 
 //--------------Dead--------------
-void DeadState::Enter(MonsterRef monster)
+void DeadState::Enter(Monster* monster)
 {
 	monster->SetObjectPoolState(ObjectPoolState::Reusable);
 }
 
 // Spider State
 //--------------MakeWeb----------------
-void MakeWebState::Tick(MonsterRef monster, Room* room)
+void MakeWebState::Tick(Monster* monster)
 {
-	State::Tick(monster, room);
+	State::Tick(monster);
 
 	monster->AddDeltaTime(g_timer->GetDeltaTime());
 }
 
-void MakeWebState::Exit(MonsterRef monster)
+void MakeWebState::Exit(Monster* monster)
 {
-	SpiderRef spider = std::dynamic_pointer_cast<Spider>(monster);
+	Spider* spider = dynamic_cast<Spider*>(monster);
 
 	// 거미줄 생성
 	spider->CreateWeb();
@@ -511,12 +540,12 @@ void MakeWebState::Exit(MonsterRef monster)
 
 // EmotionGame State
 //--------------Teleport----------------
-void Teleport::Tick(MonsterRef monster, Room* room)
+void Teleport::Tick(Monster* monster)
 {
-	State::Tick(monster, room);
+	State::Tick(monster);
 }
 
-void Teleport::Exit(MonsterRef monster)
+void Teleport::Exit(Monster* monster)
 {
 	std::vector<CubeRef> cubes = monster->GetOwnerRoom()->GetCubes();
 
@@ -529,35 +558,51 @@ void Teleport::Exit(MonsterRef monster)
 	Vector pos = monster->SelectRandomPosInCube(cube);
 	monster->SetPos(pos);
 	std::cout << pos.x << " " <<  pos.y << " " << pos.z << std::endl;
-	g_framework->SendMovePacket(monster, true);
+	
+	// Broadcast
+	for (auto& p : monster->GetOwnerRoom()->GetPlayers())
+	{
+		if (!p->GetClient())
+			continue;
+
+		g_network->SendMovePacket(monster, p->GetClient());
+	}
 }
 
 //--------------Grab----------------
-void Grab::Tick(MonsterRef monster, Room* room)
+void Grab::Tick(Monster* monster)
 {
-	State::Tick(monster, room);
+	State::Tick(monster);
 }
 
-void Grab::Exit(MonsterRef monster)
+void Grab::Exit(Monster* monster)
 {
 	// 타겟의 위치로 순간이동
 	monster->SetPos(monster->GetTarget()->GetPos());
-	g_framework->SendMovePacket(monster, true);
+	
+	// Broadcast
+	for (auto& p : monster->GetOwnerRoom()->GetPlayers())
+	{
+		if (!p->GetClient())
+			continue;
+
+		g_network->SendMovePacket(monster, p->GetClient());
+	}
 
 	// 보정 필요하면 보정하기
 }
 
 //--------------Play----------------
-void Play::Tick(MonsterRef monster, Room* room)
+void Play::Tick(Monster* monster)
 {
-	State::Tick(monster, room);
+	State::Tick(monster);
 
 	monster->AddDeltaTime(g_timer->GetDeltaTime());
 }
 
-void Play::Exit(MonsterRef monster)
+void Play::Exit(Monster* monster)
 {
-	EmotionGameRef emotionGame = std::dynamic_pointer_cast<EmotionGame>(monster);
+	EmotionGame* emotionGame = dynamic_cast<EmotionGame*>(monster);
 	Emotion emotion = emotionGame->SelectEmotion();
 	Emotion targetEmotion = emotionGame->GetTarget()->GetCurrentEmotion();
 	emotionGame->SetResult(EmotionGameResult::Draw);
@@ -568,7 +613,16 @@ void Play::Exit(MonsterRef monster)
 		emotion == Emotion::Neutral && targetEmotion == Emotion::Happy)
 	{
 		emotionGame->GetTarget()->TackDamage(emotionGame->GetDamage());
-		g_framework->SendUpdateHpPacket(emotionGame->GetTarget()->GetID(), emotionGame->GetTarget()->GetHP(), true);
+		
+		// Broadcast
+		for (auto& p : monster->GetOwnerRoom()->GetPlayers())
+		{
+			if (!p->GetClient())
+				continue;
+
+			g_network->SendUpdateHpPacket(monster->GetTarget()->GetID(), monster->GetTarget()->GetHP(), p->GetClient());
+		}
+
 		emotionGame->SetResult(EmotionGameResult::Win);
 	}
 	// 졌을 때
@@ -588,41 +642,41 @@ void Play::Exit(MonsterRef monster)
 }
 
 //--------------Release----------------
-void Release::Tick(MonsterRef monster, Room* room)
+void Release::Tick(Monster* monster)
 {
-	State::Tick(monster, room);
+	State::Tick(monster);
 
 	monster->AddDeltaTime(g_timer->GetDeltaTime());
 }
 
-void Release::Exit(MonsterRef monster)
+void Release::Exit(Monster* monster)
 {
 	monster->SetTarget(nullptr);
 	monster->InitSumTime();
 }
 
 //--------------Abesnt----------------
-void Abesnt::Enter(MonsterRef monster)
+void Abesnt::Enter(Monster* monster)
 {
 	// 일단 랜덤으로. 추후, Fear 수치 활용할 것.
-	const std::unordered_map<uint, PlayerRef>& players = monster->GetOwnerRoom()->GetPlayers();
+	const std::array<Player*, MAX_ROOM_PLAYER>& players = monster->GetOwnerRoom()->GetPlayers();
 	std::uniform_int_distribution<int> selectCube(0, players.size() - 1);
-	PlayerRef player = players.at(selectCube(gen));
+	Player* player = players[selectCube(gen)];
 	monster->SetTarget(player);
 }
 
-void Abesnt::Tick(MonsterRef monster, Room* room)
+void Abesnt::Tick(Monster* monster)
 {
-	State::Tick(monster, room);
+	State::Tick(monster);
 
 	monster->AddDeltaTime(g_timer->GetDeltaTime());
 	
-	GhostRef ghost = std::dynamic_pointer_cast<Ghost>(monster);
+	Ghost* ghost = dynamic_cast<Ghost*>(monster);
 	if (ghost->GetAbsentTime() < ghost->GetSumTime())
 	{
 		monster->InitSumTime();
 
-		PlayerRef target = monster->GetTarget();
+		Player* target = monster->GetTarget();
 		Vector targetPos = target->GetPos();
 		Rotation rotation = target->GetRotation();
 		Vector targetForward = GetForwardVector(rotation.pitch, rotation.yaw);
@@ -641,33 +695,33 @@ void Abesnt::Tick(MonsterRef monster, Room* room)
 	}
 }
 
-void Abesnt::Exit(MonsterRef monster)
+void Abesnt::Exit(Monster* monster)
 {
 	monster->InitSumTime();
 }
 
 //--------------Staring----------------
-void Staring::Enter(MonsterRef monster)
+void Staring::Enter(Monster* monster)
 {
 	// target로 이동
 	monster->SetPos(monster->GetTargetPos().value());
 	monster->SetTargetPos(std::nullopt);
 }
 
-void Staring::Tick(MonsterRef monster, Room* room)
+void Staring::Tick(Monster* monster)
 {
-	State::Tick(monster, room);
+	State::Tick(monster);
 
 	monster->AddDeltaTime(g_timer->GetDeltaTime());
 }
 
-void Staring::Exit(MonsterRef monster)
+void Staring::Exit(Monster* monster)
 {
 	monster->InitSumTime();
 }
 
 //--------------Vanishing----------------
-void Vanishing::Tick(MonsterRef monster, Room* room)
+void Vanishing::Tick(Monster* monster)
 {
-	State::Tick(monster, room);
+	State::Tick(monster);
 } 

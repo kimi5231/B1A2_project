@@ -8,19 +8,19 @@ public:
 	virtual ~State() {};
 
 public:
-	virtual void Enter(MonsterRef monster) = 0;
-	virtual void Tick(MonsterRef monster, Room* room);
-	virtual void Exit(MonsterRef monster) = 0;
+	virtual void Enter(Monster* monster) = 0;
+	virtual void Tick(Monster* monster);
+	virtual void Exit(Monster* monster) = 0;
 };
 
 extern class IdleState* g_idleState;
 extern class RoamingState* g_roamingState;
-extern class MakeWebState* g_makeWebState;
 extern class ChaseState* g_chaseState;
 extern class ReturnState* g_returnState;
 extern class AttackState* g_attackState;
 extern class HitState* g_hitState;
 extern class DeadState* g_deadState;
+extern class MakeWebState* g_makeWebState;
 extern class Teleport* g_teleportState;
 extern class Grab* g_grabState;
 extern class Play* g_playState;
@@ -34,9 +34,9 @@ public:
 	virtual ~IdleState() {};
 
 public:
-	virtual void Enter(MonsterRef monster) override {};
-	virtual void Tick(MonsterRef monster, Room* room) override;
-	virtual void Exit(MonsterRef monster) override;
+	virtual void Enter(Monster* monster) override {};
+	virtual void Tick(Monster* monster) override;
+	virtual void Exit(Monster* monster) override;
 };
 
 class RoamingState : public State
@@ -46,9 +46,9 @@ public:
 	virtual ~RoamingState() {};
 
 public:
-	virtual void Enter(MonsterRef monster) override {};
-	virtual void Tick(MonsterRef monster, Room* room) override;
-	virtual void Exit(MonsterRef monster) override;
+	virtual void Enter(Monster* monster) override {};
+	virtual void Tick(Monster* monster) override;
+	virtual void Exit(Monster* monster) override;
 };
 
 class ChaseState : public State
@@ -58,9 +58,9 @@ public:
 	virtual ~ChaseState() {};
 
 public:
-	virtual void Enter(MonsterRef monster) override {};
-	virtual void Tick(MonsterRef monster, Room* room) override;
-	virtual void Exit(MonsterRef monster) override;
+	virtual void Enter(Monster* monster) override {};
+	virtual void Tick(Monster* monster) override;
+	virtual void Exit(Monster* monster) override;
 };
 
 class ReturnState : public State
@@ -70,9 +70,9 @@ public:
 	virtual ~ReturnState() {};
 
 public:
-	virtual void Enter(MonsterRef monster) override {};
-	virtual void Tick(MonsterRef monster, Room* room) override;
-	virtual void Exit(MonsterRef monster) override;
+	virtual void Enter(Monster* monster) override {};
+	virtual void Tick(Monster* monster) override;
+	virtual void Exit(Monster* monster) override;
 };
 
 class AttackState : public State
@@ -82,9 +82,9 @@ public:
 	virtual ~AttackState() {};
 
 public:
-	virtual void Enter(MonsterRef monster) override;
-	virtual void Tick(MonsterRef monster, Room* room) override;
-	virtual void Exit(MonsterRef monster) override;
+	virtual void Enter(Monster* monster) override;
+	virtual void Tick(Monster* monster) override;
+	virtual void Exit(Monster* monster) override;
 };
 
 //class OpenDoorState : public State
@@ -106,9 +106,9 @@ public:
 	virtual ~HitState() {};
 
 public:
-	virtual void Enter(MonsterRef monster) override {};
-	virtual void Tick(MonsterRef monster, Room* room) override;
-	virtual void Exit(MonsterRef monster) override {};
+	virtual void Enter(Monster* monster) override {};
+	virtual void Tick(Monster* monster) override;
+	virtual void Exit(Monster* monster) override {};
 };
 
 class DeadState : public State
@@ -118,9 +118,9 @@ public:
 	virtual ~DeadState() {};
 
 public:
-	virtual void Enter(MonsterRef monster) override;
-	virtual void Tick(MonsterRef monster, Room* room) override {};
-	virtual void Exit(MonsterRef monster) override {};
+	virtual void Enter(Monster* monster) override;
+	virtual void Tick(Monster* monster) override {};
+	virtual void Exit(Monster* monster) override {};
 };
 
 // Spider State
@@ -131,9 +131,9 @@ public:
 	virtual ~MakeWebState() {};
 
 public:
-	virtual void Enter(MonsterRef monster) override {};
-	virtual void Tick(MonsterRef monster, Room* room) override;
-	virtual void Exit(MonsterRef monster) override;
+	virtual void Enter(Monster* monster) override {};
+	virtual void Tick(Monster* monster) override;
+	virtual void Exit(Monster* monster) override;
 };
 
 // EmotionGame State
@@ -143,9 +143,9 @@ public:
 	Teleport() {};
 	virtual ~Teleport() {};
 public:
-	virtual void Enter(MonsterRef monster) override {};
-	virtual void Tick(MonsterRef monster, Room* room) override;
-	virtual void Exit(MonsterRef monster) override;
+	virtual void Enter(Monster* monster) override {};
+	virtual void Tick(Monster* monster) override;
+	virtual void Exit(Monster* monster) override;
 };
 
 class Grab : public State
@@ -154,9 +154,9 @@ public:
 	Grab() {};
 	virtual ~Grab() {};
 public:
-	virtual void Enter(MonsterRef monster) override {};
-	virtual void Tick(MonsterRef monster, Room* room) override;
-	virtual void Exit(MonsterRef monster) override;
+	virtual void Enter(Monster* monster) override {};
+	virtual void Tick(Monster* monster) override;
+	virtual void Exit(Monster* monster) override;
 };
 
 class Play : public State
@@ -165,9 +165,9 @@ public:
 	Play() {};
 	virtual ~Play(){}
 public:
-	virtual void Enter(MonsterRef monster) override {};
-	virtual void Tick(MonsterRef monster, Room* room) override;
-	virtual void Exit(MonsterRef monster) override;
+	virtual void Enter(Monster* monster) override {};
+	virtual void Tick(Monster* monster) override;
+	virtual void Exit(Monster* monster) override;
 };
 
 class Release : public State
@@ -176,9 +176,9 @@ public:
 	Release() {};
 	virtual ~Release() {}
 public:
-	virtual void Enter(MonsterRef monster) override {};
-	virtual void Tick(MonsterRef monster, Room* room) override;
-	virtual void Exit(MonsterRef monster) override;
+	virtual void Enter(Monster* monster) override {};
+	virtual void Tick(Monster* monster) override;
+	virtual void Exit(Monster* monster) override;
 };
 
 // Ghost State
@@ -188,9 +188,9 @@ public:
 	Abesnt() {};
 	virtual ~Abesnt() {}
 public:
-	virtual void Enter(MonsterRef monster) override;
-	virtual void Tick(MonsterRef monster, Room* room) override;
-	virtual void Exit(MonsterRef monster) override;
+	virtual void Enter(Monster* monster) override;
+	virtual void Tick(Monster* monster) override;
+	virtual void Exit(Monster* monster) override;
 };
 
 class Staring : public State
@@ -199,9 +199,9 @@ public:
 	Staring() {};
 	virtual ~Staring() {}
 public:
-	virtual void Enter(MonsterRef monster) override;
-	virtual void Tick(MonsterRef monster, Room* room) override;
-	virtual void Exit(MonsterRef monster) override;
+	virtual void Enter(Monster* monster) override;
+	virtual void Tick(Monster* monster) override;
+	virtual void Exit(Monster* monster) override;
 };
 
 class Vanishing : public State
@@ -210,7 +210,7 @@ public:
 	Vanishing() {};
 	virtual ~Vanishing() {}
 public:
-	virtual void Enter(MonsterRef monster) override {};
-	virtual void Tick(MonsterRef monster, Room* room) override;
-	virtual void Exit(MonsterRef monster) override {};
+	virtual void Enter(Monster* monster) override {};
+	virtual void Tick(Monster* monster) override;
+	virtual void Exit(Monster* monster) override {};
 };

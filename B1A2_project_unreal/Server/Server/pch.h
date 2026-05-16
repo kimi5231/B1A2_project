@@ -19,30 +19,26 @@
 #include <cmath>
 #include <algorithm>
 #include <optional>
+#include <MSWSock.h>
 
 #include "Types.h"
 #include "Utils.h"
 
+#pragma comment(lib, "MSWSock.lib")
 #pragma comment(lib, "ws2_32")
-
-using SendEventRef = std::shared_ptr<class SendEvent>;
-
-using ClientRef = std::shared_ptr<class Client>;
 
 using GameObjectRef = std::shared_ptr<class GameObject>;
 using PlayerRef = std::shared_ptr<class Player>;
 using MonsterRef = std::shared_ptr<class Monster>;
-using SpiderRef = std::shared_ptr<class Spider>;
-using EmotionGameRef = std::shared_ptr<class EmotionGame>;
-using GhostRef = std::shared_ptr<class Ghost>;
 using ItemRef = std::shared_ptr<class Item>;
 using ToolRef = std::shared_ptr<class Tool>;
 using DoorRef = std::shared_ptr<class Door>;
-using LanternRef = std::shared_ptr<class Lantern>;
 using ObstacleRef = std::shared_ptr<class Obstacle>;
 
-// 비트연산
-#define LAYER_SHIFT(n) ((n) * 2)
-#define LAYER_MASK(n)  (0b11 << LAYER_SHIFT(n))
-
 #define TileSize 25
+
+#define MAX_PLAYER 600
+#define MAX_ROOM_PLAYER 4
+#define MAX_MONSTER 10
+#define MAX_ITEM 50
+#define MAX 4

@@ -1,6 +1,8 @@
 #pragma once
 #include "Tool.h"
 
+class Room;
+
 class Lantern : public Tool
 {
 public:

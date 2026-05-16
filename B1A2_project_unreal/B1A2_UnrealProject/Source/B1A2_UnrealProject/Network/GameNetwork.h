@@ -12,8 +12,6 @@ public:
 	
 private:
 	void ProcessRecv();
-	void ProcessSend(PacketID id, const std::vector<char>& packetData);
-	std::vector<char> CreatePakcet(PacketID id, const std::vector<char>& packetData);
 
 public:
 	template <class T >
@@ -26,16 +24,16 @@ public:
 	std::vector<T> DeserializeVector(std::vector<char>& data);
 
 public:
-	void SendUpdateObjectStatePacket(int id, ObjectType type, ObjectState state);
 	void SendMovePacket(ObjectType type, int id, Vector pos, Rotation rotation, ObjectState state);
+	void SendUpdateObjectStatePacket(int id, ObjectType type, ObjectState state);
 	void SendGetItemPacket(int itemID, bool isTool, int playerID);
 	void SendDropItemPacket(int itemID, bool isTool, int playerID);
 	void SendChangeToolPacket(int playerID, int toolID);
 	void SendUseToolPacket(int playerID, int toolID, Rotation playerRotation);
 	void SendUseKeyPacket(int playerID, int toolID, int doorID);
-	void SendInteractDoorPacket(int playerID, int doorID);
-	void SendEmotionPacket(float angry, float disgust, float fear, float happy, float sad, float surprise, float neutral);
 	void SendUseLanternPacket(int playerID, int lanternID);
+	void SendInteractDoorPacket(int playerID, int doorID);
+	void SendEmotionPacket(float angryTime, float disgustTime, float fearTime, float happyTime, float sadTime, float surpriseTime, float neutralTime);
 	void SendStartStagePacket();
 	void SendEndStagePacket();
 

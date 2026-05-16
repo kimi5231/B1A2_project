@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Global.h"
 #include "Utils.h"
+#include "Room.h"
 
 GameObject::GameObject()
 {
@@ -55,8 +56,16 @@ bool GameObject::SetState(ObjectState state, bool isSend)
 		return false;
 
 	_state = state;
-	if(isSend)
-		g_framework->SendUpdateObjectStatePacket(shared_from_this(), true);
+
+	// Broadcast
+	for (auto& p : _ownerRoom->GetPlayers())
+	{
+		if (!p->GetClient())
+			continue;
+
+		g_network->SendUpdateObjectStatePacket(this, p->GetClient());
+	}
+	
 	return true;
 }
 
@@ -67,6 +76,15 @@ void GameObject::SetObjectPoolState(ObjectPoolState objectPoolState)
 
 	_objectPoolState = objectPoolState;
 
-	if(_objectPoolState == ObjectPoolState::Reusable)
-		g_framework->SendRemoveObjectPacket(_type, _id, true);
+	if (_objectPoolState == ObjectPoolState::Reusable)
+	{
+		// Broadcast
+		for (auto& p : _ownerRoom->GetPlayers())
+		{
+			if (!p->GetClient())
+				continue;
+
+			g_network->SendRemoveObjectPacket(_type, _id, p->GetClient());
+		}
+	}
 }

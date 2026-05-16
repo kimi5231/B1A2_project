@@ -72,8 +72,7 @@ public:
 	void Update();
 	void ProcessRecv();
 	
-	void RecvAddObject(S_AddObject_Packet packet);
-	void AddPlayer(S_AddObject_Packet packet);
+	void RecvAddPlayer(S_AddPlayer_Packet packet);
 
 	void RecvAddItem(S_AddItem_Packet packet);
 	void RecvAddTool(S_AddItem_Packet packet);
@@ -101,7 +100,7 @@ public:
 	void RecvUseTool(S_UseTool_Packet packet);
 	void RecvSpawnParticle(S_SpawnParticle_Packet packet);
 	void RecvInteractDoorNotify(S_InteractDoorNotify_Packet packet);
-	void RecvSpawnMonster(S_SpawnMonster_Packet packet);
+	void RecvAddMonster(S_AddMonster_Packet packet);
 	void RecvTurnOnLantern(S_TurnOnLantern_Packet packet);
 	void RecvTurnOffLantern(S_TurnOffLantern_Packet packet);
 
@@ -109,7 +108,7 @@ public:
 	void RecvStartStage(S_StartStage_Packet packet);
 
 	void RecvUpdateHp(S_UpdateHp_Packet packet);
-	void RecvSpawnObstacle(S_SpawnObstacle_Packet packet);
+	void RecvAddObstacle(S_AddObstacle_Packet packet);
 
 	// 패킷 추가되면 주석 풀기!!!!!!!!
 	// void RecvEmotionGameResult(S_EmotionGameResult_Packet packet);
@@ -247,7 +246,7 @@ private:
 
 	// 내 플레이어
 	AMyPlayer* _myPlayer;
-	int _myID{};
+	int _myID{-1};
 
 	// 몬스터
 	TMap<uint64, ABaseMonster*> _monsters;

@@ -1,15 +1,18 @@
 #include "pch.h"
 #include "Global.h"
+#include "ServerFramework.h"
 
 int main(void)
 {
 	g_dataManager = new DataManager();
-	g_framework = new ServerFramework();
+	ServerFramework* framework = new ServerFramework();
+	g_network = new ServerNetwork(framework);
 	g_timer = new Timer();
 
 	while (true)
 	{
-		g_framework->Update();
+		framework->Update();
+		g_network->Update();
 	}
 
 	return 0;

@@ -45,8 +45,8 @@ public:
 	void SetMonsterType(MonsterType monsterType) { _monsterType = monsterType; };
 	std::optional<VectorInt> GetTargetPos() { return _targetPos; }
 	void SetTargetPos(std::optional<VectorInt> pos) { _targetPos = pos; }
-	PlayerRef GetTarget() { return _target; }
-	void SetTarget(PlayerRef target) { _target = target; }
+	Player* GetTarget() { return _target; }
+	void SetTarget(Player* target) { _target = target; }
 	std::deque<CubeRef>& GetCubePath() { return _cubePath; }
 	std::deque<VectorInt>& GetPath() { return _path; }
 	unsigned char GetDamage() { return _damage; }
@@ -60,13 +60,11 @@ public:
 	float GetChaseSpeed() { return _chaseSpeed; }
 
 protected:
-	Room* _ownerRoom;
-
 	MonsterType _monsterType;
 
 	FSM* _fsm;
 	std::optional<VectorInt> _targetPos;
-	PlayerRef _target;
+	Player* _target;
 	Vector _returnPos;
 	int _returnCubeID;
 	std::deque<CubeRef> _cubePath;

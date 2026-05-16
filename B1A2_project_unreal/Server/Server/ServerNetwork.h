@@ -1,0 +1,80 @@
+#pragma once
+#include "Packets.h"
+#include "ExpOver.h"
+
+class ServerFramework;
+class Session;
+class Lantern;
+
+class ServerNetwork
+{
+public:
+	ServerNetwork(ServerFramework* framework);
+	~ServerNetwork();
+
+public:
+	void Update();
+	void ProcessAccept();
+	void ProcessDisconnected(int clientIndex);
+	void ProcessRecv(int clientIndex, int numByte, ExpOver* expOver);
+	void ProcessPacket(std::vector<char>& packet, int clientIndex);
+	
+private:
+	template <class T >
+	std::vector<char> SerializePOD(const T& pod);
+
+	template <class T >
+	std::vector<char> SerializeVector(const std::vector<T>& vector);
+
+	template <class T>
+	std::vector<T> DeserializeVector(const std::vector<char>& data);
+
+public:
+	// Send
+	void SendAddPlayerPacket(Player* player, Session* client);
+	void SendAddMonsterPacket(Monster* monster, Session* client);
+	void SendAddItemPacket(Item* item, bool isTool, Session* client);
+	void SendAddObstaclePacket(Obstacle* obstacle, Session* client);
+	void SendRemoveObjectPacket(ObjectType objectType, int objectID, Session* client);
+	void SendMovePacket(GameObject* object, Session* client);
+	void SendUpdateObjectStatePacket(GameObject* object, Session* client);
+	void SendCreateCubesPacket(const std::vector<CubeRef>& cubes, const std::vector<Door*>& doors, Session* client);
+	void SendAddItemToInventoryPacket(Item* item, bool isTool, Session* client);
+	void SendRemoveItemFromInventoryPacket(Item* item, bool isTool, Session* client);
+	void SendItemPickupNotifyPacket(Item* item, int playerID, bool isTool, Session* client);
+	void SendDropItemPacket(Item* item, int playerID, Vector playerPos, bool isTool, Session* client);
+	void SendUpdateCurrentToolPacket(int itemID, int playerID, ItemType type, Session* client);
+	void SendUseToolPacket(int playerID, ItemType type, Session* client);
+	void SendTurnOnLanternPacket(Lantern* lantern, int playerID, Session* client);
+	void SendTurnOffLanternPacket(Lantern* lantern, int playerID, Session* client);
+	void SendInteractDoorNotifyPacket(int playerID, int doorID, ObjectState doorState, Session* client);
+	void SendUpdateHpPacket(int playerID, int hp, Session* client);
+	void SendSpawnParticlePacket(Vector pos, Session* client);
+	void SendStartStagePacket(Session* client);
+	void SendEndStagePacket(Session* client);
+	
+
+public:
+	// Recv
+	void ProcessMovePacket(C_Move_Packet packet, int clientIndex);
+	void ProcessUpdateObjectStatePacket(C_UpdateObjectState_Packet packet, int clientIndex);
+	void ProcessGetItemPacket(C_GetItem_Packet packet, int clientIndex);
+	void ProcessDropItemPacket(C_DropItem_Packet packet, int clientIndex);
+	void ProcessChangeToolPacket(C_ChangeTool_Packet packet, int clientIndex);
+	void ProcessUseToolPacket(C_UseTool_Packet packet, int clientIndex);
+	void ProcessUseKeyPacket(C_UseKey_Packet packet, int clientIndex);
+	void ProcessUseLanternPacket(C_UseLantern_Packet packet, int clientIndex);
+	void ProcessInteractDoorPacket(C_InteractDoor_Packet packet, int clientIndex);
+	void ProcessEmotionResultPacket(C_EmotionResult_Packet packet, int clientIndex);
+	void ProcessStartStagePacket(C_StartStage_Packet packet, int clientIndex);
+	void ProcessEndStagePacket(C_EndStage_Packet packet, int clientIndex);
+
+private:
+	SOCKET _listenSocket{};
+	SOCKET _tempSocket{};
+	ExpOver _acceptOver{};
+	HANDLE _iocp{};
+	std::array<class Session*, MAX_PLAYER> _clients;
+
+	ServerFramework* _framework;
+};

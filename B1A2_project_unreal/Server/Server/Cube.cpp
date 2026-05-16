@@ -29,9 +29,9 @@ void Cube::Update()
 }
 
 // 추후 비상구 생성 여부도 따질 것
-std::vector<DoorRef> Cube::CreateDoors()
+std::vector<Door*> Cube::CreateDoors()
 {
-	std::vector<DoorRef> doors;
+	std::vector<Door*> doors;
 	for (int i = 0; i < _info.doorPos.size(); i++)
 	{
 		Vector doorPos{};
@@ -56,7 +56,7 @@ std::vector<DoorRef> Cube::CreateDoors()
 			break;
 		}
 
-		DoorRef door = std::make_shared<Door>(doorPos, _info.doorDir[i], _id, _dir);
+		Door* door = new Door(doorPos, _info.doorDir[i], _id, _dir);
 		doors.push_back(door);
 	}
 

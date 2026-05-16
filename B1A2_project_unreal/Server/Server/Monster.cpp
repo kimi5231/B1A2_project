@@ -33,7 +33,7 @@ Monster::~Monster()
 
 void Monster::Update(Room* room)
 {
-	_fsm->Update(dynamic_pointer_cast<Monster>(shared_from_this()), room);
+	_fsm->Update(this);
 
 	//// 목적지 갱신
 	//if (_targetPos == nullptr)
@@ -132,7 +132,7 @@ void Monster::Update(Room* room)
 const CubeRef Monster::SelectRandomConnectedCube(Room* room)
 {
 	const std::vector<CubeRef>& cubes = room->GetCubes();
-	const std::vector<DoorRef>& doors = room->GetDoors();
+	const std::vector<Door*>& doors = room->GetDoors();
 	const CubeRef currentCube = cubes[_currentCubeID];
 
 	// 현재 위치한 방에 열린 문이 있는지 확인
@@ -140,7 +140,7 @@ const CubeRef Monster::SelectRandomConnectedCube(Room* room)
 	openDoorCubeID.reserve(currentCube->GetDoors().size());
 	for (const int doorID : currentCube->GetDoors())
 	{
-		const DoorRef& door = doors[doorID - 1];
+		Door* door = doors[doorID - 1];
 		if (door->GetState() == ObjectState::OPEN)
 		{
 			if(door->GetConnectedCubeID() != _currentCubeID)
@@ -546,25 +546,25 @@ bool Monster::SetState(ObjectState state, bool isSend)
 	switch (state)
 	{
 	case IDLE:
-		_fsm->ChangeState(g_idleState, dynamic_pointer_cast<Monster>(shared_from_this()));
+		_fsm->ChangeState(g_idleState, this);
 		break;
 	case ROAMING:
-		_fsm->ChangeState(g_roamingState, dynamic_pointer_cast<Monster>(shared_from_this()));
+		_fsm->ChangeState(g_roamingState, this);
 		break;
 	/*case OPEN_DOOR:
 		_fsm->ChangeState(_openDoor, this);
 		break;*/
 	case CHASE:
-		_fsm->ChangeState(g_chaseState, dynamic_pointer_cast<Monster>(shared_from_this()));
+		_fsm->ChangeState(g_chaseState, this);
 		break;
 	case ATTACK:
-		_fsm->ChangeState(g_attackState, dynamic_pointer_cast<Monster>(shared_from_this()));
+		_fsm->ChangeState(g_attackState, this);
 		break;
 	case HIT:
-		_fsm->ChangeState(g_hitState, dynamic_pointer_cast<Monster>(shared_from_this()));
+		_fsm->ChangeState(g_hitState, this);
 		break;
 	case DEAD:
-		_fsm->ChangeState(g_deadState, dynamic_pointer_cast<Monster>(shared_from_this()));
+		_fsm->ChangeState(g_deadState, this);
 		break;
 	}
 

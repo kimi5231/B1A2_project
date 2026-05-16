@@ -9,7 +9,7 @@ Inventory::~Inventory()
 {
 }
 
-bool Inventory::AddItem(bool isTool, uint id)
+bool Inventory::AddItem(bool isTool, int id)
 {
 	// 나중에 인벤 최대 크기 + 무게 고려하기
 	if (isTool)
@@ -26,7 +26,7 @@ bool Inventory::AddItem(bool isTool, uint id)
 	return false;
 }
 
-bool Inventory::RemoveItem(bool isTool, uint id)
+bool Inventory::RemoveItem(bool isTool, int id)
 {
 	if (isTool)
 	{
@@ -51,7 +51,7 @@ bool Inventory::RemoveItem(bool isTool, uint id)
 	return false;
 }
 
-bool Inventory::ExistItem(bool isTool, uint id)
+bool Inventory::ExistItem(bool isTool, int id)
 {
 	if (isTool)
 	{

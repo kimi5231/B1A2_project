@@ -41,8 +41,8 @@ void EmotionGame::Update(Room* room)
 
 	if (_state == IDLE)
 	{
-		const std::unordered_map<uint, PlayerRef>& players = room->GetPlayers();
-		for (auto& [id, player] : players)
+		const std::array<Player*, MAX_ROOM_PLAYER>& players = room->GetPlayers();
+		for (auto& player : players)
 		{
 			/*if (player->GetObjectPoolState() == ObjectPoolState::Reusable)
 				continue;*/
@@ -93,16 +93,16 @@ bool EmotionGame::SetState(ObjectState state, bool isSend)
 	switch (state)
 	{
 	case ObjectState::TELEPORT:
-		_fsm->ChangeState(g_teleportState, dynamic_pointer_cast<Monster>(shared_from_this()));
+		_fsm->ChangeState(g_teleportState, this);
 		break;
 	case ObjectState::GRAB:
-		_fsm->ChangeState(g_grabState, dynamic_pointer_cast<Monster>(shared_from_this()));
+		_fsm->ChangeState(g_grabState, this);
 		break;
 	case ObjectState::PLAY:
-		_fsm->ChangeState(g_playState, dynamic_pointer_cast<Monster>(shared_from_this()));
+		_fsm->ChangeState(g_playState, this);
 		break;
 	case ObjectState::RELEASE:
-		_fsm->ChangeState(g_releaseState, dynamic_pointer_cast<Monster>(shared_from_this()));
+		_fsm->ChangeState(g_releaseState, this);
 		break;
 	}
 

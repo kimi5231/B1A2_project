@@ -53,10 +53,10 @@ void Spider::Update(Room* room)
 	Monster::Update(room);
 
 	// 공격 범위 안에 플레이어가 있는지 확인
-	const std::unordered_map<uint, PlayerRef>& players = room->GetPlayers();
+	const std::array<Player*, MAX_ROOM_PLAYER>& players = room->GetPlayers();
 	if (std::chrono::steady_clock::now() > _nextAttackTime)
 	{
-		for (auto& [id, player] : players)
+		for (auto& player : players)
 		{
 			/*if (player->GetObjectPoolState() == ObjectPoolState::Reusable)
 				continue;*/
@@ -72,7 +72,7 @@ void Spider::Update(Room* room)
 	}
 	
 	// 인식 범위 안에 플레이어가 있는지 확인
-	for (auto& [id, player] : players)
+	for (auto& player : players)
 	{
 		/*if (player->GetObjectPoolState() == ObjectPoolState::Reusable)
 			continue;*/
@@ -124,10 +124,10 @@ void Spider::CreateWeb()
 	switch (state)
 	{
 	case ObjectState::MAKE_WEB:
-		_fsm->ChangeState(g_makeWebState, dynamic_pointer_cast<Monster>(shared_from_this()));
+		_fsm->ChangeState(g_makeWebState, this);
 		break;
 	case ObjectState::RETURN:
-		_fsm->ChangeState(g_returnState, dynamic_pointer_cast<Monster>(shared_from_this()));
+		_fsm->ChangeState(g_returnState, this);
 		break;
 	}
 

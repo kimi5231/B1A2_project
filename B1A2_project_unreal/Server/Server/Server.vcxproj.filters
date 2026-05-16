@@ -45,6 +45,9 @@
     <Filter Include="소스 파일\Game\Object\Obstacle">
       <UniqueIdentifier>{a646c381-97e0-4b3f-987e-f4987f0e3b5d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Main\Network">
+      <UniqueIdentifier>{fe7b1ad8-9111-4f64-b764-dd12388ad436}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -122,6 +125,15 @@
     <ClCompile Include="Ghost.cpp">
       <Filter>소스 파일\Game\Object\Creature\Monster</Filter>
     </ClCompile>
+    <ClCompile Include="ServerNetwork.cpp">
+      <Filter>소스 파일\Main\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Session.cpp">
+      <Filter>소스 파일\Main\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="ExpOver.cpp">
+      <Filter>소스 파일\Main\Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -143,9 +155,6 @@
       <Filter>소스 파일\Game\Stage</Filter>
     </ClInclude>
     <ClInclude Include="Types.h">
-      <Filter>소스 파일\Main</Filter>
-    </ClInclude>
-    <ClInclude Include="Packets.h">
       <Filter>소스 파일\Main</Filter>
     </ClInclude>
     <ClInclude Include="DataManager.h">
@@ -204,6 +213,18 @@
     </ClInclude>
     <ClInclude Include="Ghost.h">
       <Filter>소스 파일\Game\Object\Creature\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerNetwork.h">
+      <Filter>소스 파일\Main\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Packets.h">
+      <Filter>소스 파일\Main\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Session.h">
+      <Filter>소스 파일\Main\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="ExpOver.h">
+      <Filter>소스 파일\Main\Network</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -6,11 +6,11 @@ public:
 	~Inventory();
 
 public:
-	bool AddItem(bool isTool, uint id);
-	bool RemoveItem(bool isTool, uint id);
-	bool ExistItem(bool isTool, uint id);
+	bool AddItem(bool isTool, int id);
+	bool RemoveItem(bool isTool, int id);
+	bool ExistItem(bool isTool, int id);
 
 private:
-	std::vector<uint> _scraps;
-	std::vector<uint> _tools;
+	std::vector<int> _scraps;
+	std::vector<int> _tools;
 };
