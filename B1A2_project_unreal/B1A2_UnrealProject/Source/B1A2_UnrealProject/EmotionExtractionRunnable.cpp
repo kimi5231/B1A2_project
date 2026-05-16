@@ -97,39 +97,27 @@ uint32 EmotionExtractionRunnable::Run()
             cv::Mat prob;
             cv::exp(output, prob);
 
-            for (int i = 0; i < 7; i++)
+            // 현재 초의 감정 확률을 배열에 담음
+            TArray<float> currentScores;
+            currentScores.Init(0.f, 7);
+            for (int i = 0; i < 7; ++i)
             {
-                _emotionAccumulators[i] += prob.at<float>(0, i);
+                currentScores[i] = prob.at<float>(0, i);
             }
-            _capturedCount++;
 
-            UE_LOG(LogTemp, Log, TEXT("[OpenCV] Data Collected: %d/%d"), _capturedCount, TARGET_COUNT);
-
-            // 30개 이상 쌓이면 데이터 전송
-            if (_capturedCount >= TARGET_COUNT)
+            // Main에 데이터 전달(서버에 전송 및 UI 그리기는 Main에서..)
+            if (_main)
             {
-                TArray<float> averages;
-                averages.Init(0.0f, 7);
-
-                for (int i = 0; i < 7; i++)
+                AsyncTask(ENamedThreads::GameThread, [_main = this->_main, currentScores]()
                 {
-                    averages[i] = _emotionAccumulators[i] / (float)TARGET_COUNT;
-                }
-
-                // Server로 전송
-                if (_main)
-                {
-                    _main->SendEmotion(averages[0], averages[1], averages[2], averages[3], averages[4], averages[5], averages[6]);
-                    UE_LOG(LogTemp, Warning, TEXT("[OpenCV] 30 Frames Averaged and Packet Sent!"));
-                }
-
-                // 초기화
-                for (int i = 0; i < 7; i++) _emotionAccumulators[i] = 0.0f;
-                _capturedCount = 0;
+                    if (_main)
+                        _main->HandleNewEmotionData(currentScores);
+                });
             }
         }
         FPlatformProcess::Sleep(1.0f);
     }
+
     return 0;
 }
 

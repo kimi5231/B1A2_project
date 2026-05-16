@@ -22,6 +22,19 @@ class ABaseDoor;
 class ABaseHatch;
 class ABaseMonster;
 
+// 매초 저장되는 감정 데이터 구조체
+USTRUCT(BlueprintType)
+struct FEmotionRecord
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadOnly)
+	float Timestamp; // 경과 시간
+
+	UPROPERTY(BlueprintReadOnly)
+	TArray<float> Scores; // 7가지 감정 수치
+};
+
 UCLASS()
 class B1A2_UNREALPROJECT_API UMain : public UGameInstance
 {
@@ -105,6 +118,9 @@ public:
 
 	// ID
 	int GetMyID() { return _myID; }
+
+	// 감정 관련
+	void HandleNewEmotionData(const TArray<float>& emotionScores);
 
 public:
 	// Base Class
@@ -256,6 +272,13 @@ private:
 
 	// MainEntrance가 한 번만 생성되도록 체크하는 플래그
 	bool isMainEntranceAlreadySpawned = false;
+
+	// 누적 데이터 저장
+	UPROPERTY()
+	TArray<FEmotionRecord> EmotionHistory;
+
+	float _totalElapsedTime = 0.0f;
+	int32 _lastSentEmotionIndex = -1; // 마지막으로 보낸 감정 인덱스
 
 public:
 	// 스캔 시 맵에 있는 아이템 + 장비 반환

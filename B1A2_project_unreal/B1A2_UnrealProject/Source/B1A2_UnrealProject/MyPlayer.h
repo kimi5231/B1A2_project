@@ -144,6 +144,12 @@ protected:
 	UPROPERTY()
 	UUserWidget* _inventoryWidgetInstance;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<UUserWidget> _emotionResultWidgetClass;
+
+	UPROPERTY()
+	UUserWidget* _emotionResultWidgetInstance;
+
 	// Inventory ют╥б
 	void ToggleInventory();
 	void InventoryItemSelectForward();
@@ -208,6 +214,7 @@ public:
 	void UpdateToolVisual();
 
 	UUserWidget* GetToolBarWidget() const { return _toolBarWidgetInstance; }
+	UUserWidget* GetEmotionResultWidget() const { return _emotionResultWidgetInstance; }
 
 protected:
 	// Scan

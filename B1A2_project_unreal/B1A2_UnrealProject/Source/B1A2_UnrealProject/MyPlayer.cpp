@@ -94,6 +94,14 @@ void AMyPlayer::BeginPlay()
 		if (_statusWidgetInstance)
 			_statusWidgetInstance->AddToViewport();
 	}
+	// Emotion Result À§Á¬
+	if (_emotionResultWidgetClass)
+	{
+		_emotionResultWidgetInstance = CreateWidget<UUserWidget>(GetWorld(), _emotionResultWidgetClass);
+
+		if (_emotionResultWidgetInstance)
+			_emotionResultWidgetInstance->AddToViewport();
+	}
 
 	// Scan Material ¼³Á¤
 	if (ScanMaterialOrigin && FollowCamera)

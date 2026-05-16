@@ -664,9 +664,9 @@ void UMain::RecvAddTool(S_AddItem_Packet packet)
 			UE_LOG(LogTemp, Log, TEXT("[Tool] Blaster Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 10);
 			break;
 		case ItemType::Key:
-			tool = world->SpawnActor<ABaseItem>(KeyClass, (spawnLocation.X, spawnLocation.Y, spawnLocation), spawnRotation);
+			tool = world->SpawnActor<ABaseItem>(KeyClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
 			tool->SetItemType(ItemType::Key);
-			UE_LOG(LogTemp, Log, TEXT("[Tool] Key Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+			UE_LOG(LogTemp, Log, TEXT("[Tool] Key Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
 			break;
 		case ItemType::LANTERN:
 			tool = world->SpawnActor<ABaseItem>(LanternClass, (spawnLocation.X, spawnLocation.Y, spawnLocation), spawnRotation);
@@ -754,9 +754,9 @@ void UMain::RecvDropItem(S_DropItem_Packet packet)
 				UE_LOG(LogTemp, Log, TEXT("[Tool] Blaster Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 10);
 				break;
 			case ItemType::Key:
-				tool = world->SpawnActor<ABaseItem>(KeyClass, (spawnLocation.X, spawnLocation.Y, spawnLocation), spawnRotation);
+				tool = world->SpawnActor<ABaseItem>(KeyClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
 				tool->SetItemType(ItemType::Key);
-				UE_LOG(LogTemp, Log, TEXT("[Tool] Key Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+				UE_LOG(LogTemp, Log, TEXT("[Tool] Key Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
 				break;
 			case ItemType::LANTERN:
 				tool = world->SpawnActor<ABaseItem>(LanternClass, (spawnLocation.X, spawnLocation.Y, spawnLocation), spawnRotation);
@@ -1570,7 +1570,7 @@ void UMain::RecvTurnOnLantern(S_TurnOnLantern_Packet packet)
 				float range = static_cast<float>(packet.laternRange);
 				float angle = packet.laternAngle;
 
-				lantern->UpdateLantern(true, range * 10);
+				lantern->UpdateLantern(true, range * 100);
 			}
 
 			// MyPlayer 전용 추가 로직 (잔량 동기화 및 상태 변수)
