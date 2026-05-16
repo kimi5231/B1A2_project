@@ -60,8 +60,6 @@ public:
 	float GetChaseSpeed() { return _chaseSpeed; }
 
 protected:
-	Room* _ownerRoom;
-
 	MonsterType _monsterType;
 
 	FSM* _fsm;

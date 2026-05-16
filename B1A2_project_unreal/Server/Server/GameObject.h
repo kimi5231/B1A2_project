@@ -1,6 +1,8 @@
 #pragma once
 #include "BoundingBox.h"
 
+class Room;
+
 class GameObject : public std::enable_shared_from_this<GameObject>
 {
 public:
@@ -30,6 +32,8 @@ public:
 	BoundingBox GetBoundingBox() { return _box; }
 	void SetObjectPoolState(ObjectPoolState objectPoolState);
 	ObjectPoolState GetObjectPoolState() { return _objectPoolState; }
+	Room* GetOwnerRoom() { return _ownerRoom; }
+	void SetOwnerRoom(Room* room) { _ownerRoom = room; }
 
 protected:
 	int _id{};
@@ -40,5 +44,6 @@ protected:
 	ObjectState _state{};
 	BoundingBox _box;
 	ObjectPoolState _objectPoolState;
+	Room* _ownerRoom;
 };
 

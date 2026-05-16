@@ -28,15 +28,30 @@ void Room::Init()
 		_players[i] = new Player();
 		_players[i]->SetID(i);
 		_players[i]->SetObjectPoolState(ObjectPoolState::Reusable);
+		_players[i]->SetOwnerRoom(this);
 	}
 
 	// Monster ObjectPool 미리 확보
 	for (int i = 0; i < MAX_MONSTER; ++i)
 	{
-		// 몬스터 타입따라 클래스 다르게 생성 필요
-		_monsters[i] = new Monster(static_cast<MonsterType>(i % static_cast<int>(MonsterType::MonsterTypeCount)), this);
+		MonsterType type = static_cast<MonsterType>(i % static_cast<int>(MonsterType::MonsterTypeCount));
+
+		switch (type)
+		{
+		case MonsterType::Spider:
+			_monsters[i] = new Spider(type, this);
+			break;
+		case MonsterType::EmotionGame:
+			_monsters[i] = new EmotionGame(type, this);
+			break;
+		default:
+			_monsters[i] = new Monster(type, this);
+			break;
+		}
+
 		_monsters[i]->SetID(i);
 		_monsters[i]->SetObjectPoolState(ObjectPoolState::Reusable);
+		_monsters[i]->SetOwnerRoom(this);
 	}
 
 	// Item ObjectPool 미리 확보
@@ -46,7 +61,6 @@ void Room::Init()
 
 		switch (type)
 		{
-		// 도구 타입 따라 클래스 다르게 생성 필요
 		case ItemType::CUTLASS:
 			_items[i] = new Cutlass(type);
 			break;
@@ -56,7 +70,6 @@ void Room::Init()
 			break;
 		case ItemType::LANTERN:
 			_items[i] = new Lantern(type);
-			dynamic_cast<Lantern*>(_items[i])->SetOwnerRoom(this);
 			break;
 		default:
 			_items[i] = new Item(type);
@@ -65,6 +78,7 @@ void Room::Init()
 
 		_items[i]->SetID(i);
 		_items[i]->SetObjectPoolState(ObjectPoolState::Reusable);
+		_items[i]->SetOwnerRoom(this);
 	}
 
 	// 장애물 ObjectPool 미리 확보
@@ -83,7 +97,6 @@ void Room::Init()
 	AddItem(true, ItemType::Blaster, { 0, 650, 25 });
 	AddItem(true, ItemType::Key, { 0, 600, 25 });
 	AddItem(true, ItemType::LANTERN, { 0, 550, 25 });
-
 
 	// 테스트용 몬스터 생성
 	Monster* spider = AddMonster(MonsterType::Spider, { 0, 675, 25 });

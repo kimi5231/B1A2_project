@@ -15,12 +15,12 @@ public:
 
 extern class IdleState* g_idleState;
 extern class RoamingState* g_roamingState;
-extern class MakeWebState* g_makeWebState;
 extern class ChaseState* g_chaseState;
 extern class ReturnState* g_returnState;
 extern class AttackState* g_attackState;
 extern class HitState* g_hitState;
 extern class DeadState* g_deadState;
+extern class MakeWebState* g_makeWebState;
 extern class Teleport* g_teleportState;
 extern class Grab* g_grabState;
 extern class Play* g_playState;

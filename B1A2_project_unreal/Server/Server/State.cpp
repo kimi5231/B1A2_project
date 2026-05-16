@@ -16,12 +16,12 @@ void State::Tick(Monster* monster)
 
 IdleState* g_idleState = new IdleState();
 RoamingState* g_roamingState = new RoamingState();
-MakeWebState* g_makeWebState = new MakeWebState();
 ChaseState* g_chaseState = new ChaseState();
 ReturnState* g_returnState = new ReturnState();
 AttackState* g_attackState = new AttackState();
 HitState* g_hitState = new HitState();
 DeadState* g_deadState = new DeadState();
+MakeWebState* g_makeWebState = new MakeWebState();
 Teleport* g_teleportState = new Teleport();
 Grab* g_grabState = new Grab();
 Play* g_playState = new Play();
@@ -101,7 +101,15 @@ void RoamingState::Tick(Monster* monster)
 	monster->SetPos(path[0]);
 	monster->SetCurrentCubeID(cubes);
 	path.pop_front();
-	//g_framework->SendMovePacket(std::shared_ptr<GameObject>(monster), true);
+
+	// Broadcast
+	for (auto& p : monster->GetOwnerRoom()->GetPlayers())
+	{
+		if (!p->GetClient())
+			continue;
+
+		g_network->SendMovePacket(monster, p->GetClient());
+	}
 }
 
 void RoamingState::Exit(Monster* monster)
@@ -296,8 +304,14 @@ void ChaseState::Tick(Monster* monster)
 			monster->SetPos(currentPos + (dir * moveDist));
 		}
 
-		// 4. 이동 패킷 전송 (매 프레임 쏘거나, 일정 거리 이상일 때만 전송)
-		//g_framework->SendMovePacket(std::static_pointer_cast<GameObject>(monster), true);
+		// Broadcast
+		for (auto& p : monster->GetOwnerRoom()->GetPlayers())
+		{
+			if (!p->GetClient())
+				continue;
+
+			g_network->SendMovePacket(monster, p->GetClient());
+		}
 	}
 
 	// 최종 목적지 도달 체크
@@ -452,7 +466,15 @@ void ReturnState::Tick(Monster* monster)
 	monster->SetPos(path[0]);
 	monster->SetCurrentCubeID(cubes);
 	path.pop_front();
-	//g_framework->SendMovePacket(std::shared_ptr<GameObject>(monster), true);
+
+	// Broadcast
+	for (auto& p : monster->GetOwnerRoom()->GetPlayers())
+	{
+		if (!p->GetClient())
+			continue;
+
+		g_network->SendMovePacket(monster, p->GetClient());
+	}
 }
 
 void ReturnState::Exit(Monster* monster)
@@ -464,7 +486,16 @@ void ReturnState::Exit(Monster* monster)
 void AttackState::Enter(Monster* monster)
 {
 	monster->GetTarget()->TackDamage(monster->GetDamage());
-	//g_framework->SendUpdateHpPacket(monster->GetTarget()->GetID(), monster->GetTarget()->GetHP(), true);
+
+	// Broadcast
+	for (auto& p : monster->GetOwnerRoom()->GetPlayers())
+	{
+		if (!p->GetClient())
+			continue;
+
+		g_network->SendUpdateHpPacket(monster->GetTarget()->GetID(), monster->GetTarget()->GetHP(), p->GetClient());
+	}
+
 	std::cout << "Player " << monster->GetTarget()->GetID() << " HP: " << monster->GetTarget()->GetHP() << "\n";
 }
 
@@ -483,7 +514,7 @@ void HitState::Tick(Monster* monster)
 {
 	State::Tick(monster);
 }
-
+ 
 //--------------Dead--------------
 void DeadState::Enter(Monster* monster)
 {
@@ -529,7 +560,15 @@ void Teleport::Exit(Monster* monster)
 	Vector pos = monster->SelectRandomPosInCube(cube);
 	monster->SetPos(pos);
 	std::cout << pos.x << " " <<  pos.y << " " << pos.z << std::endl;
-	//g_framework->SendMovePacket(monster, true);
+	
+	// Broadcast
+	for (auto& p : monster->GetOwnerRoom()->GetPlayers())
+	{
+		if (!p->GetClient())
+			continue;
+
+		g_network->SendMovePacket(monster, p->GetClient());
+	}
 }
 
 //--------------Grab----------------
@@ -542,7 +581,15 @@ void Grab::Exit(Monster* monster)
 {
 	// 타겟의 위치로 순간이동
 	monster->SetPos(monster->GetTarget()->GetPos());
-	//g_framework->SendMovePacket(monster, true);
+	
+	// Broadcast
+	for (auto& p : monster->GetOwnerRoom()->GetPlayers())
+	{
+		if (!p->GetClient())
+			continue;
+
+		g_network->SendMovePacket(monster, p->GetClient());
+	}
 
 	// 보정 필요하면 보정하기
 }
@@ -568,7 +615,16 @@ void Play::Exit(Monster* monster)
 		emotion == Emotion::Neutral && targetEmotion == Emotion::Happy)
 	{
 		emotionGame->GetTarget()->TackDamage(emotionGame->GetDamage());
-		//g_framework->SendUpdateHpPacket(emotionGame->GetTarget()->GetID(), emotionGame->GetTarget()->GetHP(), true);
+		
+		// Broadcast
+		for (auto& p : monster->GetOwnerRoom()->GetPlayers())
+		{
+			if (!p->GetClient())
+				continue;
+
+			g_network->SendUpdateHpPacket(monster->GetTarget()->GetID(), monster->GetTarget()->GetHP(), p->GetClient());
+		}
+
 		emotionGame->SetResult(EmotionGameResult::Win);
 	}
 	// 졌을 때

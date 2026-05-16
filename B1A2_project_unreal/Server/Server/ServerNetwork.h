@@ -48,7 +48,7 @@ public:
 	void SendTurnOnLanternPacket(Lantern* lantern, int playerID, Session* client);
 	void SendTurnOffLanternPacket(Lantern* lantern, int playerID, Session* client);
 	void SendInteractDoorNotifyPacket(int playerID, int doorID, ObjectState doorState, Session* client);
-	void SendUpdateHpPacket(int playerID, int hp, bool broadcast, Session* client);
+	void SendUpdateHpPacket(int playerID, int hp, Session* client);
 	void SendSpawnParticlePacket(Vector pos, Session* client);
 	void SendStartStagePacket(Session* client);
 	void SendEndStagePacket(Session* client);

@@ -595,7 +595,7 @@ void ServerNetwork::SendInteractDoorNotifyPacket(int playerID, int doorID, Objec
 	client->Send(serializedPacketData);
 }
 
-void ServerNetwork::SendUpdateHpPacket(int playerID, int hp, bool broadcast, Session* client)
+void ServerNetwork::SendUpdateHpPacket(int playerID, int hp, Session* client)
 {
 	// Packet Data »ý¼º
 	S_UpdateHp_Packet packetData{ sizeof(S_UpdateHp_Packet), S_UpdateHp, playerID, hp };
