@@ -164,122 +164,115 @@ void UMain::ProcessRecv()
 			unsigned short packetSize;
 			memcpy(&packetSize, event->serializedPacketData.data(), sizeof(unsigned short));
 			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned short) + sizeof(PacketID));
-			UE_LOG(LogTemp, Error, TEXT("%d, %d"), packetSize, event->serializedPacketData.size());
 			S_CreateCubes_Packet createCubesPacket{ packetSize, S_CreateCubes, _gameNetwork->DeserializeVector<CubeDTO>(event->serializedPacketData), _gameNetwork->DeserializeVector<DoorDTO>(event->serializedPacketData)};
 			RecvCreateCubes(createCubesPacket);
 			event->isComplete = true;
 			break;
 		}
-			
-			
-			
-			case S_AddItemToInventory:	// MyPlayer의 아이템과 장비를 인벤과 툴바에 넣음 (OtherPlayer는 UpdateObjectState)
-			{
-				S_AddItemToInventory_Packet addItemToInventoryPacket;
-				FMemory::Memcpy(&addItemToInventoryPacket, event->serializedPacketData.data(), sizeof(S_AddItemToInventory_Packet));
-				RecvAddItemToInventory(addItemToInventoryPacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_RemoveItemFromInventory:
-			{
-				S_RemoveItemFromInventory_Packet removeItemFromInventoryPacket;
-				FMemory::Memcpy(&removeItemFromInventoryPacket, event->serializedPacketData.data(), sizeof(S_RemoveItemFromInventory_Packet));
-				RecvRemoveItemFromInventory(removeItemFromInventoryPacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_ItemPickupNotify:
-			{
-				S_ItemPickupNotify_Packet itemPickupNotifyPacket;
-				FMemory::Memcpy(&itemPickupNotifyPacket, event->serializedPacketData.data(), sizeof(S_ItemPickupNotify_Packet));
-				RecvItemPickupNotify(itemPickupNotifyPacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_DropItem:
-			{
-				S_DropItem_Packet dropItemPacket;
-				FMemory::Memcpy(&dropItemPacket, event->serializedPacketData.data(), sizeof(S_DropItem_Packet));
-				RecvDropItem(dropItemPacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_UpdateCurrentTool:
-			{
-				S_UpdateCurrentTool_Packet updateCurrentToolPacket;
-				FMemory::Memcpy(&updateCurrentToolPacket, event->serializedPacketData.data(), sizeof(S_UpdateCurrentTool_Packet));
-				RecvUpdateCurrentTool(updateCurrentToolPacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_UseTool:
-			{
-				S_UseTool_Packet useToolPacket;
-				FMemory::Memcpy(&useToolPacket, event->serializedPacketData.data(), sizeof(S_UseTool_Packet));
-				RecvUseTool(useToolPacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_SpawnParticle:
-			{
-				S_SpawnParticle_Packet spawnParticlePacket;
-				FMemory::Memcpy(&spawnParticlePacket, event->serializedPacketData.data(), sizeof(S_SpawnParticle_Packet));
-				RecvSpawnParticle(spawnParticlePacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_InteractDoorNotify:
-			{
-				S_InteractDoorNotify_Packet interactDoorNotifyPacket;
-				FMemory::Memcpy(&interactDoorNotifyPacket, event->serializedPacketData.data(), sizeof(S_InteractDoorNotify_Packet));
-				RecvInteractDoorNotify(interactDoorNotifyPacket);
-				event->isComplete = true;
-				break;
-			}
-			
-			
-			case S_TurnOnLantern:
-			{
-				S_TurnOnLantern_Packet turnOnLanternPacket;
-				FMemory::Memcpy(&turnOnLanternPacket, event->serializedPacketData.data(), sizeof(S_TurnOnLantern_Packet));
-				RecvTurnOnLantern(turnOnLanternPacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_TurnOffLantern:
-			{
-				S_TurnOffLantern_Packet turnOffLanternPacket;
-				FMemory::Memcpy(&turnOffLanternPacket, event->serializedPacketData.data(), sizeof(S_TurnOffLantern_Packet));
-				RecvTurnOffLantern(turnOffLanternPacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_StartStage:
-			{
-				S_StartStage_Packet startStagePacket;
-				FMemory::Memcpy(&startStagePacket, event->serializedPacketData.data(), sizeof(S_StartStage_Packet));
-				RecvStartStage(startStagePacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_EndStage:
-			{
-				S_EndStage_Packet endStagePacket;
-				FMemory::Memcpy(&endStagePacket, event->serializedPacketData.data(), sizeof(S_EndStage_Packet));
-				RecvEndStage(endStagePacket);
-				event->isComplete = true;
-				break;
-			}
-			case S_UpdateHp:
-			{
-				S_UpdateHp_Packet updateHpPacket;
-				FMemory::Memcpy(&updateHpPacket, event->serializedPacketData.data(), sizeof(S_UpdateHp_Packet));
-				RecvUpdateHp(updateHpPacket);
-				event->isComplete = true;
-				break;
-			}
-			
+		case S_AddItemToInventory:	// MyPlayer의 아이템과 장비를 인벤과 툴바에 넣음 (OtherPlayer는 UpdateObjectState)
+		{
+			S_AddItemToInventory_Packet addItemToInventoryPacket;
+			FMemory::Memcpy(&addItemToInventoryPacket, event->serializedPacketData.data(), sizeof(S_AddItemToInventory_Packet));
+			RecvAddItemToInventory(addItemToInventoryPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_RemoveItemFromInventory:
+		{
+			S_RemoveItemFromInventory_Packet removeItemFromInventoryPacket;
+			FMemory::Memcpy(&removeItemFromInventoryPacket, event->serializedPacketData.data(), sizeof(S_RemoveItemFromInventory_Packet));
+			RecvRemoveItemFromInventory(removeItemFromInventoryPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_ItemPickupNotify:
+		{
+			S_ItemPickupNotify_Packet itemPickupNotifyPacket;
+			FMemory::Memcpy(&itemPickupNotifyPacket, event->serializedPacketData.data(), sizeof(S_ItemPickupNotify_Packet));
+			RecvItemPickupNotify(itemPickupNotifyPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_DropItem:
+		{
+			S_DropItem_Packet dropItemPacket;
+			FMemory::Memcpy(&dropItemPacket, event->serializedPacketData.data(), sizeof(S_DropItem_Packet));
+			RecvDropItem(dropItemPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_UpdateCurrentTool:
+		{
+			S_UpdateCurrentTool_Packet updateCurrentToolPacket;
+			FMemory::Memcpy(&updateCurrentToolPacket, event->serializedPacketData.data(), sizeof(S_UpdateCurrentTool_Packet));
+			RecvUpdateCurrentTool(updateCurrentToolPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_UseTool:
+		{
+			S_UseTool_Packet useToolPacket;
+			FMemory::Memcpy(&useToolPacket, event->serializedPacketData.data(), sizeof(S_UseTool_Packet));
+			RecvUseTool(useToolPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_TurnOnLantern:
+		{
+			S_TurnOnLantern_Packet turnOnLanternPacket;
+			FMemory::Memcpy(&turnOnLanternPacket, event->serializedPacketData.data(), sizeof(S_TurnOnLantern_Packet));
+			RecvTurnOnLantern(turnOnLanternPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_TurnOffLantern:
+		{
+			S_TurnOffLantern_Packet turnOffLanternPacket;
+			FMemory::Memcpy(&turnOffLanternPacket, event->serializedPacketData.data(), sizeof(S_TurnOffLantern_Packet));
+			RecvTurnOffLantern(turnOffLanternPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_InteractDoorNotify:
+		{
+			S_InteractDoorNotify_Packet interactDoorNotifyPacket;
+			FMemory::Memcpy(&interactDoorNotifyPacket, event->serializedPacketData.data(), sizeof(S_InteractDoorNotify_Packet));
+			RecvInteractDoorNotify(interactDoorNotifyPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_UpdateHp:
+		{
+			S_UpdateHp_Packet updateHpPacket;
+			FMemory::Memcpy(&updateHpPacket, event->serializedPacketData.data(), sizeof(S_UpdateHp_Packet));
+			RecvUpdateHp(updateHpPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_SpawnParticle:
+		{
+			S_SpawnParticle_Packet spawnParticlePacket;
+			FMemory::Memcpy(&spawnParticlePacket, event->serializedPacketData.data(), sizeof(S_SpawnParticle_Packet));
+			RecvSpawnParticle(spawnParticlePacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_StartStage:
+		{
+			S_StartStage_Packet startStagePacket;
+			FMemory::Memcpy(&startStagePacket, event->serializedPacketData.data(), sizeof(S_StartStage_Packet));
+			RecvStartStage(startStagePacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_EndStage:
+		{
+			S_EndStage_Packet endStagePacket;
+			FMemory::Memcpy(&endStagePacket, event->serializedPacketData.data(), sizeof(S_EndStage_Packet));
+			RecvEndStage(endStagePacket);
+			event->isComplete = true;
+			break;
+		}
 		}
 	}
 }

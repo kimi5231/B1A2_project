@@ -189,14 +189,13 @@ void GameNetwork::ProcessRecv()
 		_recvEvents.push_back(event);
 		break;
 	}
-	/*
-
 	case S_AddItemToInventory:
 	{
 		NetworkEventRef event = std::make_shared<NetworkEvent>();
-		event->packetID = header.id;
-		event->serializedPacketData.resize(packet.size() - sizeof(Header));
-		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), packet.size() - sizeof(Header));
+		event->packetID = id;
+		event->serializedPacketData.resize(sizeof(S_AddItemToInventory_Packet));
+		memcpy(event->serializedPacketData.data(), &packetSize, sizeof(unsigned short));
+		memcpy(event->serializedPacketData.data() + sizeof(unsigned short), packet.data(), packetSize - sizeof(unsigned short));
 		std::lock_guard<std::mutex> lock(_recvMutex);
 		_recvEvents.push_back(event);
 		break;
@@ -204,9 +203,10 @@ void GameNetwork::ProcessRecv()
 	case S_RemoveItemFromInventory:
 	{
 		NetworkEventRef event = std::make_shared<NetworkEvent>();
-		event->packetID = header.id;
-		event->serializedPacketData.resize(packet.size() - sizeof(Header));
-		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), packet.size() - sizeof(Header));
+		event->packetID = id;
+		event->serializedPacketData.resize(sizeof(S_RemoveItemFromInventory_Packet));
+		memcpy(event->serializedPacketData.data(), &packetSize, sizeof(unsigned short));
+		memcpy(event->serializedPacketData.data() + sizeof(unsigned short), packet.data(), packetSize - sizeof(unsigned short));
 		std::lock_guard<std::mutex> lock(_recvMutex);
 		_recvEvents.push_back(event);
 		break;
@@ -214,9 +214,10 @@ void GameNetwork::ProcessRecv()
 	case S_ItemPickupNotify:
 	{
 		NetworkEventRef event = std::make_shared<NetworkEvent>();
-		event->packetID = header.id;
-		event->serializedPacketData.resize(packet.size() - sizeof(Header));
-		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), packet.size() - sizeof(Header));
+		event->packetID = id;
+		event->serializedPacketData.resize(sizeof(S_ItemPickupNotify_Packet));
+		memcpy(event->serializedPacketData.data(), &packetSize, sizeof(unsigned short));
+		memcpy(event->serializedPacketData.data() + sizeof(unsigned short), packet.data(), packetSize - sizeof(unsigned short));
 		std::lock_guard<std::mutex> lock(_recvMutex);
 		_recvEvents.push_back(event);
 		break;
@@ -224,9 +225,10 @@ void GameNetwork::ProcessRecv()
 	case S_DropItem:
 	{
 		NetworkEventRef event = std::make_shared<NetworkEvent>();
-		event->packetID = header.id;
-		event->serializedPacketData.resize(packet.size() - sizeof(Header));
-		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), packet.size() - sizeof(Header));
+		event->packetID = id;
+		event->serializedPacketData.resize(sizeof(S_DropItem_Packet));
+		memcpy(event->serializedPacketData.data(), &packetSize, sizeof(unsigned short));
+		memcpy(event->serializedPacketData.data() + sizeof(unsigned short), packet.data(), packetSize - sizeof(unsigned short));
 		std::lock_guard<std::mutex> lock(_recvMutex);
 		_recvEvents.push_back(event);
 		break;
@@ -234,9 +236,10 @@ void GameNetwork::ProcessRecv()
 	case S_UpdateCurrentTool:
 	{
 		NetworkEventRef event = std::make_shared<NetworkEvent>();
-		event->packetID = header.id;
-		event->serializedPacketData.resize(packet.size() - sizeof(Header));
-		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), packet.size() - sizeof(Header));
+		event->packetID = id;
+		event->serializedPacketData.resize(sizeof(S_UpdateCurrentTool_Packet));
+		memcpy(event->serializedPacketData.data(), &packetSize, sizeof(unsigned short));
+		memcpy(event->serializedPacketData.data() + sizeof(unsigned short), packet.data(), packetSize - sizeof(unsigned short));
 		std::lock_guard<std::mutex> lock(_recvMutex);
 		_recvEvents.push_back(event);
 		break;
@@ -244,39 +247,10 @@ void GameNetwork::ProcessRecv()
 	case S_UseTool:
 	{
 		NetworkEventRef event = std::make_shared<NetworkEvent>();
-		event->packetID = header.id;
-		event->serializedPacketData.resize(packet.size() - sizeof(Header));
-		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), packet.size() - sizeof(Header));
-		std::lock_guard<std::mutex> lock(_recvMutex);
-		_recvEvents.push_back(event);
-		break;
-	}
-	case S_SpawnParticle:
-	{
-		NetworkEventRef event = std::make_shared<NetworkEvent>();
-		event->packetID = header.id;
-		event->serializedPacketData.resize(packet.size() - sizeof(Header));
-		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), packet.size() - sizeof(Header));
-		std::lock_guard<std::mutex> lock(_recvMutex);
-		_recvEvents.push_back(event);
-		break;
-	}
-	case S_InteractDoorNotify:
-	{
-		NetworkEventRef event = std::make_shared<NetworkEvent>();
-		event->packetID = header.id;
-		event->serializedPacketData.resize(packet.size() - sizeof(Header));
-		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), packet.size() - sizeof(Header));
-		std::lock_guard<std::mutex> lock(_recvMutex);
-		_recvEvents.push_back(event);
-		break;
-	}
-	case S_SpawnMonster:
-	{
-		NetworkEventRef event = std::make_shared<NetworkEvent>();
-		event->packetID = header.id;
-		event->serializedPacketData.resize(packet.size() - sizeof(Header));
-		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), packet.size() - sizeof(Header));
+		event->packetID = id;
+		event->serializedPacketData.resize(sizeof(S_UseTool_Packet));
+		memcpy(event->serializedPacketData.data(), &packetSize, sizeof(unsigned short));
+		memcpy(event->serializedPacketData.data() + sizeof(unsigned short), packet.data(), packetSize - sizeof(unsigned short));
 		std::lock_guard<std::mutex> lock(_recvMutex);
 		_recvEvents.push_back(event);
 		break;
@@ -284,9 +258,10 @@ void GameNetwork::ProcessRecv()
 	case S_TurnOnLantern:
 	{
 		NetworkEventRef event = std::make_shared<NetworkEvent>();
-		event->packetID = header.id;
-		event->serializedPacketData.resize(packet.size() - sizeof(Header));
-		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), packet.size() - sizeof(Header));
+		event->packetID = id;
+		event->serializedPacketData.resize(sizeof(S_TurnOnLantern_Packet));
+		memcpy(event->serializedPacketData.data(), &packetSize, sizeof(unsigned short));
+		memcpy(event->serializedPacketData.data() + sizeof(unsigned short), packet.data(), packetSize - sizeof(unsigned short));
 		std::lock_guard<std::mutex> lock(_recvMutex);
 		_recvEvents.push_back(event);
 		break;
@@ -294,29 +269,21 @@ void GameNetwork::ProcessRecv()
 	case S_TurnOffLantern:
 	{
 		NetworkEventRef event = std::make_shared<NetworkEvent>();
-		event->packetID = header.id;
-		event->serializedPacketData.resize(packet.size() - sizeof(Header));
-		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), packet.size() - sizeof(Header));
+		event->packetID = id;
+		event->serializedPacketData.resize(sizeof(S_TurnOffLantern_Packet));
+		memcpy(event->serializedPacketData.data(), &packetSize, sizeof(unsigned short));
+		memcpy(event->serializedPacketData.data() + sizeof(unsigned short), packet.data(), packetSize - sizeof(unsigned short));
 		std::lock_guard<std::mutex> lock(_recvMutex);
 		_recvEvents.push_back(event);
 		break;
 	}
-	case S_StartStage:
+	case S_InteractDoorNotify:
 	{
 		NetworkEventRef event = std::make_shared<NetworkEvent>();
-		event->packetID = header.id;
-		event->serializedPacketData.resize(packet.size() - sizeof(Header));
-		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), packet.size() - sizeof(Header));
-		std::lock_guard<std::mutex> lock(_recvMutex);
-		_recvEvents.push_back(event);
-		break;
-	}
-	case S_EndStage:
-	{
-		NetworkEventRef event = std::make_shared<NetworkEvent>();
-		event->packetID = header.id;
-		event->serializedPacketData.resize(packet.size() - sizeof(Header));
-		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), packet.size() - sizeof(Header));
+		event->packetID = id;
+		event->serializedPacketData.resize(sizeof(S_InteractDoorNotify_Packet));
+		memcpy(event->serializedPacketData.data(), &packetSize, sizeof(unsigned short));
+		memcpy(event->serializedPacketData.data() + sizeof(unsigned short), packet.data(), packetSize - sizeof(unsigned short));
 		std::lock_guard<std::mutex> lock(_recvMutex);
 		_recvEvents.push_back(event);
 		break;
@@ -324,23 +291,47 @@ void GameNetwork::ProcessRecv()
 	case S_UpdateHp:
 	{
 		NetworkEventRef event = std::make_shared<NetworkEvent>();
-		event->packetID = header.id;
-		event->serializedPacketData.resize(packet.size() - sizeof(Header));
-		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), packet.size() - sizeof(Header));
+		event->packetID = id;
+		event->serializedPacketData.resize(sizeof(S_UpdateHp_Packet));
+		memcpy(event->serializedPacketData.data(), &packetSize, sizeof(unsigned short));
+		memcpy(event->serializedPacketData.data() + sizeof(unsigned short), packet.data(), packetSize - sizeof(unsigned short));
 		std::lock_guard<std::mutex> lock(_recvMutex);
 		_recvEvents.push_back(event);
 		break;
 	}
-	case S_SpawnObstacle:
+	case S_SpawnParticle:
 	{
 		NetworkEventRef event = std::make_shared<NetworkEvent>();
-		event->packetID = header.id;
-		event->serializedPacketData.resize(packet.size() - sizeof(Header));
-		memcpy(event->serializedPacketData.data(), packet.data() + sizeof(Header), packet.size() - sizeof(Header));
+		event->packetID = id;
+		event->serializedPacketData.resize(sizeof(S_SpawnParticle_Packet));
+		memcpy(event->serializedPacketData.data(), &packetSize, sizeof(unsigned short));
+		memcpy(event->serializedPacketData.data() + sizeof(unsigned short), packet.data(), packetSize - sizeof(unsigned short));
 		std::lock_guard<std::mutex> lock(_recvMutex);
 		_recvEvents.push_back(event);
 		break;
-	}*/
+	}
+	case S_StartStage:
+	{
+		NetworkEventRef event = std::make_shared<NetworkEvent>();
+		event->packetID = id;
+		event->serializedPacketData.resize(sizeof(S_StartStage_Packet));
+		memcpy(event->serializedPacketData.data(), &packetSize, sizeof(unsigned short));
+		memcpy(event->serializedPacketData.data() + sizeof(unsigned short), packet.data(), packetSize - sizeof(unsigned short));
+		std::lock_guard<std::mutex> lock(_recvMutex);
+		_recvEvents.push_back(event);
+		break;
+	}
+	case S_EndStage:
+	{
+		NetworkEventRef event = std::make_shared<NetworkEvent>();
+		event->packetID = id;
+		event->serializedPacketData.resize(sizeof(S_EndStage_Packet));
+		memcpy(event->serializedPacketData.data(), &packetSize, sizeof(unsigned short));
+		memcpy(event->serializedPacketData.data() + sizeof(unsigned short), packet.data(), packetSize - sizeof(unsigned short));
+		std::lock_guard<std::mutex> lock(_recvMutex);
+		_recvEvents.push_back(event);
+		break;
+	}
 	}
 }
 
