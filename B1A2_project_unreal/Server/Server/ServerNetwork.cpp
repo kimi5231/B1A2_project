@@ -7,6 +7,7 @@
 #include "Obstacle.h"
 #include "Cube.h"
 #include "Door.h"
+#include "Tool.h"
 
 ServerNetwork::ServerNetwork(ServerFramework* framework)
 {
@@ -159,7 +160,7 @@ void ServerNetwork::ProcessAccept()
 		// 새로 접속한 Client에게 자신을 나타낼 Player 정보 전송
 		SendAddPlayerPacket(_clients[clientIndex]->_player, _clients[clientIndex]);
 
-		// 새로 접속한 Client에게 기존에 있던 Player 정보 전송
+		// 새로 접속한 Client에게 기존에 있던 Object 정보 전송
 		for (auto& player : _clients[clientIndex]->_room->GetPlayers())
 		{
 			if (!player->GetClient())
@@ -170,6 +171,18 @@ void ServerNetwork::ProcessAccept()
 				continue;  
 
 			SendAddPlayerPacket(player, _clients[clientIndex]);
+		}
+
+		for (auto& monster : _clients[clientIndex]->_room->GetMonsters())
+		{
+			if(monster->GetObjectPoolState() == ObjectPoolState::InWorld)
+				SendAddMonsterPacket(monster, _clients[clientIndex]);
+		}
+
+		for (auto& item : _clients[clientIndex]->_room->GetItems())
+		{
+			if (item->GetObjectPoolState() == ObjectPoolState::InWorld)
+				SendAddItemPacket(item, dynamic_cast<Tool*>(item), _clients[clientIndex]);
 		}
 	}
 
@@ -472,9 +485,20 @@ void ServerNetwork::SendRemoveItemFromInventoryPacket(Item* item, bool isTool, S
 	client->Send(serializedPacketData);
 }
 
+void ServerNetwork::SendItemPickupNotifyPacket(Item* item, uint playerID, bool isTool, Session* client)
+{
+	// Packet Data 생성
+	S_ItemPickupNotify_Packet packetData{ sizeof(S_ItemPickupNotify_Packet), S_ItemPickupNotify, item->GetID(), playerID, isTool, item->GetItemType() };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	client->Send(serializedPacketData);
+}
+
 void ServerNetwork::ProcessMovePacket(C_Move_Packet packet, int clientIndex)
 {
-	GameObject* object = _clients[clientIndex]->_room->GetPlayer(packet.type, packet.id);
+	GameObject* object = _clients[clientIndex]->_room->GetGameObject(packet.type, packet.id);
 
 	if (object == nullptr)
 		return;
@@ -499,7 +523,7 @@ void ServerNetwork::ProcessMovePacket(C_Move_Packet packet, int clientIndex)
 
 void ServerNetwork::ProcessUpdateObjectStatePacket(C_UpdateObjectState_Packet packet, int clientIndex)
 {
-	GameObject* object = _clients[clientIndex]->_room->GetPlayer(packet.type, packet.id);
+	GameObject* object = _clients[clientIndex]->_room->GetGameObject(packet.type, packet.id);
 
 	object->SetState(packet.state);
 

@@ -42,7 +42,7 @@ public:
 	void SendCreateCubesPacket(const std::vector<CubeRef>& cubes, const std::vector<DoorRef>& doors, Session* client);
 	void SendAddItemToInventoryPacket(Item* item, bool isTool, Session* client);
 	void SendRemoveItemFromInventoryPacket(Item* item, bool isTool, Session* client);
-	void SendItemPickupNotifyPacket(ItemRef item, uint playerID, bool isTool, bool broadcast, SOCKET client = 0);
+	void SendItemPickupNotifyPacket(Item* item, uint playerID, bool isTool, Session* client);
 	void SendDropItemPacket(ItemRef item, PlayerRef player, bool isTool, bool broadcast, SOCKET client = 0);
 	void SendUpdateCurrentToolPacket(uint playerID, uint itemID, ItemType type, bool broadcast, SOCKET client = 0);
 	void SendUseToolPacket(uint playerID, ItemType type, bool broadcast, SOCKET client = 0);

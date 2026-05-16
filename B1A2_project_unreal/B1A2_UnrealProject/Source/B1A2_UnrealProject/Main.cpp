@@ -1486,9 +1486,6 @@ void UMain::RecvAddMonster(S_AddMonster_Packet packet)
 		switch (packet.monsterType)
 		{
 		default:
-		case MonsterType::None:
-			monsterActor = world->SpawnActor<ABaseMonster>(TestMonsterClass, spawnLocation, spawnRotation);			
-			break;
 		case MonsterType::Spider:
 			monsterActor = world->SpawnActor<ABaseMonster>(SpiderClass, spawnLocation, spawnRotation);
 			break;

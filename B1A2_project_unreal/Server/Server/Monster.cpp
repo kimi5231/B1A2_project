@@ -33,7 +33,7 @@ Monster::~Monster()
 
 void Monster::Update(Room* room)
 {
-	_fsm->Update(dynamic_pointer_cast<Monster>(shared_from_this()), room);
+	_fsm->Update(this);
 
 	//// 목적지 갱신
 	//if (_targetPos == nullptr)
@@ -546,25 +546,25 @@ bool Monster::SetState(ObjectState state, bool isSend)
 	switch (state)
 	{
 	case IDLE:
-		_fsm->ChangeState(g_idleState, dynamic_pointer_cast<Monster>(shared_from_this()));
+		_fsm->ChangeState(g_idleState, this);
 		break;
 	case ROAMING:
-		_fsm->ChangeState(g_roamingState, dynamic_pointer_cast<Monster>(shared_from_this()));
+		_fsm->ChangeState(g_roamingState, this);
 		break;
 	/*case OPEN_DOOR:
 		_fsm->ChangeState(_openDoor, this);
 		break;*/
 	case CHASE:
-		_fsm->ChangeState(g_chaseState, dynamic_pointer_cast<Monster>(shared_from_this()));
+		_fsm->ChangeState(g_chaseState, this);
 		break;
 	case ATTACK:
-		_fsm->ChangeState(g_attackState, dynamic_pointer_cast<Monster>(shared_from_this()));
+		_fsm->ChangeState(g_attackState, this);
 		break;
 	case HIT:
-		_fsm->ChangeState(g_hitState, dynamic_pointer_cast<Monster>(shared_from_this()));
+		_fsm->ChangeState(g_hitState, this);
 		break;
 	case DEAD:
-		_fsm->ChangeState(g_deadState, dynamic_pointer_cast<Monster>(shared_from_this()));
+		_fsm->ChangeState(g_deadState, this);
 		break;
 	}
 

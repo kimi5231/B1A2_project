@@ -20,181 +20,11 @@ ServerFramework::ServerFramework()
 ServerFramework::~ServerFramework()
 {
 	delete _room;
-
-	// listenSocket 종료
-	closesocket(_listenSocket);
-
-	// 윈속 종료
-	WSACleanup();
 }
 
 void ServerFramework::Update()
 {
 	_room->Update();
-}
-
-void ServerFramework::ProcessRecv(ClientRef client)
-{
-	//// PacketSize 수신(고정 길이)
-	//int packetSize{};
-	//if (recv(client->socket, (char*)&packetSize, sizeof(int), MSG_WAITALL) <= 0)
-	//{
-	//	ProcessDisconnect(client);
-	//	return;
-	//}
-
-	//// Packet 수신(가변 데이터)
-	//std::vector<char> packet(512);
-	//if (recv(client->socket, packet.data(), packetSize, MSG_WAITALL) <= 0)
-	//{
-	//	ProcessDisconnect(client);
-	//	return;
-	//}
-
-	//// Header 추출
-	//Header header;
-	//memcpy(&header, packet.data(), sizeof(Header));
-
-	//// Data 추출
-	//switch (header.id)
-	//{
-	//case C_Move:
-	//{
-	//	C_Move_Packet movePacket;
-	//	memcpy(&movePacket, packet.data() + sizeof(Header), sizeof(C_Move_Packet));
-	//	ProcessMovePacket(movePacket);
-	//}
-	//	break;
-	//case C_GetItem:
-	//	C_GetItem_Packet getItemPacket;
-	//	memcpy(&getItemPacket, packet.data() + sizeof(Header), sizeof(C_GetItem_Packet));
-	//	ProcessGetItemPacket(client->socket, getItemPacket);
-	//	break;
-	//case C_DropItem:
-	//	C_DropItem_Packet dropItemPacket;
-	//	memcpy(&dropItemPacket, packet.data() + sizeof(Header), sizeof(C_DropItem_Packet));
-	//	ProcessDropItemPacket(dropItemPacket);
-	//	break;
-	//case C_ChangeTool:
-	//	C_ChangeTool_Packet changeToolPacket;
-	//	memcpy(&changeToolPacket, packet.data() + sizeof(Header), sizeof(C_ChangeTool_Packet));
-	//	ProcessChangeToolPacket(changeToolPacket);
-	//	break;
-	//case C_UseTool:
-	//	C_UseTool_Packet useToolPacket;
-	//	memcpy(&useToolPacket, packet.data() + sizeof(Header), sizeof(C_UseTool_Packet));
-	//	ProcessUseToolPacket(useToolPacket);
-	//	break;
-	//case C_InteractDoor:
-	//	C_InteractDoor_Packet interactDoorPacket;
-	//	memcpy(&interactDoorPacket, packet.data() + sizeof(Header), sizeof(C_InteractDoor_Packet));
-	//	ProcessInteractDoorPacket(interactDoorPacket);
-	//	break;
-	//case C_Emotion:
-	//	C_Emotion_Packet emotionPacket;
-	//	memcpy(&emotionPacket, packet.data() + sizeof(Header), sizeof(C_Emotion_Packet));
-	//	ProcessEmotionPacket(emotionPacket);
-	//	break;
-	//case C_UseLantern:
-	//	C_UseLantern_Packet useLanternPacket;
-	//	memcpy(&useLanternPacket, packet.data() + sizeof(Header), sizeof(C_UseLantern_Packet));
-	//	ProcessUseLanternPacket(useLanternPacket);
-	//	break;
-	//case C_StartStage:
-	//	C_StartStage_Packet startStagePacket;
-	//	memcpy(&startStagePacket, packet.data() + sizeof(Header), sizeof(C_StartStage_Packet));
-	//	ProcessStartStagePacket(startStagePacket);
-	//	break;
-	//case C_EndStage:
-	//	C_EndStage_Packet endStagePacket;
-	//	memcpy(&endStagePacket, packet.data() + sizeof(Header), sizeof(C_EndStage_Packet));
-	//	ProcessEndStagePacket(endStagePacket);
-	//	break;
-	//}
-}
-
-template<class T>
-std::vector<char> ServerFramework::SerializePOD(const T& pod)
-{
-	std::vector<char> serializedData(sizeof(pod));
-	memcpy(serializedData.data(), &pod, sizeof(pod));
-	
-	return serializedData;
-}
-
-template<class T>
-std::vector<char> ServerFramework::SerializeVector(const std::vector<T>& vector)
-{
-	int size = vector.size();
-
-	std::vector<char> serializedData(sizeof(int) + vector.size() * sizeof(T));
-	memcpy(serializedData.data(), &size, sizeof(int));
-	memcpy(serializedData.data() + sizeof(int), vector.data(), size * sizeof(T));
-
-	return serializedData;
-}
-
-template<class T>
-std::vector<T> ServerFramework::DeserializeVector(const std::vector<char>& data)
-{
-	int size;
-	memcpy(&size, data.data(), sizeof(int));
-	
-	std::vector<T> vector(size);
-	memcpy(vector.data(), data.data() + sizeof(int), size * sizeof(T));
-
-	return vector;
-}
-
-void ServerFramework::ProcessAccept(SOCKET clientSocket)
-{
-	//// 접속한 Client를 나타낼 Player 추가
-	//GameObjectRef player = _room->AddPlayer(ObjectType::Player);
-
-	//ClientRef newClient = std::make_shared<Client>();
-	//newClient->socket = clientSocket;
-	//newClient->player = std::dynamic_pointer_cast<Player>(player);
-
-	//_clients.push_back(newClient);
-
-	//std::cout << "Client 접속" << std::endl;
-
-	//// 추후 게임 시작 시 broadcast로 보내도록 코드 옮기기
-	//// GameRoom 정보 송신
-	//SendCreateCubesPacket(_room->GetCubes(), _room->GetDoors(), false, newClient->socket);
-
-	//// 새로 접속한 Client에게 Room에 있는 모든 Object 정보 송신
-	//const std::array<PlayerRef, MAX_ROOM_PLAYER>& players = _room->GetPlayers();
-	//for (const auto& player : players)
-	//	SendAddObjectPacket(player, false, newClient->socket);
-	//const std::vector<MonsterRef>& monsters = _room->GetMonsters();
-	//for (const auto& monster : monsters)
-	//{
-	//	if (monster->GetObjectPoolState() == ObjectPoolState::InWorld)
-	//		SendSpawnMonsterPacket(monster, false, newClient->socket);
-	//}
-	//const std::vector<ItemRef>& items = _room->GetItems();
-	//for (const auto& item : items)
-	//{
-	//	if (item->GetObjectPoolState() == ObjectPoolState::InWorld)
-	//	{
-	//		if (std::dynamic_pointer_cast<Tool>(item))
-	//			SendAddItemPacket(item, true, newClient->socket);
-	//		else
-	//			SendAddItemPacket(item, false, newClient->socket);
-	//	}
-	//}
-}
-
-void ServerFramework::ProcessDisconnect(ClientRef client)
-{
-	//// 연결 끊긴 Client를 나타내는 Player 제거
-	//_room->RemoveObject(ObjectType::Player, client->player->GetID(), true);
-
-	//std::cout << "Client 접속 종료" << std::endl;
-
-	//// 연결 끊긴 Client 삭제 예약
-	//_removeClients.push_back(client);
 }
 
 void ServerFramework::ProcessUpdateObjectStatePacket(C_UpdateObjectState_Packet packet)
@@ -368,29 +198,29 @@ void ServerFramework::ProcessEmotionPacket(C_Emotion_Packet packet)
 
 void ServerFramework::ProcessUseLanternPacket(C_UseLantern_Packet packet)
 {
-	// Player가 랜턴을 정말 가지고 있는지 확인
-	PlayerRef player = dynamic_pointer_cast<Player>(_room->GetGameObject(ObjectType::Player, packet.playerID));
-	// 가지고 있지 않으면 무시
-	if (!player->ExistItem(true, packet.lanternID))
-		return;
+	//// Player가 랜턴을 정말 가지고 있는지 확인
+	//Player* player = dynamic_cast<Player>(_room->GetGameObject(ObjectType::Player, packet.playerID));
+	//// 가지고 있지 않으면 무시
+	//if (!player->ExistItem(true, packet.lanternID))
+	//	return;
 
-	// 랜턴 배터리 확인
-	LanternRef lantern = dynamic_pointer_cast<Lantern>(_room->GetGameObject(ObjectType::Item, packet.lanternID));
-	// 배터리가 없으면 무시
-	if (lantern->GetCurrentBattery() == 0)
-		return;
+	//// 랜턴 배터리 확인
+	//LanternRef lantern = dynamic_pointer_cast<Lantern>(_room->GetDoor(ObjectType::Item, packet.lanternID));
+	//// 배터리가 없으면 무시
+	//if (lantern->GetCurrentBattery() == 0)
+	//	return;
 
-	// 랜턴 작동
-	if (lantern->IsOn())
-	{
-		lantern->TurnOff();
-		_room->RemoveProcessingItem(lantern->GetID());
-	}	
-	else
-	{
-		lantern->TurnOn();
-		_room->AddProcessingItem(lantern);
-	}
+	//// 랜턴 작동
+	//if (lantern->IsOn())
+	//{
+	//	lantern->TurnOff();
+	//	_room->RemoveProcessingItem(lantern->GetID());
+	//}	
+	//else
+	//{
+	//	lantern->TurnOn();
+	//	_room->AddProcessingItem(lantern);
+	//}
 }
 
 void ServerFramework::ProcessStartStagePacket(C_StartStage_Packet packet)

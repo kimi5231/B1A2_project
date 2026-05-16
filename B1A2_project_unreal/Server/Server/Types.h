@@ -27,6 +27,31 @@ enum class MonsterType : char
 	Spider,
 	EmotionGame,
 	Ghost,
+
+	MonsterTypeCount,
+};
+
+enum ItemType
+{
+	CardboardBox,
+	GoldBar,
+	RubberDuck,
+	PlasticCrate,
+	Screw,
+	PirateHat,
+	HardHat,
+	EngineCore,
+	ScrapMetal,
+	EmptyCan,
+
+	// Tool
+	CUTLASS,
+	Blaster,
+	Key,
+	LANTERN,
+
+	ItemTypeCount,
+
 	None,
 };
 
@@ -152,37 +177,6 @@ enum class EmotionGameResult
 	Win,
 	Lose,
 	Draw,
-};
-
-enum TileState : char
-{
-	Impassable,
-	Passable,
-	Wall,
-};
-
-enum ItemType
-{
-	CardboardBox,
-	GoldBar,
-	RubberDuck,
-	PlasticCrate,
-	Screw,
-	PirateHat,
-	HardHat,
-	EngineCore,
-	ScrapMetal,
-	EmptyCan,
-
-	// Tool
-	CUTLASS,
-	Blaster,
-	Key,
-	LANTERN,
-
-	None,
-
-	ItemTypeCount,
 };
 
 enum Floor

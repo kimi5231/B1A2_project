@@ -28,39 +28,44 @@ Room::~Room()
 
 void Room::Init()
 {
-	// 테스트용 아이템 생성
-	ItemRef box = std::make_shared<Item>(ItemType::CardboardBox);
-	box->SetID(_generateItemID++);
-	box->SetPos({ 0, 700, 25 });
-	box->SetObjectPoolState(ObjectPoolState::InWorld);
-	_items.push_back(box);
-	std::shared_ptr<Cutlass> cutlass = std::make_shared<Cutlass>(ItemType::CUTLASS);
-	cutlass->SetID(_generateItemID++);
-	cutlass->SetPos({ 0, 750, 25 });
-	cutlass->SetObjectPoolState(ObjectPoolState::InWorld);
-	_items.push_back(cutlass);
-	ItemRef blaster = std::make_shared<Tool>(ItemType::Blaster);
-	blaster->SetID(_generateItemID++);
-	blaster->SetPos({ 0, 650, 25 });
-	blaster->SetObjectPoolState(ObjectPoolState::InWorld);
-	_items.push_back(blaster);
-	ItemRef key = std::make_shared<Tool>(ItemType::Key);
-	key->SetID(_generateItemID++);
-	key->SetPos({ 0, 600, 25 });
-	key->SetObjectPoolState(ObjectPoolState::InWorld);
-	_items.push_back(key);
-	ItemRef lantern = std::make_shared<Lantern>(ItemType::LANTERN);
-	lantern->SetID(_generateItemID++);
-	lantern->SetPos({ 0, 550, 25 });
-	lantern->SetObjectPoolState(ObjectPoolState::InWorld);
-	_items.push_back(lantern);
-
 	// Player ObjectPool 미리 확보
 	for (int i = 0; i < MAX_ROOM_PLAYER; ++i)
 	{
 		_players[i] = new Player();
 		_players[i]->SetID(i);
 		_players[i]->SetObjectPoolState(ObjectPoolState::Reusable);
+	}
+
+	// Monster ObjectPool 미리 확보
+	for (int i = 0; i < MAX_MONSTER; ++i)
+	{
+		// 몬스터 타입따라 클래스 다르게 생성 필요
+		_monsters[i] = new Monster(static_cast<MonsterType>(i % static_cast<int>(MonsterType::MonsterTypeCount)), this);
+		_monsters[i]->SetID(i);
+		_monsters[i]->SetObjectPoolState(ObjectPoolState::Reusable);
+	}
+
+	// Item ObjectPool 미리 확보
+	for (int i = 0; i < MAX_ITEM; ++i)
+	{
+		ItemType type = static_cast<ItemType>(i % static_cast<int>(ItemType::ItemTypeCount));
+
+		switch (type)
+		{
+		// 도구 타입 따라 클래스 다르게 생성 필요
+		case ItemType::CUTLASS:
+		case ItemType::Blaster:
+		case ItemType::Key:
+		case ItemType::LANTERN:
+			_items[i] = new Tool(type);
+			break;
+		default:
+			_items[i] = new Item(type);
+			break;
+		}
+
+		_items[i]->SetID(i);
+		_items[i]->SetObjectPoolState(ObjectPoolState::Reusable);
 	}
 
 	// 장애물 ObjectPool 미리 확보
@@ -73,22 +78,21 @@ void Room::Init()
 		_obstacles.push_back(obstacle);
 	}
 
+	// 테스트용 아이템 생성
+	AddItem(false, ItemType::CardboardBox, { 0, 700, 25 });
+	AddItem(true, ItemType::CUTLASS, { 0, 750, 25 });
+	AddItem(true, ItemType::Blaster, { 0, 650, 25 });
+	AddItem(true, ItemType::Key, { 0, 600, 25 });
+	AddItem(true, ItemType::LANTERN, { 0, 550, 25 });
+	
 	// 테스트용 몬스터 생성
-	MonsterRef spider = std::make_shared<Spider>(MonsterType::Spider, this);
-	spider->SetID(_generateMonsterID++);
-	spider->SetPos({ 0, 675, 25 });
-	spider->SetObjectPoolState(ObjectPoolState::InWorld);
+	Monster* spider = AddMonster(MonsterType::Spider, { 0, 675, 25 });
 	spider->SetState(ObjectState::HIT, false);
 	spider->SetState(ObjectState::IDLE, false);
-	_monsters.push_back(spider);
 
-	MonsterRef emotionGame = std::make_shared<EmotionGame>(MonsterType::EmotionGame, this);
-	emotionGame->SetID(_generateMonsterID++);
-	emotionGame->SetPos({ 0, 675, 25 });
-	emotionGame->SetObjectPoolState(ObjectPoolState::InWorld);
+	Monster* emotionGame = AddMonster(MonsterType::Spider, { 0, 675, 25 });
 	emotionGame->SetState(ObjectState::HIT, false);
 	emotionGame->SetState(ObjectState::IDLE, false);
-	_monsters.push_back(emotionGame);
 
 	// base 생성
 	CubeInfo info = g_dataManager->GetCubeInfo(CubeType::Base);
@@ -350,16 +354,21 @@ void Room::StartStage()
 {
 	// Cube 생성
 	CreateFactoryCubes();
-	//g_framework->SendCreateCubesPacket(_cubes, _doors, true);
+	//g_network->SendCreateCubesPacket(_cubes, _doors, true);
 
-	AddItem(false, ItemType::CardboardBox, { 0, -50, 25 }, true);
-	AddItem(true, ItemType::CUTLASS, { 0, -100, 25 }, true);
-	AddItem(true, ItemType::Blaster, { 0, 50, 25 }, true);
-	AddItem(true, ItemType::Key, { 0, 100, 25 }, true);
-	AddItem(true, ItemType::LANTERN, { 0, 150, 25 }, true);
+	AddItem(false, ItemType::CardboardBox, { 0, 700, 25 });
+	AddItem(true, ItemType::CUTLASS, { 0, 750, 25 });
+	AddItem(true, ItemType::Blaster, { 0, 650, 25 });
+	AddItem(true, ItemType::Key, { 0, 600, 25 });
+	AddItem(true, ItemType::LANTERN, { 0, 550, 25 });
 
-	AddMonster(MonsterType::None, { 0, 100, 25 }, true);
-	AddMonster(MonsterType::Spider, { 0, 100, 25 }, true);
+	Monster* spider = AddMonster(MonsterType::Spider, { 0, 675, 25 });
+	spider->SetState(ObjectState::HIT, false);
+	spider->SetState(ObjectState::IDLE, false);
+
+	Monster* emotionGame = AddMonster(MonsterType::Spider, { 0, 675, 25 });
+	emotionGame->SetState(ObjectState::HIT, false);
+	emotionGame->SetState(ObjectState::IDLE, false);
 }
 
 void Room::EndStage()
@@ -369,14 +378,14 @@ void Room::EndStage()
 	_obstacles.clear();
 	_connectableDoors.clear();
 
-	for(MonsterRef monster : _monsters)
+	for(auto& monster : _monsters)
 		monster->SetObjectPoolState(ObjectPoolState::Reusable);
-	for(ItemRef item : _items)
+	for(auto& item : _items)
 		item->SetObjectPoolState(ObjectPoolState::Reusable);
 
-	_generateMonsterID = 1;
-	_generateItemID = 1;
-	_generateObstacleID = 1;
+	_generateMonsterID = 0;
+	_generateItemID = 0;
+	_generateObstacleID = 0;
 }
 
 Player* Room::AddPlayer()
@@ -400,7 +409,7 @@ Player* Room::AddPlayer()
 	}
 }
 
-MonsterRef Room::AddMonster(MonsterType monsterType, Vector pos, bool isSend)
+Monster* Room::AddMonster(MonsterType monsterType, Vector pos)
 {
 	for (auto& monster : _monsters)
 	{
@@ -413,20 +422,23 @@ MonsterRef Room::AddMonster(MonsterType monsterType, Vector pos, bool isSend)
 			// ObjectPoolState 변경
 			monster->SetObjectPoolState(ObjectPoolState::InWorld);
 
-			/*if (isSend)
-				g_framework->SendSpawnMonsterPacket(monster, true);*/
+			for (auto& player : _players)
+			{
+				if (player->GetClient())
+					g_network->SendAddMonsterPacket(monster, player->GetClient());
+			}
 
 			return monster;
 		}
 	}
 }
 
-ItemRef Room::AddItem(bool isTool, ItemType itemType, Vector pos, bool isSend)
+Item* Room::AddItem(bool isTool, ItemType itemType, Vector pos)
 {
 	for (auto& item : _items)
 	{
 		// 재사용 가능한 아이템 찾기
-		if (item->GetObjectPoolState() == ObjectPoolState::Reusable && isTool == (dynamic_pointer_cast<Tool>(item) != nullptr))
+		if (item->GetObjectPoolState() == ObjectPoolState::Reusable && isTool == (dynamic_cast<Tool*>(item) != nullptr))
 		{
 			// 재사용이 가능하면, 정보 재설정
 			item->SetPos(pos);
@@ -435,8 +447,11 @@ ItemRef Room::AddItem(bool isTool, ItemType itemType, Vector pos, bool isSend)
 			// ObjectPoolState 변경
 			item->SetObjectPoolState(ObjectPoolState::InWorld);
 
-			/*if (isSend)
-				g_framework->SendAddItemPacket(item, isTool, true);*/
+			for (auto& player : _players)
+			{
+				if (player->GetClient())
+					g_network->SendAddItemPacket(item, isTool, player->GetClient());
+			}
 
 			return item;
 		}
@@ -487,28 +502,28 @@ void Room::RemoveObject(ObjectType type, int id)
 	}		
 }
 
-GameObjectRef Room::GetGameObject(ObjectType type, uint id)
+GameObjectRef Room::GetDoor(ObjectType type, uint id)
 {
 	switch (type)
 	{
-	case ObjectType::Monster:
-		return _monsters[id];
-		break;
-	case ObjectType::Item:
-		return _items[id - 1];
-		break;
 	case ObjectType::Door:
 		return _doors[id - 1];
 		break;
 	}
 }
 
-GameObject* Room::GetPlayer(ObjectType type, uint id)
+GameObject* Room::GetGameObject(ObjectType type, uint id)
 {
 	switch (type)
 	{
 	case ObjectType::Player:
 		return _players[id];
+		break;
+	case ObjectType::Monster:
+		return _monsters[id];
+		break;
+	case ObjectType::Item:
+		return _items[id];
 		break;
 	}
 }

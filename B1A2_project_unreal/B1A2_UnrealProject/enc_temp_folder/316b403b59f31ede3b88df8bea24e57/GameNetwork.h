@@ -80,6 +80,7 @@ inline std::vector<T> GameNetwork::DeserializeVector(std::vector<char>& data)
 {
 	int size;
 	memcpy(&size, data.data(), sizeof(int));
+	UE_LOG(LogTemp, Error, TEXT("%d, %d"), size, data.size());
 	data.erase(data.begin(), data.begin() + sizeof(int));
 
 	std::vector<T> vector(size);

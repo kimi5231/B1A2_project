@@ -25,8 +25,8 @@ public:
 
 public:
 	Player* AddPlayer();
-	MonsterRef AddMonster(MonsterType monsterType, Vector pos, bool isSend);
-	ItemRef AddItem(bool isTool, ItemType itemType, Vector pos, bool isSend);
+	Monster* AddMonster(MonsterType monsterType, Vector pos);
+	Item* AddItem(bool isTool, ItemType itemType, Vector pos);
 	ObstacleRef AddObstacle(ObstacleType obstacleType, Vector pos, bool isSend);
 	void RemoveObject(ObjectType type, int id);
 
@@ -34,11 +34,11 @@ public:
 	void RemoveProcessingItem(int itemID) { _processingItems.erase(itemID); }
 
 public:
-	GameObjectRef GetGameObject(ObjectType type, uint id);
-	GameObject* GetPlayer(ObjectType type, uint id);
+	GameObjectRef GetDoor(ObjectType type, uint id);
+	GameObject* GetGameObject(ObjectType type, uint id);
 	const std::array<Player*, MAX_ROOM_PLAYER>& GetPlayers() { return _players; }
-	const std::vector<MonsterRef>& GetMonsters() { return _monsters; }
-	const std::vector<ItemRef>& GetItems() { return _items; }
+	const std::array<Monster*, MAX_MONSTER>& GetMonsters() { return _monsters; }
+	const std::array<Item*, MAX_ITEM>& GetItems() { return _items; }
 	const std::vector<CubeRef>& GetCubes() { return _cubes; }
 	const std::vector<DoorRef>& GetDoors() { return _doors; }
 	
@@ -53,8 +53,8 @@ private:
 	std::vector<DoorRef> _doors;
 	std::vector<ObstacleRef> _obstacles;
 	std::array<Player*, MAX_ROOM_PLAYER> _players;
-	std::vector<MonsterRef> _monsters;
-	std::vector<ItemRef> _items;
+	std::array<Monster*, MAX_MONSTER> _monsters;
+	std::array<Item*, MAX_ITEM> _items;
 	std::unordered_map<int, ItemRef> _processingItems;
 
 	uint _playerCount{};

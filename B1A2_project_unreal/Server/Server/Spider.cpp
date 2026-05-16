@@ -124,10 +124,10 @@ void Spider::CreateWeb()
 	switch (state)
 	{
 	case ObjectState::MAKE_WEB:
-		_fsm->ChangeState(g_makeWebState, dynamic_pointer_cast<Monster>(shared_from_this()));
+		_fsm->ChangeState(g_makeWebState, this);
 		break;
 	case ObjectState::RETURN:
-		_fsm->ChangeState(g_returnState, dynamic_pointer_cast<Monster>(shared_from_this()));
+		_fsm->ChangeState(g_returnState, this);
 		break;
 	}
 
