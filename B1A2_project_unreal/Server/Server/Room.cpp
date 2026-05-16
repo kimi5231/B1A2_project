@@ -121,7 +121,7 @@ void Room::Update()
 	using namespace std::chrono;
 
 	static auto lastUpdate = steady_clock::now();
-	const auto TICK = 50ms; // 20Hz, 50ms마다 실행
+	const auto TICK = 50ms;
 
 	auto now = steady_clock::now();
 	if (now - lastUpdate >= TICK)
@@ -130,7 +130,13 @@ void Room::Update()
 
 		// Player Update
 		for (const auto& player : _players)
+		{
+			if (player->GetObjectPoolState() != ObjectPoolState::InWorld)
+				continue;
+
 			player->Update();
+		}
+			
 
 		// 몬스터 업데이트
 		for (const auto& monster : _monsters)
@@ -141,9 +147,14 @@ void Room::Update()
 			monster->Update(this);
 		}
 			
-		for(const auto& item : _processingItems)
-			item.second->Update();
+		for (const auto& [id, item] : _processingItems)
+		{
+			if (item->GetObjectPoolState() != ObjectPoolState::InWorld)
+				continue;
 
+			item->Update();
+		}
+			
 		lastUpdate = now;
 	}
 }
