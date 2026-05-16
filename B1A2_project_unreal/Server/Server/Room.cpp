@@ -350,6 +350,7 @@ void Room::CreateFactoryCubes()
 			for (auto& door : doors)
 			{
 				door->SetID(generateDoorID++);
+				door->SetOwnerRoom(this);
 				newCube->AddDoor(door->GetID());
 				_doors.push_back(door);
 				_connectableDoors[door->GetDir()].push_back(door);

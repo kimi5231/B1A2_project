@@ -37,6 +37,7 @@ enum PacketID : char
 	S_TurnOffLantern,
 	S_InteractDoorNotify,
 	S_UpdateHp,
+	S_EmotionGameResult,
 	S_SpawnParticle,
 	S_StartStage,
 	S_EndStage,
@@ -335,6 +336,17 @@ struct S_UpdateHp_Packet
 	PacketID packetID;
 	unsigned char playerID;
 	unsigned char hp;
+};
+
+struct S_EmotionGameResult_Packet
+{
+	unsigned short size;
+	PacketID packetID;
+	unsigned char monsterID;
+	unsigned char playerID;
+	unsigned char playerHP;
+	Emotion monsterEmotion;
+	EmotionGameResult result;
 };
 
 struct S_SpawnParticle_Packet

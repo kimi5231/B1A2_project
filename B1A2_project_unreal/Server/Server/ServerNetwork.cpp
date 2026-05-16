@@ -8,6 +8,7 @@
 #include "Cube.h"
 #include "Door.h"
 #include "Lantern.h"
+#include "EmotionGame.h"
 
 ServerNetwork::ServerNetwork(ServerFramework* framework)
 {
@@ -601,6 +602,17 @@ void ServerNetwork::SendUpdateHpPacket(int playerID, int hp, Session* client)
 {
 	// Packet Data 持失
 	S_UpdateHp_Packet packetData{ sizeof(S_UpdateHp_Packet), S_UpdateHp, playerID, hp };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	client->Send(serializedPacketData);
+}
+
+void ServerNetwork::SendEmotionGameResultPacket(int playerID, int playerHP, EmotionGame* emotionGame, Session* client)
+{
+	// Packet Data 持失
+	S_EmotionGameResult_Packet packetData{ sizeof(S_EmotionGameResult_Packet), S_EmotionGameResult, emotionGame->GetID(), playerID, playerHP, emotionGame->GetEmotion(), emotionGame->GetResult() };
 
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);

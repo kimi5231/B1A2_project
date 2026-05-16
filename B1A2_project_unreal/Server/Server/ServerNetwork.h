@@ -5,6 +5,7 @@
 class ServerFramework;
 class Session;
 class Lantern;
+class EmotionGame;
 
 class ServerNetwork
 {
@@ -49,11 +50,11 @@ public:
 	void SendTurnOffLanternPacket(Lantern* lantern, int playerID, Session* client);
 	void SendInteractDoorNotifyPacket(int playerID, int doorID, ObjectState doorState, Session* client);
 	void SendUpdateHpPacket(int playerID, int hp, Session* client);
+	void SendEmotionGameResultPacket(int playerID, int playerHP, EmotionGame* emotionGame,  Session* client);
 	void SendSpawnParticlePacket(Vector pos, Session* client);
 	void SendStartStagePacket(Session* client);
 	void SendEndStagePacket(Session* client);
 	
-
 public:
 	// Recv
 	void ProcessMovePacket(C_Move_Packet packet, int clientIndex);

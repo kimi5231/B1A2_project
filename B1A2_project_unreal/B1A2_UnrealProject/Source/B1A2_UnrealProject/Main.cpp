@@ -252,6 +252,14 @@ void UMain::ProcessRecv()
 			event->isComplete = true;
 			break;
 		}
+		case S_EmotionGameResult:
+		{
+			S_EmotionGameResult_Packet emotionGameResultPacket;
+			FMemory::Memcpy(&emotionGameResultPacket, event->serializedPacketData.data(), sizeof(S_EmotionGameResult_Packet));
+			RecvEmotionGameResult(emotionGameResultPacket);
+			event->isComplete = true;
+			break;
+		}
 		case S_SpawnParticle:
 		{
 			S_SpawnParticle_Packet spawnParticlePacket;
@@ -1736,6 +1744,10 @@ void UMain::RecvAddObstacle(S_AddObstacle_Packet packet)
 //		}
 //	});
 //}
+
+void UMain::RecvEmotionGameResult(S_EmotionGameResult_Packet packet)
+{
+}
 
 FRotator UMain::DirToRotation(Dir dir)
 {

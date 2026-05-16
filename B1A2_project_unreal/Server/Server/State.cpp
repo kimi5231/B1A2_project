@@ -605,6 +605,7 @@ void Play::Exit(Monster* monster)
 	EmotionGame* emotionGame = dynamic_cast<EmotionGame*>(monster);
 	Emotion emotion = emotionGame->SelectEmotion();
 	Emotion targetEmotion = emotionGame->GetTarget()->GetCurrentEmotion();
+	emotionGame->SetEmotion(emotion);
 	emotionGame->SetResult(EmotionGameResult::Draw);
 
 	// Monster가 이겼을 때
@@ -613,16 +614,6 @@ void Play::Exit(Monster* monster)
 		emotion == Emotion::Neutral && targetEmotion == Emotion::Happy)
 	{
 		emotionGame->GetTarget()->TackDamage(emotionGame->GetDamage());
-		
-		// Broadcast
-		for (auto& p : monster->GetOwnerRoom()->GetPlayers())
-		{
-			if (!p->GetClient())
-				continue;
-
-			g_network->SendUpdateHpPacket(monster->GetTarget()->GetID(), monster->GetTarget()->GetHP(), p->GetClient());
-		}
-
 		emotionGame->SetResult(EmotionGameResult::Win);
 	}
 	// 졌을 때
@@ -635,8 +626,14 @@ void Play::Exit(Monster* monster)
 		emotionGame->SetResult(EmotionGameResult::Lose);
 	}
 
-	// 결과 패킷 보내기
-	
+	// 게임결과 통지
+	for (auto& p : monster->GetOwnerRoom()->GetPlayers())
+	{
+		if (!p->GetClient())
+			continue;
+
+		g_network->SendEmotionGameResultPacket(monster->GetTarget()->GetID(), monster->GetTarget()->GetHP(), emotionGame, p->GetClient());
+	}
 
 	emotionGame->InitSumTime();
 }

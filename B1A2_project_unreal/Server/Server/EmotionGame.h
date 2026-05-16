@@ -22,6 +22,8 @@ public:
 	int GetHealValue() { return _healValue; }
 	void SetResult(EmotionGameResult result) { _result = result; }
 	EmotionGameResult GetResult() { return _result; }
+	Emotion GetEmotion() { return _emotion; }
+	void SetEmotion(Emotion emotion) { _emotion = emotion; }
 
 private:
 	float _playTime;
@@ -30,5 +32,6 @@ private:
 	int _healValue;
 	int _aggroRange;
 
+	Emotion _emotion;
 	EmotionGameResult _result;
 };
