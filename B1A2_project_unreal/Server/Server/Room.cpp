@@ -103,7 +103,7 @@ void Room::Init()
 	spider->SetState(ObjectState::HIT, false);
 	spider->SetState(ObjectState::IDLE, false);
 
-	Monster* emotionGame = AddMonster(MonsterType::Spider, { 0, 675, 25 });
+	Monster* emotionGame = AddMonster(MonsterType::EmotionGame, { 0, 675, 25 });
 	emotionGame->SetState(ObjectState::HIT, false);
 	emotionGame->SetState(ObjectState::IDLE, false);
 
@@ -137,7 +137,6 @@ void Room::Update()
 			player->Update();
 		}
 			
-
 		// 몬스터 업데이트
 		for (const auto& monster : _monsters)
 		{
@@ -221,6 +220,7 @@ void Room::CreateFactoryCubes()
 		for (auto& door : doors)
 		{
 			door->SetID(generateDoorID++);
+			door->SetOwnerRoom(this);
 			cube->AddDoor(door->GetID());
 			_doors.push_back(door);
 			_connectableDoors[door->GetDir()].push_back(door);
@@ -232,7 +232,6 @@ void Room::CreateFactoryCubes()
 
 	// 이후 방 절차적 생성
 	while(conditions.totalCubeCount != _cubes.size())
-	//for (int i : std::views::iota(1u, conditions.totalCubeCount))
 	{
 		// 연결할 방향 선택
 		Dir connectDir;
@@ -330,6 +329,7 @@ void Room::CreateFactoryCubes()
 		if (isCreate)
 		{
 			door->SetConnectedCubeID(generateCubeID);
+			door->SetOwnerRoom(this);
 			// 방과 연결된 문은 삭제
 			door->SetConnectable(false);
 			_connectableDoors[connectDir].erase(std::remove(_connectableDoors[connectDir].begin(), _connectableDoors[connectDir].end(), door), _connectableDoors[connectDir].end());
@@ -389,7 +389,7 @@ void Room::StartStage()
 	spider->SetState(ObjectState::HIT, false);
 	spider->SetState(ObjectState::IDLE, false);
 
-	Monster* emotionGame = AddMonster(MonsterType::Spider, { 0, 675, 25 });
+	Monster* emotionGame = AddMonster(MonsterType::EmotionGame, { 0, 675, 25 });
 	emotionGame->SetState(ObjectState::HIT, false);
 	emotionGame->SetState(ObjectState::IDLE, false);
 }

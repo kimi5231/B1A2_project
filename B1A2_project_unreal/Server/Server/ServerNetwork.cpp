@@ -78,10 +78,12 @@ void ServerNetwork::Update()
 	DWORD numByte;
 	ULONG_PTR key;
 	LPOVERLAPPED over;
-	GetQueuedCompletionStatus(_iocp, &numByte, &key, &over, INFINITE);
+	GetQueuedCompletionStatus(_iocp, &numByte, &key, &over, 0);
 	
 	if (over == nullptr)
 	{
+		return;
+		
 		if (key == -1)
 			exit(-1);
 

@@ -297,10 +297,8 @@ void ChaseState::Tick(Monster* monster)
 
 			Rotation newRot = { 0.f, angleDeg, 0.f }; // 바닥에서만 도니까 Roll, Pitch는 0
 
-			// 3. monster->SetRotation(Rotation) 호출
 			monster->SetRotation(newRot);
 
-			// 2. 결정된 방향과 속도로 이동
 			monster->SetPos(currentPos + (dir * moveDist));
 		}
 
