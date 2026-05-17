@@ -6,6 +6,7 @@ class ServerFramework;
 class Session;
 class Lantern;
 class EmotionGame;
+class SellingMachine;
 
 class ServerNetwork
 {
@@ -39,7 +40,7 @@ public:
 	void SendRemoveObjectPacket(ObjectType objectType, int objectID, Session* client);
 	void SendMovePacket(GameObject* object, Session* client);
 	void SendUpdateObjectStatePacket(GameObject* object, Session* client);
-	void SendCreateCubesPacket(const std::vector<CubeRef>& cubes, const std::vector<Door*>& doors, Session* client);
+	void SendCreateCubesPacket(const std::vector<CubeRef>& cubes, const std::vector<Door*>& doors, const std::vector<SellingMachine*>& sellingMachines, Session* client);
 	void SendAddItemToInventoryPacket(Item* item, bool isTool, Session* client);
 	void SendRemoveItemFromInventoryPacket(Item* item, bool isTool, Session* client);
 	void SendItemPickupNotifyPacket(Item* item, int playerID, bool isTool, Session* client);

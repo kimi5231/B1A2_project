@@ -6,6 +6,8 @@
             "totalRoomCount": 37,
             "createItemCount": {"min": 12, "max": 14},
             "createExitCount": {"min": 3, "max": 3},
+            "createSellingMachineCount": 6,
+            "createSpecialSellingMachineCount": 0,
             "exitPos": {"min": 3, "max": 3},
             "floor": {"min": 2, "max": 2}
         }

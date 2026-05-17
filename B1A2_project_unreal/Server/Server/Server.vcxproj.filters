@@ -134,6 +134,9 @@
     <ClCompile Include="ExpOver.cpp">
       <Filter>소스 파일\Main\Network</Filter>
     </ClCompile>
+    <ClCompile Include="SellingMachine.cpp">
+      <Filter>소스 파일\Game\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -225,6 +228,9 @@
     </ClInclude>
     <ClInclude Include="ExpOver.h">
       <Filter>소스 파일\Main\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="SellingMachine.h">
+      <Filter>소스 파일\Game\Object</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

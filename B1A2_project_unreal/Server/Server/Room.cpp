@@ -9,6 +9,7 @@
 #include "Obstacle.h"
 #include "Lantern.h"
 #include "EmotionGame.h"
+#include "SellingMachine.h"
 
 Room::Room()
 {
@@ -377,9 +378,32 @@ void Room::CreateFactoryCubes()
 			door->SetDoorType(DoorType::Wall);
 	}
 
-	std::cout << "Success Create GameRooms" << std::endl;
+	// SellingMachine 생성
+	int generateSellingMachineID = 0;
+
+	// 나중에 특수 판매기 설치 추가 예정
+	while (_sellingMachine.size() < conditions.createSellingMachineCount)
+	{
+		std::uniform_int_distribution<int> selectCube(0, _cubes.size() - 1);
+		CubeRef cube = _cubes[selectCube(gen)];
+		CubeInfo info = cube->GetCubeInfo();
+
+		if (info.isCreateSellingMachine)
+		{
+			std::uniform_int_distribution<int> selectSellingMachine(0, info.sellingMachinePos.size() - 1);
+			int sellingMachineIndex = selectSellingMachine(gen);
+			
+			SellingMachine* sellingMachine = new SellingMachine(info.sellingMachineDir[sellingMachineIndex], false);
+			sellingMachine->SetPos(cube->GetPos() + info.sellingMachinePos[sellingMachineIndex]);
+			sellingMachine->SetOwnerRoom(this);
+			sellingMachine->SetState(ObjectState::OPEN);
+			_sellingMachine.push_back(sellingMachine);
+		}
+	}
 
 	// 아이템 생성
+
+	std::cout << "Success Create GameRooms" << std::endl;
 
 	// 추후 다시 사용할 예정
 	//g_framework->SendCreateGameRoomPacket(_gameRooms, true);
@@ -410,6 +434,7 @@ void Room::EndStage()
 {
 	_cubes.clear();
 	_doors.clear();
+	_sellingMachine.clear();
 	_connectableDoors.clear();
 
 	for(auto& monster : _monsters)

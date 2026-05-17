@@ -149,6 +149,7 @@
     <ClInclude Include="Monster.h" />
     <ClInclude Include="Obstacle.h" />
     <ClInclude Include="Packets.h" />
+    <ClInclude Include="SellingMachine.h" />
     <ClInclude Include="ServerNetwork.h" />
     <ClInclude Include="Session.h" />
     <ClInclude Include="Spider.h" />
@@ -190,6 +191,7 @@
     </ClCompile>
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Room.cpp" />
+    <ClCompile Include="SellingMachine.cpp" />
     <ClCompile Include="ServerFramework.cpp" />
     <ClCompile Include="ServerNetwork.cpp" />
     <ClCompile Include="Session.cpp" />

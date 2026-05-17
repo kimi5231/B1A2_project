@@ -167,7 +167,7 @@ void UMain::ProcessRecv()
 			unsigned short packetSize;
 			memcpy(&packetSize, event->serializedPacketData.data(), sizeof(unsigned short));
 			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned short) + sizeof(PacketID));
-			S_CreateCubes_Packet createCubesPacket{ packetSize, S_CreateCubes, _gameNetwork->DeserializeVector<CubeDTO>(event->serializedPacketData), _gameNetwork->DeserializeVector<DoorDTO>(event->serializedPacketData)};
+			S_CreateCubes_Packet createCubesPacket{ packetSize, S_CreateCubes, _gameNetwork->DeserializeVector<CubeDTO>(event->serializedPacketData), _gameNetwork->DeserializeVector<DoorDTO>(event->serializedPacketData), _gameNetwork->DeserializeVector<SellingMachineDTO>(event->serializedPacketData) };
 			RecvCreateCubes(createCubesPacket);
 			event->isComplete = true;
 			break;

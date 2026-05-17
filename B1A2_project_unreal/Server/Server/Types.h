@@ -1,7 +1,7 @@
 #pragma once
 
 #define PORT 7777
-#define BufferSize 5000
+#define BufferSize 10000
 
 using TimePoint = std::chrono::steady_clock::time_point;
 using FloatSec = std::chrono::duration<float>;
@@ -63,6 +63,14 @@ enum class ObstacleType : char
 	ObstacleTypeCount,
 };
 
+// 쓸지말지 고민중
+enum class StructureType : char
+{
+	SellingMachine,
+
+	StructureTypeCount,
+};
+
 enum ObjectState
 {
 	IDLE,
@@ -83,7 +91,7 @@ enum ObjectState
 	HIT,
 	DEAD,
 
-	// Door
+	// Structure
 	LOCK,
 	OPEN,
 	CLOSE,
@@ -433,6 +441,7 @@ struct CubeInfo
 	Vector size;
 	bool isCreateItem;
 	bool isCreateExit;
+	bool isCreateSellingMachine;
 	std::unordered_map<Difficulty, int> minCreateCount;
 	std::unordered_map<Difficulty, int> maxCreateCount;
 	std::unordered_map<Difficulty, float> spawnChance;
@@ -440,6 +449,8 @@ struct CubeInfo
 	std::pair<uint, uint> f2DoorCount;
 	std::vector<Vector> f1DoorPos;
 	std::vector<Vector> f2DoorPos;*/
+	std::vector<Vector> sellingMachinePos;
+	std::vector<Dir> sellingMachineDir;
 	std::vector<Vector> doorPos;
 	std::vector<Dir> doorDir;
 	int enterDistance;
@@ -450,6 +461,8 @@ struct CubeConditionInfo
 	int totalCubeCount;
 	std::pair<int, int> createItemCount;
 	std::pair<int, int> createExitCount;
+	int createSellingMachineCount;
+	int createSpecialSellingMachineCount;
 	std::pair<int, int> exitPos;
 	std::pair<int, int> floor;
 };

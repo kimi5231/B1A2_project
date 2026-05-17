@@ -9,6 +9,7 @@
 #include "Door.h"
 #include "Lantern.h"
 #include "EmotionGame.h"
+#include "SellingMachine.h"
 
 ServerNetwork::ServerNetwork(ServerFramework* framework)
 {
@@ -190,7 +191,7 @@ void ServerNetwork::ProcessAccept()
 	}
 
 	// 나중에 삭제하기
-	SendCreateCubesPacket(_clients[clientIndex]->_room->GetCubes(), _clients[clientIndex]->_room->GetDoors(), _clients[clientIndex]);
+	SendCreateCubesPacket(_clients[clientIndex]->_room->GetCubes(), _clients[clientIndex]->_room->GetDoors(), _clients[clientIndex]->_room->GetSellingMachine(), _clients[clientIndex]);
 
 	_clients[clientIndex]->Recv();
 
@@ -475,7 +476,7 @@ void ServerNetwork::SendUpdateObjectStatePacket(GameObject* object, Session* cli
 	client->Send(serializedPacketData);
 }
 
-void ServerNetwork::SendCreateCubesPacket(const std::vector<CubeRef>& cubes, const std::vector<Door*>& doors, Session* client)
+void ServerNetwork::SendCreateCubesPacket(const std::vector<CubeRef>& cubes, const std::vector<Door*>& doors, const std::vector<SellingMachine*>& sellingMachines, Session* client)
 {
 	std::vector<CubeDTO> cubeDTOs;
 	for (auto& cube : cubes)
@@ -492,17 +493,27 @@ void ServerNetwork::SendCreateCubesPacket(const std::vector<CubeRef>& cubes, con
 		DoorDTO DTO{ door->GetID(), door->GetPos(), door->GetDir(), door->GetState(), door->GetDoorType() };
 		doorDTOs.push_back(DTO);
 	}
+
+	std::vector<SellingMachineDTO> sellingMachineDTOs;
+	for (auto& sellingMachine : sellingMachines)
+	{
+		// SellingMachine 정보 기록
+		SellingMachineDTO DTO{ sellingMachine->GetID(), sellingMachine->GetPos(), sellingMachine->GetDir(), sellingMachine->GetState() };
+		sellingMachineDTOs.push_back(DTO);
+	}
 	
 	// Packet Serialize
 	std::vector<char> cubeData = SerializeVector(cubeDTOs);
 	std::vector<char> doorData = SerializeVector(doorDTOs);
-	unsigned short packetSize = sizeof(unsigned short) + sizeof(PacketID) + cubeData.size() + doorData.size();
+	std::vector<char> sellingMachineData = SerializeVector(doorDTOs);
+	unsigned short packetSize = sizeof(unsigned short) + sizeof(PacketID) + cubeData.size() + doorData.size() + sellingMachineData.size();
 	std::vector<char> serializedPacketData(sizeof(unsigned short));
 
 	memcpy(serializedPacketData.data(), &packetSize, sizeof(unsigned short));
 	serializedPacketData.push_back(S_CreateCubes);
 	serializedPacketData.insert(serializedPacketData.end(), cubeData.begin(), cubeData.end());
 	serializedPacketData.insert(serializedPacketData.end(), doorData.begin(), doorData.end());
+	serializedPacketData.insert(serializedPacketData.end(), sellingMachineData.begin(), sellingMachineData.end());
 
 	client->Send(serializedPacketData);
 }

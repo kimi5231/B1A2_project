@@ -61,6 +61,14 @@ struct DoorDTO
 	DoorType doorType;
 };
 
+struct SellingMachineDTO
+{
+	unsigned char id;
+	Vector pos;
+	Dir dir;
+	ObjectState state;
+};
+
 // Client
 struct C_Move_Packet
 {
@@ -250,6 +258,7 @@ struct S_CreateCubes_Packet
 	PacketID packetID;
 	std::vector<CubeDTO> cubes;
 	std::vector<DoorDTO> doors;
+	std::vector<SellingMachineDTO> sellingMachines;
 };
 
 struct S_AddItemToInventory_Packet

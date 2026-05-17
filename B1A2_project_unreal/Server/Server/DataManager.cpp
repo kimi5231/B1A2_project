@@ -33,6 +33,9 @@ void DataManager::LoadGameRoomConditionInfos()
         info.createExitCount.first = condition["createExitCount"]["min"];
         info.createExitCount.second = condition["createExitCount"]["max"];
 
+        info.createSellingMachineCount = condition["createSellingMachineCount"];
+        info.createSpecialSellingMachineCount = condition["createSpecialSellingMachineCount"];
+
         info.exitPos.first = condition["exitPos"]["min"];
         info.exitPos.second = condition["exitPos"]["max"];
 
@@ -60,6 +63,7 @@ void DataManager::LoadGameRoomInfos()
             
         info.isCreateItem = room["isCreateItem"];
         info.isCreateExit = room["isCreateExit"];
+        info.isCreateSellingMachine = room["isCreateSellingMachine"];
 
         for (int i = 0; i < DifficultyCount; i++)
             info.minCreateCount[static_cast<Difficulty>(i)] = room["minCreateCount"][i];
@@ -93,6 +97,19 @@ void DataManager::LoadGameRoomInfos()
             info.f2DoorPos.push_back(pos);
         }*/
 
+        for (const auto& sellingMachinePos : room["sellingMachinePos"])
+        {
+            Vector pos;
+            pos.x = sellingMachinePos[0];
+            pos.y = sellingMachinePos[1];
+            pos.z = sellingMachinePos[2];
+
+            info.sellingMachinePos.push_back(pos);
+        }
+
+        for (const auto& sellingMachineDir : room["sellingMachineDir"])
+            info.sellingMachineDir.push_back(sellingMachineDir);
+ 
         for (const auto& doorPos : room["doorPos"])
         {
             Vector pos;

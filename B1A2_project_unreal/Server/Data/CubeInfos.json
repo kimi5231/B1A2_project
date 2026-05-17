@@ -56,7 +56,7 @@
             "size": [1300, 1300, 600],
             "isCreateItem": true,
             "isCreateExit": false,
-            "isCreateSellingMachine": true,
+            "isCreateSellingMachine": false,
             "sellingMachinePos": [],
             "sellingMachineDir": [],
             "minCreateCount": [1, 1, 1],

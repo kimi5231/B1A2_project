@@ -8,9 +8,6 @@ public:
 	~Door() {};
 
 public:
-	void Update() {};
-
-public:
 	Dir GetDir() { return _dir; }
 	int GetOwnerCubeID() { return _ownerCubeID; }
 	void SetConnectedCubeID(int connectedCubeID) { _connectedCubeID = connectedCubeID; }
