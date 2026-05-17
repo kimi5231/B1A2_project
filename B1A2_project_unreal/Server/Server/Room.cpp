@@ -394,6 +394,7 @@ void Room::CreateFactoryCubes()
 			int sellingMachineIndex = selectSellingMachine(gen);
 			
 			SellingMachine* sellingMachine = new SellingMachine(info.sellingMachineDir[sellingMachineIndex], false);
+			sellingMachine->SetID(generateSellingMachineID++);
 			sellingMachine->SetPos(cube->GetPos() + info.sellingMachinePos[sellingMachineIndex]);
 			sellingMachine->SetOwnerRoom(this);
 			sellingMachine->SetState(ObjectState::OPEN);

@@ -513,7 +513,7 @@ void ServerNetwork::SendCreateCubesPacket(const std::vector<CubeRef>& cubes, con
 	// Packet Serialize
 	std::vector<char> cubeData = SerializeVector(cubeDTOs);
 	std::vector<char> doorData = SerializeVector(doorDTOs);
-	std::vector<char> sellingMachineData = SerializeVector(doorDTOs);
+	std::vector<char> sellingMachineData = SerializeVector(sellingMachineDTOs);
 	unsigned short packetSize = sizeof(unsigned short) + sizeof(PacketID) + cubeData.size() + doorData.size() + sellingMachineData.size();
 	std::vector<char> serializedPacketData(sizeof(unsigned short));
 
