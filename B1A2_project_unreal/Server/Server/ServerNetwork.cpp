@@ -291,6 +291,14 @@ void ServerNetwork::ProcessPacket(std::vector<char>& packet, int clientIndex)
 		ProcessDropItemPacket(dropItemPacket, clientIndex);
 		break;
 	}
+	case C_DropItemToSellingMachine:
+	{
+		C_DropItemToSellingMachine_Packet dropItemToSellingMachinePacket;
+		memcpy(&dropItemToSellingMachinePacket, packet.data(), sizeof(C_DropItemToSellingMachine_Packet));
+		packet.erase(packet.begin(), packet.begin() + sizeof(C_DropItemToSellingMachine_Packet));
+		ProcessDropItemToSellingMachinePacket(dropItemToSellingMachinePacket, clientIndex);
+		break;
+	}
 	case C_ChangeTool:
 	{
 		C_ChangeTool_Packet changeToolPacket;
@@ -551,10 +559,10 @@ void ServerNetwork::SendItemPickupNotifyPacket(Item* item, int playerID, bool is
 	client->Send(serializedPacketData);
 }
 
-void ServerNetwork::SendDropItemPacket(Item* item, int playerID, Vector playerPos, bool isTool, Session* client)
+void ServerNetwork::SendDropItemPacket(Item* item, int playerID, Vector itemPos, bool isTool, Session* client)
 {
 	// Packet Data 생성
-	S_DropItem_Packet packetData{ sizeof(S_DropItem_Packet), S_DropItem, item->GetID(), playerID, isTool, item->GetItemType(), playerPos };
+	S_DropItem_Packet packetData{ sizeof(S_DropItem_Packet), S_DropItem, item->GetID(), playerID, isTool, item->GetItemType(), itemPos };
 
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);
@@ -754,8 +762,9 @@ void ServerNetwork::ProcessDropItemPacket(C_DropItem_Packet packet, int clientIn
 	// 아이템이 제대로 제거되었다면
 	if (player->RemoveItemFromInventory(packet.isTool, packet.itemID))
 	{
-		// 떨어뜨린 아이템 ObjectPoolState 변경
+		// 떨어뜨린 아이템 정보 수정
 		Item* item = dynamic_cast<Item*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::Item, packet.itemID));
+		item->SetPos(player->GetPos());
 		item->SetObjectPoolState(ObjectPoolState::InWorld);
 		// ownerID 초기화
 		item->SetOwnerID(-1);
@@ -766,7 +775,42 @@ void ServerNetwork::ProcessDropItemPacket(C_DropItem_Packet packet, int clientIn
 			if (!p->GetClient())
 				continue;
 
-			SendDropItemPacket(item, player->GetID(), player->GetPos(), packet.isTool,  p->GetClient());
+			SendDropItemPacket(item, player->GetID(), item->GetPos(), packet.isTool,  p->GetClient());
+		}
+	}
+}
+
+void ServerNetwork::ProcessDropItemToSellingMachinePacket(C_DropItemToSellingMachine_Packet packet, int clientIndex)
+{
+	// 요청한 Player가 판매기와 거리가 되는지 확인 
+	Player* player = dynamic_cast<Player*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::Player, packet.playerID));
+	SellingMachine* sellingMachine = dynamic_cast<SellingMachine*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::SellingMachine, packet.sellingMachineID));
+
+
+
+	// Player 인벤토리에서 아이템 제거
+	// 아이템이 제대로 제거되었다면
+	if (player->RemoveItemFromInventory(false, packet.itemID))
+	{
+		// 떨어뜨린 아이템 정보 수정
+		Item* item = dynamic_cast<Item*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::Item, packet.itemID));
+		
+		// SellingMachine 안에 배치. 나중에 제대로 된 값으로 입력할 것.
+		Vector pos = sellingMachine->GetPos();
+		pos.z += 100;
+		item->SetPos(pos);
+		sellingMachine->AddItem(item->GetID());
+
+		item->SetObjectPoolState(ObjectPoolState::InWorld);
+		item->SetOwnerID(-1);
+
+		// Broadcast
+		for (auto& p : _clients[clientIndex]->_room->GetPlayers())
+		{
+			if (!p->GetClient())
+				continue;
+
+			SendDropItemPacket(item, player->GetID(), item->GetPos(), false, p->GetClient());
 		}
 	}
 }

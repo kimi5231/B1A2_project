@@ -382,7 +382,7 @@ void Room::CreateFactoryCubes()
 	int generateSellingMachineID = 0;
 
 	// 나중에 특수 판매기 설치 추가 예정
-	while (_sellingMachine.size() < conditions.createSellingMachineCount)
+	while (_sellingMachines.size() < conditions.createSellingMachineCount)
 	{
 		std::uniform_int_distribution<int> selectCube(0, _cubes.size() - 1);
 		CubeRef cube = _cubes[selectCube(gen)];
@@ -397,7 +397,7 @@ void Room::CreateFactoryCubes()
 			sellingMachine->SetPos(cube->GetPos() + info.sellingMachinePos[sellingMachineIndex]);
 			sellingMachine->SetOwnerRoom(this);
 			sellingMachine->SetState(ObjectState::OPEN);
-			_sellingMachine.push_back(sellingMachine);
+			_sellingMachines.push_back(sellingMachine);
 		}
 	}
 
@@ -434,7 +434,7 @@ void Room::EndStage()
 {
 	_cubes.clear();
 	_doors.clear();
-	_sellingMachine.clear();
+	_sellingMachines.clear();
 	_connectableDoors.clear();
 
 	for(auto& monster : _monsters)
@@ -575,5 +575,7 @@ GameObject* Room::GetGameObject(ObjectType type, int id)
 		return _items[id];
 	case ObjectType::Door:
 		return _doors[id];
+	case ObjectType::SellingMachine:
+		return _sellingMachines[id];
 	}
 }

@@ -9,6 +9,7 @@ enum PacketID : char
 	C_UpdateObjectState,
 	C_GetItem,
 	C_DropItem,
+	C_DropItemToSellingMachine,
 	C_ChangeTool,
 	C_UseTool,
 	C_UseKey,
@@ -108,6 +109,15 @@ struct C_DropItem_Packet
 	bool isTool;
 };
 
+struct C_DropItemToSellingMachine_Packet
+{
+	unsigned char size;
+	PacketID packetID;
+	unsigned char sellingMachineID;
+	unsigned char itemID;
+	unsigned char playerID;
+};
+
 struct C_ChangeTool_Packet
 {
 	unsigned char size;
@@ -147,6 +157,14 @@ struct C_InteractDoor_Packet
 	unsigned char size;
 	PacketID packetID;
 	unsigned char doorID;
+	unsigned char playerID;
+};
+
+struct C_SellItem_Packet
+{
+	unsigned char size;
+	PacketID packetID;
+	unsigned char sellingMachineID;
 	unsigned char playerID;
 };
 

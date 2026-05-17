@@ -41,13 +41,13 @@ public:
 	const std::array<Item*, MAX_ITEM>& GetItems() { return _items; }
 	const std::vector<CubeRef>& GetCubes() { return _cubes; }
 	const std::vector<Door*>& GetDoors() { return _doors; }
-	const std::vector<SellingMachine*>& GetSellingMachine() { return _sellingMachine; }
+	const std::vector<SellingMachine*>& GetSellingMachine() { return _sellingMachines; }
 	
 private:
 	CubeRef _base;
 	std::vector<CubeRef> _cubes;
 	std::vector<Door*> _doors;
-	std::vector<SellingMachine*> _sellingMachine;
+	std::vector<SellingMachine*> _sellingMachines;
 	std::array<Player*, MAX_ROOM_PLAYER> _players;
 	std::array<Monster*, MAX_MONSTER> _monsters;
 	std::array<Item*, MAX_ITEM> _items;

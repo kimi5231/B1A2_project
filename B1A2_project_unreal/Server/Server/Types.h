@@ -21,6 +21,7 @@ enum class ObjectType : char
 	Item,
 	Obstacle,
 	Door,
+	SellingMachine,
 };
 
 enum class MonsterType : char
