@@ -8,7 +8,6 @@
 #include "Cube.h"
 #include "Door.h"
 #include "Lantern.h"
-#include "Scrap.h"
 #include "EmotionGame.h"
 #include "SellingMachine.h"
 

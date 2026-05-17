@@ -457,6 +457,14 @@ struct CubeInfo
 	int enterDistance;
 };
 
+struct ItemInfo
+{
+	ItemType type;
+	Vector size;
+	float weight;
+	int cost;
+};
+
 struct CubeConditionInfo
 {
 	int totalCubeCount;

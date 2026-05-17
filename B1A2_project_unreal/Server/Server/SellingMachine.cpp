@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "SellingMachine.h"
 #include "Room.h"
-#include "Scrap.h"
+#include "Item.h"
 
 SellingMachine::SellingMachine(Dir dir, bool isSpecial, int creditLimit)
 	: _dir(dir), _isSpecial(isSpecial), _creditLimit(creditLimit), _remainCreditLimit(creditLimit)
@@ -38,7 +38,7 @@ int SellingMachine::SellItem(Room* room)
 	// 판매기에 올려져 있는 아이템의 총 가격 계산
 	int credit = 0;
 	for (auto& sellItem : _sellItems)
-		credit += dynamic_cast<Scrap*>(items[sellItem])->GetCost();
+		credit += items[sellItem]->GetCost();
 	
 	if (credit >= _remainCreditLimit)
 	{

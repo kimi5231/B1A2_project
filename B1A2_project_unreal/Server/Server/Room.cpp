@@ -181,7 +181,7 @@ void Room::SetupCubeConditions()
 void Room::CreateFactoryCubes()
 {
 	// 난이도에 맞춰 조건 설정
-	CubeConditionInfo conditions = g_dataManager->GetGameRoomConditionInfo(_currentDifficulty, _detailDifficulty);
+	CubeConditionInfo conditions = g_dataManager->GetCubeConditionInfo(_currentDifficulty, _detailDifficulty);
 
 	// 방별 개수 초기화
 	for (int i = 0; i < static_cast<int>(CubeType::GameRoomTypeCount); i++)

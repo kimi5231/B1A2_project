@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Item.h"
+#include "Global.h"
 
 Item::Item(ItemType itemType)
 {
@@ -20,6 +21,9 @@ void Item::SetItemType(ItemType type)
 {
 	_itemType = type;
 
-	// 타입에 맞춰서 무게 설정하기
-	_weight = 0.1;
+	ItemInfo info = g_dataManager->GetItemInfo(type);
+
+	_size = info.size;
+	_weight = info.weight;
+	_cost = info.cost;
 }

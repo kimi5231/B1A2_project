@@ -9,13 +9,13 @@ DataManager::DataManager()
 {
     _dataPath = std::filesystem::current_path().parent_path() / "Data";
 
-    LoadGameRoomConditionInfos();
-    LoadGameRoomInfos();
-    LoadGameRoomTilemaps();
-    //LoadCubeNavMesh();
+    LoadCubeConditionInfos();
+    LoadCubeInfos();
+    LoadCubeTilemaps();
+    LoadItemInfos();
 }
 
-void DataManager::LoadGameRoomConditionInfos()
+void DataManager::LoadCubeConditionInfos()
 {
     std::ifstream file(_dataPath / "GameRoomConditions.json");
     json data = json::parse(file);
@@ -46,11 +46,11 @@ void DataManager::LoadGameRoomConditionInfos()
         info.floor.first = condition["floor"]["min"];
         info.floor.second = condition["floor"]["max"];
 
-       _gameRoomconditionInfos[{condition["current"], condition["detail"]}] = info;
+       _cubeConditionInfos[{condition["current"], condition["detail"]}] = info;
     }
 }
 
-void DataManager::LoadGameRoomInfos()
+void DataManager::LoadCubeInfos()
 {
     std::ifstream file(_dataPath/"CubeInfos.json");
     json data = json::parse(file);
@@ -129,11 +129,11 @@ void DataManager::LoadGameRoomInfos()
 
         info.enterDistance = room["enterDistance"];
 
-        _gameRoomInfos[info.type] = info;
+        _cubeInfos[info.type] = info;
     }
 }
 
-void DataManager::LoadGameRoomTilemaps()
+void DataManager::LoadCubeTilemaps()
 {
     std::ifstream file(_dataPath / "GameRoomTilemaps.json");
     json data = json::parse(file);
@@ -165,34 +165,27 @@ void DataManager::LoadGameRoomTilemaps()
                 tilemap3D.push_back(tilemap2D);
         }
 
-        _gameRoomTilemaps[type] = tilemap3D;
+        _cubeTilemaps[type] = tilemap3D;
     }
 }
 
-void DataManager::LoadCubeNavMesh()
+void DataManager::LoadItemInfos()
 {
- //   std::ifstream file(_dataPath / "MainNavMesh.bin", std::ios::binary);
+    std::ifstream file(_dataPath / "ItemInfos.json");
+    json data = json::parse(file);
 
- //   // 1. NavMesh 파라미터 읽기
- //   dtNavMeshParams params;
- //   file.read(reinterpret_cast<char*>(&params), sizeof(dtNavMeshParams));
+    // ItemInfo 추출
+    for (const auto& item : data["items"])
+    {
+        ItemInfo info;
 
- //   // 2. NavMesh 객체 생성 및 초기화
- //   dtNavMesh* navMesh = dtAllocNavMesh();
- //   navMesh->init(&params);
+        info.type = item["type"];
+        info.size.x = item["size"][0];
+        info.size.y = item["size"][1];
+        info.size.z = item["size"][2];
+        info.weight = item["weight"];
+        info.cost = item["cost"];
 
- //   // 3. 타일 데이터 읽기
- //   for (int i = 0; i < params.maxTiles; ++i)
- //   {
- //       int dataSize = 0;
- //       file.read(reinterpret_cast<char*>(&dataSize), sizeof(int));
- //       if (dataSize == 0) continue;
-
- //       std::unique_ptr<unsigned char[]> data(new unsigned char[dataSize]);
- //       file.read(reinterpret_cast<char*>(data.get()), dataSize);
-
- //       navMesh->addTile(data.release(), dataSize, DT_TILE_FREE_DATA, 0, 0);
- //   }
-
-	//_cubeNavMesh[CubeType::MainEntranceRoom] = navMesh;
+        _itemInfos[info.type] = info;
+    }
 }

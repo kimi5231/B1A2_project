@@ -134,9 +134,6 @@
     <ClCompile Include="ExpOver.cpp">
       <Filter>소스 파일\Main\Network</Filter>
     </ClCompile>
-    <ClCompile Include="Scrap.cpp">
-      <Filter>소스 파일\Game\Object\Item</Filter>
-    </ClCompile>
     <ClCompile Include="Door.cpp">
       <Filter>소스 파일\Game\Object\Structure</Filter>
     </ClCompile>
@@ -231,9 +228,6 @@
     </ClInclude>
     <ClInclude Include="ExpOver.h">
       <Filter>소스 파일\Main\Network</Filter>
-    </ClInclude>
-    <ClInclude Include="Scrap.h">
-      <Filter>소스 파일\Game\Object\Item</Filter>
     </ClInclude>
     <ClInclude Include="Door.h">
       <Filter>소스 파일\Game\Object\Structure</Filter>
