@@ -63,7 +63,8 @@ public:
 	void SendInteractDoor(int playerID, int doorID);
 	void SendUseTool(int playerID, int toolID, Rotation playerRotation);
 	void SendUseKey(int playerID, int toolID, int doorID);
-	void SendEmotion(float angry, float disgust, float fear, float happy, float sad, float surprise, float neutral);
+	void SendChangeEmotion(int playerID, Emotion emotion);
+	void SendEmotionResult(float angryTime, float disgustTime, float fearTime, float happyTime, float sadTime, float surpriseTime, float neutralTime);
 	void SendEndStage(bool result);
 	void SendStartStage(bool result);
 	void SendUseLantern(int playerID, int lanternID);

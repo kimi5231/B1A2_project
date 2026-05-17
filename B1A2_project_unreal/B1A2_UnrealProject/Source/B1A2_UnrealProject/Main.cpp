@@ -415,7 +415,19 @@ void UMain::SendUseKey(int playerID, int toolID, int doorID)
 	_gameNetwork->SendUseKeyPacket(playerID, toolID, doorID);
 }
 
-void UMain::SendEmotion(float angry, float disgust, float fear, float happy, float sad, float surprise, float neutral)
+void UMain::SendChangeEmotion(int playerID, Emotion emotion)
+{
+	if (_myID == -1)
+		return;
+
+	UWorld* world = GetWorld();
+	if (!world)
+		return;
+
+	_gameNetwork->SendChangeEmotionPacket(playerID, emotion);
+}
+
+void UMain::SendEmotionResult(float angry, float disgust, float fear, float happy, float sad, float surprise, float neutral)
 {
 	if (_myID == -1)
 		return;
@@ -1799,8 +1811,8 @@ void UMain::HandleNewEmotionData(const TArray<float>& emotionScores)
 			EmotionWidget->SetEmotion(maxIndex);
 
 		// 서버로 감정 Send
-		SendEmotion(emotionScores[0], emotionScores[1], emotionScores[2],
-			emotionScores[3], emotionScores[4], emotionScores[5], emotionScores[6]);
+		Emotion highestEmotion = static_cast<Emotion>(maxIndex);	// 가장 높은 감정
+		SendChangeEmotion(_myID, highestEmotion);
 
 		// 마지막 전송 상태 갱신
 		_lastSentEmotionIndex = maxIndex;
