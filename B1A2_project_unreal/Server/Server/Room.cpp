@@ -203,7 +203,7 @@ void Room::CreateFactoryCubes()
 	}
 
 	int generateCubeID = 0;
-	int generateDoorID = 1;
+	int generateDoorID = 0;
 
 	// 规 积己(巩篮 规 救俊辑 积己 + 厚惑备)
 	// MainEntranceRoom 积己
