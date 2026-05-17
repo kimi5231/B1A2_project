@@ -233,6 +233,7 @@ struct S_AddItem_Packet
 	bool isTool;
 	Vector pos;
 	ItemType itemType;
+	unsigned char cost;
 };
 
 struct S_AddObstacle_Packet
