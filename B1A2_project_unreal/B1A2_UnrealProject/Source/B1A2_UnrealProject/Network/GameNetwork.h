@@ -34,6 +34,7 @@ public:
 	void SendUseKeyPacket(int playerID, int toolID, int doorID);
 	void SendUseLanternPacket(int playerID, int lanternID);
 	void SendInteractDoorPacket(int playerID, int doorID);
+	void SendSellItemPacket(int playerID, int sellingMachineID);
 	void SendChangeEmotionPacket(int playerID, Emotion emotion);
 	void SendEmotionResultPacket(float angryTime, float disgustTime, float fearTime, float happyTime, float sadTime, float surpriseTime, float neutralTime);
 	void SendStartStagePacket();

@@ -506,6 +506,22 @@ void GameNetwork::SendInteractDoorPacket(int playerID, int doorID)
 	_sendEvents.push_back(event);
 }
 
+void GameNetwork::SendSellItemPacket(int playerID, int sellingMachineID)
+{
+	// Packet Data 持失
+	C_SellItem_Packet packetData{ sizeof(C_SellItem_Packet), C_SellItem, sellingMachineID, playerID };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	// SendEvent 持失
+	NetworkEventRef event = std::make_shared<NetworkEvent>();
+	event->packetID = C_SellItem;
+	event->serializedPacketData = serializedPacketData;
+	std::lock_guard<std::mutex> lock(_sendMutex);
+	_sendEvents.push_back(event);
+}
+
 void GameNetwork::SendChangeEmotionPacket(int playerID, Emotion emotion)
 {
 	// Packet Data 持失

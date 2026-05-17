@@ -15,6 +15,7 @@ enum PacketID : char
 	C_UseKey,
 	C_UseLantern,
 	C_InteractDoor,
+	C_SellItem,
 	C_ChangeEmotion,
 	C_EmotionResult,
 	C_StartStage,
