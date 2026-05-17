@@ -432,7 +432,7 @@ void ServerNetwork::SendAddMonsterPacket(Monster* monster, Session* client)
 void ServerNetwork::SendAddItemPacket(Item* item, bool isTool, Session* client)
 {
 	// Packet Data »ý¼º
-	S_AddItem_Packet packetData{ sizeof(S_AddItem_Packet), S_AddItem, item->GetID(), isTool, item->GetPos(), item->GetItemType() };
+	S_AddItem_Packet packetData{ sizeof(S_AddItem_Packet), S_AddItem, item->GetID(), isTool, item->GetPos(), item->GetItemType(), item->GetCost() };
 
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);
