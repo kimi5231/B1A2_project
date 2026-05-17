@@ -34,7 +34,11 @@ void DataManager::LoadGameRoomConditionInfos()
         info.createExitCount.second = condition["createExitCount"]["max"];
 
         info.createSellingMachineCount = condition["createSellingMachineCount"];
+       
         info.createSpecialSellingMachineCount = condition["createSpecialSellingMachineCount"];
+
+        info.sellingMachineCreditLimit.first = condition["sellingMachineCreditLimit"]["min"];
+        info.sellingMachineCreditLimit.second = condition["sellingMachineCreditLimit"]["max"];
 
         info.exitPos.first = condition["exitPos"]["min"];
         info.exitPos.second = condition["exitPos"]["max"];

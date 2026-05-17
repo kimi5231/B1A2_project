@@ -1,8 +1,10 @@
 #include "pch.h"
 #include "SellingMachine.h"
+#include "Room.h"
+#include "Scrap.h"
 
-SellingMachine::SellingMachine(Dir dir, bool isSpecial)
-	: _dir(dir), _isSpecial(isSpecial)
+SellingMachine::SellingMachine(Dir dir, bool isSpecial, int creditLimit)
+	: _dir(dir), _isSpecial(isSpecial), _creditLimit(creditLimit), _remainCreditLimit(creditLimit)
 {
 	_type = ObjectType::SellingMachine;
 }
@@ -13,12 +15,32 @@ SellingMachine::~SellingMachine()
 
 bool SellingMachine::RemoveItem(int itemID)
 {
-	auto it = std::find(_sellItem.begin(), _sellItem.end(), itemID);
-	if (it != _sellItem.end())
+	auto it = std::find(_sellItems.begin(), _sellItems.end(), itemID);
+	if (it != _sellItems.end())
 	{
-		_sellItem.erase(it);
+		_sellItems.erase(it);
 		return true;
 	}
 
 	return false;
+}
+
+int SellingMachine::SellItem(Room* room)
+{
+	const std::array<Item*, MAX_ITEM>& items = room->GetItems();
+
+	// 판매기에 올려져 있는 아이템의 총 가격 계산
+	int credit = 0;
+	for (auto& sellItem : _sellItems)
+		credit += dynamic_cast<Scrap*>(items[sellItem])->GetCost();
+	
+	if (credit >= _remainCreditLimit)
+	{
+		_remainCreditLimit = 0;
+		_state = ObjectState::CLOSE;
+		return _remainCreditLimit;
+	}
+		
+	_remainCreditLimit -= credit;
+	return credit;
 }

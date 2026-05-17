@@ -29,7 +29,7 @@ public:
 	Monster* AddMonster(MonsterType monsterType, Vector pos);
 	Item* AddItem(bool isTool, ItemType itemType, Vector pos);
 	Obstacle* AddObstacle(ObstacleType obstacleType, Vector pos, Rotation rotation);
-	void RemoveObject(ObjectType type, int id);
+	void RemoveObject(ObjectType type, int id, bool isSend);
 
 	void AddProcessingItem(Item* item) { _processingItems[item->GetID()] = item; }
 	void RemoveProcessingItem(int itemID) { _processingItems.erase(itemID); }

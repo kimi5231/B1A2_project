@@ -50,6 +50,7 @@ public:
 	void SendTurnOnLanternPacket(Lantern* lantern, int playerID, Session* client);
 	void SendTurnOffLanternPacket(Lantern* lantern, int playerID, Session* client);
 	void SendInteractDoorNotifyPacket(int playerID, int doorID, ObjectState doorState, Session* client);
+	void SendSellItemResultPacket(char playerID, char sellingMachineID, ObjectState sellingMachineState, std::vector<int>& itemIDs, Session* client);
 	void SendUpdateHpPacket(int playerID, int hp, Session* client);
 	void SendEmotionGameResultPacket(int playerID, int playerHP, EmotionGame* emotionGame,  Session* client);
 	void SendSpawnParticlePacket(Vector pos, Session* client);
@@ -68,6 +69,7 @@ public:
 	void ProcessUseKeyPacket(C_UseKey_Packet packet, int clientIndex);
 	void ProcessUseLanternPacket(C_UseLantern_Packet packet, int clientIndex);
 	void ProcessInteractDoorPacket(C_InteractDoor_Packet packet, int clientIndex);
+	void ProcessSellItemPacket(C_SellItem_Packet packet, int clientIndex);
 	void ProcessChangeEmotionPacket(C_ChangeEmotion_Packet packet, int clientIndex);
 	void ProcessEmotionResultPacket(C_EmotionResult_Packet packet, int clientIndex);
 	void ProcessStartStagePacket(C_StartStage_Packet packet, int clientIndex);

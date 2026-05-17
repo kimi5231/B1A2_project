@@ -392,8 +392,12 @@ void Room::CreateFactoryCubes()
 		{
 			std::uniform_int_distribution<int> selectSellingMachine(0, info.sellingMachinePos.size() - 1);
 			int sellingMachineIndex = selectSellingMachine(gen);
-			
-			SellingMachine* sellingMachine = new SellingMachine(info.sellingMachineDir[sellingMachineIndex], false);
+
+			// 금액 제한 설정
+			std::uniform_int_distribution<int> selectCreditLimit(conditions.sellingMachineCreditLimit.first, conditions.sellingMachineCreditLimit.second);
+			int creditLimit = selectCreditLimit(gen);
+
+			SellingMachine* sellingMachine = new SellingMachine(info.sellingMachineDir[sellingMachineIndex], false, creditLimit);
 			sellingMachine->SetID(generateSellingMachineID++);
 			sellingMachine->SetPos(cube->GetPos() + info.sellingMachinePos[sellingMachineIndex]);
 			sellingMachine->SetOwnerRoom(this);
@@ -542,7 +546,7 @@ Obstacle* Room::AddObstacle(ObstacleType obstacleType, Vector pos, Rotation rota
 	}
 }
 
-void Room::RemoveObject(ObjectType type, int id)
+void Room::RemoveObject(ObjectType type, int id, bool isSend)
 {
 	switch (type)
 	{
@@ -557,11 +561,14 @@ void Room::RemoveObject(ObjectType type, int id)
 		break;
 	}
 
-	for (auto& player : _players)
+	if (isSend)
 	{
-		if (player->GetClient())
-			g_network->SendRemoveObjectPacket(type, id, player->GetClient());
-	}		
+		for (auto& player : _players)
+		{
+			if (player->GetClient())
+				g_network->SendRemoveObjectPacket(type, id, player->GetClient());
+		}
+	}
 }
 
 GameObject* Room::GetGameObject(ObjectType type, int id)

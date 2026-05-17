@@ -72,7 +72,7 @@ enum class StructureType : char
 	StructureTypeCount,
 };
 
-enum ObjectState
+enum ObjectState : char
 {
 	IDLE,
 	RUN,
@@ -464,6 +464,7 @@ struct CubeConditionInfo
 	std::pair<int, int> createExitCount;
 	int createSellingMachineCount;
 	int createSpecialSellingMachineCount;
+	std::pair<int, int> sellingMachineCreditLimit;
 	std::pair<int, int> exitPos;
 	std::pair<int, int> floor;
 };

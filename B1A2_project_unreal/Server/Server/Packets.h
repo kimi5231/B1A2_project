@@ -39,6 +39,7 @@ enum PacketID : char
 	S_TurnOnLantern,
 	S_TurnOffLantern,
 	S_InteractDoorNotify,
+	S_SellItemResult,
 	S_UpdateHp,
 	S_EmotionGameResult,
 	S_SpawnParticle,
@@ -69,6 +70,7 @@ struct SellingMachineDTO
 	Vector pos;
 	Dir dir;
 	ObjectState state;
+	char creditLimit;
 };
 
 // Client
@@ -365,6 +367,16 @@ struct S_InteractDoorNotify_Packet
 	unsigned char doorID;
 	unsigned char playerID;
 	ObjectState doorState;
+};
+
+struct S_SellItemResult_Packet
+{
+	unsigned short size;
+	PacketID packetID;
+	unsigned char sellingMachineID;
+	unsigned char playerID;
+	ObjectState sellingMachineState;
+	std::vector<char> itemIDs;
 };
 
 struct S_UpdateHp_Packet

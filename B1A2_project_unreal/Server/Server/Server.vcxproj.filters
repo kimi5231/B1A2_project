@@ -137,6 +137,9 @@
     <ClCompile Include="SellingMachine.cpp">
       <Filter>소스 파일\Game\Object</Filter>
     </ClCompile>
+    <ClCompile Include="Scrap.cpp">
+      <Filter>소스 파일\Game\Object\Item</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -231,6 +234,9 @@
     </ClInclude>
     <ClInclude Include="SellingMachine.h">
       <Filter>소스 파일\Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Scrap.h">
+      <Filter>소스 파일\Game\Object\Item</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

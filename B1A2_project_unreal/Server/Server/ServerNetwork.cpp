@@ -8,6 +8,7 @@
 #include "Cube.h"
 #include "Door.h"
 #include "Lantern.h"
+#include "Scrap.h"
 #include "EmotionGame.h"
 #include "SellingMachine.h"
 
@@ -95,7 +96,7 @@ void ServerNetwork::Update()
 		_clients[key]->_isConnected = false;
 		closesocket(_clients[key]->_clientSocket);
 		_clients[key]->_clientSocket = INVALID_SOCKET;
-		_clients[key]->_room->RemoveObject(ObjectType::Player, _clients[key]->_player->GetID());
+		_clients[key]->_room->RemoveObject(ObjectType::Player, _clients[key]->_player->GetID(), true);
 		return;
 	}
 
@@ -215,7 +216,7 @@ void ServerNetwork::ProcessRecv(int clientIndex, int numByte, ExpOver* expOver)
 		_clients[clientIndex]->_isConnected = false;
 		closesocket(_clients[clientIndex]->_clientSocket);
 		_clients[clientIndex]->_clientSocket = INVALID_SOCKET;
-		_clients[clientIndex]->_room->RemoveObject(ObjectType::Player, _clients[clientIndex]->_player->GetID());
+		_clients[clientIndex]->_room->RemoveObject(ObjectType::Player, _clients[clientIndex]->_player->GetID(), true);
 		return;
 	}
 
@@ -506,7 +507,7 @@ void ServerNetwork::SendCreateCubesPacket(const std::vector<CubeRef>& cubes, con
 	for (auto& sellingMachine : sellingMachines)
 	{
 		// SellingMachine 정보 기록
-		SellingMachineDTO DTO{ sellingMachine->GetID(), sellingMachine->GetPos(), sellingMachine->GetDir(), sellingMachine->GetState() };
+		SellingMachineDTO DTO{ sellingMachine->GetID(), sellingMachine->GetPos(), sellingMachine->GetDir(), sellingMachine->GetState(), sellingMachine->GetCreditLimit() };
 		sellingMachineDTOs.push_back(DTO);
 	}
 	
@@ -621,6 +622,23 @@ void ServerNetwork::SendInteractDoorNotifyPacket(int playerID, int doorID, Objec
 
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	client->Send(serializedPacketData);
+}
+
+void ServerNetwork::SendSellItemResultPacket(char playerID, char sellingMachineID, ObjectState sellingMachineState, std::vector<int>& sellItems, Session* client)
+{
+	// Packet Serialize
+	std::vector<char> itemIDs = SerializeVector(sellItems);
+	unsigned short packetSize = sizeof(unsigned short) + sizeof(PacketID) + itemIDs.size();
+	std::vector<char> serializedPacketData(sizeof(unsigned short));
+
+	memcpy(serializedPacketData.data(), &packetSize, sizeof(unsigned short));
+	serializedPacketData.push_back(S_CreateCubes);
+	serializedPacketData.push_back(sellingMachineID);
+	serializedPacketData.push_back(playerID);
+	serializedPacketData.push_back(sellingMachineState);
+	serializedPacketData.insert(serializedPacketData.end(), itemIDs.begin(), itemIDs.end());
 
 	client->Send(serializedPacketData);
 }
@@ -785,9 +803,15 @@ void ServerNetwork::ProcessDropItemToSellingMachinePacket(C_DropItemToSellingMac
 	// 요청한 Player가 판매기와 거리가 되는지 확인 
 	Player* player = dynamic_cast<Player*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::Player, packet.playerID));
 	SellingMachine* sellingMachine = dynamic_cast<SellingMachine*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::SellingMachine, packet.sellingMachineID));
+	
+	// 판매기가 활성화 상태인지 확인
+	if (sellingMachine->GetState() == ObjectState::CLOSE)
+		return;
 
-
-
+	// 금액 제한이 남았는지 확인
+	if (sellingMachine->GetRemainCreditLimit() <= 0)
+		return;
+	
 	// Player 인벤토리에서 아이템 제거
 	// 아이템이 제대로 제거되었다면
 	if (player->RemoveItemFromInventory(false, packet.itemID))
@@ -963,6 +987,35 @@ void ServerNetwork::ProcessInteractDoorPacket(C_InteractDoor_Packet packet, int 
 
 		SendInteractDoorNotifyPacket(packet.playerID, packet.doorID, door->GetState(), p->GetClient());
 	}
+}
+
+void ServerNetwork::ProcessSellItemPacket(C_SellItem_Packet packet, int clientIndex)
+{
+	// 요청한 Player가 판매기와 거리가 되는지 확인 
+	Player* player = dynamic_cast<Player*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::Player, packet.playerID));
+	SellingMachine* sellingMachine = dynamic_cast<SellingMachine*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::SellingMachine, packet.sellingMachineID));
+
+	// 판매기가 활성화 상태인지 확인
+	if (sellingMachine->GetState() == ObjectState::CLOSE)
+		return;
+
+	// 아이템 판매 및 아이템 제거
+	int credit = sellingMachine->SellItem(_clients[clientIndex]->_room);
+	std::vector<int>& sellItems = sellingMachine->GetSellItems();
+	for (auto& itemID : sellItems)
+		_clients[clientIndex]->_room->RemoveObject(ObjectType::Item, itemID, false);
+		
+	// Broadcast
+	for (auto& p : _clients[clientIndex]->_room->GetPlayers())
+	{
+		if (!p->GetClient())
+			continue;
+
+		SendSellItemResultPacket(player->GetID(), sellingMachine->GetID(), sellingMachine->GetState(), sellItems, p->GetClient());
+	}
+
+	// 데이터 사용을 위해 나중에 초기화
+	sellingMachine->ClearSellItems();
 }
 
 void ServerNetwork::ProcessChangeEmotionPacket(C_ChangeEmotion_Packet packet, int clientIndex)
