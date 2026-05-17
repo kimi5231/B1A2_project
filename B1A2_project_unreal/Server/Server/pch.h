@@ -37,8 +37,9 @@ using ObstacleRef = std::shared_ptr<class Obstacle>;
 
 #define TileSize 25
 
-#define MAX_PLAYER 600
-#define MAX_ROOM_PLAYER 4
+#define MAX_CLIENT 600
+
+#define MAX_PLAYER 4
 #define MAX_MONSTER 10
 #define MAX_ITEM 50
 #define MAX_OBSTACLE 50

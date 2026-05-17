@@ -53,7 +53,7 @@ void Spider::Update(Room* room)
 	Monster::Update(room);
 
 	// 공격 범위 안에 플레이어가 있는지 확인
-	const std::array<Player*, MAX_ROOM_PLAYER>& players = room->GetPlayers();
+	const std::array<Player*, MAX_PLAYER>& players = room->GetPlayers();
 	if (std::chrono::steady_clock::now() > _nextAttackTime)
 	{
 		for (auto& player : players)

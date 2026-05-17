@@ -652,7 +652,7 @@ void Release::Exit(Monster* monster)
 void Abesnt::Enter(Monster* monster)
 {
 	// 일단 랜덤으로. 추후, Fear 수치 활용할 것.
-	const std::array<Player*, MAX_ROOM_PLAYER>& players = monster->GetOwnerRoom()->GetPlayers();
+	const std::array<Player*, MAX_PLAYER>& players = monster->GetOwnerRoom()->GetPlayers();
 	std::uniform_int_distribution<int> selectCube(0, players.size() - 1);
 	Player* player = players[selectCube(gen)];
 	monster->SetTarget(player);

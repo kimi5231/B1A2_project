@@ -80,7 +80,7 @@ private:
 	SOCKET _tempSocket{};
 	ExpOver _acceptOver{};
 	HANDLE _iocp{};
-	std::array<class Session*, MAX_PLAYER> _clients;
+	std::array<class Session*, MAX_CLIENT> _clients;
 
 	ServerFramework* _framework;
 };

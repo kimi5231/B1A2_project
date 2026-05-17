@@ -61,7 +61,7 @@ ServerNetwork::ServerNetwork(ServerFramework* framework)
 	_acceptOver._ioType = IOType::Accept;
 	AcceptEx(_listenSocket, _tempSocket, _acceptOver._buffer.data(), 0, sizeof(SOCKADDR_IN) + 16, sizeof(SOCKADDR_IN) + 16, NULL, &_acceptOver._over);
 
-	for (int i = 0; i < MAX_PLAYER; ++i)
+	for (int i = 0; i < MAX_CLIENT; ++i)
 		_clients[i] = new Session();
 }
 
@@ -126,7 +126,7 @@ void ServerNetwork::ProcessAccept()
 {
 	// 할당할 수 있는 Client Session 찾기
 	int clientIndex = -1;
-	for (int i = 0; i < MAX_PLAYER; ++i)
+	for (int i = 0; i < MAX_CLIENT; ++i)
 	{
 		if (!_clients[i]->_isConnected)
 		{

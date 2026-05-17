@@ -39,7 +39,7 @@ public:
 
 public:
 	GameObject* GetGameObject(ObjectType type, int id);
-	const std::array<Player*, MAX_ROOM_PLAYER>& GetPlayers() { return _players; }
+	const std::array<Player*, MAX_PLAYER>& GetPlayers() { return _players; }
 	const std::array<Monster*, MAX_MONSTER>& GetMonsters() { return _monsters; }
 	const std::array<Item*, MAX_ITEM>& GetItems() { return _items; }
 	const std::vector<CubeRef>& GetCubes() { return _cubes; }
@@ -53,7 +53,7 @@ private:
 	std::vector<CubeRef> _cubes;
 	std::vector<Door*> _doors;
 	std::vector<SellingMachine*> _sellingMachines;
-	std::array<Player*, MAX_ROOM_PLAYER> _players;
+	std::array<Player*, MAX_PLAYER> _players;
 	std::array<Monster*, MAX_MONSTER> _monsters;
 	std::array<Item*, MAX_ITEM> _items;
 	std::array<Obstacle*, MAX_OBSTACLE> _obstacles;

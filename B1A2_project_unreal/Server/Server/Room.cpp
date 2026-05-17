@@ -27,7 +27,7 @@ Room::~Room()
 void Room::Init()
 {
 	// Player ObjectPool 미리 확보
-	for (int i = 0; i < MAX_ROOM_PLAYER; ++i)
+	for (int i = 0; i < MAX_PLAYER; ++i)
 	{
 		_players[i] = new Player();
 		_players[i]->SetID(i);
@@ -455,7 +455,7 @@ void Room::EndStage()
 
 Player* Room::AddPlayer()
 {
-	for (int i = 0; i < MAX_ROOM_PLAYER; ++i)
+	for (int i = 0; i < MAX_PLAYER; ++i)
 	{
 		// 재사용 가능한 플레이어 찾기
 		if (_players[i]->GetObjectPoolState() == ObjectPoolState::Reusable)
