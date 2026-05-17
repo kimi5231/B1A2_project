@@ -13,7 +13,7 @@ public:
 
 public:
 	virtual void SetPos(Vector pos) override;
-	void SetCurrentCubeID(const std::vector<CubeRef>& cubes);
+	void SetCurrentCubeID();
 	int GetCurrentCubeID() { return _currentCubeID; }
 	virtual bool SetState(ObjectState state, bool isSend = true) override;
 	int GetHP() { return _hp; }

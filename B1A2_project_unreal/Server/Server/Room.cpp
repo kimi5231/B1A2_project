@@ -114,9 +114,9 @@ void Room::Init()
 	spider->SetState(ObjectState::HIT, false);
 	spider->SetState(ObjectState::IDLE, false);
 
-	/*Monster* emotionGame = AddMonster(MonsterType::EmotionGame, { 0, 675, 25 });
+	Monster* emotionGame = AddMonster(MonsterType::EmotionGame, { 0, 675, 25 });
 	emotionGame->SetState(ObjectState::HIT, false);
-	emotionGame->SetState(ObjectState::IDLE, false);*/
+	emotionGame->SetState(ObjectState::IDLE, false);
 
 	// base »ý¼º
 	CubeInfo info = g_dataManager->GetCubeInfo(CubeType::Base);

@@ -181,7 +181,7 @@ Vector Monster::SelectRandomPosInCube(const CubeRef cube)
 		case CubeType::StorageRoom_Step:
 		case CubeType::CabinetRoom:
 		case CubeType::FactoryRoom:
-			z += 575;
+			z += 600;
 			break;
 		}
 		z /= TileSize;

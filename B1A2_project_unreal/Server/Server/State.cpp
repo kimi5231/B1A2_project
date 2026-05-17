@@ -99,7 +99,7 @@ void RoamingState::Tick(Monster* monster)
 	// 경로	따라 이동
 	const std::vector<CubeRef>& cubes = monster->GetOwnerRoom()->GetCubes();
 	monster->SetPos(path[0]);
-	monster->SetCurrentCubeID(cubes);
+	monster->SetCurrentCubeID();
 	path.pop_front();
 
 	// Broadcast
@@ -266,8 +266,7 @@ void ChaseState::Tick(Monster* monster)
 	std::deque<VectorInt>& path = monster->GetPath();
 	if (!path.empty())
 	{
-		// 1. 현재 몬스터가 가야 할 타겟 좌표 (타일 중심점)
-		Vector targetPos = path[0]; // VectorInt가 Vector로 자동 변환된다고 가정
+		Vector targetPos = path[0];
 		Vector currentPos = monster->GetPos();
 
 		// 2. 방향 및 거리 계산
@@ -282,10 +281,6 @@ void ChaseState::Tick(Monster* monster)
 			// 이번 프레임에 타겟 타일에 도착할 수 있다면
 			monster->SetPos(targetPos); // 딱 맞춰서 도착
 			path.pop_front();           // 도착했으니 다음 경로로
-
-			// 타일이 바뀌었을 때만 큐브 ID 체크 (성능 최적화)
-			const std::vector<CubeRef>& cubes = monster->GetOwnerRoom()->GetCubes();
-			monster->SetCurrentCubeID(cubes);
 		}
 		else
 		{
@@ -462,7 +457,7 @@ void ReturnState::Tick(Monster* monster)
 	// 경로	따라 이동
 	const std::vector<CubeRef>& cubes = monster->GetOwnerRoom()->GetCubes();
 	monster->SetPos(path[0]);
-	monster->SetCurrentCubeID(cubes);
+	monster->SetCurrentCubeID();
 	path.pop_front();
 
 	// Broadcast

@@ -808,7 +808,7 @@
                     { "pattern" : [[0, 26]], "repeatY" :  1 },
                     { "pattern" : [[0, 1], [1, 24], [0, 1]], "repeatY" :  50 },
                     { "pattern" : [[0, 26]], "repeatY" :  1 }
-               ], "repeatZ" : 22
+               ], "repeatZ" : 23
             },
             {
                "layer" : [
@@ -837,7 +837,7 @@
                     { "pattern" : [[0, 26]], "repeatY" :  1 },
                     { "pattern" : [[0, 1], [1, 24], [0, 1]], "repeatY" :  50 },
                     { "pattern" : [[0, 26]], "repeatY" :  1 }
-               ], "repeatZ" : 12
+               ], "repeatZ" : 11
             },
             {
                "layer" : [
