@@ -244,6 +244,25 @@ void UMain::ProcessRecv()
 			event->isComplete = true;
 			break;
 		}
+		case S_SellItemResult:
+		{
+			unsigned short packetSize;
+			memcpy(&packetSize, event->serializedPacketData.data(), sizeof(unsigned short));
+			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned short) + sizeof(PacketID));
+			unsigned char sellingMachineID;
+			memcpy(&sellingMachineID, event->serializedPacketData.data(), sizeof(unsigned char));
+			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned char));
+			unsigned short playerID;
+			memcpy(&playerID, event->serializedPacketData.data(), sizeof(unsigned short));
+			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned char));
+			ObjectState sellingMachineState;
+			memcpy(&sellingMachineState, event->serializedPacketData.data(), sizeof(ObjectState));
+			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(ObjectState));
+			S_SellItemResult_Packet sellItemResultPacket{ packetSize, S_SellItemResult, sellingMachineID, playerID, sellingMachineState, _gameNetwork->DeserializeVector<char>(event->serializedPacketData) };
+			RecvSellItemResult(sellItemResultPacket);
+			event->isComplete = true;
+			break;
+		}
 		case S_UpdateHp:
 		{
 			S_UpdateHp_Packet updateHpPacket;
@@ -1788,6 +1807,10 @@ void UMain::RecvEmotionGameResult(S_EmotionGameResult_Packet packet)
 			}
 		}
 	});
+}
+
+void UMain::RecvSellItemResult(S_SellItemResult_Packet packet)
+{
 }
 
 FRotator UMain::DirToRotation(Dir dir)

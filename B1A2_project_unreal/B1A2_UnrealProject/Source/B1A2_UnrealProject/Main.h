@@ -112,6 +112,7 @@ public:
 	void RecvAddObstacle(S_AddObstacle_Packet packet);
 
 	void RecvEmotionGameResult(S_EmotionGameResult_Packet packet);
+	void RecvSellItemResult(S_SellItemResult_Packet packet);
 
 	FRotator DirToRotation(Dir dir);
 
