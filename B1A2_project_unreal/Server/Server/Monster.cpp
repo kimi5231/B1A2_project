@@ -488,7 +488,7 @@ bool Monster::IsCanGo(VectorInt index, const CubeRef cube)
 	if (index < Vector{ 0, 0, 0 } || index >= max)
 		return false;
 
-	return tilemap[index.z][index.y][index.x] == 1;
+	return tilemap[index.z][index.y][index.x] == 1 && tilemap[index.z - 1][index.y][index.x] == 0;
 }
 
 CubeRef Monster::FindCubeAtWorldPos(VectorInt wp, CubeRef currentCube)
