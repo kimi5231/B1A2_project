@@ -111,7 +111,6 @@ public:
 	void RecvUpdateHp(S_UpdateHp_Packet packet);
 	void RecvAddObstacle(S_AddObstacle_Packet packet);
 
-	// 패킷 추가되면 주석 풀기!!!!!!!!
 	void RecvEmotionGameResult(S_EmotionGameResult_Packet packet);
 
 	FRotator DirToRotation(Dir dir);
@@ -178,6 +177,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Cube")
 	TSubclassOf<ABaseHatch> HatchClass;
+
+	// 판매기 클래스 구현하면 AActor 변경하기!!!!!!
+	UPROPERTY(EditDefaultsOnly, Category = "Cube")
+	TSubclassOf<AActor> SellingMachineClass;
 
 	// 몬스터
 	UPROPERTY(EditDefaultsOnly, Category = "Monster")
@@ -263,6 +266,9 @@ private:
 	// 문
 	TMap<uint64, ABaseDoor*> _doors;
 	ABaseHatch* _hatch;
+
+	// 판매기
+	TMap<uint64, AActor*> _sellingMachines;
 
 	// 거미줄
 	UPROPERTY(EditAnywhere)
