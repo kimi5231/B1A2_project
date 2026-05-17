@@ -86,8 +86,8 @@ struct C_GetItem_Packet
 {
 	unsigned char size;
 	PacketID packetID;
-	unsigned int itemID;
-	unsigned int playerID;
+	unsigned char itemID;
+	unsigned char playerID;
 	bool isTool;
 };
 
@@ -95,8 +95,8 @@ struct C_DropItem_Packet
 {
 	unsigned char size;
 	PacketID packetID;
-	unsigned int itemID;
-	unsigned int playerID;
+	unsigned char itemID;
+	unsigned char playerID;
 	bool isTool;
 };
 
@@ -104,16 +104,16 @@ struct C_ChangeTool_Packet
 {
 	unsigned char size;
 	PacketID packetID;
-	unsigned int toolID;
-	unsigned int playerID;
+	unsigned char toolID;
+	unsigned char playerID;
 };
 
 struct C_UseTool_Packet
 {
 	unsigned char size;
 	PacketID packetID;
-	unsigned int toolID;
-	unsigned int playerID;
+	unsigned char toolID;
+	unsigned char playerID;
 	Rotation playerRotation;
 };
 
@@ -121,25 +121,25 @@ struct C_UseKey_Packet
 {
 	unsigned char size;
 	PacketID packetID;
-	unsigned int toolID;
-	unsigned int doorID;
-	unsigned int playerID;
+	unsigned char toolID;
+	unsigned char doorID;
+	unsigned char playerID;
 };
 
 struct C_UseLantern_Packet
 {
 	unsigned char size;
 	PacketID packetID;
-	unsigned int lanternID;
-	unsigned int playerID;
+	unsigned char lanternID;
+	unsigned char playerID;
 };
 
 struct C_InteractDoor_Packet
 {
 	unsigned char size;
 	PacketID packetID;
-	unsigned int doorID;
-	unsigned int playerID;
+	unsigned char doorID;
+	unsigned char playerID;
 };
 
 struct C_ChangeEmotion_Packet

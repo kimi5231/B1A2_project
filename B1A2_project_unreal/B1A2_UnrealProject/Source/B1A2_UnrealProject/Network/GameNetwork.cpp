@@ -358,7 +358,6 @@ void GameNetwork::SendMovePacket(ObjectType type, int id, Vector pos, Rotation r
 	NetworkEventRef event = std::make_shared<NetworkEvent>();
 	event->packetID = C_Move;
 	event->serializedPacketData = serializedPacketData;
-
 	std::lock_guard<std::mutex> lock(_sendMutex);
 	_sendEvents.push_back(event);
 }
@@ -375,7 +374,6 @@ void GameNetwork::SendUpdateObjectStatePacket(int id, ObjectType type, ObjectSta
 	NetworkEventRef event = std::make_shared<NetworkEvent>();
 	event->packetID = C_UpdateObjectState;
 	event->serializedPacketData = serializedPacketData;
-
 	std::lock_guard<std::mutex> lock(_sendMutex);
 	_sendEvents.push_back(event);
 }
@@ -392,7 +390,6 @@ void GameNetwork::SendGetItemPacket(int itemID, bool isTool, int playerID)
 	NetworkEventRef event = std::make_shared<NetworkEvent>();
 	event->packetID = C_GetItem;
 	event->serializedPacketData = serializedPacketData;
-
 	std::lock_guard<std::mutex> lock(_sendMutex);
 	_sendEvents.push_back(event);
 }
@@ -409,7 +406,6 @@ void GameNetwork::SendDropItemPacket(int itemID, bool isTool, int playerID)
 	NetworkEventRef event = std::make_shared<NetworkEvent>();
 	event->packetID = C_DropItem;
 	event->serializedPacketData = serializedPacketData;
-
 	std::lock_guard<std::mutex> lock(_sendMutex);
 	_sendEvents.push_back(event);
 }
@@ -426,7 +422,6 @@ void GameNetwork::SendChangeToolPacket(int playerID, int toolID)
 	NetworkEventRef event = std::make_shared<NetworkEvent>();
 	event->packetID = C_ChangeTool;
 	event->serializedPacketData = serializedPacketData;
-
 	std::lock_guard<std::mutex> lock(_sendMutex);
 	_sendEvents.push_back(event);
 }
@@ -443,7 +438,6 @@ void GameNetwork::SendUseToolPacket(int playerID, int toolID, Rotation playerRot
 	NetworkEventRef event = std::make_shared<NetworkEvent>();
 	event->packetID = C_UseTool;
 	event->serializedPacketData = serializedPacketData;
-
 	std::lock_guard<std::mutex> lock(_sendMutex);
 	_sendEvents.push_back(event);
 }
@@ -460,7 +454,6 @@ void GameNetwork::SendUseKeyPacket(int playerID, int toolID, int doorID)
 	NetworkEventRef event = std::make_shared<NetworkEvent>();
 	event->packetID = C_UseKey;
 	event->serializedPacketData = serializedPacketData;
-
 	std::lock_guard<std::mutex> lock(_sendMutex);
 	_sendEvents.push_back(event);
 }
@@ -493,7 +486,6 @@ void GameNetwork::SendInteractDoorPacket(int playerID, int doorID)
 	NetworkEventRef event = std::make_shared<NetworkEvent>();
 	event->packetID = C_InteractDoor;
 	event->serializedPacketData = serializedPacketData;
-
 	std::lock_guard<std::mutex> lock(_sendMutex);
 	_sendEvents.push_back(event);
 }
@@ -526,7 +518,6 @@ void GameNetwork::SendEmotionResultPacket(float angryTime, float disgustTime, fl
 	NetworkEventRef event = std::make_shared<NetworkEvent>();
 	event->packetID = C_EmotionResult;
 	event->serializedPacketData = serializedPacketData;
-
 	std::lock_guard<std::mutex> lock(_sendMutex);
 	_sendEvents.push_back(event);
 }
