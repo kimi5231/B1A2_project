@@ -171,13 +171,13 @@ enum Difficulty
 
 enum class Emotion
 {
+	Happy,
+	Sad,
+	Neutral,
 	Angry,
 	Disgust,
 	Fear,
-	Happy,
-	Sad,
 	Surprise,
-	Neutral ,
 
 	EmotionCount
 };
