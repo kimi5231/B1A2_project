@@ -27,7 +27,7 @@ public:
 	Player* AddPlayer();
 	Monster* AddMonster(MonsterType monsterType, Vector pos);
 	Item* AddItem(bool isTool, ItemType itemType, Vector pos);
-	ObstacleRef AddObstacle(ObstacleType obstacleType, Vector pos, bool isSend);
+	Obstacle* AddObstacle(ObstacleType obstacleType, Vector pos, Rotation rotation);
 	void RemoveObject(ObjectType type, int id);
 
 	void AddProcessingItem(Item* item) { _processingItems[item->GetID()] = item; }
@@ -50,10 +50,10 @@ private:
 	CubeRef _base;
 	std::vector<CubeRef> _cubes;
 	std::vector<Door*> _doors;
-	std::vector<ObstacleRef> _obstacles;
 	std::array<Player*, MAX_ROOM_PLAYER> _players;
 	std::array<Monster*, MAX_MONSTER> _monsters;
 	std::array<Item*, MAX_ITEM> _items;
+	std::array<Obstacle*, MAX_OBSTACLE> _obstacles;
 	std::unordered_map<int, Item*> _processingItems;
 
 private:

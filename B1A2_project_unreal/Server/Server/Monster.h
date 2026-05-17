@@ -14,14 +14,16 @@ public:
 	virtual void Update(Room* room);
 
 public: 
-	const CubeRef SelectRandomConnectedCube(Room* room); 
-	VectorInt SelectRandomPosInCube(const CubeRef currentCube); 
+	virtual bool IsReadyNextState() { return false; };
+
+	const CubeRef SelectRandomConnectedCube(); 
+	Vector SelectRandomPosInCube(const CubeRef cube); 
 
 	std::deque<CubeRef> FindCubePath(const CubeRef goalCube, const CubeRef currentCube, const std::vector<CubeRef>& gameRooms);
 	std::deque<VectorInt> FindPath(Vector goal, const CubeRef currentCubeube);
 	void ClearPath() { _cubePath.clear(); _path.clear(); }
 
-	VectorInt GetRotationIndex(VectorInt index, VectorInt max, Dir dir);
+	VectorInt RotateIndexByDir(VectorInt index, VectorInt max, Dir dir);
 	VectorInt PosToIndex(Vector pos, CubeRef cube);
 	Vector IndexToPos(VectorInt index, const CubeRef cube);
 
@@ -34,8 +36,6 @@ public:
 
 	void AddDeltaTime(float deltaTime) { _sumTime += deltaTime; }
 	void InitSumTime() { _sumTime = 0.f; }
-
-	virtual bool IsReadyNextState() { return false;  };
 
 	void UpdateNextAttackTime();
 

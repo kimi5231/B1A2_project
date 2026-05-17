@@ -129,15 +129,14 @@ void Monster::Update(Room* room)
 	//g_framework->SendMovePacket(shared_from_this(), true);
 }
 
-const CubeRef Monster::SelectRandomConnectedCube(Room* room)
+const CubeRef Monster::SelectRandomConnectedCube()
 {
-	const std::vector<CubeRef>& cubes = room->GetCubes();
-	const std::vector<Door*>& doors = room->GetDoors();
+	const std::vector<CubeRef>& cubes = _ownerRoom->GetCubes();
+	const std::vector<Door*>& doors = _ownerRoom->GetDoors();
 	const CubeRef currentCube = cubes[_currentCubeID];
 
 	// 현재 위치한 방에 열린 문이 있는지 확인
-	std::vector<int> openDoorCubeID;
-	openDoorCubeID.reserve(currentCube->GetDoors().size());
+	std::vector<int> openDoorCubeID(currentCube->GetDoors().size());
 	for (const int doorID : currentCube->GetDoors())
 	{
 		Door* door = doors[doorID];
@@ -146,7 +145,7 @@ const CubeRef Monster::SelectRandomConnectedCube(Room* room)
 			if(door->GetConnectedCubeID() != _currentCubeID)
 				openDoorCubeID.push_back(door->GetConnectedCubeID());
 			else
-				openDoorCubeID.push_back(door->GetRoomID());
+				openDoorCubeID.push_back(door->GetOwnerCubeID());
 		}
 	}
 	
@@ -154,32 +153,43 @@ const CubeRef Monster::SelectRandomConnectedCube(Room* room)
 	if (openDoorCubeID.empty())
 		return currentCube;
 
-	// 열린 문이 있다면, 해당 문으로 연결된 방 중 랜덤하게 선택
-	//std::vector<CubeRef>& connectedCubes = currentCube->GetConnectedCubes();
+	// 열린 문이 있다면, 해당 문으로 연결된 Cube 중 랜덤하게 선택
 	std::uniform_int_distribution<int> selectCube(0, openDoorCubeID.size() - 1);
 	return cubes[openDoorCubeID[selectCube(gen)]];
 }
 
-VectorInt Monster::SelectRandomPosInCube(const CubeRef currentCube)
+Vector Monster::SelectRandomPosInCube(const CubeRef cube)
 {
-	const std::vector<std::vector<std::vector<short>>>& tilemap = g_dataManager->GetTilemap(currentCube->GetCubeType());
-	Vector cubePos = currentCube->GetPos();
+	const std::vector<std::vector<std::vector<short>>>& tilemap = g_dataManager->GetTilemap(cube->GetCubeType());
+	Vector cubePos = cube->GetPos();
 	VectorInt max{ tilemap.size(), tilemap[0].size(), tilemap[0][0].size() };
-	std::uniform_int_distribution<int> X(0, max.x - 1);
-	std::uniform_int_distribution<int> Y(0, max.y - 1);
+	std::uniform_int_distribution<int> selectX(0, max.x - 1);
+	std::uniform_int_distribution<int> selectY(0, max.y - 1);
 
 	VectorInt index{};
-	while (!IsCanGo(index, currentCube))
+	while (!IsCanGo(index, cube))
 	{
-		int x = X(gen);
-		int y = Y(gen);
-		int z = _pos.z / TileSize;
-		index = GetRotationIndex({ x, y, z }, max, currentCube->GetDir());
+		int x = selectX(gen);
+		int y = selectY(gen);
+
+		// 바닥 높이 및 CubeType에 따른 보정
+		int z = TileSize;
+		switch (cube->GetCubeType())
+		{
+		case CubeType::GapRoom:
+		case CubeType::RailCatwalk:
+		case CubeType::StorageRoom_Step:
+		case CubeType::CabinetRoom:
+		case CubeType::FactoryRoom:
+			z += 575;
+			break;
+		}
+		z /= TileSize;
+		
+		index = RotateIndexByDir({ x, y, z }, max, cube->GetDir());
 	}
 	
-	Vector pos = IndexToPos(index, currentCube);
-	pos.z = _pos.z; // 높이는 현재 위치 유지
-	return pos;
+	return IndexToPos(index, cube);
 }
 
 // 나중에 잠긴 문도 고려하기
@@ -348,7 +358,7 @@ std::deque<VectorInt> Monster::FindPath(Vector goal, const CubeRef currentCube)
 	return {};
 }
 
-VectorInt Monster::GetRotationIndex(VectorInt index, VectorInt max, Dir dir)
+VectorInt Monster::RotateIndexByDir(VectorInt index, VectorInt max, Dir dir)
 {
 	switch (dir)
 	{

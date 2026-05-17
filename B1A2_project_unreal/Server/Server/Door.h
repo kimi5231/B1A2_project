@@ -12,7 +12,7 @@ public:
 
 public:
 	Dir GetDir() { return _dir; }
-	int GetRoomID() { return _roomID; }
+	int GetOwnerCubeID() { return _ownerCubeID; }
 	void SetConnectedCubeID(int connectedCubeID) { _connectedCubeID = connectedCubeID; }
 	int GetConnectedCubeID() { return _connectedCubeID; }
 	void SetDoorType(DoorType doorType) { _doorType = doorType;  }
@@ -20,7 +20,7 @@ public:
 	void SetConnectable(bool isConnectable) { _isConnectable = isConnectable; }
 
 private:
-	int _roomID{};
+	int _ownerCubeID{};
 	int _connectedCubeID;
 	Dir _dir{};
 	DoorType _doorType;

@@ -52,7 +52,7 @@ void RoamingState::Tick(Monster* monster)
 	{
 		const std::vector<CubeRef>& cubes = monster->GetOwnerRoom()->GetCubes();
 		const CubeRef currentCube = cubes[monster->GetCurrentCubeID()];
-		const CubeRef goalCube = monster->SelectRandomConnectedCube(monster->GetOwnerRoom());
+		const CubeRef goalCube = monster->SelectRandomConnectedCube();
 		
 		// 갈 수 있는 큐브가 없으면 큐브 내에서 목적지 설정
 		if (goalCube == currentCube)
@@ -160,7 +160,7 @@ void ChaseState::Tick(Monster* monster)
 		for (int doorID : cubePath[0]->GetDoors())
 		{
 			if (doors[doorID ]->GetConnectedCubeID() == cubePath[1]->GetID() ||
-				doors[doorID]->GetRoomID() == cubePath[1]->GetID())
+				doors[doorID]->GetOwnerCubeID() == cubePath[1]->GetID())
 			{
 				door = doors[doorID];
 				break;
@@ -364,7 +364,7 @@ void ReturnState::Tick(Monster* monster)
 		for (int doorID : cubePath[0]->GetDoors())
 		{
 			if (doors[doorID]->GetConnectedCubeID() == cubePath[1]->GetID() ||
-				doors[doorID]->GetRoomID() == cubePath[1]->GetID())
+				doors[doorID]->GetOwnerCubeID() == cubePath[1]->GetID())
 			{
 				door = doors[doorID];
 				break;

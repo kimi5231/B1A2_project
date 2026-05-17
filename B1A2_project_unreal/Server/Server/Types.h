@@ -19,8 +19,8 @@ enum class ObjectType : char
 	Player,
 	Monster,
 	Item,
-	Door,
 	Obstacle,
+	Door,
 };
 
 enum class MonsterType : char
@@ -32,7 +32,7 @@ enum class MonsterType : char
 	MonsterTypeCount,
 };
 
-enum ItemType
+enum ItemType : char
 {
 	CardboardBox,
 	GoldBar,
@@ -60,7 +60,7 @@ enum class ObstacleType : char
 {
 	Web,
 
-	None,
+	ObstacleTypeCount,
 };
 
 enum ObjectState

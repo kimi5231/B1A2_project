@@ -82,13 +82,24 @@ void Room::Init()
 	}
 
 	// 장애물 ObjectPool 미리 확보
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < MAX_OBSTACLE; ++i)
 	{
-		ObstacleRef obstacle = std::make_shared<Obstacle>();
-		obstacle->SetID(_generateObstacleID++);
-		obstacle->SetObstacleType(ObstacleType::Web);
-		obstacle->SetObjectPoolState(ObjectPoolState::Reusable);
-		_obstacles.push_back(obstacle);
+		ObstacleType type = static_cast<ObstacleType>(i % static_cast<int>(ObstacleType::ObstacleTypeCount));
+		
+		switch (type)
+		{
+		case ObstacleType::Web:
+			_obstacles[i] = new Obstacle();
+			break;
+		default:
+			_obstacles[i] = new Obstacle();
+			break;
+		}
+
+		_obstacles[i]->SetID(i);
+		_obstacles[i]->SetObjectPoolState(ObjectPoolState::Reusable);
+		_obstacles[i]->SetOwnerRoom(this);
+		_obstacles[i]->SetObstacleType(ObstacleType::Web);
 	}
 
 	// 테스트용 아이템 생성
@@ -103,9 +114,9 @@ void Room::Init()
 	spider->SetState(ObjectState::HIT, false);
 	spider->SetState(ObjectState::IDLE, false);
 
-	Monster* emotionGame = AddMonster(MonsterType::EmotionGame, { 0, 675, 25 });
+	/*Monster* emotionGame = AddMonster(MonsterType::EmotionGame, { 0, 675, 25 });
 	emotionGame->SetState(ObjectState::HIT, false);
-	emotionGame->SetState(ObjectState::IDLE, false);
+	emotionGame->SetState(ObjectState::IDLE, false);*/
 
 	// base 생성
 	CubeInfo info = g_dataManager->GetCubeInfo(CubeType::Base);
@@ -250,7 +261,7 @@ void Room::CreateFactoryCubes()
 		// CubeType 선택
 		// 연결할 방의 타입에 따라 가능한 방 타입 다르게 설정
 		CubeType type;
-		CubeType prevRoomType = _cubes[door->GetRoomID()]->GetCubeType();
+		CubeType prevRoomType = _cubes[door->GetOwnerCubeID()]->GetCubeType();
 		switch (prevRoomType)
 		{
 		case CubeType::Staircase:
@@ -338,9 +349,9 @@ void Room::CreateFactoryCubes()
 			newCube->SetID(generateCubeID++);
 
 			// 연결된 방끼리 서로 기록
-			newCube->AddConnectedRoom(_cubes[door->GetRoomID()]);
+			newCube->AddConnectedRoom(_cubes[door->GetOwnerCubeID()]);
 			newCube->AddDoor(door->GetID());
-			_cubes[door->GetRoomID()]->AddConnectedRoom(newCube);
+			_cubes[door->GetOwnerCubeID()]->AddConnectedRoom(newCube);
 
 			_cubes.push_back(newCube);
 			_currentCubeCount[type]++;
@@ -399,17 +410,14 @@ void Room::EndStage()
 {
 	_cubes.clear();
 	_doors.clear();
-	_obstacles.clear();
 	_connectableDoors.clear();
 
 	for(auto& monster : _monsters)
 		monster->SetObjectPoolState(ObjectPoolState::Reusable);
 	for(auto& item : _items)
 		item->SetObjectPoolState(ObjectPoolState::Reusable);
-
-	_generateMonsterID = 0;
-	_generateItemID = 0;
-	_generateObstacleID = 0;
+	for (auto& obstacle : _obstacles)
+		obstacle->SetObjectPoolState(ObjectPoolState::Reusable);
 }
 
 Player* Room::AddPlayer()
@@ -482,7 +490,7 @@ Item* Room::AddItem(bool isTool, ItemType itemType, Vector pos)
 	}
 }
 
-ObstacleRef Room::AddObstacle(ObstacleType obstacleType, Vector pos, bool isSend)
+Obstacle* Room::AddObstacle(ObstacleType obstacleType, Vector pos, Rotation rotation)
 {
 	for (auto& obstacle : _obstacles)
 	{
@@ -491,13 +499,17 @@ ObstacleRef Room::AddObstacle(ObstacleType obstacleType, Vector pos, bool isSend
 		{
 			// 재사용이 가능하면, 정보 재설정
 			obstacle->SetPos(pos);
+			obstacle->SetRotation(rotation);
 			obstacle->SetObstacleType(obstacleType);
 
 			// ObjectPoolState 변경
 			obstacle->SetObjectPoolState(ObjectPoolState::InWorld);
 
-			/*if (isSend)
-				g_framework->SendSpawnObstaclePacket(obstacle, true);*/
+			for (auto& player : _players)
+			{
+				if (player->GetClient())
+					g_network->SendAddObstaclePacket(obstacle, player->GetClient());
+			}
 
 			return obstacle;
 		}
