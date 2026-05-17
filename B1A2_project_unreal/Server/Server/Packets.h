@@ -5,6 +5,10 @@
 enum PacketID : char
 {
 	// Client
+	C_Login,
+	C_Logout,
+	C_EnterRoom,
+	C_ExitRoom,
 	C_Move,
 	C_UpdateObjectState,
 	C_GetItem,
@@ -16,12 +20,15 @@ enum PacketID : char
 	C_UseLantern,
 	C_InteractDoor,
 	C_SellItem,
+	C_BuyItem,
 	C_ChangeEmotion,
 	C_EmotionResult,
 	C_StartStage,
 	C_EndStage,
 
 	//Server
+	S_LoginResult,
+	S_CurrentRoomList,
 	S_AddPlayer,
 	S_AddMonster,
 	S_AddItem,
@@ -40,14 +47,24 @@ enum PacketID : char
 	S_TurnOffLantern,
 	S_InteractDoorNotify,
 	S_SellItemResult,
+	S_BuyItemResult,
 	S_UpdateHp,
 	S_EmotionGameResult,
 	S_SpawnParticle,
 	S_StartStage,
 	S_EndStage,
+	S_UpdateCredit,
 };
 
 #pragma pack(push, 1)
+struct RoomDTO
+{
+	unsigned char playerCount;
+	unsigned char roodID;
+	RoomState roomState;
+	std::vector<char> roomTitle;
+};
+
 struct CubeDTO
 {
 	CubeType type;
@@ -74,6 +91,33 @@ struct SellingMachineDTO
 };
 
 // Client
+struct C_Login
+{
+	unsigned char size;
+	PacketID packetID;
+	std::vector<char> id;
+	std::vector<char> password;
+};
+
+struct C_Logout
+{
+	unsigned char size;
+	PacketID packetID;
+};
+
+struct C_EnterRoom
+{
+	unsigned char size;
+	PacketID packetID;
+	unsigned char roomID;
+};
+
+struct C_ExitRoom
+{
+	unsigned char size;
+	PacketID packetID;
+};
+
 struct C_Move_Packet
 {
 	unsigned char size;
@@ -171,6 +215,14 @@ struct C_SellItem_Packet
 	unsigned char playerID;
 };
 
+struct C_BuyItem_Packet
+{
+	unsigned char size;
+	PacketID packetID;
+	ItemType itemType;
+	unsigned char itemCount;
+};
+
 struct C_ChangeEmotion_Packet
 {
 	unsigned char size;
@@ -205,6 +257,20 @@ struct C_EndStage_Packet
 };
 
 // Server
+struct S_LoginResult
+{
+	unsigned char size;
+	PacketID packetID;
+	LoginResult result;
+};
+
+struct S_CurrentRoomList
+{
+	unsigned char size;
+	PacketID packetID;
+	std::vector<RoomDTO> roomList;
+};
+
 struct S_AddPlayer_Packet
 {
 	unsigned short size;
@@ -382,6 +448,13 @@ struct S_SellItemResult_Packet
 	std::vector<char> itemIDs;
 };
 
+struct S_BuyItemResult_Packet
+{
+	unsigned short size;
+	PacketID packetID;
+	unsigned char currentCredit;
+};
+
 struct S_UpdateHp_Packet
 {
 	unsigned short size;
@@ -418,5 +491,12 @@ struct S_EndStage_Packet
 {
 	unsigned short size;
 	PacketID packetID;
+};
+
+struct S_UpdateCredit_Packet
+{
+	unsigned short size;
+	PacketID packetID;
+	unsigned char currentCredit;
 };
 #pragma pack(pop)

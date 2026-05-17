@@ -14,6 +14,18 @@ enum class IOType
 	Accept,
 };
 
+enum class LoginResult
+{
+	Sucess,
+};
+
+enum class RoomState
+{
+	Wait,
+	Lock,
+	Play,
+};
+
 enum class ObjectType : char
 {
 	Player,
