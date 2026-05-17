@@ -546,7 +546,7 @@ void AMyPlayer::SendRock()
 {
 	if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
 	{
-		gameInstance->SendEmotion(0.f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.f);	// Happy
+		gameInstance->SendChangeEmotion(gameInstance->GetMyID(), Emotion::Happy);	// Happy
 	
 		UE_LOG(LogTemp, Log, TEXT("[Emotion] Sent C_Emotion Happy"));
 	}
@@ -556,7 +556,7 @@ void AMyPlayer::SendScissor()
 {
 	if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
 	{
-		gameInstance->SendEmotion(0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 1.f);	// Neutral
+		gameInstance->SendChangeEmotion(gameInstance->GetMyID(), Emotion::Neutral);	// Neutral
 
 		UE_LOG(LogTemp, Log, TEXT("[Emotion] Sent C_Emotion Neutral"));
 	}
@@ -566,7 +566,7 @@ void AMyPlayer::SendPaper()
 {
 	if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
 	{
-		gameInstance->SendEmotion(1.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f);	// Angry
+		gameInstance->SendChangeEmotion(gameInstance->GetMyID(), Emotion::Angry);	// Angry
 
 		UE_LOG(LogTemp, Log, TEXT("[Emotion] Sent C_Emotion Angry"));
 	}
