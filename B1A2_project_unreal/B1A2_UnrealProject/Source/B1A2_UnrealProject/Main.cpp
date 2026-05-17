@@ -424,7 +424,7 @@ void UMain::SendEmotion(float angry, float disgust, float fear, float happy, flo
 	if (!world)
 		return;
 
-	_gameNetwork->SendEmotionPacket(angry, disgust, fear, happy, sad, surprise, neutral);
+	_gameNetwork->SendEmotionResultPacket(angry, disgust, fear, happy, sad, surprise, neutral);
 }
 
 void UMain::SendEndStage(bool result)

@@ -330,6 +330,14 @@ void ServerNetwork::ProcessPacket(std::vector<char>& packet, int clientIndex)
 		ProcessInteractDoorPacket(interactDoorPacket, clientIndex);
 		break;
 	}
+	case C_ChangeEmotion:
+	{
+		C_ChangeEmotion_Packet changeEmotionPacket;
+		memcpy(&changeEmotionPacket, packet.data(), sizeof(C_ChangeEmotion_Packet));
+		packet.erase(packet.begin(), packet.begin() + sizeof(C_ChangeEmotion_Packet));
+		ProcessChangeEmotionPacket(changeEmotionPacket, clientIndex);
+		break;
+	}
 	case C_EmotionResult:
 	{
 		C_EmotionResult_Packet emotionResultPacket;
@@ -900,6 +908,13 @@ void ServerNetwork::ProcessInteractDoorPacket(C_InteractDoor_Packet packet, int 
 
 		SendInteractDoorNotifyPacket(packet.playerID, packet.doorID, door->GetState(), p->GetClient());
 	}
+}
+
+void ServerNetwork::ProcessChangeEmotionPacket(C_ChangeEmotion_Packet packet, int clientIndex)
+{
+	// 바뀐 감정 기록
+	Player* player = dynamic_cast<Player*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::Player, packet.playerID));
+	player->SetCurrentEmotion(packet.emotion);
 }
 
 void ServerNetwork::ProcessEmotionResultPacket(C_EmotionResult_Packet packet, int clientIndex)

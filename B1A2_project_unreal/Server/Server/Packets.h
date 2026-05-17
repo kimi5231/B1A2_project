@@ -14,6 +14,7 @@ enum PacketID : char
 	C_UseKey,
 	C_UseLantern,
 	C_InteractDoor,
+	C_ChangeEmotion,
 	C_EmotionResult,
 	C_StartStage,
 	C_EndStage,
@@ -139,6 +140,14 @@ struct C_InteractDoor_Packet
 	PacketID packetID;
 	unsigned int doorID;
 	unsigned int playerID;
+};
+
+struct C_ChangeEmotion_Packet
+{
+	unsigned char size;
+	PacketID packetID;
+	unsigned char playerID;
+	Emotion emotion;
 };
 
 struct C_EmotionResult_Packet

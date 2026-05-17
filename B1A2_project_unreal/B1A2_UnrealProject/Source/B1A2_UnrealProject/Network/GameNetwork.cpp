@@ -498,7 +498,23 @@ void GameNetwork::SendInteractDoorPacket(int playerID, int doorID)
 	_sendEvents.push_back(event);
 }
 
-void GameNetwork::SendEmotionPacket(float angryTime, float disgustTime, float fearTime, float happyTime, float sadTime, float surpriseTime, float neutralTime)
+void GameNetwork::SendChangeEmotionPacket(int playerID, Emotion emotion)
+{
+	// Packet Data 持失
+	C_ChangeEmotion_Packet packetData{ sizeof(C_ChangeEmotion_Packet), C_ChangeEmotion, playerID, emotion };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	// SendEvent 持失
+	NetworkEventRef event = std::make_shared<NetworkEvent>();
+	event->packetID = C_ChangeEmotion;
+	event->serializedPacketData = serializedPacketData;
+	std::lock_guard<std::mutex> lock(_sendMutex);
+	_sendEvents.push_back(event);
+}
+
+void GameNetwork::SendEmotionResultPacket(float angryTime, float disgustTime, float fearTime, float happyTime, float sadTime, float surpriseTime, float neutralTime)
 {
 	// Packet Data 持失
 	C_EmotionResult_Packet packetData{ sizeof(C_EmotionResult_Packet), C_EmotionResult, angryTime, disgustTime, fearTime, happyTime, sadTime, surpriseTime, neutralTime };

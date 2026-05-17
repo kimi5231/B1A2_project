@@ -66,6 +66,7 @@ public:
 	void ProcessUseKeyPacket(C_UseKey_Packet packet, int clientIndex);
 	void ProcessUseLanternPacket(C_UseLantern_Packet packet, int clientIndex);
 	void ProcessInteractDoorPacket(C_InteractDoor_Packet packet, int clientIndex);
+	void ProcessChangeEmotionPacket(C_ChangeEmotion_Packet packet, int clientIndex);
 	void ProcessEmotionResultPacket(C_EmotionResult_Packet packet, int clientIndex);
 	void ProcessStartStagePacket(C_StartStage_Packet packet, int clientIndex);
 	void ProcessEndStagePacket(C_EndStage_Packet packet, int clientIndex);
