@@ -20,9 +20,10 @@ public:
     
     // UMain에서 Grab 상태 패킷을 받으면 호출 시작 - 3, 2, 1 출력하기 위해
     void StartGrabCountdown();
-
-    // 가위 바위 보 결과 출력 후 5초 뒤 Idle 표시하도록 예약
-    void DisplayGameResult(FString result);
+    
+    // 감정 텍스처 선출력 후 2초 뒤 결과 출력 -> 3초 뒤 Idle 복귀 시퀀스 함수
+    void PlayGameResultSequence(FString monsterEmotion, FString gameResult);
+    
     // Idle로 리셋 
     void ResetToIdle();
 
@@ -49,6 +50,15 @@ protected:
 
     UPROPERTY(EditAnywhere, Category = "Monitor")
     UTexture2D* Tex_3;
+
+    UPROPERTY(EditAnywhere, Category = "Monitor")
+    UTexture2D* Tex_Happy;
+    
+    UPROPERTY(EditAnywhere, Category = "Monitor")
+    UTexture2D* Tex_Sad;
+
+    UPROPERTY(EditAnywhere, Category = "Monitor")
+    UTexture2D* Tex_Neutral;
 
 private:
     UPROPERTY()

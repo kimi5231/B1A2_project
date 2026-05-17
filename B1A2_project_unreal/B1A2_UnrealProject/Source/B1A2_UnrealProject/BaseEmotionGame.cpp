@@ -28,19 +28,29 @@ void ABaseEmotionGame::StartGrabCountdown()
     GetWorld()->GetTimerManager().SetTimer(_countdownTimerHandle, this, &ABaseEmotionGame::HandleCountdownStep, 1.0f, true);
 }
 
-void ABaseEmotionGame::DisplayGameResult(FString StateName)
+void ABaseEmotionGame::PlayGameResultSequence(FString monsterEmotion, FString gameResult)
 {
-    // Win, Lose, Draw 텍스처로 변경
-    UpdateMonitorDisplay(StateName);
+    if (!GetWorld()) return;
 
-    // 기존 복구 타이머가 있다면 초기화 (중복 실행 방지)
-    if (GetWorld())
+    // 중복 타이머 초기화
+    GetWorld()->GetTimerManager().ClearTimer(_resultDisplayTimerHandle);
+
+    // 몬스터의 감정 출력
+    UpdateMonitorDisplay(monsterEmotion);
+
+    // 2초 타이머 생성
+    FTimerDelegate resultDelegate;
+    resultDelegate.BindWeakLambda(this, [this, gameResult]()
     {
-        GetWorld()->GetTimerManager().ClearTimer(_resultDisplayTimerHandle);
+        // 2초 후 결과 출력
+        UpdateMonitorDisplay(gameResult);
 
-        // 5초 뒤에 ResetToIdle 함수 호출 예약
-        GetWorld()->GetTimerManager().SetTimer(_resultDisplayTimerHandle, this, &ABaseEmotionGame::ResetToIdle, 5.0f, false);
-    }
+        // 결과 출력 후, 다시 3초 뒤에 Idle로 돌아가도록 예약
+        GetWorld()->GetTimerManager().SetTimer(_resultDisplayTimerHandle, this, &ABaseEmotionGame::ResetToIdle, 3.0f, false);
+    });
+
+    // 2초 단발성 타이머 가동
+    GetWorld()->GetTimerManager().SetTimer(_resultDisplayTimerHandle, resultDelegate, 2.0f, false);
 }
 
 void ABaseEmotionGame::ResetToIdle()
@@ -81,6 +91,9 @@ void ABaseEmotionGame::UpdateMonitorDisplay(FString State)
     else if (State == "1") targetTex = Tex_1;
     else if (State == "2") targetTex = Tex_2;
     else if (State == "3") targetTex = Tex_3;
+    else if (State == "Happy") targetTex = Tex_Happy;
+    else if (State == "Sad") targetTex = Tex_Sad;
+    else if (State == "Neutral") targetTex = Tex_Neutral;
 
     // 머테리얼 파라미터 업데이트
     if (targetTex)

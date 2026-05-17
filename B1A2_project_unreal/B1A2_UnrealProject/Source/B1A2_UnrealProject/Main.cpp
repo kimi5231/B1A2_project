@@ -1235,6 +1235,29 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 				UE_LOG(LogTemp, Log, TEXT("[Room] Wall Spawned [%d] pos = %f, %f, %f, dir = %d"), i, door.pos.x, door.pos.y, door.pos.z, door.dir);
 			}
 		}
+
+		for (int i = 0; i < packet.sellingMachines.size(); ++i)
+		{
+			const SellingMachineDTO& sm = packet.sellingMachines[i];
+
+			FVector pos(sm.pos.x, sm.pos.y, sm.pos.z);
+			FRotator rot = DirToRotation(sm.dir);
+
+			FActorSpawnParameters params;
+			params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+			// 나중에 판매기 클래스로 변경하기!!!!!
+			AActor* smActor;
+			smActor = world->SpawnActor<AActor>(SellingMachineClass, pos, rot, params);
+
+			// 판매 제한 금액 추가되면 설정하기
+			// ...
+			// ...
+
+			_sellingMachines.Add(packet.sellingMachines[i].id, smActor);
+			UE_LOG(LogTemp, Log, TEXT("[Room] SellingMachine Spawned [%d] pos = %f, %f, %f, dir = %d"), packet.sellingMachines[i].id, sm.pos.x, sm.pos.y, sm.pos.z, sm.dir);
+
+		}
 	});
 }
 
@@ -1728,37 +1751,43 @@ void UMain::RecvAddObstacle(S_AddObstacle_Packet packet)
 	});
 }
 
-//void UMain::RecvEmotionGameResult(S_EmotionGameResult_Packet packet)
-//{
-//	AsyncTask(ENamedThreads::GameThread, [=, this]()
-//	{
-//		if (!GetWorld()) return;
-//
-//		ABaseMonster** findMonster = _monsters.Find(packet.monsterID);
-//		if (findMonster && *findMonster)
-//		{
-//			ABaseEmotionGame* emotionMonster = Cast<ABaseEmotionGame>(*findMonster);
-//			if (emotionMonster)
-//			{
-//				// enum -> Fstring
-//				FString ResultString = TEXT("Idle");
-//
-//				switch (packet.result)
-//				{
-//				case EmotionGameResult::Win:  ResultString = TEXT("Win"); break;
-//				case EmotionGameResult::Lose: ResultString = TEXT("Lose"); break;
-//				case EmotionGameResult::Draw: ResultString = TEXT("Draw"); break;
-//				}
-//
-//				// 문자열로 호출
-//				emotionMonster->DisplayGameResult(ResultString);
-//			}
-//		}
-//	});
-//}
-
 void UMain::RecvEmotionGameResult(S_EmotionGameResult_Packet packet)
 {
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		if (!GetWorld()) return;
+
+		// 1. 플레이어 hp 수정
+		
+
+		// 2. 몬스터 디스플레이 변경(몬스터가 낸 감정 2초 -> Win Lose Draw 결과 3초 -> Idle)
+		ABaseMonster** findMonster = _monsters.Find(packet.monsterID);
+		if (findMonster && *findMonster)
+		{
+			ABaseEmotionGame* emotionMonster = Cast<ABaseEmotionGame>(*findMonster);
+			if (emotionMonster)
+			{
+				FString emotionString = TEXT("Idle");
+				switch (packet.monsterEmotion)
+				{
+				case Emotion::Happy:   emotionString = TEXT("Happy"); break;
+				case Emotion::Sad:     emotionString = TEXT("Sad"); break;
+				case Emotion::Neutral: emotionString = TEXT("Neutral"); break;
+				}
+
+				FString resultString = TEXT("Idle");
+				switch (packet.result)
+				{
+				case EmotionGameResult::Win:  resultString = TEXT("Win"); break;
+				case EmotionGameResult::Lose: resultString = TEXT("Lose"); break;
+				case EmotionGameResult::Draw: resultString = TEXT("Draw"); break;
+				}
+
+				// 모니터 출력
+				emotionMonster->PlayGameResultSequence(emotionString, resultString);
+			}
+		}
+	});
 }
 
 FRotator UMain::DirToRotation(Dir dir)
