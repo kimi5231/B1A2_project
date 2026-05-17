@@ -159,10 +159,10 @@ void ChaseState::Tick(Monster* monster)
 		Door* door{};
 		for (int doorID : cubePath[0]->GetDoors())
 		{
-			if (doors[doorID]->GetConnectedCubeID() == cubePath[1]->GetID() ||
-				doors[doorID]->GetRoomID() == cubePath[1]->GetID())
+			if (doors[doorID - 1]->GetConnectedCubeID() == cubePath[1]->GetID() ||
+				doors[doorID - 1]->GetRoomID() == cubePath[1]->GetID())
 			{
-				door = doors[doorID];
+				door = doors[doorID - 1];
 				break;
 			}
 		}
@@ -363,10 +363,10 @@ void ReturnState::Tick(Monster* monster)
 		Door* door{};
 		for (int doorID : cubePath[0]->GetDoors())
 		{
-			if (doors[doorID]->GetConnectedCubeID() == cubePath[1]->GetID() ||
-				doors[doorID]->GetRoomID() == cubePath[1]->GetID())
+			if (doors[doorID - 1]->GetConnectedCubeID() == cubePath[1]->GetID() ||
+				doors[doorID - 1]->GetRoomID() == cubePath[1]->GetID())
 			{
-				door = doors[doorID];
+				door = doors[doorID - 1];
 				break;
 			}
 		}
