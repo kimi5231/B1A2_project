@@ -626,7 +626,7 @@ void ServerNetwork::SendInteractDoorNotifyPacket(int playerID, int doorID, Objec
 	client->Send(serializedPacketData);
 }
 
-void ServerNetwork::SendSellItemResultPacket(char playerID, char sellingMachineID, ObjectState sellingMachineState, std::vector<int>& sellItems, Session* client)
+void ServerNetwork::SendSellItemResultPacket(char playerID, char sellingMachineID, ObjectState sellingMachineState, char remainCredit, char currentCredit, std::vector<int>& sellItems, Session* client)
 {
 	// Packet Serialize
 	std::vector<char> itemIDs = SerializeVector(sellItems);
@@ -638,6 +638,8 @@ void ServerNetwork::SendSellItemResultPacket(char playerID, char sellingMachineI
 	serializedPacketData.push_back(sellingMachineID);
 	serializedPacketData.push_back(playerID);
 	serializedPacketData.push_back(sellingMachineState);
+	serializedPacketData.push_back(remainCredit);
+	serializedPacketData.push_back(currentCredit);
 	serializedPacketData.insert(serializedPacketData.end(), itemIDs.begin(), itemIDs.end());
 
 	client->Send(serializedPacketData);
@@ -752,6 +754,17 @@ void ServerNetwork::ProcessGetItemPacket(C_GetItem_Packet packet, int clientInde
 
 	// 아이템을 얻을 수 있는 조건인지 확인(거리)
 	
+	// 아이템이 판매기 안에 있던 거라면 판매기에서 제외
+	const std::vector<SellingMachine*>& sellingMachines = _clients[clientIndex]->_room->GetSellingMachine();
+	for (auto sellingMachine : sellingMachines)
+	{
+		if (sellingMachine->ExistItem(packet.itemID))
+		{
+			sellingMachine->RemoveItem(packet.itemID);
+			break;
+		}
+	}
+
 	// 얻을 수 있는 아이템이라면 Player 인벤토리에 추가
 	Player* player = dynamic_cast<Player*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::Player, packet.playerID));
 	// 아이템이 제대로 추가되었다면
@@ -1000,7 +1013,7 @@ void ServerNetwork::ProcessSellItemPacket(C_SellItem_Packet packet, int clientIn
 		return;
 
 	// 아이템 판매 및 아이템 제거
-	int credit = sellingMachine->SellItem(_clients[clientIndex]->_room);
+	int remainCredit = sellingMachine->SellItem(_clients[clientIndex]->_room);
 	std::vector<int>& sellItems = sellingMachine->GetSellItems();
 	for (auto& itemID : sellItems)
 		_clients[clientIndex]->_room->RemoveObject(ObjectType::Item, itemID, false);
@@ -1011,7 +1024,7 @@ void ServerNetwork::ProcessSellItemPacket(C_SellItem_Packet packet, int clientIn
 		if (!p->GetClient())
 			continue;
 
-		SendSellItemResultPacket(player->GetID(), sellingMachine->GetID(), sellingMachine->GetState(), sellItems, p->GetClient());
+		SendSellItemResultPacket(player->GetID(), sellingMachine->GetID(), sellingMachine->GetState(), remainCredit, _clients[clientIndex]->_room->GetCurrentCredit(), sellItems, p->GetClient());
 	}
 
 	// 데이터 사용을 위해 나중에 초기화

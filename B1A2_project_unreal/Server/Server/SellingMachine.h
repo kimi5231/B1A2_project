@@ -10,8 +10,9 @@ public:
 public:
 	void AddItem(int itemID) { _sellItems.push_back(itemID); }
 	bool RemoveItem(int itemID);
-	void ClearSellItems() { _sellItems.clear(); }
+	bool ExistItem(int itemID);
 	int SellItem(Room* room);
+	void ClearSellItems() { _sellItems.clear(); }
 
 public:
 	Dir GetDir() { return _dir; }

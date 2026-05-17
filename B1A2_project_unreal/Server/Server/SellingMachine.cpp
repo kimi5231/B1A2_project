@@ -25,6 +25,12 @@ bool SellingMachine::RemoveItem(int itemID)
 	return false;
 }
 
+bool SellingMachine::ExistItem(int itemID)
+{
+	auto it = std::find(_sellItems.begin(), _sellItems.end(), itemID);
+	return it != _sellItems.end();
+}
+
 int SellingMachine::SellItem(Room* room)
 {
 	const std::array<Item*, MAX_ITEM>& items = room->GetItems();
@@ -37,10 +43,12 @@ int SellingMachine::SellItem(Room* room)
 	if (credit >= _remainCreditLimit)
 	{
 		_remainCreditLimit = 0;
+		room->PlusCredit(_remainCreditLimit);
 		_state = ObjectState::CLOSE;
 		return _remainCreditLimit;
 	}
 		
+	room->PlusCredit(credit);
 	_remainCreditLimit -= credit;
-	return credit;
+	return _remainCreditLimit;
 }

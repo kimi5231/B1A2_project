@@ -15,6 +15,9 @@ Room::Room()
 {
 	_currentDifficulty = Difficulty::Easy;
 	_detailDifficulty = Difficulty::Easy;
+
+	_currentCredit = 0;
+	_goalCredit = 360;
 }
 
 Room::~Room()

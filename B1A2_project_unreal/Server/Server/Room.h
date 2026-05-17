@@ -34,6 +34,9 @@ public:
 	void AddProcessingItem(Item* item) { _processingItems[item->GetID()] = item; }
 	void RemoveProcessingItem(int itemID) { _processingItems.erase(itemID); }
 
+	void PlusCredit(int credit) { _currentCredit += credit; if (_currentCredit > _goalCredit) _currentCredit = _goalCredit; }
+	void MinusCredit(int credit) { _currentCredit -= credit; if (_currentCredit < 0) _currentCredit = 0; }
+
 public:
 	GameObject* GetGameObject(ObjectType type, int id);
 	const std::array<Player*, MAX_ROOM_PLAYER>& GetPlayers() { return _players; }
@@ -42,7 +45,9 @@ public:
 	const std::vector<CubeRef>& GetCubes() { return _cubes; }
 	const std::vector<Door*>& GetDoors() { return _doors; }
 	const std::vector<SellingMachine*>& GetSellingMachine() { return _sellingMachines; }
-	
+	int GetGoalCredit() { return _goalCredit; }
+	int GetCurrentCredit() { return _currentCredit; }
+
 private:
 	CubeRef _base;
 	std::vector<CubeRef> _cubes;
@@ -69,4 +74,7 @@ private:
 
 	Floor _minFloor;
 	Floor _maxFloor;
+
+	int _goalCredit;
+	int _currentCredit;
 };

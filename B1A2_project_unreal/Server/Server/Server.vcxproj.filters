@@ -48,6 +48,9 @@
     <Filter Include="소스 파일\Main\Network">
       <UniqueIdentifier>{fe7b1ad8-9111-4f64-b764-dd12388ad436}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Game\Object\Structure">
+      <UniqueIdentifier>{458cf1f7-2a37-4074-b141-8dd9fce22c02}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -73,9 +76,6 @@
     </ClCompile>
     <ClCompile Include="DataManager.cpp">
       <Filter>소스 파일\Main</Filter>
-    </ClCompile>
-    <ClCompile Include="Door.cpp">
-      <Filter>소스 파일\Game\Object</Filter>
     </ClCompile>
     <ClCompile Include="BoundingBox.cpp">
       <Filter>소스 파일\Game\Collision</Filter>
@@ -134,11 +134,14 @@
     <ClCompile Include="ExpOver.cpp">
       <Filter>소스 파일\Main\Network</Filter>
     </ClCompile>
-    <ClCompile Include="SellingMachine.cpp">
-      <Filter>소스 파일\Game\Object</Filter>
-    </ClCompile>
     <ClCompile Include="Scrap.cpp">
       <Filter>소스 파일\Game\Object\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Door.cpp">
+      <Filter>소스 파일\Game\Object\Structure</Filter>
+    </ClCompile>
+    <ClCompile Include="SellingMachine.cpp">
+      <Filter>소스 파일\Game\Object\Structure</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -165,9 +168,6 @@
     </ClInclude>
     <ClInclude Include="DataManager.h">
       <Filter>소스 파일\Main</Filter>
-    </ClInclude>
-    <ClInclude Include="Door.h">
-      <Filter>소스 파일\Game\Object</Filter>
     </ClInclude>
     <ClInclude Include="BoundingBox.h">
       <Filter>소스 파일\Game\Collision</Filter>
@@ -232,11 +232,14 @@
     <ClInclude Include="ExpOver.h">
       <Filter>소스 파일\Main\Network</Filter>
     </ClInclude>
-    <ClInclude Include="SellingMachine.h">
-      <Filter>소스 파일\Game\Object</Filter>
-    </ClInclude>
     <ClInclude Include="Scrap.h">
       <Filter>소스 파일\Game\Object\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Door.h">
+      <Filter>소스 파일\Game\Object\Structure</Filter>
+    </ClInclude>
+    <ClInclude Include="SellingMachine.h">
+      <Filter>소스 파일\Game\Object\Structure</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

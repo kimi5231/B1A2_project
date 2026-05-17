@@ -375,6 +375,8 @@ struct S_SellItemResult_Packet
 	PacketID packetID;
 	unsigned char sellingMachineID;
 	unsigned char playerID;
+	unsigned char remainCredit;
+	unsigned char currentCredit;
 	ObjectState sellingMachineState;
 	std::vector<char> itemIDs;
 };
