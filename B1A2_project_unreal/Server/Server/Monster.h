@@ -52,6 +52,7 @@ public:
 	unsigned char GetDamage() { return _damage; }
 	const std::unordered_map<ObjectState, ObjectState>& GetStateTable() { return _stateTable; }
 	int GetReturnCubeID() { return _returnCubeID; }
+	void SetReturnCubeID(int id) { _returnCubeID = id; }
 	Vector GetReturnPos() { return _returnPos; }
 	void SetReturnPos(Vector pos) { _returnPos = pos; }
 	Room* GetOwnerRoom() { return _ownerRoom; }

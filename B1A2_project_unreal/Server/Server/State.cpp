@@ -119,6 +119,12 @@ void RoamingState::Exit(Monster* monster)
 }
 
 //--------------Chase--------------
+void ChaseState::Enter(Monster* monster)
+{
+	monster->SetReturnPos(monster->GetPos());
+	monster->SetReturnCubeID(monster->GetCurrentCubeID());
+}
+
 void ChaseState::Tick(Monster* monster)
 {
 	State::Tick(monster);
@@ -457,7 +463,6 @@ void ReturnState::Tick(Monster* monster)
 	// 경로	따라 이동
 	const std::vector<CubeRef>& cubes = monster->GetOwnerRoom()->GetCubes();
 	monster->SetPos(path[0]);
-	monster->SetCurrentCubeID();
 	path.pop_front();
 
 	// Broadcast
