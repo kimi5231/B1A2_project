@@ -601,6 +601,7 @@ void UMain::RecvAddItem(S_AddItem_Packet packet)
 	FVector spawnLocation(packet.pos.x, packet.pos.y, packet.pos.z);
 	FRotator spawnRotation(0, 0, 0);
 	int id = packet.id;
+	int cost = packet.cost;
 
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
@@ -666,6 +667,7 @@ void UMain::RecvAddItem(S_AddItem_Packet packet)
 
 		item->SetItemID(id);
 		item->SetIsTool(false);
+		item->SetCost(cost);
 
 		// Spawn 후 Map에 등록
 		_items.Add(id, item);	
@@ -683,6 +685,7 @@ void UMain::RecvAddTool(S_AddItem_Packet packet)
 	FVector spawnLocation(packet.pos.x, packet.pos.y, packet.pos.z);
 	FRotator spawnRotation(0, 0, 0);
 	int id = packet.id;
+	int cost = packet.cost;
 
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
@@ -717,6 +720,7 @@ void UMain::RecvAddTool(S_AddItem_Packet packet)
 
 		tool->SetItemID(id);
 		tool->SetIsTool(true);
+		tool->SetCost(cost);
 
 		// Spawn 후 Map에 등록
 		_tools.Add(id, tool);
@@ -992,7 +996,8 @@ void UMain::RecvMovePlayer(S_Move_Packet packet)
 		{
 			if (_myPlayer)
 			{
-				_myPlayer->SetPlayerLocation(pos, rot);
+				//_myPlayer->SetPlayerLocation(pos, rot); <- 이건 아마 otherPlayer 전용????? 틀리면 다시 주석 풀면 됨...
+				_myPlayer->SetActorLocationAndRotation(pos, rot);
 				_myPlayer->SetPlayerState(packet.state);
 
 				UE_LOG(LogTemp, Display, TEXT("[MyPlayer] Move Packet %f, %f"), packet.pos.x, packet.pos.y);
