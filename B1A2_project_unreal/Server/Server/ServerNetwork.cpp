@@ -10,6 +10,7 @@
 #include "Lantern.h"
 #include "EmotionGame.h"
 #include "SellingMachine.h"
+#include "Global.h"
 
 ServerNetwork::ServerNetwork(ServerFramework* framework)
 {
@@ -259,6 +260,53 @@ void ServerNetwork::ProcessPacket(std::vector<char>& packet, int clientIndex)
 
 	switch (id)
 	{
+	case C_Login:
+	{
+		unsigned short packetSize;
+		memcpy(&packetSize, packet.data(), sizeof(unsigned short));
+		packet.erase(packet.begin(), packet.begin() + sizeof(unsigned short) + sizeof(PacketID));
+		
+		C_Login_Packet loginPacket{ packetSize, C_Login, DeserializeVector<char>(packet), DeserializeVector<char>(packet) };
+		ProcessLoginPacket(loginPacket, clientIndex);
+		break;
+	}
+	case C_Logout:
+	{
+		C_Logout_Packet logoutPacket;
+		memcpy(&logoutPacket, packet.data(), sizeof(C_Logout_Packet));
+		packet.erase(packet.begin(), packet.begin() + sizeof(C_Logout_Packet));
+		ProcessLogoutPacket(logoutPacket, clientIndex);
+		break;
+	}
+	case C_CreateRoom:
+	{
+		unsigned short packetSize;
+		memcpy(&packetSize, packet.data(), sizeof(unsigned short));
+		packet.erase(packet.begin(), packet.begin() + sizeof(unsigned short) + sizeof(PacketID));
+		bool isLock;
+		memcpy(&isLock, packet.data(), sizeof(bool));
+		packet.erase(packet.begin(), packet.begin() + sizeof(bool));
+
+		C_CreateRoom_Packet createRoomPacket{ packetSize, C_CreateRoom, isLock, DeserializeVector<char>(packet), DeserializeVector<char>(packet) };
+		ProcessCreateRoomPacket(createRoomPacket, clientIndex);
+		break;
+	}
+	case C_EnterRoom:
+	{
+		C_EnterRoom_Packet enterRoomPacket;
+		memcpy(&enterRoomPacket, packet.data(), sizeof(C_EnterRoom_Packet));
+		packet.erase(packet.begin(), packet.begin() + sizeof(C_EnterRoom_Packet));
+		ProcessEnterRoomPacket(enterRoomPacket, clientIndex);
+		break;
+	}
+	case C_ExitRoom:
+	{
+		C_ExitRoom_Packet exitRoomPacket;
+		memcpy(&exitRoomPacket, packet.data(), sizeof(C_ExitRoom_Packet));
+		packet.erase(packet.begin(), packet.begin() + sizeof(C_ExitRoom_Packet));
+		ProcessExitRoomPacket(exitRoomPacket, clientIndex);
+		break;
+	}
 	case C_Move:
 	{
 		C_Move_Packet movePacket;
@@ -339,6 +387,22 @@ void ServerNetwork::ProcessPacket(std::vector<char>& packet, int clientIndex)
 		ProcessInteractDoorPacket(interactDoorPacket, clientIndex);
 		break;
 	}
+	case C_SellItem:
+	{
+		C_SellItem_Packet sellItemPacket;
+		memcpy(&sellItemPacket, packet.data(), sizeof(C_SellItem_Packet));
+		packet.erase(packet.begin(), packet.begin() + sizeof(C_SellItem_Packet));
+		ProcessSellItemPacket(sellItemPacket, clientIndex);
+		break;
+	}
+	case C_BuyItem:
+	{
+		C_BuyItem_Packet buyItemPacket;
+		memcpy(&buyItemPacket, packet.data(), sizeof(C_BuyItem_Packet));
+		packet.erase(packet.begin(), packet.begin() + sizeof(C_BuyItem_Packet));
+		ProcessBuyItemPacket(buyItemPacket, clientIndex);
+		break;
+	}
 	case C_ChangeEmotion:
 	{
 		C_ChangeEmotion_Packet changeEmotionPacket;
@@ -405,6 +469,48 @@ std::vector<T> ServerNetwork::DeserializeVector(const std::vector<char>& data)
 	memcpy(vector.data(), data.data() + sizeof(int), size * sizeof(T));
 
 	return vector;
+}
+
+void ServerNetwork::SendLoginResultPacket(LoginResult result, Session* client)
+{
+	// Packet Data 생성
+	S_LoginResult_Packet packetData{ sizeof(S_LoginResult_Packet), S_LoginResult, result };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	client->Send(serializedPacketData);
+}
+
+void ServerNetwork::SendCurrentRoomListPacket(std::array<Room*, MAX_ROOM>& rooms, Session* client)
+{
+	std::vector<RoomDTO> roomDTOs;
+	for (auto& room : rooms)
+	{
+		// 들어갈 수 있는 room의 정보만 기록
+		if (room->GetRoomState() == RoomState::Wait || room->GetRoomState() == RoomState::Lock)
+		{
+			char title[MAX_TITLE];
+
+			RoomDTO DTO{ room->GetCurrentPlayer(), room->GetID(), room->GetRoomState(), SerializeVector(room->GetTitle()) };
+			roomDTOs.push_back(DTO);
+		}	
+	}
+
+	// Packet Serialize
+	int vectorSize = roomDTOs.size();
+	int DTOSize = sizeof(roomDTOs[0].playerCount) + sizeof(roomDTOs[0].roomID) + sizeof(roomDTOs[0].roomState) + roomDTOs[0].roomTitle.size();
+	std::vector<char> roomData(sizeof(int) + DTOSize * vectorSize);
+	memcpy(roomData.data(), &vectorSize, sizeof(int));
+	memcpy(roomData.data() + sizeof(int), roomDTOs.data(), vectorSize * DTOSize);
+
+	unsigned short packetSize = sizeof(unsigned short) + sizeof(PacketID) + roomData.size();
+	std::vector<char> serializedPacketData(sizeof(unsigned short));
+	memcpy(serializedPacketData.data(), &packetSize, sizeof(unsigned short));
+	serializedPacketData.push_back(S_CurrentRoomList);
+	serializedPacketData.insert(serializedPacketData.end(), roomData.begin(), roomData.end());
+
+	client->Send(serializedPacketData);
 }
 
 void ServerNetwork::SendAddPlayerPacket(Player* player, Session* client)
@@ -644,6 +750,17 @@ void ServerNetwork::SendSellItemResultPacket(char playerID, char sellingMachineI
 	client->Send(serializedPacketData);
 }
 
+void ServerNetwork::SendBuyItemResultPacket(char currentCredit, Session* client)
+{
+	// Packet Data 생성
+	S_BuyItemResult_Packet packetData{ sizeof(S_BuyItemResult_Packet), S_BuyItemResult, currentCredit };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	client->Send(serializedPacketData);
+}
+
 void ServerNetwork::SendUpdateHpPacket(int playerID, int hp, Session* client)
 {
 	// Packet Data 생성
@@ -697,6 +814,51 @@ void ServerNetwork::SendEndStagePacket(Session* client)
 	std::vector<char> serializedPacketData = SerializePOD(packetData);
 
 	client->Send(serializedPacketData);
+}
+
+void ServerNetwork::SendUpdateCreditPacket(char currentCredit, Session* client)
+{
+	// Packet Data 생성
+	S_UpdateCredit_Packet packetData{ sizeof(S_UpdateCredit_Packet), S_UpdateCredit, currentCredit };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	client->Send(serializedPacketData);
+}
+
+void ServerNetwork::ProcessLoginPacket(C_Login_Packet packet, int clientIndex)
+{
+	// ID가 데이터베이스 있는지 확인 후, 비밀번호가 일치한다면 로그인 성공 패킷 전송
+
+
+	LoginResult result = LoginResult::Sucess;
+
+	SendLoginResultPacket(result, _clients[clientIndex]);
+}
+
+void ServerNetwork::ProcessLogoutPacket(C_Logout_Packet packet, int clientIndex)
+{
+	// RoomList 보내주는 Client 목록에서 제외
+}
+
+void ServerNetwork::ProcessCreateRoomPacket(C_CreateRoom_Packet packet, int clientIndex)
+{
+	// 패킷 정보를 활용해 Room 추가하기
+}
+
+void ServerNetwork::ProcessEnterRoomPacket(C_EnterRoom_Packet packet, int clientIndex)
+{
+	// 요청한 Room에 들어갈 수 있는지 확인
+	
+	// 들어갈 수 있다면, 해당 Room에 Player 추가
+	// 나중에 Accept에 있는 코드 가져오기
+}
+
+void ServerNetwork::ProcessExitRoomPacket(C_ExitRoom_Packet packet, int clientIndex)
+{
+	// 접속할 있는 RoomList 전송
+	//SendCurrentRoomListPacket()
 }
 
 void ServerNetwork::ProcessMovePacket(C_Move_Packet packet, int clientIndex)
@@ -1028,6 +1190,35 @@ void ServerNetwork::ProcessSellItemPacket(C_SellItem_Packet packet, int clientIn
 
 	// 데이터 사용을 위해 나중에 초기화
 	sellingMachine->ClearSellItems();
+}
+
+void ServerNetwork::ProcessBuyItemPacket(C_BuyItem_Packet packet, int clientIndex)
+{
+	// 요청한 Player가 아이템을 구매할 수 있는 상태인지 확인
+	Player* player = dynamic_cast<Player*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::Player, packet.playerID));
+
+	// 구매가 가능한 상태라면 크레딧이 충분한지 확인
+	ItemInfo info = g_dataManager->GetItemInfo(packet.itemType);
+	int needCredit = info.cost * packet.itemCount;
+
+	// 크레딧이 충분하다면 구매 완료 및 Base에 아이템 생성
+	if (_clients[clientIndex]->_room->GetCurrentCredit() >= needCredit)
+	{
+		for (int i = 0; i < packet.itemCount; ++i)
+			_clients[clientIndex]->_room->AddItem(true, packet.itemType, {0, 0, 0});
+		
+		// 아이템 가격만큼 크레딧 마이너스
+		_clients[clientIndex]->_room->MinusCredit(needCredit);
+	}
+
+	// 아이템 구매 결과 전송
+	for (auto& p : _clients[clientIndex]->_room->GetPlayers())
+	{
+		if (!p->GetClient())
+			continue;
+
+		SendBuyItemResultPacket(_clients[clientIndex]->_room->GetCurrentCredit(), p->GetClient());
+	}
 }
 
 void ServerNetwork::ProcessChangeEmotionPacket(C_ChangeEmotion_Packet packet, int clientIndex)

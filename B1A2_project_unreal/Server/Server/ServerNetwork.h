@@ -7,6 +7,7 @@ class Session;
 class Lantern;
 class EmotionGame;
 class SellingMachine;
+class Room;
 
 class ServerNetwork
 {
@@ -33,6 +34,8 @@ private:
 
 public:
 	// Send
+	void SendLoginResultPacket(LoginResult result, Session* client);
+	void SendCurrentRoomListPacket(std::array<Room*, MAX_ROOM>& rooms, Session* client);
 	void SendAddPlayerPacket(Player* player, Session* client);
 	void SendAddMonsterPacket(Monster* monster, Session* client);
 	void SendAddItemPacket(Item* item, bool isTool, Session* client);
@@ -51,14 +54,21 @@ public:
 	void SendTurnOffLanternPacket(Lantern* lantern, int playerID, Session* client);
 	void SendInteractDoorNotifyPacket(int playerID, int doorID, ObjectState doorState, Session* client);
 	void SendSellItemResultPacket(char playerID, char sellingMachineID, ObjectState sellingMachineState, char remainCredit, char currentCredit, std::vector<int>& itemIDs, Session* client);
+	void SendBuyItemResultPacket(char currentCredit, Session* client);
 	void SendUpdateHpPacket(int playerID, int hp, Session* client);
 	void SendEmotionGameResultPacket(int playerID, int playerHP, EmotionGame* emotionGame,  Session* client);
 	void SendSpawnParticlePacket(Vector pos, Session* client);
 	void SendStartStagePacket(Session* client);
 	void SendEndStagePacket(Session* client);
+	void SendUpdateCreditPacket(char currentCredit, Session* client);
 	
 public:
 	// Recv
+	void ProcessLoginPacket(C_Login_Packet packet, int clientIndex);
+	void ProcessLogoutPacket(C_Logout_Packet packet, int clientIndex);
+	void ProcessCreateRoomPacket(C_CreateRoom_Packet packet, int clientIndex);
+	void ProcessEnterRoomPacket(C_EnterRoom_Packet packet, int clientIndex);
+	void ProcessExitRoomPacket(C_ExitRoom_Packet packet, int clientIndex);
 	void ProcessMovePacket(C_Move_Packet packet, int clientIndex);
 	void ProcessUpdateObjectStatePacket(C_UpdateObjectState_Packet packet, int clientIndex);
 	void ProcessGetItemPacket(C_GetItem_Packet packet, int clientIndex);
@@ -70,6 +80,7 @@ public:
 	void ProcessUseLanternPacket(C_UseLantern_Packet packet, int clientIndex);
 	void ProcessInteractDoorPacket(C_InteractDoor_Packet packet, int clientIndex);
 	void ProcessSellItemPacket(C_SellItem_Packet packet, int clientIndex);
+	void ProcessBuyItemPacket(C_BuyItem_Packet packet, int clientIndex);
 	void ProcessChangeEmotionPacket(C_ChangeEmotion_Packet packet, int clientIndex);
 	void ProcessEmotionResultPacket(C_EmotionResult_Packet packet, int clientIndex);
 	void ProcessStartStagePacket(C_StartStage_Packet packet, int clientIndex);

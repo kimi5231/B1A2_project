@@ -7,6 +7,7 @@ enum PacketID : char
 	// Client
 	C_Login,
 	C_Logout,
+	C_CreateRoom,
 	C_EnterRoom,
 	C_ExitRoom,
 	C_Move,
@@ -60,7 +61,7 @@ enum PacketID : char
 struct RoomDTO
 {
 	unsigned char playerCount;
-	unsigned char roodID;
+	unsigned char roomID;
 	RoomState roomState;
 	std::vector<char> roomTitle;
 };
@@ -91,7 +92,7 @@ struct SellingMachineDTO
 };
 
 // Client
-struct C_Login
+struct C_Login_Packet
 {
 	unsigned char size;
 	PacketID packetID;
@@ -99,20 +100,29 @@ struct C_Login
 	std::vector<char> password;
 };
 
-struct C_Logout
+struct C_Logout_Packet
 {
 	unsigned char size;
 	PacketID packetID;
 };
 
-struct C_EnterRoom
+struct C_CreateRoom_Packet
+{
+	unsigned char size;
+	PacketID packetID;
+	bool isLock;
+	std::vector<char> roomTitle;
+	std::vector<char> password;
+};
+
+struct C_EnterRoom_Packet
 {
 	unsigned char size;
 	PacketID packetID;
 	unsigned char roomID;
 };
 
-struct C_ExitRoom
+struct C_ExitRoom_Packet
 {
 	unsigned char size;
 	PacketID packetID;
@@ -219,6 +229,7 @@ struct C_BuyItem_Packet
 {
 	unsigned char size;
 	PacketID packetID;
+	unsigned char playerID;
 	ItemType itemType;
 	unsigned char itemCount;
 };
@@ -257,14 +268,14 @@ struct C_EndStage_Packet
 };
 
 // Server
-struct S_LoginResult
+struct S_LoginResult_Packet
 {
 	unsigned char size;
 	PacketID packetID;
 	LoginResult result;
 };
 
-struct S_CurrentRoomList
+struct S_CurrentRoomList_Packet
 {
 	unsigned char size;
 	PacketID packetID;

@@ -24,6 +24,7 @@ enum class RoomState
 	Wait,
 	Lock,
 	Play,
+	Full,
 };
 
 enum class ObjectType : char

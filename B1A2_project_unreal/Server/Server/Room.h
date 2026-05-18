@@ -47,6 +47,10 @@ public:
 	const std::vector<SellingMachine*>& GetSellingMachine() { return _sellingMachines; }
 	int GetGoalCredit() { return _goalCredit; }
 	int GetCurrentCredit() { return _currentCredit; }
+	int GetID() { return _id; }
+	RoomState GetRoomState() { return _roomState; }
+	int GetCurrentPlayer() { return _currentPlayer; }
+	std::vector<char>& GetTitle() { return _title; }
 
 private:
 	CubeRef _base;
@@ -60,6 +64,11 @@ private:
 	std::unordered_map<int, Item*> _processingItems;
 
 private:
+	int _id;
+	RoomState _roomState;
+	int _currentPlayer;
+	std::vector<char> _title;
+
 	// 현재 맵의 난이도
 	Difficulty _currentDifficulty{};
 	// 세부 난이도
