@@ -1742,6 +1742,18 @@ void UMain::RecvStartStage(S_StartStage_Packet packet)
 
 void UMain::RecvUpdateHp(S_UpdateHp_Packet packet)
 {
+	int id = packet.playerID;
+	float hp = packet.hp;
+
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		if (id != _myID)
+			return;
+
+		_myPlayer->SetCurrentHp(hp);
+
+		UE_LOG(LogTemp, Log, TEXT("[Stat] Local HP Updated to: %f"), hp);
+	});
 }
 
 void UMain::RecvAddObstacle(S_AddObstacle_Packet packet)
@@ -1784,7 +1796,11 @@ void UMain::RecvEmotionGameResult(S_EmotionGameResult_Packet packet)
 		if (!GetWorld()) return;
 
 		// 1. 플레이어 hp 수정
-		
+		if (_myID == packet.playerID)
+		{
+			if (_myPlayer)
+				_myPlayer->SetCurrentHp(packet.playerHP);
+		}
 
 		// 2. 몬스터 디스플레이 변경(몬스터가 낸 감정 2초 -> Win Lose Draw 결과 3초 -> Idle)
 		ABaseMonster** findMonster = _monsters.Find(packet.monsterID);

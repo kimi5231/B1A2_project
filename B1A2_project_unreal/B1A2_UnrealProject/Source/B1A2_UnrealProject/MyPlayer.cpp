@@ -187,13 +187,14 @@ void AMyPlayer::Tick(float DeltaTime)
 		}
 	}
 	
-	// 스테미나 & Battery UI 업데이트
+	// 스테미나, HP & Battery UI 업데이트
 	UPlayerStatusWidget* ui = Cast<UPlayerStatusWidget>(_statusWidgetInstance);
 	if (ui)
 	{
-		// 스테미나는 로컬 업데이트(hp는 패킷 받았을 때!)
+		// 스테미나, Hp
 		ui->SetStamina(_currentStamina / _maxStamina);
-			
+		ui->SetHealth(_currentHp / _maxHp);
+
 		// Lantern Battery 업데이트 (로컬, 서버 상관 없을듯 Tick이라서??)
 		ui->SetBattery(_currentBattery / 180.f);
 	}
