@@ -5,98 +5,112 @@
             "size": [65, 45, 45],
             "name": "짐 상자",
             "weight": 7.0,
-            "cost": 70
+            "cost": 70,
+            "spawnWeight": [0.103, 0.134, 0.107]
         },
         {
             "type": 1,
             "size": [42, 14, 12],
             "name": "금괴",
             "weight": 12.0,
-            "cost": 200
+            "cost": 200,
+            "spawnWeight": [0.010, 0.033, 0.071]
         },
         {
             "type": 2,
             "size": [20, 15, 20],
             "name": "고무오리",
             "weight": 0.3,
-            "cost": 25
+            "cost": 25,
+            "spawnWeight": [0.179, 0.100, 0.071]
         },
         {
             "type": 3,
             "size": [55, 55, 50],
             "name": "플라스틱 적재함",
             "weight": 4.5,
-            "cost": 110
+            "cost": 110,
+            "spawnWeight": [0.062, 0.100, 0.144]
         },
         {
             "type": 4,
             "size": [40, 20, 23],
             "name": "큰 나사",
             "weight": 2.5,
-            "cost": 55
+            "cost": 55,
+            "spawnWeight": [0.128, 0.120, 0.086]
         },
         {
             "type": 5,
             "size": [35, 15, 13],
             "name": "해적 모자",
             "weight": 1.6,
-            "cost": 140
+            "cost": 140,
+            "spawnWeight": [0.041, 0.080, 0.107]
         },
         {
             "type": 6,
             "size": [30, 30, 16],
             "name": "안전모",
             "weight": 0.9,
-            "cost": 40
+            "cost": 40,
+            "spawnWeight": [0.154, 0.100, 0.071]
         },
         {
             "type": 7,
             "size": [55, 55, 80],
             "name": "엔진",
             "weight": 8.0,
-            "cost": 165
+            "cost": 165,
+            "spawnWeight": [0.026, 0.067, 0.107]
         },
         {
             "type": 8,
             "size": [45, 38, 10],
             "name": "고철 조각",
             "weight": 1.3,
-            "cost": 85
+            "cost": 85,
+            "spawnWeight": [0.092, 0.133, 0.129]
         },
         {
             "type": 9,
             "size": [30, 30, 28],
             "name": "빈 통조림",
             "weight": 0.6,
-            "cost": 10
+            "cost": 10,
+            "spawnWeight": [0.205, 0.133, 0.107]
         },
         {
             "type": 10,
             "size": [18, 85, 18],
             "name": "커틀러스",
             "weight": 1.5,
-            "cost": 0
+            "cost": 0,
+            "spawnWeight": []
         },
         {
             "type": 11,
             "size": [18, 45, 30],
             "name": "광선총",
             "weight": 2.5,
-            "cost": 0
+            "cost": 0,
+            "spawnWeight": []
         },
         {
             "type": 12,
             "size": [9, 3, 1],
             "name": "열쇠",
             "weight": 0.1,
-            "cost": 0
+            "cost": 0,
+            "spawnWeight": []
         },
         {
             "type": 13,
             "size": [9, 9, 43],
             "name": "랜턴",
             "weight": 1.0,
-            "cost": 0
+            "cost": 0,
+            "spawnWeight": []
         }
     ]
 }
