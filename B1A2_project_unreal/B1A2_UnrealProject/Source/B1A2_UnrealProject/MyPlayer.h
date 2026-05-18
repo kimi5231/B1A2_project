@@ -256,6 +256,15 @@ protected:
 	const float _baseJumpVelocity = 350.f;
 	const float _baseCrouchSpeed = 400.f;
 
+	// Hp
+	UPROPERTY(BlueprintReadOnly, category = "Stats")
+	float _currentHp = 100.f;
+	const float _maxHp = 100.f;
+
+public:
+	float GetCurrentHp() { return _currentHp; }
+	void SetCurrentHp(float hp) { _currentHp = hp; }
+
 protected:
 	// ·£ÅÏÀÇ ÇöÀç ÄÑÁü/²¨Áü »óÅÂ
 	UPROPERTY(BlueprintReadOnly, Category = "Lantern")

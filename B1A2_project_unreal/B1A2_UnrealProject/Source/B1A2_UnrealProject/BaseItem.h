@@ -41,6 +41,9 @@ public:
 	void SetItemType(ItemType type) { _type = type; }
 	ItemType GetItemType() { return _type; }
  
+	void SetCost(int cost) { _cost = cost; }
+	int GetCost() { return _cost; }
+
 	void OnScanned();		// 스캔 범위에 들었을 때 위젯 On
 	void HideScanInfo();	// 3초 후 Hide
 
@@ -67,4 +70,5 @@ private:
 	int _itemID = {};
 	bool _isTool = false;
 	ItemType _type;
+	int _cost = {};
 };
