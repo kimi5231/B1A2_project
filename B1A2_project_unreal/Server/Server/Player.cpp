@@ -9,6 +9,7 @@ Player::Player()
 	_maxHP = 100;
 	_hp = _maxHP;
 	_pos = { 0, 0, 25 };
+	_currentCubeID = 0;
 	_rotation = {0, 0, 0};
 	_type = ObjectType::Player;
 	_currentEmotion = Emotion::Neutral;

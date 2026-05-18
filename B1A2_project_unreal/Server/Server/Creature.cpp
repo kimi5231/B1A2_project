@@ -6,7 +6,6 @@
 
 Creature::Creature()
 {
-    _currentCubeID = 0;
 }
 
 bool Creature::TackDamage(int damage)

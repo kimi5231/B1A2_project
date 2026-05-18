@@ -35,6 +35,8 @@ void Room::Init()
 		_players[i]->SetOwnerRoom(this);
 	}
 
+	CreateFactoryCubes();
+
 	// Monster ObjectPool 미리 확보
 	for (int i = 0; i < MAX_MONSTER; ++i)
 	{
@@ -121,14 +123,6 @@ void Room::Init()
 	Monster* emotionGame = AddMonster(MonsterType::EmotionGame, { 0, 675, 25 });
 	emotionGame->SetState(ObjectState::HIT, false);
 	emotionGame->SetState(ObjectState::IDLE, false);
-
-	// base 생성
-	CubeInfo info = g_dataManager->GetCubeInfo(CubeType::Base);
-	CubeRef base = std::make_shared<Cube>(Vector{0, 0, 0}, Back, info);
-	base->SetID(0);
-	_base = base;
-
-	CreateFactoryCubes();
 }
 
 void Room::Update()
@@ -219,6 +213,17 @@ void Room::CreateFactoryCubes()
 
 	int generateCubeID = 0;
 	int generateDoorID = 0;
+
+	// Base 생성
+	{
+		CubeInfo info = g_dataManager->GetCubeInfo(CubeType::Base);
+		CubeRef base = std::make_shared<Cube>(Vector{ 0, 0, 0 }, Back, info);
+		base->SetID(generateCubeID++);
+
+		// 문 생성
+
+		_cubes.push_back(base);
+	}
 
 	// 방 생성(문은 방 안에서 생성 + 비상구)
 	// MainEntranceRoom 생성
@@ -327,7 +332,7 @@ void Room::CreateFactoryCubes()
 		for (const CubeRef cube : _cubes)
 		{
 			// 배치하려는 곳에 이미 방이 있으면 생성X
-			if (cube->CheckCollision(newCube->GetBoundingBox()) || _base->CheckCollision(newCube->GetBoundingBox()))
+			if (cube->CheckCollision(newCube->GetBoundingBox()))
 			{
 				isCreate = false;
 				break;
@@ -555,6 +560,7 @@ void Room::RemoveObject(ObjectType type, int id, bool isSend)
 	{
 	case ObjectType::Player:
 		_players[id]->SetObjectPoolState(ObjectPoolState::Reusable);
+		_players[id]->SetPos({0, 0, 0});
 		break;
 	case ObjectType::Item:
 		_items[id]->SetObjectPoolState(ObjectPoolState::Reusable);

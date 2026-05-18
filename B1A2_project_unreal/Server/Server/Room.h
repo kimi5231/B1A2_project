@@ -53,7 +53,6 @@ public:
 	std::vector<char>& GetTitle() { return _title; }
 
 private:
-	CubeRef _base;
 	std::vector<CubeRef> _cubes;
 	std::vector<Door*> _doors;
 	std::vector<SellingMachine*> _sellingMachines;

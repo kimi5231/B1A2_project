@@ -572,9 +572,17 @@ void Grab::Tick(Monster* monster)
 
 void Grab::Exit(Monster* monster)
 {
-	// 타겟의 위치로 순간이동
-	monster->SetPos(monster->GetTarget()->GetPos());
-	
+	// 타겟의 위치 + 보정값으로 순간이동
+	const std::vector<CubeRef> cubes = monster->GetOwnerRoom()->GetCubes();
+	Vector cubePos = cubes[monster->GetTarget()->GetCurrentCubeID()]->GetPos();
+	Vector pos = monster->GetTarget()->GetPos();
+	pos.z = cubePos.z + TileSize;
+	monster->SetPos(pos);
+
+	// 타겟의 위치도 몬스터의 내부로 보정
+	pos.z += 26;
+	monster->GetTarget()->SetPos(pos);
+
 	// Broadcast
 	for (auto& p : monster->GetOwnerRoom()->GetPlayers())
 	{
@@ -582,10 +590,8 @@ void Grab::Exit(Monster* monster)
 			continue;
 
 		g_network->SendMovePacket(monster, p->GetClient());
+		g_network->SendMovePacket(monster->GetTarget(), p->GetClient());
 	}
-
-	// 보정 필요하면 보정하기
-
 }
 
 //--------------Play----------------

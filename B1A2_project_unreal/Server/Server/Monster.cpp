@@ -19,6 +19,7 @@ Monster::Monster(MonsterType monsterType, Room* ownerRoom)
 	_target = nullptr;
 	_sumTime = 0.f;
 	_ownerRoom = ownerRoom;
+	_currentCubeID = -1;
 
 	_size = { 80, 80, 80 };
 	_rotation = { 0, 0, 0 };
