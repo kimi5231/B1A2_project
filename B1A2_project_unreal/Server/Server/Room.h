@@ -74,6 +74,8 @@ private:
 	Difficulty _detailDifficulty{};
 
 	std::unordered_map<CubeType, int> _currentCubeCount;
+	std::unordered_map<MonsterType, int> _currentMonsterCount;
+	std::unordered_map<MonsterType, int> _maxMonsterCount;
 
 	std::unordered_map<Dir, std::vector<Door*>> _connectableDoors;
 

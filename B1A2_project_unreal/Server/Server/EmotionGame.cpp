@@ -19,6 +19,7 @@ EmotionGame::EmotionGame(MonsterType monsterType, Room* ownerRoom)
 	_damage = 25;
 	_healValue = 7;
 	_aggroRange = 500;
+	_power = 3;
 
 	// State Table
 	_stateTable[IDLE] = TELEPORT;

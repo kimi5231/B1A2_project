@@ -83,4 +83,5 @@ protected:
 	float _idleTime;
 	float _roamingTime;
 	unsigned char _damage;
+	int _power;
 };

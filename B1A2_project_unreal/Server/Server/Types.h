@@ -42,6 +42,8 @@ enum class MonsterType : char
 	Spider,
 	EmotionGame,
 	Ghost,
+	TrashColletcor,
+	PollutionMonitor,
 
 	MonsterTypeCount,
 };
@@ -485,6 +487,7 @@ struct CubeConditionInfo
 	std::pair<int, int> createExitCount;
 	int createSellingMachineCount;
 	int createSpecialSellingMachineCount;
+	int power;
 	std::pair<int, int> sellingMachineCreditLimit;
 	std::pair<int, int> exitPos;
 	std::pair<int, int> floor;

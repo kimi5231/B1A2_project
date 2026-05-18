@@ -12,6 +12,7 @@ Ghost::Ghost(MonsterType monsterType, Room* ownerRoom)
 	_waitTime = 180.f;
 	_absentTime = 4.f;
 	_staringTime = 15.f;
+	_power = 8;
 
 	// State Table
 	_stateTable[IDLE] = ABSENT;

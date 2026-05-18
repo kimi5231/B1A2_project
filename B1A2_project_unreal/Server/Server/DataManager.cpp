@@ -39,6 +39,8 @@ void DataManager::LoadCubeConditionInfos()
 
         info.sellingMachineCreditLimit.first = condition["sellingMachineCreditLimit"]["min"];
         info.sellingMachineCreditLimit.second = condition["sellingMachineCreditLimit"]["max"];
+        
+        info.power = condition["power"];
 
         info.exitPos.first = condition["exitPos"]["min"];
         info.exitPos.second = condition["exitPos"]["max"];

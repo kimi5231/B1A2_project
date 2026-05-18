@@ -4,10 +4,11 @@
             "current": 0,
             "detail": 0, 
             "totalRoomCount": 37,
-            "createItemCount": {"min": 12, "max": 14},
+            "createItemCount": {"min": 13, "max": 16},
             "createExitCount": {"min": 3, "max": 3},
             "createSellingMachineCount": 6,
             "createSpecialSellingMachineCount": 0,
+            "power" : 20,
             "sellingMachineCreditLimit" : {"min": 110, "max": 160},
             "exitPos": {"min": 3, "max": 3},
             "floor": {"min": 2, "max": 2}

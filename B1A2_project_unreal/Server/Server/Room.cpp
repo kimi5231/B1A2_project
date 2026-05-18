@@ -18,6 +18,13 @@ Room::Room()
 
 	_currentCredit = 0;
 	_goalCredit = 360;
+
+	// 몬스터별 최대 개수 초기화 (나중에 Json으로 읽어오기)
+	_maxMonsterCount[MonsterType::Spider] = 9;
+	_maxMonsterCount[MonsterType::EmotionGame] = 3;
+	_maxMonsterCount[MonsterType::Ghost] = 1;
+	_maxMonsterCount[MonsterType::TrashColletcor] = 0;
+	_maxMonsterCount[MonsterType::PollutionMonitor] = 0;
 }
 
 Room::~Room()
@@ -34,8 +41,6 @@ void Room::Init()
 		_players[i]->SetObjectPoolState(ObjectPoolState::Reusable);
 		_players[i]->SetOwnerRoom(this);
 	}
-
-	CreateFactoryCubes();
 
 	// Monster ObjectPool 미리 확보
 	for (int i = 0; i < MAX_MONSTER; ++i)
@@ -108,21 +113,43 @@ void Room::Init()
 		_obstacles[i]->SetObstacleType(ObstacleType::Web);
 	}
 
-	// 테스트용 아이템 생성
-	AddItem(false, ItemType::CardboardBox, { 0, 700, 25 });
-	AddItem(true, ItemType::CUTLASS, { 0, 750, 25 });
-	AddItem(true, ItemType::Blaster, { 0, 650, 25 });
-	AddItem(true, ItemType::Key, { 0, 600, 25 });
-	AddItem(true, ItemType::LANTERN, { 0, 550, 25 });
+	CreateFactoryCubes();
 
-	// 테스트용 몬스터 생성
-	Monster* spider = AddMonster(MonsterType::Spider, { 0, 675, 25 });
-	spider->SetState(ObjectState::HIT, false);
-	spider->SetState(ObjectState::IDLE, false);
+	// 몬스터 생성
+	std::uniform_int_distribution<int> selectCube(0, _cubes.size() - 1);
+	int index = selectCube(gen);
+	while (index < 2)
+		index = selectCube(gen);
+	CubeRef cube = _cubes[index];
+	Monster* spider1 = AddMonster(MonsterType::Spider, { 0, 675, 25 });
+	spider1->SetPos(spider1->SelectRandomPosInCube(cube));
+	spider1->SetState(ObjectState::HIT, false);
+	spider1->SetState(ObjectState::IDLE, false);
 
+	index = selectCube(gen);
+	while (index < 2)
+		index = selectCube(gen);
+	cube = _cubes[index];
+	Monster* spider2 = AddMonster(MonsterType::Spider, { 0, 675, 25 });
+	spider2->SetPos(spider2->SelectRandomPosInCube(cube));
+	spider2->SetState(ObjectState::HIT, false);
+	spider2->SetState(ObjectState::IDLE, false);
+
+	index = selectCube(gen);
+	while (index < 2)
+		index = selectCube(gen);
+	cube = _cubes[index];
 	Monster* emotionGame = AddMonster(MonsterType::EmotionGame, { 0, 675, 25 });
+	emotionGame->SetPos(emotionGame->SelectRandomPosInCube(cube));
 	emotionGame->SetState(ObjectState::HIT, false);
 	emotionGame->SetState(ObjectState::IDLE, false);
+
+	// 아이템 생성
+	AddItem(false, ItemType::CardboardBox, { 0, 675, 25 });
+	AddItem(true, ItemType::CUTLASS, { 0, 0, 25 });
+	AddItem(true, ItemType::Blaster, { 0, 100, 25 });
+	AddItem(true, ItemType::Key, { 0, -100, 25 });
+	AddItem(true, ItemType::LANTERN, { 0, 200, 25 });
 }
 
 void Room::Update()
@@ -178,9 +205,13 @@ void Room::CreateFactoryCubes()
 	CubeConditionInfo conditions = g_dataManager->GetCubeConditionInfo(_currentDifficulty, _detailDifficulty);
 
 	// 방별 개수 초기화
-	for (int i = 0; i < static_cast<int>(CubeType::GameRoomTypeCount); i++)
+	for (int i = 0; i < static_cast<int>(CubeType::GameRoomTypeCount); ++i)
 		_currentCubeCount[static_cast<CubeType>(i)] = 0;
-	
+
+	// 몬스터별 개수 초기화
+	for (int i = 0; i < static_cast<int>(MonsterType::MonsterTypeCount); ++i)
+		_currentMonsterCount[static_cast<MonsterType>(i)] = 0;
+
 	// 나중에 json으로 불러올 예정
 	// array로 바꾸는 것도 고려할 것, 고정된 크기
 	for (int i = 0; i < DirCount; i++)
@@ -405,16 +436,37 @@ void Room::CreateFactoryCubes()
 			std::uniform_int_distribution<int> selectCreditLimit(conditions.sellingMachineCreditLimit.first, conditions.sellingMachineCreditLimit.second);
 			int creditLimit = selectCreditLimit(gen);
 
+			Vector cubePos = cube->GetPos();
+			Vector pos{};
+			pos.z = cubePos.z + info.sellingMachinePos[sellingMachineIndex].z;
+			switch (cube->GetDir())
+			{
+			case Front:
+				pos.x = cubePos.x + info.sellingMachinePos[sellingMachineIndex].x;
+				pos.y = cubePos.y + info.sellingMachinePos[sellingMachineIndex].y;
+				break;
+			case Right:
+				pos.x = cubePos.x - info.sellingMachinePos[sellingMachineIndex].y;
+				pos.y = cubePos.y + info.sellingMachinePos[sellingMachineIndex].x;
+				break;
+			case Back:
+				pos.x = cubePos.x - info.sellingMachinePos[sellingMachineIndex].x;
+				pos.y = cubePos.y - info.sellingMachinePos[sellingMachineIndex].y;
+				break;
+			case Left:
+				pos.x = cubePos.x + info.sellingMachinePos[sellingMachineIndex].y;
+				pos.y = cubePos.y - info.sellingMachinePos[sellingMachineIndex].x;
+				break;
+			}
+
 			SellingMachine* sellingMachine = new SellingMachine(info.sellingMachineDir[sellingMachineIndex], false, creditLimit);
 			sellingMachine->SetID(generateSellingMachineID++);
-			sellingMachine->SetPos(cube->GetPos() + info.sellingMachinePos[sellingMachineIndex]);
+			sellingMachine->SetPos(pos);
 			sellingMachine->SetOwnerRoom(this);
 			sellingMachine->SetState(ObjectState::OPEN);
 			_sellingMachines.push_back(sellingMachine);
 		}
 	}
-
-	// 아이템 생성
 
 	std::cout << "Success Create GameRooms" << std::endl;
 
@@ -428,19 +480,26 @@ void Room::StartStage()
 	CreateFactoryCubes();
 	//g_network->SendCreateCubesPacket(_cubes, _doors, true);
 
-	AddItem(false, ItemType::CardboardBox, { 0, 700, 25 });
-	AddItem(true, ItemType::CUTLASS, { 0, 750, 25 });
-	AddItem(true, ItemType::Blaster, { 0, 650, 25 });
-	AddItem(true, ItemType::Key, { 0, 600, 25 });
-	AddItem(true, ItemType::LANTERN, { 0, 550, 25 });
-
+	// 몬스터 생성
+	std::uniform_int_distribution<int> selectCube(0, _cubes.size() - 1);
+	CubeRef cube = _cubes[selectCube(gen)];
 	Monster* spider = AddMonster(MonsterType::Spider, { 0, 675, 25 });
+	spider->SetPos(spider->SelectRandomPosInCube(cube));
 	spider->SetState(ObjectState::HIT, false);
 	spider->SetState(ObjectState::IDLE, false);
 
+	cube = _cubes[selectCube(gen)];
 	Monster* emotionGame = AddMonster(MonsterType::EmotionGame, { 0, 675, 25 });
+	spider->SetPos(spider->SelectRandomPosInCube(cube));
 	emotionGame->SetState(ObjectState::HIT, false);
 	emotionGame->SetState(ObjectState::IDLE, false);
+
+	// 아이템 생성
+	AddItem(false, ItemType::CardboardBox, { 0, 675, 25 });
+	AddItem(true, ItemType::CUTLASS, { 0, 0, 25 });
+	AddItem(true, ItemType::Blaster, { 0, 100, 25 });
+	AddItem(true, ItemType::Key, { 0, -100, 25 });
+	AddItem(true, ItemType::LANTERN, { 0, 200, 25 });
 }
 
 void Room::EndStage()

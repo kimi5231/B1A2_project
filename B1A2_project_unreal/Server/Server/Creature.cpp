@@ -56,8 +56,8 @@ void Creature::SetCurrentCubeID()
         }
     }
 
-    // 
-    for (const auto& cube : cubes[_currentCubeID]->GetConnectedCubes())
+    //for (const auto& cube : cubes[_currentCubeID]->GetConnectedCubes())
+    for (const auto& cube : cubes)
     {
         if (cube->GetBoundingBox().CheckInclude(_pos))
         {

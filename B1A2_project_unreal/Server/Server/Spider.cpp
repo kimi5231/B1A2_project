@@ -32,6 +32,8 @@ Spider::Spider(MonsterType monsterType, Room* ownerRoom)
 	_maxWebCount = 8;
 	_currentWebCount = 0;
 
+	_power = 1;
+
 	// State Table
 	_stateTable[IDLE] = ROAMING;
 	_stateTable[ROAMING] = MAKE_WEB;
