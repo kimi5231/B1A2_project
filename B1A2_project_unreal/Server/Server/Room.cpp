@@ -426,7 +426,8 @@ void Room::CreateFactoryCubes()
 				break;
 			}
 
-			SellingMachine* sellingMachine = new SellingMachine(info.sellingMachineDir[sellingMachineIndex], false, creditLimit);
+			Dir dir = static_cast<Dir>((cube->GetDir() + info.sellingMachineDir[sellingMachineIndex]) % DirCount);
+			SellingMachine* sellingMachine = new SellingMachine(dir, false, creditLimit);
 			sellingMachine->SetID(generateSellingMachineID++);
 			sellingMachine->SetPos(pos);
 			sellingMachine->SetOwnerRoom(this);
