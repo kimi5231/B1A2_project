@@ -28,10 +28,17 @@ public:
 	void SetCurrentEmotion(Emotion emotion) { _currentEmotion = emotion; }
 	Session* GetClient() { return _client; }
 	void SetClient(Session* client) { _client = client; }
+	int GetLookRange() { return _lookRange; }
+	int GetLookHeight() { return _lookHeight; }
+	float GetLookAngle() { return _lookAngle; }
 
 private:
 	Session* _client;
 	Inventory* _inventory{};
 	int _currentTool{};
 	Emotion _currentEmotion{};
+
+	int _lookRange;
+	int _lookHeight;
+	float _lookAngle;
 };

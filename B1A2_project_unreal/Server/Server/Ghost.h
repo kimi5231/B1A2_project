@@ -17,12 +17,18 @@ public:
 public:
 	virtual bool SetState(ObjectState state, bool isSend = true) override;
 	float GetAbsentTime() { return _absentTime; }
+	int GetLookCount() { return _lookCount; }
+	int GetUnlookCount() { return _unlookCount; }
+	bool GetCheckLooking() { return _checkLooking; }
+	void SetCheckLooking(bool checkLooking) { _checkLooking = checkLooking; }
 
 private:
 	float _waitTime;
 	float _absentTime;
 	float _staringTime;
 
-	unsigned char _lookCount;
-	unsigned char _unlookCount;
+	int _lookCount;
+	int _unlookCount;
+
+	bool _checkLooking;
 };

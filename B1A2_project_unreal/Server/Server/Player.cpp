@@ -15,6 +15,10 @@ Player::Player()
 	_currentEmotion = Emotion::Neutral;
 	_box.SetBounds(_pos, {60, 30, 180}, Front);
 	_inventory = new Inventory();
+
+	_lookRange = 1500;
+	_lookHeight = 200;
+	_lookAngle = 90.f;
 }
 
 Player::~Player()

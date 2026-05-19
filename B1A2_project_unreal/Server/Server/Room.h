@@ -87,4 +87,6 @@ private:
 
 	int _goalCredit;
 	int _currentCredit;
+
+	int _currentPower;
 };

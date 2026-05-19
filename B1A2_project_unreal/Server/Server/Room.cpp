@@ -10,6 +10,7 @@
 #include "Lantern.h"
 #include "EmotionGame.h"
 #include "SellingMachine.h"
+#include "Ghost.h"
 
 Room::Room()
 {
@@ -18,6 +19,7 @@ Room::Room()
 
 	_currentCredit = 0;
 	_goalCredit = 360;
+	_currentPower = 0;
 
 	// 몬스터별 최대 개수 초기화 (나중에 Json으로 읽어오기)
 	_maxMonsterCount[MonsterType::Spider] = 9;
@@ -56,12 +58,15 @@ void Room::Init()
 			case MonsterType::EmotionGame:
 				_monsters[monsterID] = new EmotionGame(type, this);
 				break;
+			case MonsterType::Ghost:
+				_monsters[monsterID] = new Ghost(type, this);
+				break;
 			default:
 				_monsters[monsterID] = new Monster(type, this);
 				break;
 			}
 
-			_monsters[monsterID]->SetID(i);
+			_monsters[monsterID]->SetID(monsterID);
 			_monsters[monsterID]->SetObjectPoolState(ObjectPoolState::Reusable);
 			_monsters[monsterID]->SetOwnerRoom(this);
 			monsterID++;
@@ -437,33 +442,55 @@ void Room::CreateFactoryCubes()
 	}
 
 	// 몬스터 생성
-	std::uniform_int_distribution<int> selectCube(0, _cubes.size() - 1);
-	int index = selectCube(gen);
-	while (index < 2)
-		index = selectCube(gen);
-	CubeRef cube = _cubes[index];
-	Monster* spider1 = AddMonster(MonsterType::Spider, { 0, 675, 25 });
-	spider1->SetPos(spider1->SelectRandomPosInCube(cube));
-	spider1->SetState(ObjectState::HIT, false);
-	spider1->SetState(ObjectState::IDLE, false);
-
-	index = selectCube(gen);
-	while (index < 2)
-		index = selectCube(gen);
-	cube = _cubes[index];
-	Monster* spider2 = AddMonster(MonsterType::Spider, { 0, 675, 25 });
-	spider2->SetPos(spider2->SelectRandomPosInCube(cube));
-	spider2->SetState(ObjectState::HIT, false);
-	spider2->SetState(ObjectState::IDLE, false);
-
-	index = selectCube(gen);
-	while (index < 2)
-		index = selectCube(gen);
-	cube = _cubes[index];
+	// 테스트용 EmotionGame 먼저 생성
 	Monster* emotionGame = AddMonster(MonsterType::EmotionGame, { 0, 675, 25 });
-	emotionGame->SetPos(emotionGame->SelectRandomPosInCube(cube));
 	emotionGame->SetState(ObjectState::HIT, false);
 	emotionGame->SetState(ObjectState::IDLE, false);
+	_currentPower += emotionGame->GetPower();
+	_currentMonsterCount[MonsterType::EmotionGame]++;
+
+	while (_currentPower < conditions.power)
+	{
+		MonsterType type;
+
+		// 남은 파워가 8이상이면 Ghost까지 생성 가능
+		if (conditions.power - _currentPower >= 8)
+		{
+			std::uniform_int_distribution<int> selectType(static_cast<int>(MonsterType::Spider), static_cast<int>(MonsterType::Ghost));
+			type = static_cast<MonsterType>(selectType(gen));
+		}
+
+		// 남은 파워가 8이상이면 EmotionGame까지 생성 가능
+		else if (conditions.power - _currentPower >= 3)
+		{
+			std::uniform_int_distribution<int> selectType(static_cast<int>(MonsterType::Spider), static_cast<int>(MonsterType::EmotionGame));
+			type = static_cast<MonsterType>(selectType(gen));
+		}
+
+		// 남은 파워가 1이상이면 거미까지 생성 가능
+		else if (conditions.power - _currentPower >= 1)
+		{
+			std::uniform_int_distribution<int> selectType(static_cast<int>(MonsterType::Spider), static_cast<int>(MonsterType::Spider));
+			type = static_cast<MonsterType>(selectType(gen));
+		}
+			
+		// 이미 최대 수만큼 생성됐다면 무시
+		if (_currentMonsterCount[type] == _maxMonsterCount[type])
+			continue;
+
+		// 타입에 맞는 몬스터 생성 후 Power 증가
+		std::uniform_int_distribution<int> selectCube(0, _cubes.size() - 1);
+		int index = selectCube(gen);
+		while (index < 2)
+			index = selectCube(gen);
+		CubeRef cube = _cubes[index];
+		Monster* monster = AddMonster(type, { 0, 675, 25 });
+		monster->SetPos(monster->SelectRandomPosInCube(cube));
+		monster->SetState(ObjectState::HIT, false);
+		monster->SetState(ObjectState::IDLE, false);
+		_currentPower += monster->GetPower();
+		_currentMonsterCount[type]++;
+	}
 
 	// 아이템 생성
 	AddItem(false, ItemType::CardboardBox, { 0, 675, 25 });

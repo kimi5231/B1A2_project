@@ -59,6 +59,7 @@ public:
 	float GetSumTime() { return _sumTime; }
 	float GetSpeed() { return _speed; }
 	float GetChaseSpeed() { return _chaseSpeed; }
+	int GetPower() { return _power; }
 
 protected:
 	MonsterType _monsterType;

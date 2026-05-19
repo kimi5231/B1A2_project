@@ -25,6 +25,9 @@ extern class Teleport* g_teleportState;
 extern class Grab* g_grabState;
 extern class Play* g_playState;
 extern class Release* g_releaseState;
+extern class Absent* g_absentState;
+extern class Staring* g_staringState;
+extern class Vanishing* g_vanishingState;
 
 // Common State
 class IdleState : public State
@@ -182,11 +185,11 @@ public:
 };
 
 // Ghost State
-class Abesnt : public State
+class Absent : public State
 {
 public:
-	Abesnt() {};
-	virtual ~Abesnt() {}
+	Absent() {};
+	virtual ~Absent() {}
 public:
 	virtual void Enter(Monster* monster) override;
 	virtual void Tick(Monster* monster) override;

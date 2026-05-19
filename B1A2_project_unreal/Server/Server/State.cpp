@@ -26,6 +26,9 @@ Teleport* g_teleportState = new Teleport();
 Grab* g_grabState = new Grab();
 Play* g_playState = new Play();
 Release* g_releaseState = new Release();
+Absent* g_absentState = new Absent();
+Staring* g_staringState = new Staring();
+Vanishing* g_vanishingState = new Vanishing();
 
 //--------------Idle--------------
 void IdleState::Tick(Monster* monster)
@@ -526,7 +529,7 @@ void Teleport::Exit(Monster* monster)
 	// 랜덤한 위치로 순간이동
 	Vector pos = monster->SelectRandomPosInCube(cube);
 	monster->SetPos(pos);
-	std::cout << pos.x << " " <<  pos.y << " " << pos.z << std::endl;
+	std::cout << "EmotionGame " << monster->GetID() << " " << pos.x << " " << pos.y << " " << pos.z << std::endl;
 	
 	// Broadcast
 	for (auto& p : monster->GetOwnerRoom()->GetPlayers())
@@ -629,7 +632,7 @@ void Release::Exit(Monster* monster)
 }
 
 //--------------Abesnt----------------
-void Abesnt::Enter(Monster* monster)
+void Absent::Enter(Monster* monster)
 {
 	// 일단 랜덤으로. 추후, Fear 수치 활용할 것.
 	const std::array<Player*, MAX_PLAYER>& players = monster->GetOwnerRoom()->GetPlayers();
@@ -638,7 +641,7 @@ void Abesnt::Enter(Monster* monster)
 	monster->SetTarget(player);
 }
 
-void Abesnt::Tick(Monster* monster)
+void Absent::Tick(Monster* monster)
 {
 	State::Tick(monster);
 
@@ -668,7 +671,7 @@ void Abesnt::Tick(Monster* monster)
 	}
 }
 
-void Abesnt::Exit(Monster* monster)
+void Absent::Exit(Monster* monster)
 {
 	monster->InitSumTime();
 }
@@ -676,21 +679,76 @@ void Abesnt::Exit(Monster* monster)
 //--------------Staring----------------
 void Staring::Enter(Monster* monster)
 {
-	// target로 이동
-	monster->SetPos(monster->GetTargetPos().value());
-	monster->SetTargetPos(std::nullopt);
+	// target 위치로 이동
+	Ghost* ghost = dynamic_cast<Ghost*>(monster);
+	ghost->SetPos(ghost->GetTargetPos().value());
+	ghost->SetTargetPos(std::nullopt);
+
+	// 조건 검사
+	std::uniform_real_distribution<float> dis(0.0, 1.0);
+	if (ghost->GetLookCount() >= 4)
+	{
+		if (dis(gen) <= 0.85)
+		{
+			ghost->SetState(ObjectState::CHASE);
+			return;
+		}
+	}
+
+	if (ghost->GetUnlookCount() >= 3)
+	{
+		if (dis(gen) <= 0.85)
+		{
+			ghost->SetState(ObjectState::CHASE);
+			return;
+		}
+	}
+
+	if (ghost->GetLookCount() >= 2 && 200 < (ghost->GetTarget()->GetPos() - ghost->GetPos()).Length() && (ghost->GetTarget()->GetPos() - ghost->GetPos()).Length() <= 250)
+	{
+		if (dis(gen) <= 0.60)
+		{
+			ghost->SetState(ObjectState::CHASE);
+			return;
+		}
+	}
 }
 
 void Staring::Tick(Monster* monster)
 {
+	// 타겟과의 거리가 지정거리 이하면 Chase로 상태 전환
+	Player* target = monster->GetTarget();
+	if ((target->GetPos() - monster->GetPos()).Length() <= 150)
+	{
+		monster->SetState(ObjectState::CHASE);
+		return;
+	}
+
 	State::Tick(monster);
 
 	monster->AddDeltaTime(g_timer->GetDeltaTime());
+
+	// Player 시야에 Ghost가 들어갔는지 체크
+	Ghost* ghost = dynamic_cast<Ghost*>(monster);
+	if (!ghost->GetCheckLooking())
+	{
+		if (ghost->CheckInclude(ghost->GetPos(), target->GetLookRange(), target->GetLookAngle(), target->GetLookHeight()))
+			ghost->SetCheckLooking(true);
+	}
 }
 
 void Staring::Exit(Monster* monster)
 {
-	monster->InitSumTime();
+	// Player가 Ghost를 봤는지 안봤는지 체크
+	Ghost* ghost = dynamic_cast<Ghost*>(monster);
+	if (ghost->GetCheckLooking())
+		ghost->AddLookCount();
+	else
+		ghost->AddUnlookCount();
+
+	// 초기화
+	ghost->SetCheckLooking(false);
+	ghost->InitSumTime();
 }
 
 //--------------Vanishing----------------
