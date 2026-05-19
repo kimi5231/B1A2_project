@@ -184,28 +184,18 @@ void ChaseState::Tick(Monster* monster)
 			switch (door->GetDir())
 			{
 			case Front:
+			case Back:
 				if(doorPos.y < monsterPos.y)
 					goal = { doorPos.x, doorPos.y + monsterSize.y / 2, monsterPos.z };
 				else
 					goal = { doorPos.x, doorPos.y - monsterSize.y / 2, monsterPos.z };
 				break;
 			case Right:
+			case Left:
 				if(doorPos.x < monsterPos.x)
 					goal = { doorPos.x + monsterSize.x / 2, doorPos.y, monsterPos.z };
 				else
 					goal = { doorPos.x - monsterSize.x / 2, doorPos.y, monsterPos.z };
-				break;
-			case Back:
-				if(doorPos.y < monsterPos.y)
-					goal = { doorPos.x, doorPos.y - monsterSize.y / 2, monsterPos.z };
-				else
-					goal = { doorPos.x, doorPos.y + monsterSize.y / 2, monsterPos.z };
-				break;
-			case Left:
-				if (doorPos.x < monsterPos.x)
-					goal = { doorPos.x - monsterSize.x / 2, doorPos.y, monsterPos.z };
-				else
-					goal = { doorPos.x + monsterSize.x / 2, doorPos.y, monsterPos.z };
 				break;
 			}
 
@@ -230,23 +220,13 @@ void ChaseState::Tick(Monster* monster)
 			switch (door->GetDir())
 			{
 			case Front:
-				if (doorPos.y < monsterPos.y)
-					goal = { doorPos.x, doorPos.y - monsterSize.y / 2, monsterPos.z };
-				else
-					goal = { doorPos.x, doorPos.y + monsterSize.y / 2, monsterPos.z };
-				break;
-			case Right:
-				if (doorPos.x < monsterPos.x)
-					goal = { doorPos.x - monsterSize.x / 2, doorPos.y, monsterPos.z };
-				else
-					goal = { doorPos.x + monsterSize.x / 2, doorPos.y, monsterPos.z };
-				break;
 			case Back:
 				if (doorPos.y < monsterPos.y)
 					goal = { doorPos.x, doorPos.y - monsterSize.y / 2, monsterPos.z };
 				else
 					goal = { doorPos.x, doorPos.y + monsterSize.y / 2, monsterPos.z };
 				break;
+			case Right:
 			case Left:
 				if (doorPos.x < monsterPos.x)
 					goal = { doorPos.x - monsterSize.x / 2, doorPos.y, monsterPos.z };
@@ -299,7 +279,6 @@ void ChaseState::Tick(Monster* monster)
 			Rotation newRot = { 0.f, angleDeg, 0.f }; // 바닥에서만 도니까 Roll, Pitch는 0
 
 			monster->SetRotation(newRot);
-
 			monster->SetPos(currentPos + (dir * moveDist));
 		}
 
@@ -383,28 +362,18 @@ void ReturnState::Tick(Monster* monster)
 			switch (door->GetDir())
 			{
 			case Front:
+			case Back:
 				if (doorPos.y < monsterPos.y)
 					goal = { doorPos.x, doorPos.y + monsterSize.y / 2, monsterPos.z };
 				else
 					goal = { doorPos.x, doorPos.y - monsterSize.y / 2, monsterPos.z };
 				break;
 			case Right:
-				if (doorPos.x < monsterPos.x)
-					goal = { doorPos.x + monsterSize.x / 2, doorPos.y, monsterPos.z };
-				else
-					goal = { doorPos.x - monsterSize.x / 2, doorPos.y, monsterPos.z };
-				break;
-			case Back:
-				if (doorPos.y < monsterPos.y)
-					goal = { doorPos.x, doorPos.y - monsterSize.y / 2, monsterPos.z };
-				else
-					goal = { doorPos.x, doorPos.y + monsterSize.y / 2, monsterPos.z };
-				break;
 			case Left:
 				if (doorPos.x < monsterPos.x)
-					goal = { doorPos.x - monsterSize.x / 2, doorPos.y, monsterPos.z };
-				else
 					goal = { doorPos.x + monsterSize.x / 2, doorPos.y, monsterPos.z };
+				else
+					goal = { doorPos.x - monsterSize.x / 2, doorPos.y, monsterPos.z };
 				break;
 			}
 
@@ -551,7 +520,7 @@ void Teleport::Exit(Monster* monster)
 
 	std::uniform_int_distribution<int> selectCube(0, cubes.size() - 1);
 	CubeRef cube = cubes[selectCube(gen)];
-	while (cube->GetID() == monster->GetCurrentCubeID())
+	while (cube->GetID() == monster->GetCurrentCubeID() || cube->GetCubeType() == CubeType::Base)
 		cube = cubes[selectCube(gen)];
 	
 	// 랜덤한 위치로 순간이동

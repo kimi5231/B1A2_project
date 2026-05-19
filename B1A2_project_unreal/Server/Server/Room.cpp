@@ -43,26 +43,29 @@ void Room::Init()
 	}
 
 	// Monster ObjectPool 미리 확보
-	for (int i = 0; i < MAX_MONSTER; ++i)
+	int monsterID = 0;
+	for (const auto& [type, count] : _maxMonsterCount)
 	{
-		MonsterType type = static_cast<MonsterType>(i % static_cast<int>(MonsterType::MonsterTypeCount));
-
-		switch (type)
+		for (int i = 0; i < count; ++i)
 		{
-		case MonsterType::Spider:
-			_monsters[i] = new Spider(type, this);
-			break;
-		case MonsterType::EmotionGame:
-			_monsters[i] = new EmotionGame(type, this);
-			break;
-		default:
-			_monsters[i] = new Monster(type, this);
-			break;
-		}
+			switch (type)
+			{
+			case MonsterType::Spider:
+				_monsters[monsterID] = new Spider(type, this);
+				break;
+			case MonsterType::EmotionGame:
+				_monsters[monsterID] = new EmotionGame(type, this);
+				break;
+			default:
+				_monsters[monsterID] = new Monster(type, this);
+				break;
+			}
 
-		_monsters[i]->SetID(i);
-		_monsters[i]->SetObjectPoolState(ObjectPoolState::Reusable);
-		_monsters[i]->SetOwnerRoom(this);
+			_monsters[monsterID]->SetID(i);
+			_monsters[monsterID]->SetObjectPoolState(ObjectPoolState::Reusable);
+			_monsters[monsterID]->SetOwnerRoom(this);
+			monsterID++;
+		}
 	}
 
 	// Item ObjectPool 미리 확보
@@ -114,42 +117,6 @@ void Room::Init()
 	}
 
 	CreateFactoryCubes();
-
-	// 몬스터 생성
-	std::uniform_int_distribution<int> selectCube(0, _cubes.size() - 1);
-	int index = selectCube(gen);
-	while (index < 2)
-		index = selectCube(gen);
-	CubeRef cube = _cubes[index];
-	Monster* spider1 = AddMonster(MonsterType::Spider, { 0, 675, 25 });
-	spider1->SetPos(spider1->SelectRandomPosInCube(cube));
-	spider1->SetState(ObjectState::HIT, false);
-	spider1->SetState(ObjectState::IDLE, false);
-
-	index = selectCube(gen);
-	while (index < 2)
-		index = selectCube(gen);
-	cube = _cubes[index];
-	Monster* spider2 = AddMonster(MonsterType::Spider, { 0, 675, 25 });
-	spider2->SetPos(spider2->SelectRandomPosInCube(cube));
-	spider2->SetState(ObjectState::HIT, false);
-	spider2->SetState(ObjectState::IDLE, false);
-
-	index = selectCube(gen);
-	while (index < 2)
-		index = selectCube(gen);
-	cube = _cubes[index];
-	Monster* emotionGame = AddMonster(MonsterType::EmotionGame, { 0, 675, 25 });
-	emotionGame->SetPos(emotionGame->SelectRandomPosInCube(cube));
-	emotionGame->SetState(ObjectState::HIT, false);
-	emotionGame->SetState(ObjectState::IDLE, false);
-
-	// 아이템 생성
-	AddItem(false, ItemType::CardboardBox, { 0, 675, 25 });
-	AddItem(true, ItemType::CUTLASS, { 0, 0, 25 });
-	AddItem(true, ItemType::Blaster, { 0, 100, 25 });
-	AddItem(true, ItemType::Key, { 0, -100, 25 });
-	AddItem(true, ItemType::LANTERN, { 0, 200, 25 });
 }
 
 void Room::Update()
@@ -468,29 +435,32 @@ void Room::CreateFactoryCubes()
 		}
 	}
 
-	std::cout << "Success Create GameRooms" << std::endl;
-
-	// 추후 다시 사용할 예정
-	//g_framework->SendCreateGameRoomPacket(_gameRooms, true);
-}
-
-void Room::StartStage()
-{
-	// Cube 생성
-	CreateFactoryCubes();
-	//g_network->SendCreateCubesPacket(_cubes, _doors, true);
-
 	// 몬스터 생성
 	std::uniform_int_distribution<int> selectCube(0, _cubes.size() - 1);
-	CubeRef cube = _cubes[selectCube(gen)];
-	Monster* spider = AddMonster(MonsterType::Spider, { 0, 675, 25 });
-	spider->SetPos(spider->SelectRandomPosInCube(cube));
-	spider->SetState(ObjectState::HIT, false);
-	spider->SetState(ObjectState::IDLE, false);
+	int index = selectCube(gen);
+	while (index < 2)
+		index = selectCube(gen);
+	CubeRef cube = _cubes[index];
+	Monster* spider1 = AddMonster(MonsterType::Spider, { 0, 675, 25 });
+	spider1->SetPos(spider1->SelectRandomPosInCube(cube));
+	spider1->SetState(ObjectState::HIT, false);
+	spider1->SetState(ObjectState::IDLE, false);
 
-	cube = _cubes[selectCube(gen)];
+	index = selectCube(gen);
+	while (index < 2)
+		index = selectCube(gen);
+	cube = _cubes[index];
+	Monster* spider2 = AddMonster(MonsterType::Spider, { 0, 675, 25 });
+	spider2->SetPos(spider2->SelectRandomPosInCube(cube));
+	spider2->SetState(ObjectState::HIT, false);
+	spider2->SetState(ObjectState::IDLE, false);
+
+	index = selectCube(gen);
+	while (index < 2)
+		index = selectCube(gen);
+	cube = _cubes[index];
 	Monster* emotionGame = AddMonster(MonsterType::EmotionGame, { 0, 675, 25 });
-	spider->SetPos(spider->SelectRandomPosInCube(cube));
+	emotionGame->SetPos(emotionGame->SelectRandomPosInCube(cube));
 	emotionGame->SetState(ObjectState::HIT, false);
 	emotionGame->SetState(ObjectState::IDLE, false);
 
@@ -500,6 +470,23 @@ void Room::StartStage()
 	AddItem(true, ItemType::Blaster, { 0, 100, 25 });
 	AddItem(true, ItemType::Key, { 0, -100, 25 });
 	AddItem(true, ItemType::LANTERN, { 0, 200, 25 });
+
+	std::cout << "Success Create GameRooms" << std::endl;
+}
+
+void Room::StartStage()
+{
+	// Cube 생성
+	CreateFactoryCubes();
+	
+	// Broadcast
+	for (auto& p : _players)
+	{
+		if (!p->GetClient())
+			continue;
+
+		g_network->SendCreateCubesPacket(_cubes, _doors, _sellingMachines, p->GetClient());
+	}
 }
 
 void Room::EndStage()
