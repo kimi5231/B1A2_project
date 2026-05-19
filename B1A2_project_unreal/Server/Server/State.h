@@ -28,6 +28,9 @@ extern class Release* g_releaseState;
 extern class Absent* g_absentState;
 extern class Staring* g_staringState;
 extern class Vanishing* g_vanishingState;
+extern class CheckState* g_checkState;
+extern class SpawnState* g_spawnState;
+extern class AllAttackState* g_allAttackState;
 
 // Common State
 class IdleState : public State
@@ -216,4 +219,38 @@ public:
 	virtual void Enter(Monster* monster) override {};
 	virtual void Tick(Monster* monster) override;
 	virtual void Exit(Monster* monster) override {};
+};
+
+// PollutionMonitor
+class CheckState : public State
+{
+public:
+	CheckState() {};
+	virtual ~CheckState() {}
+public:
+	virtual void Enter(Monster* monster) override {};
+	virtual void Tick(Monster* monster) override;
+	virtual void Exit(Monster* monster) override {};
+};
+
+class SpawnState : public State
+{
+public:
+	SpawnState() {};
+	virtual ~SpawnState() {}
+public:
+	virtual void Enter(Monster* monster) override {};
+	virtual void Tick(Monster* monster) override;
+	virtual void Exit(Monster* monster) override {};
+};
+
+class AllAttackState : public State
+{
+public:
+	AllAttackState() {};
+	virtual ~AllAttackState() {}
+public:
+	virtual void Enter(Monster* monster) override;
+	virtual void Tick(Monster* monster) override;
+	virtual void Exit(Monster* monster) override;
 };

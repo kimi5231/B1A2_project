@@ -7,6 +7,7 @@
 #include "Spider.h"
 #include "EmotionGame.h"
 #include "Ghost.h"
+#include "PollutionMonitor.h"
 
 void State::Tick(Monster* monster)
 {
@@ -29,6 +30,9 @@ Release* g_releaseState = new Release();
 Absent* g_absentState = new Absent();
 Staring* g_staringState = new Staring();
 Vanishing* g_vanishingState = new Vanishing();
+CheckState* g_checkState = new CheckState();
+SpawnState* g_spawnState = new SpawnState();
+AllAttackState* g_allAttackState = new AllAttackState();
 
 //--------------Idle--------------
 void IdleState::Tick(Monster* monster)
@@ -765,3 +769,65 @@ void Vanishing::Tick(Monster* monster)
 {
 	State::Tick(monster);
 } 
+
+//--------------Check----------------
+void CheckState::Tick(Monster* monster)
+{
+	// Spawn 조건이 충족됐는지 확인
+	Room* room = monster->GetOwnerRoom();
+	if (room->GetCurrentFearCount() + room->GetCurrentSurpriseCount() < 5)
+		return;
+
+	monster->AddDeltaTime(g_timer->GetDeltaTime());
+
+	// 조건이 충족됐다면 지정된 시간마다 Spawn 할지 말지 확률 적용
+	PollutionMonitor* pollutionMonitor = dynamic_cast<PollutionMonitor*>(monster);
+	if (pollutionMonitor->GetCheckTime() < pollutionMonitor->GetSumTime())
+	{
+		pollutionMonitor->InitSumTime();
+
+		std::uniform_real_distribution<float> dis(0.0, 1.0);
+		if (dis(gen) <= 0.3)
+		{
+			pollutionMonitor->SetState(ObjectState::SPAWN);
+			return;
+		}
+	}
+}
+
+//--------------Spawn----------------
+void SpawnState::Tick(Monster* monster)
+{
+	State::Tick(monster);
+	
+	// 이 누적 시간은 몬스터가 죽을 때까지 초기화하지 않음
+	monster->AddDeltaTime(g_timer->GetDeltaTime());
+}
+
+//--------------AllAttack----------------
+void AllAttackState::Enter(Monster* monster)
+{
+	// 모든 Player 공격
+	for (auto& p : monster->GetOwnerRoom()->GetPlayers())
+	{
+		if (!p->GetClient())
+			continue;
+
+		// Base에 있으면 제외
+		if (p->GetCurrentCubeID() == 0)
+			continue;
+
+		p->TackDamage(monster->GetDamage());
+		g_network->SendUpdateHpPacket(monster->GetTarget()->GetID(), p->GetHP(), p->GetClient());
+		std::cout << "Player " << monster->GetTarget()->GetID() << " HP: " << p->GetHP() << "\n";
+	}
+}
+
+void AllAttackState::Tick(Monster* monster)
+{
+	State::Tick(monster);
+}
+
+void AllAttackState::Exit(Monster* monster)
+{
+}

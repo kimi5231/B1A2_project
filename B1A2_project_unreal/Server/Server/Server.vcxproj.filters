@@ -140,6 +140,9 @@
     <ClCompile Include="SellingMachine.cpp">
       <Filter>소스 파일\Game\Object\Structure</Filter>
     </ClCompile>
+    <ClCompile Include="PollutionMonitor.cpp">
+      <Filter>소스 파일\Game\Object\Creature\Monster</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -234,6 +237,9 @@
     </ClInclude>
     <ClInclude Include="SellingMachine.h">
       <Filter>소스 파일\Game\Object\Structure</Filter>
+    </ClInclude>
+    <ClInclude Include="PollutionMonitor.h">
+      <Filter>소스 파일\Game\Object\Creature\Monster</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

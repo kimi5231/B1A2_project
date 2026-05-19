@@ -542,9 +542,7 @@ bool Monster::IsPointInCube(VectorInt wp, CubeRef cube)
 
 void Monster::UpdateNextAttackTime()
 {
-	auto delay = std::chrono::duration_cast<std::chrono::steady_clock::duration>(
-		std::chrono::duration<float>(_attackDelay)
-	);
+	auto delay = std::chrono::duration_cast<std::chrono::steady_clock::duration>(std::chrono::duration<float>(_attackDelay));
 
 	_nextAttackTime = std::chrono::steady_clock::now() + delay;
 }

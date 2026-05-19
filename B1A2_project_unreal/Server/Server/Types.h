@@ -125,6 +125,9 @@ enum ObjectState : char
 	ABSENT,
 	STARING,
 	VANISHING,
+	CHECK,
+	SPAWN,
+	ALL_ATTACK,
 };
 
 enum class ObjectPoolState 

@@ -32,6 +32,8 @@ Ghost::~Ghost()
 
 void Ghost::Update(Room* room)
 {
+	//Monster::Update(room);
+
 	// Target Player가 죽었다면, 대기 후 Target 재설정
 	if (_target && _target->GetState() == DEAD && _sumTime < _waitTime)
 		return;

@@ -51,6 +51,8 @@ public:
 	RoomState GetRoomState() { return _roomState; }
 	int GetCurrentPlayer() { return _currentPlayer; }
 	std::vector<char>& GetTitle() { return _title; }
+	int GetCurrentFearCount() { return _currentFearCount; }
+	int GetCurrentSurpriseCount() { return _currentSurpriseCount; }
 
 private:
 	std::vector<CubeRef> _cubes;
@@ -89,4 +91,7 @@ private:
 	int _currentCredit;
 
 	int _currentPower;
+
+	int _currentSurpriseCount;
+	int _currentFearCount;
 };

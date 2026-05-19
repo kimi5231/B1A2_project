@@ -20,6 +20,8 @@ Room::Room()
 	_currentCredit = 0;
 	_goalCredit = 360;
 	_currentPower = 0;
+	_currentSurpriseCount = 0;
+	_currentFearCount = 0;
 
 	// 몬스터별 최대 개수 초기화 (나중에 Json으로 읽어오기)
 	_maxMonsterCount[MonsterType::Spider] = 9;
