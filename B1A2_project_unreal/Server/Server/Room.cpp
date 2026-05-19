@@ -156,7 +156,7 @@ void Room::Update()
 			
 		for (const auto& [id, item] : _processingItems)
 		{
-			if (item->GetObjectPoolState() != ObjectPoolState::InWorld)
+			if (item->GetObjectPoolState() == ObjectPoolState::Reusable)
 				continue;
 
 			item->Update();
@@ -490,6 +490,8 @@ void Room::CreateFactoryCubes()
 		monster->SetState(ObjectState::IDLE, false);
 		_currentPower += monster->GetPower();
 		_currentMonsterCount[type]++;
+
+		std::cout << "Monster" << static_cast<int>(type) << " Spawn\n";
 	}
 
 	// 아이템 생성

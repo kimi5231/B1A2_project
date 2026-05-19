@@ -542,6 +542,12 @@ void Teleport::Exit(Monster* monster)
 }
 
 //--------------Grab----------------
+void Grab::Enter(Monster* monster)
+{
+	// Target Player 못움직이게 설정
+	monster->GetTarget()->SetIsCanMove(false);
+}
+
 void Grab::Tick(Monster* monster)
 {
 	State::Tick(monster);
@@ -593,16 +599,16 @@ void Play::Exit(Monster* monster)
 		emotion == Emotion::Neutral && targetEmotion == Emotion::Happy)
 	{
 		emotionGame->GetTarget()->TackDamage(emotionGame->GetDamage());
-		emotionGame->SetResult(EmotionGameResult::Win);
+		emotionGame->SetResult(EmotionGameResult::Lose);
 	}
-	// 졌을 때
+	// Monster가 졌을 때
 	else if (emotion == Emotion::Happy && targetEmotion == Emotion::Neutral ||
 		emotion == Emotion::Sad && targetEmotion == Emotion::Happy ||
 		emotion == Emotion::Neutral && targetEmotion == Emotion::Sad)
 	{
 		emotionGame->AddLoseCount();
 		emotionGame->GetTarget()->TackHeal(emotionGame->GetHealValue());
-		emotionGame->SetResult(EmotionGameResult::Lose);
+		emotionGame->SetResult(EmotionGameResult::Win);
 	}
 
 	// 게임결과 통지
@@ -627,6 +633,9 @@ void Release::Tick(Monster* monster)
 
 void Release::Exit(Monster* monster)
 {
+	// Target Player 다시 움직일 수 있게 설정
+	monster->GetTarget()->SetIsCanMove(true);
+
 	monster->SetTarget(nullptr);
 	monster->InitSumTime();
 }

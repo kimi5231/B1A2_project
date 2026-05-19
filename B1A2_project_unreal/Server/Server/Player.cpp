@@ -19,6 +19,8 @@ Player::Player()
 	_lookRange = 1500;
 	_lookHeight = 200;
 	_lookAngle = 90.f;
+
+	_isCanMove = true;
 }
 
 Player::~Player()

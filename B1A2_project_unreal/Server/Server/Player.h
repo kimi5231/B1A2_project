@@ -31,6 +31,8 @@ public:
 	int GetLookRange() { return _lookRange; }
 	int GetLookHeight() { return _lookHeight; }
 	float GetLookAngle() { return _lookAngle; }
+	bool GetIsCanMove() { return _isCanMove; }
+	void SetIsCanMove(bool isCanMove) { _isCanMove = isCanMove; }
 
 private:
 	Session* _client;
@@ -41,4 +43,6 @@ private:
 	int _lookRange;
 	int _lookHeight;
 	float _lookAngle;
+
+	bool _isCanMove;
 };

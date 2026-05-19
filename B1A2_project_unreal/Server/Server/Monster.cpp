@@ -187,7 +187,7 @@ Vector Monster::SelectRandomPosInCube(const CubeRef cube)
 		}
 		z /= TileSize;
 		
-		index = RotateIndexByDir({ x, y, z }, max, cube->GetDir());
+		index = { x, y, z };
 	}
 	
 	return IndexToPos(index, cube);

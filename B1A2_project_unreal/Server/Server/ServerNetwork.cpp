@@ -863,26 +863,27 @@ void ServerNetwork::ProcessExitRoomPacket(C_ExitRoom_Packet packet, int clientIn
 
 void ServerNetwork::ProcessMovePacket(C_Move_Packet packet, int clientIndex)
 {
-	GameObject* object = _clients[clientIndex]->_room->GetGameObject(packet.type, packet.id);
+	Player* player = dynamic_cast<Player*>(_clients[clientIndex]->_room->GetGameObject(packet.type, packet.id));
 
-	if (object == nullptr)
+	if (player == nullptr)
 		return;
 
-	object->SetPos(packet.pos);
-	object->SetRotation(packet.rotation);
-	object->SetState(packet.state);
+	if (player->GetIsCanMove())
+		player->SetPos(packet.pos);
+	player->SetRotation(packet.rotation);
+	player->SetState(packet.state);
 
 	// 자신을 제외한 모든 Client들에게 알리기
-	for (auto& player : _clients[clientIndex]->_room->GetPlayers())
+	for (auto& p : _clients[clientIndex]->_room->GetPlayers())
 	{
-		if (!player->GetClient())
+		if (!p->GetClient())
 			continue;
 
 		// 자기 자신 제외
-		if (_clients[clientIndex]->_player == player)
+		if (_clients[clientIndex]->_player == p && p->GetIsCanMove())
 			continue;
 
-		SendMovePacket(object, player->GetClient());
+		SendMovePacket(player, player->GetClient());
 	}
 }
 
