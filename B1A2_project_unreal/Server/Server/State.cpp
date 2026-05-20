@@ -827,7 +827,3 @@ void AllAttackState::Tick(Monster* monster)
 {
 	State::Tick(monster);
 }
-
-void AllAttackState::Exit(Monster* monster)
-{
-}

@@ -15,12 +15,11 @@ PollutionMonitor::PollutionMonitor(MonsterType monsterType, Room* ownerRoom)
 	_damage = 40;
 	_power = 5;
 
-	_attackDelay = 3.f;
-
 	// State Table
 	_stateTable[IDLE] = CHECK;
 	_stateTable[CHECK] = SPAWN;
 	_stateTable[SPAWN] = ALL_ATTACK;
+	_stateTable[ALL_ATTACK] = DEAD;
 	_stateTable[HIT] = SPAWN;
 }
 
