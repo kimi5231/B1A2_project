@@ -185,14 +185,19 @@ public:
 
 	// ∏ÛΩ∫≈Õ
 	UPROPERTY(EditDefaultsOnly, Category = "Monster")
-	TSubclassOf<ABaseMonster> TestMonsterClass;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Monster")
 	TSubclassOf<ABaseMonster> SpiderClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Monster")
 	TSubclassOf<ABaseMonster> EmotionGameClass;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Monster")
+	TSubclassOf<ABaseMonster> GhostClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Monster")
+	TSubclassOf<ABaseMonster> PollutionMonitorClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Monster")
+	TSubclassOf<ABaseMonster> TrashCollectorClass;
 
 	// Monster Montage
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")

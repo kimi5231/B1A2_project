@@ -1033,7 +1033,7 @@ void UMain::RecvMoveMonster(S_Move_Packet packet)
 		{
 			ABaseMonster* monster = (*findMonster);
 
-			FVector pos(packet.pos.x, packet.pos.y, packet.pos.z + 30);
+			FVector pos(packet.pos.x, packet.pos.y, packet.pos.z);
 			FRotator rot(0, packet.rotation.yaw, 0);
 
 			monster->SetTargetTransform(pos, rot);
@@ -1584,16 +1584,30 @@ void UMain::RecvAddMonster(S_AddMonster_Packet packet)
 		default:
 		case MonsterType::Spider:
 			monsterActor = world->SpawnActor<ABaseMonster>(SpiderClass, spawnLocation, spawnRotation);
+			UE_LOG(LogTemp, Log, TEXT("Spider Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
 			break;
 		case MonsterType::EmotionGame:
 			monsterActor = world->SpawnActor<ABaseMonster>(EmotionGameClass, spawnLocation, spawnRotation);
+			UE_LOG(LogTemp, Log, TEXT("EmotionGame Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+			break;
+		case MonsterType::Ghost:
+			monsterActor = world->SpawnActor<ABaseMonster>(GhostClass, spawnLocation, spawnRotation);
+			UE_LOG(LogTemp, Log, TEXT("Ghost Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+			break;
+		case MonsterType::TrashColletcor:
+			monsterActor = world->SpawnActor<ABaseMonster>(TrashCollectorClass, spawnLocation, spawnRotation);
+			UE_LOG(LogTemp, Log, TEXT("TrashCollector Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+			break;
+		case MonsterType::PollutionMonitor:
+			monsterActor = world->SpawnActor<ABaseMonster>(PollutionMonitorClass, spawnLocation, spawnRotation);
+			UE_LOG(LogTemp, Log, TEXT("PollutionMonitor Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+			break;
 		}
 
 		if (monsterActor)
 		{
 			_monsters.Add(id, monsterActor);
 			monsterActor->SetTargetTransform(spawnLocation, spawnRotation);
-			UE_LOG(LogTemp, Log, TEXT("Monster Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
 		}
 		else
 		{
