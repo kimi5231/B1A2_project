@@ -128,6 +128,9 @@ enum ObjectState : char
 	CHECK,
 	SPAWN,
 	ALL_ATTACK,
+	MOVE,
+	COLLECT,
+	ESCAPE,
 };
 
 enum class ObjectPoolState 

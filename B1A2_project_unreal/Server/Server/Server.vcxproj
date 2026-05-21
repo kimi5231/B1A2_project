@@ -158,6 +158,7 @@
     <ClInclude Include="FSM.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Tool.h" />
+    <ClInclude Include="TrashCollector.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Global.h" />
@@ -202,6 +203,7 @@
     <ClCompile Include="FSM.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Tool.cpp" />
+    <ClCompile Include="TrashCollector.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

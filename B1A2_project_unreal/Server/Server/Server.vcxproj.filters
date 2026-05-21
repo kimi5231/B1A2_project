@@ -143,6 +143,9 @@
     <ClCompile Include="PollutionMonitor.cpp">
       <Filter>소스 파일\Game\Object\Creature\Monster</Filter>
     </ClCompile>
+    <ClCompile Include="TrashCollector.cpp">
+      <Filter>소스 파일\Game\Object\Creature\Monster</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -239,6 +242,9 @@
       <Filter>소스 파일\Game\Object\Structure</Filter>
     </ClInclude>
     <ClInclude Include="PollutionMonitor.h">
+      <Filter>소스 파일\Game\Object\Creature\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="TrashCollector.h">
       <Filter>소스 파일\Game\Object\Creature\Monster</Filter>
     </ClInclude>
   </ItemGroup>

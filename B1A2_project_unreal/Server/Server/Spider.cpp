@@ -42,7 +42,6 @@ Spider::Spider(MonsterType monsterType, Room* ownerRoom)
 	_stateTable[RETURN] = IDLE;
 	_stateTable[ATTACK] = CHASE;
 	_stateTable[HIT] = CHASE;
-	_stateTable[OPEN_DOOR] = CHASE;
 }
 
 Spider::~Spider()
@@ -60,8 +59,8 @@ void Spider::Update(Room* room)
 	{
 		for (auto& player : players)
 		{
-			/*if (player->GetObjectPoolState() == ObjectPoolState::Reusable)
-				continue;*/
+			if (player->GetObjectPoolState() == ObjectPoolState::Reusable)
+				continue;
 
 				// 플레이어가 있으면, 플레이어 위치를 타겟으로 설정
 			if (CheckInclude(player->GetPos(), _attackRange, _attackAngle, _attackHeight))
@@ -76,8 +75,8 @@ void Spider::Update(Room* room)
 	// 인식 범위 안에 플레이어가 있는지 확인
 	for (auto& player : players)
 	{
-		/*if (player->GetObjectPoolState() == ObjectPoolState::Reusable)
-			continue;*/
+		if (player->GetObjectPoolState() == ObjectPoolState::Reusable)
+			continue;
 
 		// 플레이어가 있으면, 플레이어 위치를 타겟으로 설정
 		if (CheckInclude(player->GetPos(), _aggroRange, _aggroAngle, _aggroHeight))

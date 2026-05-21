@@ -93,18 +93,6 @@ public:
 	virtual void Exit(Monster* monster) override;
 };
 
-//class OpenDoorState : public State
-//{
-//public:
-//	OpenDoorState() {};
-//	virtual ~OpenDoorState() {};
-//
-//public:
-//	virtual void Enter() override {};
-//	virtual void Tick() override {};
-//	virtual void Exit() override {};
-//};
-
 class HitState : public State
 {
 public:

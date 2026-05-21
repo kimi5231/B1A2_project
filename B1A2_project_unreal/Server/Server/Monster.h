@@ -80,6 +80,7 @@ protected:
 
 	// Status
 	float _speed;
+	float _roamingSpeed;
 	float _chaseSpeed;
 	float _chaseTime;
 	float _idleTime;
