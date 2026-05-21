@@ -883,7 +883,7 @@ void ServerNetwork::ProcessMovePacket(C_Move_Packet packet, int clientIndex)
 		if (_clients[clientIndex]->_player == p && p->GetIsCanMove())
 			continue;
 
-		SendMovePacket(player, player->GetClient());
+		SendMovePacket(player, p->GetClient());
 	}
 }
 
