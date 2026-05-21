@@ -937,13 +937,20 @@ void ServerNetwork::ProcessGetItemPacket(C_GetItem_Packet packet, int clientInde
 		// ownerID 설정
 		item->SetOwnerID(player->GetID());
 
+		// 아이템을 획득한 Player에게 인벤토리에 아이템 추가 알림
+		SendAddItemToInventoryPacket(item, packet.isTool, player->GetClient());
+
 		// Broadcast
 		for (auto& p : _clients[clientIndex]->_room->GetPlayers())
 		{
 			if (!p->GetClient())
 				continue;
 
-			SendAddItemToInventoryPacket(item, packet.isTool, p->GetClient());
+			// 자기 자신 제외
+			if (p == player)
+				continue;
+
+			SendItemPickupNotifyPacket(item, player->GetID(), packet.isTool, p->GetClient());
 		}
 	}
 }
