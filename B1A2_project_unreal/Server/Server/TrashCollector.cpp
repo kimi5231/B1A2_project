@@ -2,6 +2,7 @@
 #include "TrashCollector.h"
 #include "FSM.h"
 #include "State.h"
+#include "Item.h"
 
 TrashCollector::TrashCollector(MonsterType monsterType, Room* ownerRoom)
 	: Monster(monsterType, ownerRoom)
@@ -33,7 +34,9 @@ TrashCollector::TrashCollector(MonsterType monsterType, Room* ownerRoom)
 	_power = 2;
 
 	_maxScrapCount = 3;
-	_currentScrapCount = 0;
+	_currentScrap.reserve(_maxScrapCount);
+
+	_targetScrap = nullptr;
 
 	// State Table
 	_stateTable[IDLE] = ROAMING;
@@ -65,6 +68,12 @@ bool TrashCollector::IsReadyNextState()
 		return _sumTime > _roamingTime;
 	case ObjectState::CHASE:
 		return _sumTime > _chaseTime;
+	case ObjectState::MOVE:
+		return _targetScrap->GetObjectPoolState() == ObjectPoolState::InInventory || _targetScrap->GetPos() == _pos;
+	case ObjectState::COLLECT:
+		return true;
+	case ObjectState::ESCAPE:
+		return _cubePath.size() <= 1;
 	case ObjectState::ATTACK:
 		return true;
 	case ObjectState::HIT:

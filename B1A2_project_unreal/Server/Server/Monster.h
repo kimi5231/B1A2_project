@@ -60,6 +60,10 @@ public:
 	float GetSpeed() { return _speed; }
 	float GetChaseSpeed() { return _chaseSpeed; }
 	int GetPower() { return _power; }
+	bool GetIsNeedDoorOpen() { return _isNeedDoorOpen; }
+	void SetIsNeedDoorOpen(bool isNeed) { _isNeedDoorOpen = isNeed; }
+	Door* GetTargetDoor() { return _targetDoor; }
+	void SetTargetDoor(Door* door) { _targetDoor = door; }
 
 protected:
 	MonsterType _monsterType;
@@ -71,6 +75,8 @@ protected:
 	int _returnCubeID;
 	std::deque<CubeRef> _cubePath;
 	std::deque<VectorInt> _path;
+	bool _isNeedDoorOpen;
+	Door* _targetDoor;
 
 	std::unordered_map<ObjectState, ObjectState> _stateTable;
 

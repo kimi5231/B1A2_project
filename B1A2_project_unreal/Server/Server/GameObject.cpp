@@ -3,6 +3,7 @@
 #include "Global.h"
 #include "Utils.h"
 #include "Room.h"
+#include "Cube.h"
 
 GameObject::GameObject()
 {
@@ -48,6 +49,7 @@ void GameObject::SetPos(Vector pos)
 	_pos = pos;
 	// 방향 나중에 바꾸기
 	_box.SetOwnerPos(pos, Front);
+	SetCurrentCubeID();
 }
 
 bool GameObject::SetState(ObjectState state, bool isSend)
@@ -85,6 +87,36 @@ void GameObject::SetObjectPoolState(ObjectPoolState objectPoolState)
 				continue;
 
 			g_network->SendRemoveObjectPacket(_type, _id, p->GetClient());
+		}
+	}
+}
+
+void GameObject::SetCurrentCubeID()
+{
+	const std::vector<CubeRef>& cubes = _ownerRoom->GetCubes();
+	if (cubes.empty())
+		return;
+
+	// 최초로 지정하는 것이라면 전부 확인
+	if (_currentCubeID == -1)
+	{
+		for (const auto& cube : cubes)
+		{
+			if (cube->GetBoundingBox().CheckInclude(_pos))
+			{
+				_currentCubeID = cube->GetID();
+				return;
+			}
+		}
+	}
+
+	//for (const auto& cube : cubes[_currentCubeID]->GetConnectedCubes())
+	for (const auto& cube : cubes)
+	{
+		if (cube->GetBoundingBox().CheckInclude(_pos))
+		{
+			_currentCubeID = cube->GetID();
+			return;
 		}
 	}
 }

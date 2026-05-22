@@ -20,6 +20,7 @@ Monster::Monster(MonsterType monsterType, Room* ownerRoom)
 	_sumTime = 0.f;
 	_ownerRoom = ownerRoom;
 	_currentCubeID = -1;
+	_isNeedDoorOpen = false;
 
 	_size = { 80, 80, 80 };
 	_rotation = { 0, 0, 0 };
