@@ -2,6 +2,7 @@
 
 
 #include "BaseDoor.h"
+#include "BaseSellingMachine.h"
 
 // Sets default values
 ABaseDoor::ABaseDoor()
@@ -148,6 +149,7 @@ void ABaseDoor::OnStateChanged(ObjectState oldState, ObjectState newState)
         break;
     case ObjectState::CLOSE:
         doorTimeline.Reverse(); // 역방항 재생
+        break;
     }
 
     UE_LOG(LogTemp, Display, TEXT("[Door] Animation"));
