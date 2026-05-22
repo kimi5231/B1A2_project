@@ -516,8 +516,6 @@ void UMain::Update()
 
 void UMain::RecvAddPlayer(S_AddPlayer_Packet packet)
 {
-	UE_LOG(LogTemp, Log, TEXT("AddObject Packet [%d], %f, %f, %f"), packet.id, packet.pos.x, packet.pos.y, packet.pos.z);
-
 	if (_myID == -1)
 	{
 		// 자신의 ID 설정
@@ -549,7 +547,7 @@ void UMain::RecvAddPlayer(S_AddPlayer_Packet packet)
 
 			_myPlayer = player;
 
-			UE_LOG(LogTemp, Log, TEXT("My Player Spawned! [%d], %f, %f, %f"), packet.id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 98.f);
+			UE_LOG(LogTemp, Log, TEXT("[Player] My Player Spawned! [%d], %f, %f, %f"), packet.id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 98.f);
 		});
 		return;
 	}
@@ -560,7 +558,7 @@ void UMain::RecvAddPlayer(S_AddPlayer_Packet packet)
 	// 이미 존재하는 객체인지 확인
 	if (_otherPlayers.Contains(packet.id))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Other Player already spawned... object ID: %d"), packet.id);
+		UE_LOG(LogTemp, Warning, TEXT("[Player] Other Player already spawned... object ID: %d"), packet.id);
 		return;
 	}
 
@@ -580,12 +578,12 @@ void UMain::RecvAddPlayer(S_AddPlayer_Packet packet)
 		if (player)
 		{
 			_otherPlayers.Add(id, player);
-			UE_LOG(LogTemp, Log, TEXT("Other Player Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+			UE_LOG(LogTemp, Log, TEXT("[Player] Other Player Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
 		}
 		else
 		{
 			_otherPlayers.Remove(id);
-			UE_LOG(LogTemp, Error, TEXT("Other Spawn Failed... ID [%d]"), id);
+			UE_LOG(LogTemp, Error, TEXT("[Player] Other Spawn Failed... ID [%d]"), id);
 		}
 	});
 }
@@ -996,11 +994,11 @@ void UMain::RecvMovePlayer(S_Move_Packet packet)
 		{
 			if (_myPlayer)
 			{
-				//_myPlayer->SetPlayerLocation(pos, rot); <- 이건 아마 otherPlayer 전용????? 틀리면 다시 주석 풀면 됨...
-				_myPlayer->SetActorLocationAndRotation(pos, rot);
+				_myPlayer->SetPlayerLocation(pos, rot); // <- 이건 아마 otherPlayer 전용????? 틀리면 다시 주석 풀면 됨...
+				// _myPlayer->SetActorLocationAndRotation(pos, rot);
 				_myPlayer->SetPlayerState(packet.state);
 
-				UE_LOG(LogTemp, Display, TEXT("[MyPlayer] Move Packet %f, %f"), packet.pos.x, packet.pos.y);
+				UE_LOG(LogTemp, Display, TEXT("[Player] My Player [%d] Move Packet %f, %f"), packet.id, packet.pos.x, packet.pos.y);
 			}
 			return; // 내 캐릭터 처리가 끝났으므로 종료
 		}
@@ -1013,11 +1011,11 @@ void UMain::RecvMovePlayer(S_Move_Packet packet)
 			player->SetPlayerLocation(pos, rot);
 			player->SetPlayerState(packet.state);
 
-			UE_LOG(LogTemp, Display, TEXT("[OtherPlayer] Move Packet %f, %f"), packet.pos.x, packet.pos.y);
+			UE_LOG(LogTemp, Display, TEXT("[Player] Other Player [%d] Move Packet %f, %f"), packet.id, packet.pos.x, packet.pos.y);
 		}
 		else
 		{
-			UE_LOG(LogTemp, Error, TEXT("Other Player [%d] not found"), packet.id);
+			UE_LOG(LogTemp, Error, TEXT("[Player] Other Player [%d] not found"), packet.id);
 		}
 	});
 }
