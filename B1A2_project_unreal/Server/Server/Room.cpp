@@ -658,6 +658,52 @@ void Room::RemoveObject(ObjectType type, int id, bool isSend)
 	}
 }
 
+Player* Room::SelectPlayerForGhost()
+{
+	std::uniform_int_distribution<int> selectCondition(0, 1);
+	Player* player = nullptr;
+
+	switch (selectCondition(gen))
+	{
+	case 0:	// FearCount가  가장 높은 플레이어 선택
+	{
+		int fearCount = -1;
+		for (auto& p : _players)
+		{
+			if (!p->GetClient())
+				continue;
+
+			if (p->GetFearCount() > fearCount)
+			{
+				fearCount = p->GetFearCount();
+				player = p;
+			}
+		}
+		break;
+	}
+	case 1:	// FearCount가  가장 낮은 플레이어 선택
+	{
+		int fearCount = std::numeric_limits<int>::max();
+		for (auto& p : _players)
+		{
+			if (!p->GetClient())
+				continue;
+
+			if (p->GetFearCount() < fearCount)
+			{
+				fearCount = p->GetFearCount();
+				player = p;
+			}
+		}
+		break;
+	}
+	//case 2:	// 가지고 있는 Scrap의 가격이 가장 높은 플레이어 선택
+	//	break;
+	}
+
+	return player;
+}
+
 GameObject* Room::GetGameObject(ObjectType type, int id)
 {
 	switch (type)

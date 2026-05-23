@@ -1,5 +1,5 @@
 #pragma once
-
+#define NOMINMAX
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <iostream>
@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <optional>
 #include <MSWSock.h>
+#include <limits>
 
 #include "Types.h"
 #include "Utils.h"

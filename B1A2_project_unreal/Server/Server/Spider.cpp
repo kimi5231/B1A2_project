@@ -34,6 +34,8 @@ Spider::Spider(MonsterType monsterType, Room* ownerRoom)
 
 	_power = 1;
 
+	_size = { 80, 80, 80 };
+
 	// State Table
 	_stateTable[IDLE] = ROAMING;
 	_stateTable[ROAMING] = MAKE_WEB;

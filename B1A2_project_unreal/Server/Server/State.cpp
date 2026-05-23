@@ -648,10 +648,8 @@ void Release::Exit(Monster* monster)
 //--------------Abesnt----------------
 void Absent::Enter(Monster* monster)
 {
-	// 일단 랜덤으로. 추후, Fear 수치 활용할 것.
-	const std::array<Player*, MAX_PLAYER>& players = monster->GetOwnerRoom()->GetPlayers();
-	std::uniform_int_distribution<int> selectCube(0, players.size() - 1);
-	Player* player = players[selectCube(gen)];
+	// 타겟 지정
+	Player* player = monster->GetOwnerRoom()->SelectPlayerForGhost();
 	monster->SetTarget(player);
 }
 
@@ -679,8 +677,11 @@ void Absent::Tick(Monster* monster)
 		if (!monster->IsPointInCube(pos, targetCube))
 			return;
 
+		// 이거 나중에 층수 고려해서 수정
+		pos.z = targetCube->GetPos().z + TileSize;
+
 		// 같은 방이고, 갈 수 있는 곳이라면 이동
-		if (monster->IsCanGo(pos, targetCube))
+		if (monster->IsCanGo(monster->PosToIndex(pos, targetCube), targetCube))
 			monster->SetTargetPos(pos);
 	}
 }
@@ -698,6 +699,12 @@ void Staring::Enter(Monster* monster)
 	ghost->SetPos(ghost->GetTargetPos().value());
 	ghost->SetTargetPos(std::nullopt);
 
+	if (ghost->GetTarget()->GetClient())
+	{
+		g_network->SendMovePacket(ghost, ghost->GetTarget()->GetClient());
+		std::cout << "Ghost Move\n";
+	}
+	
 	// 조건 검사
 	std::uniform_real_distribution<float> dis(0.0, 1.0);
 	if (ghost->GetLookCount() >= 4)
@@ -712,15 +719,6 @@ void Staring::Enter(Monster* monster)
 	if (ghost->GetUnlookCount() >= 3)
 	{
 		if (dis(gen) <= 0.85)
-		{
-			ghost->SetState(ObjectState::CHASE);
-			return;
-		}
-	}
-
-	if (ghost->GetLookCount() >= 2 && 200 < (ghost->GetTarget()->GetPos() - ghost->GetPos()).Length() && (ghost->GetTarget()->GetPos() - ghost->GetPos()).Length() <= 250)
-	{
-		if (dis(gen) <= 0.60)
 		{
 			ghost->SetState(ObjectState::CHASE);
 			return;
@@ -746,7 +744,7 @@ void Staring::Tick(Monster* monster)
 	Ghost* ghost = dynamic_cast<Ghost*>(monster);
 	if (!ghost->GetCheckLooking())
 	{
-		if (ghost->CheckInclude(ghost->GetPos(), target->GetLookRange(), target->GetLookAngle(), target->GetLookHeight()))
+		if (target->CheckInclude(ghost->GetPos(), target->GetLookRange(), target->GetLookAngle(), target->GetLookHeight()))
 			ghost->SetCheckLooking(true);
 	}
 }
