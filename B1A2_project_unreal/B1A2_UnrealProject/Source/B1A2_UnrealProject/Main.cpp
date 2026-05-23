@@ -994,8 +994,7 @@ void UMain::RecvMovePlayer(S_Move_Packet packet)
 		{
 			if (_myPlayer)
 			{
-				_myPlayer->SetPlayerLocation(pos, rot); // <- 이건 아마 otherPlayer 전용????? 틀리면 다시 주석 풀면 됨...
-				// _myPlayer->SetActorLocationAndRotation(pos, rot);
+				_myPlayer->SetPlayerLocation(pos, rot); 
 				_myPlayer->SetPlayerState(packet.state);
 
 				UE_LOG(LogTemp, Display, TEXT("[Player] My Player [%d] Move Packet %f, %f"), packet.id, packet.pos.x, packet.pos.y);
