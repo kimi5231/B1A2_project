@@ -84,6 +84,8 @@ void Spider::Update(Room* room)
 		if (CheckInclude(player->GetPos(), _aggroRange, _aggroAngle, _aggroHeight))
 		{
 			_target = player;
+			_returnPos = _pos;
+			_returnCubeID = _currentCubeID;
 			SetState(ObjectState::CHASE);
 			return;
 		}

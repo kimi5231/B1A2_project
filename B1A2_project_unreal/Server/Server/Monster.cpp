@@ -37,6 +37,123 @@ void Monster::Update(Room* room)
 	_fsm->Update(this);
 }
 
+void Monster::UpdatePath(Vector currentGoal, CubeRef goalCube)
+{
+	// 최종 목적지 갱신
+	if (!_targetPos)
+	{
+		const std::vector<CubeRef>& cubes = _ownerRoom->GetCubes();
+		const CubeRef currentCube = cubes[_currentCubeID];
+		// 같은 큐브에 있다면 target의 위치로 바로 경로 갱신
+		if (goalCube == currentCube)
+		{
+			FindPath(currentGoal, currentCube);
+			SetTargetPos(currentGoal);
+		}
+		else // 목적 큐브까지 1차 경로 찾기
+			FindCubePath(goalCube, currentCube, cubes);
+	}
+
+	// 2차 경로 갱신
+	if (GetPath().empty())
+	{
+		std::deque<CubeRef>& cubePath = GetCubePath();
+		// 최종 목적지까지 더 이동할 큐브가 없다면 목적지 재설정
+		if (cubePath.size() <= 1)
+		{
+			SetTargetPos(std::nullopt);
+			return;
+		}
+
+		// 넘어갈 큐브와 연결된 문 찾기
+		const std::vector<Door*>& doors = _ownerRoom->GetDoors();
+		Door* door{};
+		for (int doorID : cubePath[0]->GetDoors())
+		{
+			if (doors[doorID]->GetConnectedCubeID() == cubePath[1]->GetID() ||
+				doors[doorID]->GetOwnerCubeID() == cubePath[1]->GetID())
+			{
+				door = doors[doorID];
+				break;
+			}
+		}
+
+		// 문을 찾지 못했다면 목적지 재설정
+		if (!door)
+		{
+			SetTargetPos(std::nullopt);
+			return;
+		}
+
+		// 지나갈 문이 닫혀있으면 문 앞까지만 경로 찾기
+		if (door->GetState() == ObjectState::CLOSE || door->GetState() == ObjectState::LOCK)
+		{
+			Vector doorPos = door->GetPos();
+			Vector goal;
+
+			switch (door->GetDir())
+			{
+			case Front:
+			case Back:
+				if (doorPos.y < _pos.y)
+					goal = { doorPos.x, doorPos.y + _size.y / 2, doorPos.z + TileSize };
+				else
+					goal = { doorPos.x, doorPos.y - _size.y / 2, doorPos.z + TileSize };
+				break;
+			case Right:
+			case Left:
+				if (doorPos.x < _pos.x)
+					goal = { doorPos.x + _size.x / 2, doorPos.y, doorPos.z + TileSize };
+				else
+					goal = { doorPos.x - _size.x / 2, doorPos.y, doorPos.z + TileSize };
+				break;
+			}
+
+			// 경로를 찾기 못하면 목적지 재설정
+			if (FindPath(goal, cubePath[0]).empty())
+			{
+				SetTargetPos(std::nullopt);
+				return;
+			}
+		}
+
+		// 지나갈 문이 열려 있으면 문 너머 좌표까지 경로 찾기
+		if (door->GetState() == ObjectState::OPEN)
+		{
+			Vector doorPos = door->GetPos();
+			Vector goal;
+
+			switch (door->GetDir())
+			{
+			case Front:
+			case Back:
+				if (doorPos.y < _pos.y)
+					goal = { doorPos.x, doorPos.y - _size.y, doorPos.z + TileSize };
+				else
+					goal = { doorPos.x, doorPos.y + _size.y, doorPos.z + TileSize };
+				break;
+			case Right:
+			case Left:
+				if (doorPos.x < _pos.x)
+					goal = { doorPos.x - _size.x, doorPos.y, doorPos.z + TileSize };
+				else
+					goal = { doorPos.x + _size.x, doorPos.y, doorPos.z + TileSize };
+				break;
+			}
+
+			// 경로를 찾기 못하면 목적지 재설정
+			if (FindPath(goal, cubePath[0]).empty())
+			{
+				SetTargetPos(std::nullopt);
+				return;
+			}
+
+			// 지나온 큐브는 경로에서 제외
+			cubePath.pop_front();
+		}
+	}
+}
+
 const CubeRef Monster::SelectRandomConnectedCube()
 {
 	const std::vector<CubeRef>& cubes = _ownerRoom->GetCubes();
@@ -220,7 +337,7 @@ std::deque<VectorInt> Monster::FindPath(Vector goal, const CubeRef currentCube)
 				if (connectedIndex.x == goalIndex.x && connectedIndex.y == goalIndex.y)
 				{
 					std::deque<VectorInt> path;
-					path.push_back(IndexToPos(goalIndex, currentCube));
+					//path.push_back(IndexToPos(goalIndex, currentCube));
 					TileNode* node = currentNode;
 					while (node)
 					{

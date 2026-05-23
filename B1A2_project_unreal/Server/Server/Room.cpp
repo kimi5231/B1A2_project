@@ -141,16 +141,7 @@ void Room::Update()
 	if (now - lastUpdate >= TICK)
 	{
 		g_timer->Update();
-
-		// Player Update
-		for (const auto& player : _players)
-		{
-			if (player->GetObjectPoolState() != ObjectPoolState::InWorld)
-				continue;
-
-			player->Update();
-		}
-			
+	
 		// 몬스터 업데이트
 		for (const auto& monster : _monsters)
 		{
@@ -448,12 +439,12 @@ void Room::CreateFactoryCubes()
 	}
 
 	// 몬스터 생성
-	// 테스트용 EmotionGame 먼저 생성
-	Monster* emotionGame = AddMonster(MonsterType::EmotionGame, { 0, 675, 25 });
-	emotionGame->SetState(ObjectState::HIT, false);
-	emotionGame->SetState(ObjectState::IDLE, false);
-	_currentPower += emotionGame->GetPower();
-	_currentMonsterCount[MonsterType::EmotionGame]++;
+	// 테스트용 Spider 먼저 생성
+	Monster* spider = AddMonster(MonsterType::Spider, { 0, 675, 25 });
+	spider->SetState(ObjectState::HIT, false);
+	spider->SetState(ObjectState::IDLE, false);
+	_currentPower += spider->GetPower();
+	_currentMonsterCount[MonsterType::Spider]++;
 
 	while (_currentPower < conditions.power)
 	{

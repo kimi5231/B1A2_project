@@ -16,6 +16,9 @@ public:
 public: 
 	virtual bool IsReadyNextState() { return false; };
 
+	void UpdatePath(Vector currentGoal, CubeRef goalCube);
+	void Move();
+
 	const CubeRef SelectRandomConnectedCube(); 
 	Vector SelectRandomPosInCube(const CubeRef cube); 
 
@@ -69,7 +72,7 @@ protected:
 	MonsterType _monsterType;
 
 	FSM* _fsm;
-	std::optional<VectorInt> _targetPos;
+	std::optional<Vector> _targetPos;
 	Player* _target;
 	Vector _returnPos;
 	int _returnCubeID;
