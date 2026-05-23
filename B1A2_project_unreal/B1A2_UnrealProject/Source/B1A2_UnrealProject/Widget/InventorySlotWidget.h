@@ -22,7 +22,7 @@ class B1A2_UNREALPROJECT_API UInventorySlotWidget : public UUserWidget
 	GENERATED_BODY()
 	
 public:
-	void SetSlotInfo(int32 id, ItemType type, float weight);
+	void SetSlotInfo(int32 id, ItemType type, float weight, int32 cost);
 	void SetSelected(bool isSelected);
 
 	// 슬롯에서 아이템 삭제
@@ -35,6 +35,8 @@ public:
 	ItemType GetItemType() { return _itemType; }
 	void SetItemWeight(float weight) { _itemWeight = weight; }
 	float GetItemWeight() { return _itemWeight; }
+	void SetItemCost(int32 cost) { _itemCost = cost; }
+	int32 GetItemCost() { return _itemCost; }
 
 public:
 	bool isEmpty = true;
@@ -79,4 +81,5 @@ private:
 	int32 _itemID = 0;
 	ItemType _itemType;
 	float _itemWeight = 0.f;
+	int32 _itemCost = 0;
 };

@@ -4,7 +4,7 @@
 #include "InventorySlotWidget.h"
 #include "Components/Border.h"
 
-void UInventorySlotWidget::SetSlotInfo(int32 id, ItemType type, float weight)
+void UInventorySlotWidget::SetSlotInfo(int32 id, ItemType type, float weight, int32 cost)
 {
 	UTexture2D* texture = nullptr;
 
@@ -66,6 +66,7 @@ void UInventorySlotWidget::SetSlotInfo(int32 id, ItemType type, float weight)
 	SetItemID(id);
 	SetItemType(type);
 	SetItemWeight(weight);
+	SetItemCost(cost);
 }
 
 void UInventorySlotWidget::SetSelected(bool isSelected)

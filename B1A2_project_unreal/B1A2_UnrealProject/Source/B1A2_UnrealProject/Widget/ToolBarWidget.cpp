@@ -35,13 +35,13 @@ void UToolBarWidget::NativeConstruct()
 	ToolSlots[0]->SetSelected(true);	// 첫 번째 슬롯 기본 선택
 }
 
-int32 UToolBarWidget::AddTool(int id, ItemType type, float weight)
+int32 UToolBarWidget::AddTool(int id, ItemType type, float weight, int cost)
 {
 	for (int32 i = 0; i < ToolSlots.Num(); ++i)
 	{
 		if (ToolSlots[i] && ToolSlots[i]->isEmpty)
 		{
-			ToolSlots[i]->SetSlotInfo(id, type, weight);
+			ToolSlots[i]->SetSlotInfo(id, type, weight, cost);
 			return i;
 		}
 	}
@@ -95,6 +95,7 @@ FDroppedItemInfo UToolBarWidget::GetSelectedToolBarTool()
 		info.itemID = ToolSlots[_currentSelectedIndex]->GetToolID();
 		info.type = ToolSlots[_currentSelectedIndex]->GetToolType();
 		info.weight = ToolSlots[_currentSelectedIndex]->GetToolWeight();
+		info.cost = ToolSlots[_currentSelectedIndex]->GetToolCost();
 		info.isValid = true;
 	}
 

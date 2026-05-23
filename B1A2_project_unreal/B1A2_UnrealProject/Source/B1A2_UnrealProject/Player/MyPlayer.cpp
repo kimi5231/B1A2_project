@@ -21,6 +21,7 @@
 #include "Interactable/InteractableInterface.h"
 #include "Interactable/BaseItem.h"
 #include "Interactable/BaseDoor.h"
+#include "Interactable/BaseSellingMachine.h"
 
 #include "Widget/InventoryWidget.h" 
 #include "Widget/ToolBarWidget.h" 
@@ -309,7 +310,7 @@ void AMyPlayer::Look(const FInputActionValue& Value)
 	}
 }
 
-void AMyPlayer::AddItemToInventory(ItemType type, int id, float weight)
+void AMyPlayer::AddItemToInventory(ItemType type, int id, float weight, int cost)
 {
 	if (_inventoryWidgetInstance == nullptr)
 	{
@@ -320,7 +321,7 @@ void AMyPlayer::AddItemToInventory(ItemType type, int id, float weight)
 	UInventoryWidget* inventory = Cast<UInventoryWidget>(_inventoryWidgetInstance);
 	if (inventory)
 	{
-		inventory->AddItem(id, type, weight);
+		inventory->AddItem(id, type, weight, cost);
 
 		// 현재 무게 및 이동 스탯 갱신
 		_currentWeight += weight;
@@ -334,7 +335,7 @@ void AMyPlayer::AddItemToInventory(ItemType type, int id, float weight)
 	}
 }
 
-int32 AMyPlayer::AddToolToToolBar(ItemType type, int id, float weight)
+int32 AMyPlayer::AddToolToToolBar(ItemType type, int id, float weight, int cost)
 {
 	if (_toolBarWidgetInstance == nullptr)
 	{
@@ -345,7 +346,7 @@ int32 AMyPlayer::AddToolToToolBar(ItemType type, int id, float weight)
 	UToolBarWidget* toolBar = Cast<UToolBarWidget>(_toolBarWidgetInstance);
 	if (toolBar)
 	{
-		return toolBar->AddTool(id, type, weight);
+		return toolBar->AddTool(id, type, weight, cost);
 	}
 	else
 		return -1;
@@ -452,20 +453,47 @@ void AMyPlayer::ItemOrToolDrop()
 
 		if (info.isValid)
 		{
-			// 패킷 보내기
 			if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
 			{
-				gameInstance->SendDropItem(gameInstance->GetMyID(), false, info.itemID);
-				UE_LOG(LogTemp, Display, TEXT("[Item] Item Drop Packet Send! ItemID: %d"), info.itemID);
+				// 판매기 상호작용 범위 안에서의 드랍 처리
+				ABaseSellingMachine* SellingMachine = Cast<ABaseSellingMachine>(_focusedActor);
+
+				// 판매기 근처이고, Open 상태일 때
+				if (SellingMachine && SellingMachine->GetMachineState() == ObjectState::OPEN)
+				{
+					int32 ItemCost = info.cost;
+
+					// 판매기 제한 Credit 체크
+					if (SellingMachine->CanAddCredit(ItemCost))
+					{
+						// 제한을 초과하지 않을 때, 아이템 판매 패킷 전송
+						gameInstance->SendDropItemToSellingMachine(gameInstance->GetMyID(), info.itemID, SellingMachine->GetMachineID());
+						SellingMachine->AddPendingCredit(ItemCost);
+
+						UE_LOG(LogTemp, Display, TEXT("[SellingMachine] Item Drop To SellingMachine Packet Send! ItemID: %d, Cost: %d"), info.itemID, ItemCost);
+					}
+					else
+					{
+						// 제한을 초과했을 때는 드랍하기
+						gameInstance->SendDropItem(gameInstance->GetMyID(), false, info.itemID);
+						UE_LOG(LogTemp, Display, TEXT("[SellingMachine] Credit Limit Exceeded! Normal Item Drop Packet Send! ItemID: %d"), info.itemID);
+					}
+				}
+				else
+				{
+					// 일반적인 상황에서의 드랍
+					gameInstance->SendDropItem(gameInstance->GetMyID(), false, info.itemID);
+					UE_LOG(LogTemp, Display, TEXT("[Item] Item Drop Packet Send! ItemID: %d"), info.itemID);
+				}
 			}
 
-			// 무게 및 이동 스탯 갱신
+			// 무게 및 이동 스탯 갱신 (기존 로직 유지)
 			_currentWeight -= info.weight;
 			_currentWeight = FMath::Max(0.f, _currentWeight);	// 음수 방지
 			UpdateMovementStats();
 		}
 	}
-	// Inventory가 닫혀있을 때, 선택된 장비 버리기
+	// Inventory가 닫혀있을 때, 선택된 장비 버리기 (Tool은 항상 일반 DropItem 패킷 사용)
 	else if (_toolBarWidgetInstance)
 	{
 		UToolBarWidget* widget = Cast<UToolBarWidget>(_toolBarWidgetInstance);
@@ -476,7 +504,7 @@ void AMyPlayer::ItemOrToolDrop()
 			// 패킷 보내기
 			if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
 			{
-				gameInstance->SendDropItem(gameInstance->GetMyID(), true, info.itemID);				
+				gameInstance->SendDropItem(gameInstance->GetMyID(), true, info.itemID);
 				UE_LOG(LogTemp, Display, TEXT("[Tool] Tool Drop Packet Send! ToolID: %d"), info.itemID);
 			}
 
@@ -861,6 +889,24 @@ void AMyPlayer::Interact()
 			return;
 
 		gameInstance->SendInteractDoor(gameInstance->GetMyID(), door->GetDoorID());
+	}
+	// SellingMachine인 경우
+	else if (ABaseSellingMachine* machine = Cast<ABaseSellingMachine>(_focusedActor))
+	{
+		// Open 상태 && 등록된 아이템이 있을 때만 판매 가능
+		if (machine->GetMachineState() == ObjectState::OPEN && machine->GetCurrentPendingCredit() > 0)
+		{
+			// 서버에 C_SellItem_Packet 송신
+			gameInstance->SendSellItem(gameInstance->GetMyID(), machine->GetMachineID());
+
+			// 판매기 위젯 숨김
+			IInteractableInterface::Execute_Interact(machine);
+
+			// 로컬 등록 크레딧 리셋 (이후 서버로부터 S_ 패킷을 받아 동기화되겠지만 미리 클리어)
+			//machine->ResetPendingCredit();
+
+			UE_LOG(LogTemp, Display, TEXT("[SellingMachine] Sell Item Packet Send! MachineID: %d"), machine->GetMachineID());
+		}
 	}
 }
 

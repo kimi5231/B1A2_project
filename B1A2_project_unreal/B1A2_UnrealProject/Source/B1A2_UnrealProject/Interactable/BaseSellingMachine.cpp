@@ -21,7 +21,6 @@ ABaseSellingMachine::ABaseSellingMachine()
 	CollisionBox->SetupAttachment(RootComponent);
 	CollisionBox->SetBoxExtent(FVector(100.f, 100.f, 100.f));
 
-	// 플레이어 감지 설정
 	CollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	CollisionBox->SetCollisionResponseToAllChannels(ECR_Ignore);
 	CollisionBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
@@ -38,22 +37,11 @@ void ABaseSellingMachine::BeginPlay()
 	
 	// 타임라인에 업데이트 함수 바인딩
 	FOnTimelineFloat ProgressUpdate;
-	ProgressUpdate.BindUFunction(this, FName("UpdateMachineRotation"));
+	ProgressUpdate.BindUFunction(this, FName("UpdateLeverAnimation"));
 	leverTimeline.AddInterpFloat(leverCurve, ProgressUpdate);
 
-	// 상태에 따라 위젯 변경하도록 신호 보냄
-	// 0: 판매 불가능, 1: 판매 가능
-	int32 state;
-	switch (_currentState)
-	{
-	case ObjectState::CLOSE:
-		state = 0;
-		break;
-	case ObjectState::OPEN:
-		state = 1;
-		break;
-	}
-	K2_UpdateWidgetByState(state);
+	// 초기 위젯 상태 설정
+	UpdateWidgetState();
 }
 
 // Called every frame
@@ -83,7 +71,10 @@ void ABaseSellingMachine::HideInteractionUI_Implementation()
 void ABaseSellingMachine::Interact_Implementation()
 {
 	// 판매하기 상태에서 버튼을 누르면 위젯 숨김
-	// ...
+	if (_currentState == ObjectState::OPEN && _currentPendingCredit > 0)
+	{
+		HideInteractionUI_Implementation();
+	}
 
 	UE_LOG(LogTemp, Log, TEXT("[SellingMachine] EButton Interact Called"));
 }
@@ -99,18 +90,8 @@ void ABaseSellingMachine::UpdateMachineState(ObjectState newState)
 	// 상태 변화에 따른 레버 연출 실행
 	OnStateChanged(oldState, _currentState);
 
-	// 상태에 따라 위젯 변경하도록 신호 보냄
-	int state;
-	switch (_currentState)
-	{
-	case ObjectState::CLOSE:
-		state = 0;
-		break;
-	case ObjectState::OPEN:
-		state = 1;
-		break;
-	}
-	K2_UpdateWidgetByState(state);
+	// 상태 변화에 맞춰 위젯 새로고침
+	UpdateWidgetState();
 }
 
 void ABaseSellingMachine::SetLeverLength(ObjectState state)
@@ -131,6 +112,57 @@ void ABaseSellingMachine::SetLeverLength(ObjectState state)
 	}
 }
 
+void ABaseSellingMachine::ResetPendingCredit()
+{
+	_currentPendingCredit = 0;
+	UpdateWidgetState();
+}
+
+bool ABaseSellingMachine::CanAddCredit(int32 itemCost) const
+{
+	return (_currentPendingCredit + itemCost) <= _maxCredit;
+}
+
+void ABaseSellingMachine::AddPendingCredit(int32 itemCost)
+{
+	_currentPendingCredit += itemCost;
+	UpdateWidgetState();
+}
+
+void ABaseSellingMachine::UpdateWidgetState()
+{
+	// 0: 판매 불가능(CLOSE)
+	// 1: 아이템 내려놓기(OPEN 및 물건 없음)
+	// 2: 판매하기(OPEN 및 물건 있음)
+	if (_currentState == ObjectState::CLOSE)
+	{
+		K2_UpdateWidgetByState(0);
+	}
+	else if (_currentState == ObjectState::OPEN)
+	{
+		if (_currentPendingCredit > 0)
+		{
+			K2_UpdateWidgetByState(2);
+		}
+		else
+		{
+			K2_UpdateWidgetByState(1);
+		}
+	}
+}
+
+void ABaseSellingMachine::PlaySellAnimation()
+{
+	// state는 변경하지 않고, 레버를 올리는 애니메이션 실행
+	leverTimeline.Play();
+
+	// 기존에 돌고 있던 타이머가 있다면 초기화
+	GetWorld()->GetTimerManager().ClearTimer(_leverTimerHandle);
+
+	// 3초 후에 레버를 다시 내리도록 타이머 설정
+	GetWorld()->GetTimerManager().SetTimer(_leverTimerHandle, this, &ABaseSellingMachine::ReverseLeverTimer, 3.0f, false);
+}
+
 void ABaseSellingMachine::OnStateChanged(ObjectState oldState, ObjectState newState)
 {
 	switch (newState)
@@ -148,5 +180,14 @@ void ABaseSellingMachine::UpdateLeverAnimation(float value)
 {
 	FVector newLocation = FVector(0.f, value * LeverDistance, 0.f);
 	LeverMesh->SetRelativeLocation(newLocation);
+}
+
+void ABaseSellingMachine::ReverseLeverTimer()
+{
+	// 현재 상태가 Open일 때만 레버를 내림
+	if (_currentState == ObjectState::OPEN)
+	{
+		leverTimeline.Reverse();
+	}
 }
 

@@ -25,7 +25,7 @@ protected:
 
 public:
 	//void UpdateInventoryUI(TArray<UTexture2D*> texture);
-	void AddItem(int id, ItemType type, float weight);
+	void AddItem(int id, ItemType type, float weight, int32 cost);
 	void InitializeSlots();
 
 	// 버튼 입력 시 슬롯 이동

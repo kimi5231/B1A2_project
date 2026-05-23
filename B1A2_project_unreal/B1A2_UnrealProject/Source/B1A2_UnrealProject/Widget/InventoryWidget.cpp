@@ -13,14 +13,14 @@ void UInventoryWidget::NativeOnInitialized()
 	InitializeSlots();	// À§Á¬ÀÌ »ý¼ºµÇ¸é ¹Ù·Î ½½·Ô »ý¼º
 }
 
-void UInventoryWidget::AddItem(int id, ItemType type, float weight)
+void UInventoryWidget::AddItem(int id, ItemType type, float weight, int32 cost)
 {
 	// ºó ½½·Ô Ã£±â
 	for (UInventorySlotWidget* slot : SlotArray)
 	{
 		if (slot && slot->isEmpty)
 		{
-			slot->SetSlotInfo(id, type, weight);
+			slot->SetSlotInfo(id, type, weight, cost);
 			return;
 		}
 	}
@@ -103,6 +103,7 @@ FDroppedItemInfo UInventoryWidget::GetSelectedInventoryItem()
 		info.itemID = SlotArray[_currentSelectedIndex]->GetItemID();
 		info.type = SlotArray[_currentSelectedIndex]->GetItemType();
 		info.weight = SlotArray[_currentSelectedIndex]->GetItemWeight();
+		info.cost = SlotArray[_currentSelectedIndex]->GetItemCost();
 		info.isValid = true;
 	}
 

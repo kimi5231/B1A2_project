@@ -127,8 +127,8 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 public:
-	void AddItemToInventory(ItemType type, int id, float weight);
-	int32 AddToolToToolBar(ItemType type, int id, float weight);
+	void AddItemToInventory(ItemType type, int id, float weight, int cost);
+	int32 AddToolToToolBar(ItemType type, int id, float weight, int cost);
 
 protected:
 	UPROPERTY()

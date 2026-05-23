@@ -20,6 +20,7 @@ class AMyPlayer;
 class ABaseItem;
 class ABaseDoor;
 class ABaseHatch;
+class ABaseSellingMachine;
 class ABaseMonster;
 
 // 매초 저장되는 감정 데이터 구조체
@@ -59,6 +60,8 @@ public:
 	void SendLocalPosition();
 	void SendGetItem(int itemID, bool isTool, int playerID);
 	void SendDropItem(int playerID, bool isTool, int itemID);
+	void SendDropItemToSellingMachine(int itemID, int playerID, int sellingMachineID);
+	void SendSellItem(int playerID, int sellingMachineID);
 	void SendChangeTool(int playerID, int toolID);
 	void SendInteractDoor(int playerID, int doorID);
 	void SendUseTool(int playerID, int toolID, Rotation playerRotation);
@@ -92,6 +95,7 @@ public:
 	void RecvUpdateObjectState(S_UpdateObjectState_Packet packet);
 	void RecvUpdateStateMonster(S_UpdateObjectState_Packet packet);
 	void RecvUpdateStateDoor(S_UpdateObjectState_Packet packet);
+	void RecvUpdateStateSellingMachine(S_UpdateObjectState_Packet packet);
 
 	void RecvCreateCubes(S_CreateCubes_Packet packet);
 	void RecvAddItemToInventory(S_AddItemToInventory_Packet packet);
@@ -274,7 +278,7 @@ private:
 	ABaseHatch* _hatch;
 
 	// 판매기
-	TMap<uint64, AActor*> _sellingMachines;
+	TMap<uint64, ABaseSellingMachine*> _sellingMachines;
 
 	// 거미줄
 	UPROPERTY(EditAnywhere)

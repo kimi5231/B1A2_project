@@ -10,6 +10,7 @@
 #include "Interactable/Lantern.h"
 #include "Interactable/BaseDoor.h"
 #include "Interactable/BaseHatch.h"
+#include "Interactable/BaseSellingMachine.h"
 #include "Widget/ToolBarWidget.h"
 #include "Monster/BaseMonster.h"
 #include "Monster/BaseEmotionGame.h"
@@ -391,6 +392,30 @@ void UMain::SendDropItem(int playerID, bool isTool, int itemID)
 		return;
 
 	_gameNetwork->SendDropItemPacket(itemID, isTool, playerID);
+}
+
+void UMain::SendDropItemToSellingMachine(int itemID, int playerID, int sellingMachineID)
+{
+	if (_myID == -1 || itemID == -1 || sellingMachineID == -1)
+		return;
+
+	UWorld* world = GetWorld();
+	if (!world)
+		return;
+
+	_gameNetwork->SendDropItemToSellingMachinePacket(itemID, playerID, sellingMachineID);
+}
+
+void UMain::SendSellItem(int playerID, int sellingMachineID)
+{
+	if (_myID == -1 || sellingMachineID == -1)
+		return;
+
+	UWorld* world = GetWorld();
+	if (!world)
+		return;
+
+	_gameNetwork->SendSellItemPacket(playerID, sellingMachineID);
 }
 
 void UMain::SendChangeTool(int playerID, int toolID)
@@ -1044,6 +1069,8 @@ void UMain::RecvUpdateObjectState(S_UpdateObjectState_Packet packet)
 		RecvUpdateStateMonster(packet);
 	else if (packet.type == ObjectType::Door)
 		RecvUpdateStateDoor(packet);
+	else if (packet.type == ObjectType::SellingMachine)
+		RecvUpdateStateSellingMachine(packet);
 }
 
 void UMain::RecvUpdateStateMonster(S_UpdateObjectState_Packet packet)
@@ -1127,6 +1154,19 @@ void UMain::RecvUpdateStateDoor(S_UpdateObjectState_Packet packet)
 		if (foundDoor && *foundDoor)
 		{
 			(*foundDoor)->UpdateDoorState(packet.state);
+		}
+	});
+}
+
+void UMain::RecvUpdateStateSellingMachine(S_UpdateObjectState_Packet packet)
+{
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		ABaseSellingMachine** foundMachine = _sellingMachines.Find(packet.id);
+
+		if (foundMachine && *foundMachine)
+		{
+			(*foundMachine)->UpdateMachineState(packet.state);
 		}
 	});
 }
@@ -1274,13 +1314,13 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 			FActorSpawnParameters params;
 			params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-			// 나중에 판매기 클래스로 변경하기!!!!!
-			AActor* smActor;
-			smActor = world->SpawnActor<AActor>(SellingMachineClass, pos, rot, params);
+			ABaseSellingMachine* smActor;
+			smActor = world->SpawnActor<ABaseSellingMachine>(SellingMachineClass, pos, rot, params);
 
-			// 판매 제한 금액 추가되면 설정하기
-			// ...
-			// ...
+			smActor->SetMachineID(sm.id);
+			smActor->SetMachineState(sm.state);
+			smActor->SetMaxCredit(sm.creditLimit);
+			smActor->SetLeverLength(sm.state);	// 상태에 따라 레버 위치 설정
 
 			_sellingMachines.Add(packet.sellingMachines[i].id, smActor);
 			UE_LOG(LogTemp, Log, TEXT("[Room] SellingMachine Spawned [%d] pos = %f, %f, %f, dir = %d"), packet.sellingMachines[i].id, sm.pos.x, sm.pos.y, sm.pos.z, sm.dir);
@@ -1310,7 +1350,7 @@ void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 			}
 
 			ABaseItem* tool = *foundTool;
-			int32 toolIndex = _myPlayer->AddToolToToolBar(packet.itemType, itemID, packet.weight);
+			int32 toolIndex = _myPlayer->AddToolToToolBar(packet.itemType, itemID, packet.weight, 0);	// 장비는 팔지 않으므로 0으로 설정
 
 			// 장비 줍기 애니메이션 재생 + 월드에서 장비 삭제
 			_myPlayer->PlayPickUpAnimation(tool);
@@ -1353,7 +1393,7 @@ void UMain::RecvAddItemToInventory(S_AddItemToInventory_Packet packet)
 			// 아이템 줍기 애니메이션 재생 + 월드에서 아이템 삭제
 			_myPlayer->PlayPickUpAnimation(item);
 			// 인벤에 넣기
-			_myPlayer->AddItemToInventory(packet.itemType, itemID, packet.weight);
+			_myPlayer->AddItemToInventory(packet.itemType, itemID, packet.weight, item->GetCost());
 			// _items에서 제거
 			_items.Remove(itemID);
 
@@ -1850,6 +1890,48 @@ void UMain::RecvEmotionGameResult(S_EmotionGameResult_Packet packet)
 
 void UMain::RecvSellItemResult(S_SellItemResult_Packet packet)
 {
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		if (!GetWorld()) return;
+
+		int32 machineID = packet.sellingMachineID;
+		
+		if (_sellingMachines.Contains(machineID))
+		{
+			ABaseSellingMachine* machine = _sellingMachines[machineID];
+			if (machine)
+			{
+				// 올려놨던 아이템 가격 초기화, 위젯 갱신
+				machine->ResetPendingCredit();
+
+				// 상태는 바꾸지 않고 레버 업 -> 3초 대기 -> 레버 다운 연출
+				machine->PlaySellAnimation();
+
+				UE_LOG(LogTemp, Log, TEXT("[SellingMachine] Machine ID %d: Credit Updated to %d. Playing 3s Animation."),
+					packet.sellingMachineID, packet.currentCredit);
+			}
+		}
+
+		// 월드 & 맵에서 아이템 제거
+		for (char id : packet.itemIDs)
+		{
+			uint64 itemID = static_cast<uint64>(id);
+
+			if (_items.Contains(itemID))
+			{
+				ABaseItem* itemActor = _items[itemID];
+				if (itemActor)
+				{
+					// 월드에서 액터 삭제
+					itemActor->Destroy();
+					UE_LOG(LogTemp, Log, TEXT("[SellingMachine] Item ID %lld Destroyed from World."), itemID);
+				}
+
+				// 맵에서 제거
+				_items.Remove(itemID);
+			}
+		}
+	});
 }
 
 FRotator UMain::DirToRotation(Dir dir)
