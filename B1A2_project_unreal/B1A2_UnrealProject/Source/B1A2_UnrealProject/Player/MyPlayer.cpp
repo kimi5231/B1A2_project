@@ -17,14 +17,14 @@
 #include "Components/CapsuleComponent.h"
 #include "Materials/MaterialInstanceDynamic.h"
 
-#include "Main.h"
-#include "InteractableInterface.h"
-#include "BaseItem.h"
-#include "BaseDoor.h"
+#include "Main/Main.h"
+#include "Interactable/InteractableInterface.h"
+#include "Interactable/BaseItem.h"
+#include "Interactable/BaseDoor.h"
 
-#include "InventoryWidget.h" 
-#include "ToolBarWidget.h" 
-#include "PlayerStatusWidget.h"
+#include "Widget/InventoryWidget.h" 
+#include "Widget/ToolBarWidget.h" 
+#include "Widget/PlayerStatusWidget.h"
 #include "Blueprint/UserWidget.h"
 
 AMyPlayer::AMyPlayer()

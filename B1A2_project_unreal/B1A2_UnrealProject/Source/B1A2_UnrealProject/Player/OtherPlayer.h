@@ -6,7 +6,7 @@
 #include "Network/UnrealPackets.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "BaseItem.h"
+#include "Interactable/BaseItem.h"
 
 #include "OtherPlayer.generated.h"
 

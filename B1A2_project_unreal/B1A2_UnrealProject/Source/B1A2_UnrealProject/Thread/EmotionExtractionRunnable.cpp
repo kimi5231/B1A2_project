@@ -2,7 +2,7 @@
 
 
 #include "EmotionExtractionRunnable.h"
-#include "Main.h"
+#include "Main/Main.h"
 #include "Misc/Paths.h"
 
 EmotionExtractionRunnable::EmotionExtractionRunnable(UMain* main)

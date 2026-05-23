@@ -4,8 +4,8 @@
 #include "OtherPlayer.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "BaseItem.h"
-#include "Main.h"
+#include "Interactable/BaseItem.h"
+#include "Main/Main.h"
 
 // Sets default values
 AOtherPlayer::AOtherPlayer()
