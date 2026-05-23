@@ -41,9 +41,9 @@ enum class MonsterType : char
 {
 	Spider,
 	EmotionGame,
+	PollutionMonitor,
 	Ghost,
 	TrashColletcor,
-	PollutionMonitor,
 
 	MonsterTypeCount,
 };

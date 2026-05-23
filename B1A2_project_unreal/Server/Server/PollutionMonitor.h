@@ -15,12 +15,10 @@ public:
 public:
 	virtual bool SetState(ObjectState state, bool isSend = true) override;
 	float GetCheckTime() { return _checkTime; }
-	int GetFearCount() { return _fearCount; }
-	int GetSurpriseCount() { return _surpriseCount; }
+	int GetEmotionCount() { return _emotionCount; }
 
 private:
 	float _checkTime;
 	float _spawnTime;
-	int _surpriseCount;
-	int _fearCount;
+	int _emotionCount;
 };

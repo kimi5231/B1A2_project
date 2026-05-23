@@ -785,7 +785,7 @@ void CheckState::Tick(Monster* monster)
 	{
 		pollutionMonitor->InitSumTime();
 
-		std::uniform_real_distribution<float> dis(0.0, 1.0);
+ 		std::uniform_real_distribution<float> dis(0.0, 1.0);
 		if (dis(gen) <= 0.3)
 		{
 			pollutionMonitor->SetState(ObjectState::SPAWN);
@@ -817,8 +817,8 @@ void AllAttackState::Enter(Monster* monster)
 			continue;
 
 		p->TackDamage(monster->GetDamage());
-		g_network->SendUpdateHpPacket(monster->GetTarget()->GetID(), p->GetHP(), p->GetClient());
-		std::cout << "Player " << monster->GetTarget()->GetID() << " HP: " << p->GetHP() << "\n";
+		g_network->SendUpdateHpPacket(p->GetID(), p->GetHP(), p->GetClient());
+		std::cout << "Player " << p->GetID() << " HP: " << p->GetHP() << "\n";
 	}
 }
 

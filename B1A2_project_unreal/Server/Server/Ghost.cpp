@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "FSM.h"
 #include "State.h"
+#include "Global.h"
 
 Ghost::Ghost(MonsterType monsterType, Room* ownerRoom)
 	: Monster(monsterType, ownerRoom)
@@ -58,6 +59,7 @@ bool Ghost::IsReadyNextState()
 		if (_target->CheckCollision(_box))
 		{
 			_target->TackDamage(_damage);
+			g_network->SendUpdateHpPacket(_target->GetID(), _target->GetHP(), _target->GetClient());
 			return true;
 		}
 

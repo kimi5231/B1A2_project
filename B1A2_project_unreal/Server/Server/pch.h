@@ -43,6 +43,6 @@ using ObstacleRef = std::shared_ptr<class Obstacle>;
 #define MAX_TITLE 30
 
 #define MAX_PLAYER 4
-#define MAX_MONSTER 13
+#define MAX_MONSTER 14
 #define MAX_ITEM 50
 #define MAX_OBSTACLE 50

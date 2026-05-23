@@ -15,6 +15,8 @@ PollutionMonitor::PollutionMonitor(MonsterType monsterType, Room* ownerRoom)
 	_damage = 40;
 	_power = 5;
 
+	_emotionCount = 5;
+
 	// State Table
 	_stateTable[IDLE] = CHECK;
 	_stateTable[CHECK] = SPAWN;

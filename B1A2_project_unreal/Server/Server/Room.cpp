@@ -11,6 +11,7 @@
 #include "EmotionGame.h"
 #include "SellingMachine.h"
 #include "Ghost.h"
+#include "PollutionMonitor.h"
 
 Room::Room()
 {
@@ -28,7 +29,7 @@ Room::Room()
 	_maxMonsterCount[MonsterType::EmotionGame] = 3;
 	_maxMonsterCount[MonsterType::Ghost] = 1;
 	_maxMonsterCount[MonsterType::TrashColletcor] = 0;
-	_maxMonsterCount[MonsterType::PollutionMonitor] = 0;
+	_maxMonsterCount[MonsterType::PollutionMonitor] = 1;
 }
 
 Room::~Room()
@@ -62,6 +63,9 @@ void Room::Init()
 				break;
 			case MonsterType::Ghost:
 				_monsters[monsterID] = new Ghost(type, this);
+				break;
+			case MonsterType::PollutionMonitor:
+				_monsters[monsterID] = new PollutionMonitor(type, this);
 				break;
 			default:
 				_monsters[monsterID] = new Monster(type, this);
@@ -462,7 +466,14 @@ void Room::CreateFactoryCubes()
 			type = static_cast<MonsterType>(selectType(gen));
 		}
 
-		// 남은 파워가 8이상이면 EmotionGame까지 생성 가능
+		// 남은 파워가 5이상이면 PollutionMonitor까지 생성 가능
+		else if (conditions.power - _currentPower >= 5)
+		{
+			std::uniform_int_distribution<int> selectType(static_cast<int>(MonsterType::Spider), static_cast<int>(MonsterType::PollutionMonitor));
+			type = static_cast<MonsterType>(selectType(gen));
+		}
+
+		// 남은 파워가 3이상이면 EmotionGame까지 생성 가능
 		else if (conditions.power - _currentPower >= 3)
 		{
 			std::uniform_int_distribution<int> selectType(static_cast<int>(MonsterType::Spider), static_cast<int>(MonsterType::EmotionGame));
