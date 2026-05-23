@@ -209,7 +209,7 @@ public:
 	virtual void Exit(Monster* monster) override {};
 };
 
-// PollutionMonitor
+// PollutionMonitor State
 class CheckState : public State
 {
 public:
@@ -237,6 +237,40 @@ class AllAttackState : public State
 public:
 	AllAttackState() {};
 	virtual ~AllAttackState() {}
+public:
+	virtual void Enter(Monster* monster) override;
+	virtual void Tick(Monster* monster) override;
+	virtual void Exit(Monster* monster) override {};
+};
+
+// TrashCollector State
+class MoveState : public State
+{
+public:
+	MoveState() {};
+	virtual ~MoveState() {}
+public:
+	virtual void Enter(Monster* monster) override {};
+	virtual void Tick(Monster* monster) override;
+	virtual void Exit(Monster* monster) override;
+};
+
+class CollectState : public State
+{
+public:
+	CollectState() {};
+	virtual ~CollectState() {}
+public:
+	virtual void Enter(Monster* monster) override;
+	virtual void Tick(Monster* monster) override;
+	virtual void Exit(Monster* monster) override {};
+};
+
+class EscapeState : public State
+{
+public:
+	EscapeState() {};
+	virtual ~EscapeState() {}
 public:
 	virtual void Enter(Monster* monster) override;
 	virtual void Tick(Monster* monster) override;

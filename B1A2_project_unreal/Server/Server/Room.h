@@ -36,6 +36,11 @@ public:
 
 	void PlusCredit(int credit) { _currentCredit += credit; if (_currentCredit > _goalCredit) _currentCredit = _goalCredit; }
 	void MinusCredit(int credit) { _currentCredit -= credit; if (_currentCredit < 0) _currentCredit = 0; }
+	
+	void AddFearCount() { _currentFearCount++; }
+	void AddSurpriseCount() { _currentSurpriseCount++; }
+
+	Player* SelectPlayerForGhost();
 
 public:
 	GameObject* GetGameObject(ObjectType type, int id);

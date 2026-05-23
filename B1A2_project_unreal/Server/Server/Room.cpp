@@ -436,8 +436,8 @@ void Room::CreateFactoryCubes()
 			Dir dir = static_cast<Dir>((cube->GetDir() + info.sellingMachineDir[sellingMachineIndex]) % DirCount);
 			SellingMachine* sellingMachine = new SellingMachine(dir, false, creditLimit);
 			sellingMachine->SetID(generateSellingMachineID++);
-			sellingMachine->SetPos(pos);
 			sellingMachine->SetOwnerRoom(this);
+			sellingMachine->SetPos(pos);
 			sellingMachine->SetState(ObjectState::OPEN);
 			_sellingMachines.push_back(sellingMachine);
 		}
@@ -656,6 +656,52 @@ void Room::RemoveObject(ObjectType type, int id, bool isSend)
 				g_network->SendRemoveObjectPacket(type, id, player->GetClient());
 		}
 	}
+}
+
+Player* Room::SelectPlayerForGhost()
+{
+	std::uniform_int_distribution<int> selectCondition(0, 1);
+	Player* player = nullptr;
+
+	switch (selectCondition(gen))
+	{
+	case 0:	// FearCount가  가장 높은 플레이어 선택
+	{
+		int fearCount = -1;
+		for (auto& p : _players)
+		{
+			if (!p->GetClient())
+				continue;
+
+			if (p->GetFearCount() > fearCount)
+			{
+				fearCount = p->GetFearCount();
+				player = p;
+			}
+		}
+		break;
+	}
+	case 1:	// FearCount가  가장 낮은 플레이어 선택
+	{
+		int fearCount = std::numeric_limits<int>::max();
+		for (auto& p : _players)
+		{
+			if (!p->GetClient())
+				continue;
+
+			if (p->GetFearCount() < fearCount)
+			{
+				fearCount = p->GetFearCount();
+				player = p;
+			}
+		}
+		break;
+	}
+	//case 2:	// 가지고 있는 Scrap의 가격이 가장 높은 플레이어 선택
+	//	break;
+	}
+
+	return player;
 }
 
 GameObject* Room::GetGameObject(ObjectType type, int id)

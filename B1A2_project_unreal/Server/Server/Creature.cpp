@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "Creature.h"
-#include "Cube.h"
 #include "Global.h"
 #include "Room.h"
 
@@ -29,42 +28,6 @@ bool Creature::TackHeal(int heal)
 
     // 나중에 상태이상같은 거 확인
     return true;
-}
-
-void Creature::SetPos(Vector pos)
-{
-	GameObject::SetPos(pos);
-    SetCurrentCubeID();
-}
-
-void Creature::SetCurrentCubeID()
-{
-    const std::vector<CubeRef>& cubes = _ownerRoom->GetCubes();
-    if (cubes.empty())
-        return;
-
-    // 최초로 지정하는 것이라면 전부 확인
-    if (_currentCubeID == -1)
-    {
-        for (const auto& cube : cubes)
-        {
-            if (cube->GetBoundingBox().CheckInclude(_pos))
-            {
-                _currentCubeID = cube->GetID();
-                return;
-            }
-        }
-    }
-
-    //for (const auto& cube : cubes[_currentCubeID]->GetConnectedCubes())
-    for (const auto& cube : cubes)
-    {
-        if (cube->GetBoundingBox().CheckInclude(_pos))
-        {
-            _currentCubeID = cube->GetID();
-            return;
-        }
-    }
 }
 
 bool Creature::SetState(ObjectState state, bool isSend)

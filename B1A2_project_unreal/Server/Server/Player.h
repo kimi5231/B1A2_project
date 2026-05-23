@@ -21,6 +21,8 @@ public:
 
 	void Attack(Room* room);
 
+	void AddFearCount() { _fearCount++; }
+
 public:
 	int GetCurrentTool() { return _currentTool; }
 	void SetCurrentTool(int toolID) { _currentTool = toolID; }
@@ -33,12 +35,14 @@ public:
 	float GetLookAngle() { return _lookAngle; }
 	bool GetIsCanMove() { return _isCanMove; }
 	void SetIsCanMove(bool isCanMove) { _isCanMove = isCanMove; }
+	int GetFearCount() { return _fearCount; }
 
 private:
 	Session* _client;
 	Inventory* _inventory{};
 	int _currentTool{};
 	Emotion _currentEmotion{};
+	int _fearCount{};
 
 	int _lookRange;
 	int _lookHeight;

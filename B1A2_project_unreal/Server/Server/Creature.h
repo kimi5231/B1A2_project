@@ -12,14 +12,10 @@ public:
 	bool TackHeal(int heal);
 
 public:
-	virtual void SetPos(Vector pos) override;
-	void SetCurrentCubeID();
-	int GetCurrentCubeID() { return _currentCubeID; }
 	virtual bool SetState(ObjectState state, bool isSend = true) override;
 	int GetHP() { return _hp; }
 
 protected:
-	int _currentCubeID;
 	int _maxHP;
 	int _hp;
 };

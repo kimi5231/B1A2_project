@@ -20,8 +20,8 @@ Monster::Monster(MonsterType monsterType, Room* ownerRoom)
 	_sumTime = 0.f;
 	_ownerRoom = ownerRoom;
 	_currentCubeID = -1;
+	_isNeedDoorOpen = false;
 
-	_size = { 80, 80, 80 };
 	_rotation = { 0, 0, 0 };
 	_type = ObjectType::Monster;
 	// 나중에 방향 조절하기
@@ -467,9 +467,6 @@ bool Monster::SetState(ObjectState state, bool isSend)
 	case ROAMING:
 		_fsm->ChangeState(g_roamingState, this);
 		break;
-	/*case OPEN_DOOR:
-		_fsm->ChangeState(_openDoor, this);
-		break;*/
 	case CHASE:
 		_fsm->ChangeState(g_chaseState, this);
 		break;

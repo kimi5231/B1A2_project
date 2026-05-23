@@ -1234,6 +1234,15 @@ void ServerNetwork::ProcessChangeEmotionPacket(C_ChangeEmotion_Packet packet, in
 	// 바뀐 감정 기록
 	Player* player = dynamic_cast<Player*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::Player, packet.playerID));
 	player->SetCurrentEmotion(packet.emotion);
+	
+	if (packet.emotion == Emotion::Fear)
+	{
+		_clients[clientIndex]->_room->AddFearCount();
+		player->AddFearCount();
+	}
+	
+	if (packet.emotion == Emotion::Surprise)
+		_clients[clientIndex]->_room->AddSurpriseCount();
 }
 
 void ServerNetwork::ProcessEmotionResultPacket(C_EmotionResult_Packet packet, int clientIndex)

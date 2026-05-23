@@ -7,8 +7,9 @@
 Ghost::Ghost(MonsterType monsterType, Room* ownerRoom)
 	: Monster(monsterType, ownerRoom)
 {
-	_hp = 10000;
-	_chaseSpeed = 4.5f;
+	_maxHP = 10000;
+	_hp = _maxHP;
+	_chaseSpeed = 450.f;
 	_idleTime = 15.f;
 	_chaseTime = 20.f;
 	_waitTime = 180.f;
@@ -19,11 +20,15 @@ Ghost::Ghost(MonsterType monsterType, Room* ownerRoom)
 	_unlookCount = 0;
 	_checkLooking = false;
 
+	_size = { 100, 100, 100 };
+	_box.SetBounds(_pos, _size, Front);
+
 	// State Table
 	_stateTable[IDLE] = ABSENT;
 	_stateTable[ABSENT] = STARING;
 	_stateTable[STARING] = VANISHING;
 	_stateTable[CHASE] = VANISHING;
+	_stateTable[VANISHING] = IDLE;
 }
 
 Ghost::~Ghost()
@@ -32,7 +37,7 @@ Ghost::~Ghost()
 
 void Ghost::Update(Room* room)
 {
-	//Monster::Update(room);
+	Monster::Update(room);
 
 	// Target Player가 죽었다면, 대기 후 Target 재설정
 	if (_target && _target->GetState() == DEAD && _sumTime < _waitTime)
@@ -50,7 +55,13 @@ bool Ghost::IsReadyNextState()
 	case ObjectState::STARING:
 		return _sumTime > _staringTime || (_lookCount <= 1 && 200 < (_target->GetPos() - _pos).Length() && (_target->GetPos() - _pos).Length() <= 250) || 1000 < (_target->GetPos() - _pos).Length();
 	case ObjectState::CHASE:
-		return _sumTime > _chaseTime || 3000 <= (_target->GetPos() - _pos).Length() || _target->CheckCollision(_box);
+		if (_target->CheckCollision(_box))
+		{
+			_target->TackDamage(_damage);
+			return true;
+		}
+
+		return _sumTime > _chaseTime || 3000 <= (_target->GetPos() - _pos).Length();
 	case ObjectState::VANISHING:
 		return true;
 	}
@@ -71,9 +82,6 @@ bool Ghost::SetState(ObjectState state, bool isSend)
 		break;
 	case ObjectState::VANISHING:
 		_fsm->ChangeState(g_vanishingState, this);
-		break;
-	case ObjectState::CHASE:
-		_fsm->ChangeState(g_chaseState, this);
 		break;
 	}
 

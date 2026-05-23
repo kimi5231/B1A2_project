@@ -21,7 +21,7 @@ public:
 	int GetID() { return _id; }
 	void SetObjectType(ObjectType type) { _type = type; }
 	ObjectType GetObjectType() { return _type; }
-	virtual void SetPos(Vector pos);
+	void SetPos(Vector pos);
 	Vector GetPos() { return _pos; }
 	void SetSize(Vector size);
 	Vector GetSize() { return _size; }
@@ -34,7 +34,9 @@ public:
 	ObjectPoolState GetObjectPoolState() { return _objectPoolState; }
 	Room* GetOwnerRoom() { return _ownerRoom; }
 	void SetOwnerRoom(Room* room) { _ownerRoom = room; }
-
+	int GetCurrentCubeID() { return _currentCubeID; }
+	void SetCurrentCubeID();
+	
 protected:
 	int _id{};
 	ObjectType _type{};
@@ -45,5 +47,6 @@ protected:
 	BoundingBox _box;
 	ObjectPoolState _objectPoolState;
 	Room* _ownerRoom;
+	int _currentCubeID;
 };
 
