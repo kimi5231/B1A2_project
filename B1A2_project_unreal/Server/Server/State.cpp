@@ -24,13 +24,13 @@ AttackState* g_attackState = new AttackState();
 HitState* g_hitState = new HitState();
 DeadState* g_deadState = new DeadState();
 MakeWebState* g_makeWebState = new MakeWebState();
-Teleport* g_teleportState = new Teleport();
-Grab* g_grabState = new Grab();
-Play* g_playState = new Play();
-Release* g_releaseState = new Release();
-Absent* g_absentState = new Absent();
-Staring* g_staringState = new Staring();
-Vanishing* g_vanishingState = new Vanishing();
+TeleportState* g_teleportState = new TeleportState();
+GrabState* g_grabState = new GrabState();
+PlayState* g_playState = new PlayState();
+ReleaseState* g_releaseState = new ReleaseState();
+AbsentState* g_absentState = new AbsentState();
+StaringState* g_staringState = new StaringState();
+VanishingState* g_vanishingState = new VanishingState();
 CheckState* g_checkState = new CheckState();
 SpawnState* g_spawnState = new SpawnState();
 AllAttackState* g_allAttackState = new AllAttackState();
@@ -162,12 +162,12 @@ void MakeWebState::Exit(Monster* monster)
 
 // EmotionGame State
 //--------------Teleport----------------
-void Teleport::Tick(Monster* monster)
+void TeleportState::Tick(Monster* monster)
 {
 	State::Tick(monster);
 }
 
-void Teleport::Exit(Monster* monster)
+void TeleportState::Exit(Monster* monster)
 {
 	std::vector<CubeRef> cubes = monster->GetOwnerRoom()->GetCubes();
 
@@ -192,18 +192,18 @@ void Teleport::Exit(Monster* monster)
 }
 
 //--------------Grab----------------
-void Grab::Enter(Monster* monster)
+void GrabState::Enter(Monster* monster)
 {
 	// Target Player 못움직이게 설정
 	monster->GetTarget()->SetIsCanMove(false);
 }
 
-void Grab::Tick(Monster* monster)
+void GrabState::Tick(Monster* monster)
 {
 	State::Tick(monster);
 }
 
-void Grab::Exit(Monster* monster)
+void GrabState::Exit(Monster* monster)
 {
 	// 타겟의 위치 + 보정값으로 순간이동
 	const std::vector<CubeRef> cubes = monster->GetOwnerRoom()->GetCubes();
@@ -228,14 +228,14 @@ void Grab::Exit(Monster* monster)
 }
 
 //--------------Play----------------
-void Play::Tick(Monster* monster)
+void PlayState::Tick(Monster* monster)
 {
 	State::Tick(monster);
 
 	monster->AddDeltaTime(g_timer->GetDeltaTime());
 }
 
-void Play::Exit(Monster* monster)
+void PlayState::Exit(Monster* monster)
 {
 	EmotionGame* emotionGame = dynamic_cast<EmotionGame*>(monster);
 	Emotion emotion = emotionGame->SelectEmotion();
@@ -274,14 +274,14 @@ void Play::Exit(Monster* monster)
 }
 
 //--------------Release----------------
-void Release::Tick(Monster* monster)
+void ReleaseState::Tick(Monster* monster)
 {
 	State::Tick(monster);
 
 	monster->AddDeltaTime(g_timer->GetDeltaTime());
 }
 
-void Release::Exit(Monster* monster)
+void ReleaseState::Exit(Monster* monster)
 {
 	// Target Player 다시 움직일 수 있게 설정
 	monster->GetTarget()->SetIsCanMove(true);
@@ -291,14 +291,14 @@ void Release::Exit(Monster* monster)
 }
 
 //--------------Abesnt----------------
-void Absent::Enter(Monster* monster)
+void AbsentState::Enter(Monster* monster)
 {
 	// 타겟 지정
 	Player* player = monster->GetOwnerRoom()->SelectPlayerForGhost();
 	monster->SetTarget(player);
 }
 
-void Absent::Tick(Monster* monster)
+void AbsentState::Tick(Monster* monster)
 {
 	State::Tick(monster);
 
@@ -331,13 +331,13 @@ void Absent::Tick(Monster* monster)
 	}
 }
 
-void Absent::Exit(Monster* monster)
+void AbsentState::Exit(Monster* monster)
 {
 	monster->InitSumTime();
 }
 
 //--------------Staring----------------
-void Staring::Enter(Monster* monster)
+void StaringState::Enter(Monster* monster)
 {
 	// target 위치로 이동
 	Ghost* ghost = dynamic_cast<Ghost*>(monster);
@@ -371,7 +371,7 @@ void Staring::Enter(Monster* monster)
 	}
 }
 
-void Staring::Tick(Monster* monster)
+void StaringState::Tick(Monster* monster)
 {
 	// 타겟과의 거리가 지정거리 이하면 Chase로 상태 전환
 	Player* target = monster->GetTarget();
@@ -394,7 +394,7 @@ void Staring::Tick(Monster* monster)
 	}
 }
 
-void Staring::Exit(Monster* monster)
+void StaringState::Exit(Monster* monster)
 {
 	// Player가 Ghost를 봤는지 안봤는지 체크
 	Ghost* ghost = dynamic_cast<Ghost*>(monster);
@@ -409,7 +409,7 @@ void Staring::Exit(Monster* monster)
 }
 
 //--------------Vanishing----------------
-void Vanishing::Tick(Monster* monster)
+void VanishingState::Tick(Monster* monster)
 {
 	State::Tick(monster);
 } 

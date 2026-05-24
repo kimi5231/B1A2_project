@@ -21,13 +21,13 @@ extern class AttackState* g_attackState;
 extern class HitState* g_hitState;
 extern class DeadState* g_deadState;
 extern class MakeWebState* g_makeWebState;
-extern class Teleport* g_teleportState;
-extern class Grab* g_grabState;
-extern class Play* g_playState;
-extern class Release* g_releaseState;
-extern class Absent* g_absentState;
-extern class Staring* g_staringState;
-extern class Vanishing* g_vanishingState;
+extern class TeleportState* g_teleportState;
+extern class GrabState* g_grabState;
+extern class PlayState* g_playState;
+extern class ReleaseState* g_releaseState;
+extern class AbsentState* g_absentState;
+extern class StaringState* g_staringState;
+extern class VanishingState* g_vanishingState;
 extern class CheckState* g_checkState;
 extern class SpawnState* g_spawnState;
 extern class AllAttackState* g_allAttackState;
@@ -134,44 +134,44 @@ public:
 };
 
 // EmotionGame State
-class Teleport : public State
+class TeleportState : public State
 {
 public:
-	Teleport() {};
-	virtual ~Teleport() {};
+	TeleportState() {};
+	virtual ~TeleportState() {};
 public:
 	virtual void Enter(Monster* monster) override {};
 	virtual void Tick(Monster* monster) override;
 	virtual void Exit(Monster* monster) override;
 };
 
-class Grab : public State
+class GrabState : public State
 {
 public:
-	Grab() {};
-	virtual ~Grab() {};
+	GrabState() {};
+	virtual ~GrabState() {};
 public:
 	virtual void Enter(Monster* monster) override;
 	virtual void Tick(Monster* monster) override;
 	virtual void Exit(Monster* monster) override;
 };
 
-class Play : public State
+class PlayState : public State
 {
 public:
-	Play() {};
-	virtual ~Play(){}
+	PlayState() {};
+	virtual ~PlayState(){}
 public:
 	virtual void Enter(Monster* monster) override {};
 	virtual void Tick(Monster* monster) override;
 	virtual void Exit(Monster* monster) override;
 };
 
-class Release : public State
+class ReleaseState : public State
 {
 public:
-	Release() {};
-	virtual ~Release() {}
+	ReleaseState() {};
+	virtual ~ReleaseState() {}
 public:
 	virtual void Enter(Monster* monster) override {};
 	virtual void Tick(Monster* monster) override;
@@ -179,33 +179,33 @@ public:
 };
 
 // Ghost State
-class Absent : public State
+class AbsentState : public State
 {
 public:
-	Absent() {};
-	virtual ~Absent() {}
+	AbsentState() {};
+	virtual ~AbsentState() {}
 public:
 	virtual void Enter(Monster* monster) override;
 	virtual void Tick(Monster* monster) override;
 	virtual void Exit(Monster* monster) override;
 };
 
-class Staring : public State
+class StaringState : public State
 {
 public:
-	Staring() {};
-	virtual ~Staring() {}
+	StaringState() {};
+	virtual ~StaringState() {}
 public:
 	virtual void Enter(Monster* monster) override;
 	virtual void Tick(Monster* monster) override;
 	virtual void Exit(Monster* monster) override;
 };
 
-class Vanishing : public State
+class VanishingState : public State
 {
 public:
-	Vanishing() {};
-	virtual ~Vanishing() {}
+	VanishingState() {};
+	virtual ~VanishingState() {}
 public:
 	virtual void Enter(Monster* monster) override {};
 	virtual void Tick(Monster* monster) override;
