@@ -3,7 +3,7 @@
 #include "Global.h"
 #include "Session.h"
 #include "Cube.h"
-#include "Door.h"
+#include "Hatch.h"
 #include "Cutlass.h"
 #include "Spider.h"
 #include "Obstacle.h"
@@ -219,14 +219,20 @@ void Room::CreateFactoryCubes()
 	{
 		CubeInfo info = g_dataManager->GetCubeInfo(CubeType::Base);
 		CubeRef base = std::make_shared<Cube>(Vector{ 0, 0, 0 }, Back, info);
-		base->SetID(generateCubeID++);
+		base->SetID(generateCubeID);
 
-		// 巩 积己
-
+		// Hatch 积己
+		Hatch* hatch = new Hatch(info.doorPos[0], Back, generateCubeID++, Back);
+		hatch->SetID(generateDoorID++);
+		hatch->SetOwnerRoom(this);
+		hatch->SetConnectedCubeID(generateCubeID);
+		hatch->SetDoorType(DoorType::Door);
+		base->AddDoor(hatch->GetID());
+		_doors.push_back(hatch);
+		
 		_cubes.push_back(base);
 	}
 
-	// 规 积己(巩篮 规 救俊辑 积己 + 厚惑备)
 	// MainEntranceRoom 积己
 	{
 		CubeInfo info = g_dataManager->GetCubeInfo(CubeType::MainEntranceRoom);
@@ -246,6 +252,11 @@ void Room::CreateFactoryCubes()
 			_doors.push_back(door);
 			_connectableDoors[door->GetDir()].push_back(door);
 		}
+
+		// Base客 楷搬
+		cube->AddConnectedRoom(_cubes[0]);
+		cube->AddDoor(_doors[0]->GetID());
+		_cubes[0]->AddConnectedRoom(cube);
 			
 		_cubes.push_back(cube);
 		_currentCubeCount[CubeType::MainEntranceRoom]++;

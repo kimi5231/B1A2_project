@@ -17,9 +17,9 @@ public:
 	void SetConnectable(bool isConnectable) { _isConnectable = isConnectable; }
 
 private:
-	int _ownerCubeID{};
+	int _ownerCubeID;
 	int _connectedCubeID;
-	Dir _dir{};
+	Dir _dir;
 	DoorType _doorType;
 	bool _isConnectable;
 };

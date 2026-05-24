@@ -179,6 +179,7 @@ enum class DoorType
 {
 	Wall,
 	Door,
+	Hatch,
 };
 
 enum Difficulty 

@@ -143,6 +143,7 @@
     <ClInclude Include="EmotionGame.h" />
     <ClInclude Include="ExpOver.h" />
     <ClInclude Include="Ghost.h" />
+    <ClInclude Include="Hatch.h" />
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Lantern.h" />
@@ -180,6 +181,7 @@
     <ClCompile Include="ExpOver.cpp" />
     <ClCompile Include="Ghost.cpp" />
     <ClCompile Include="Global.cpp" />
+    <ClCompile Include="Hatch.cpp" />
     <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="Lantern.cpp" />

@@ -1091,7 +1091,7 @@
             "tilemap" : [
             {
                "layer" : [
-                    { "pattern" : [[0, 26]], "repeatY" :  26 }
+                    { "pattern" : [[0, 26]], "repeatY" :  28 }
                ], "repeatZ" : 1
             },
             {

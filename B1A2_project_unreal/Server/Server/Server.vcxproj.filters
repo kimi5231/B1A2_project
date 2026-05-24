@@ -146,6 +146,9 @@
     <ClCompile Include="TrashCollector.cpp">
       <Filter>소스 파일\Game\Object\Creature\Monster</Filter>
     </ClCompile>
+    <ClCompile Include="Hatch.cpp">
+      <Filter>소스 파일\Game\Object\Structure</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -246,6 +249,9 @@
     </ClInclude>
     <ClInclude Include="TrashCollector.h">
       <Filter>소스 파일\Game\Object\Creature\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Hatch.h">
+      <Filter>소스 파일\Game\Object\Structure</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

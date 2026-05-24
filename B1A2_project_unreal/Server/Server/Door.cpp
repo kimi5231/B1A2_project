@@ -9,4 +9,5 @@ Door::Door(Vector pos, Dir dir, int roomID, Dir roomDir)
 	_doorType = DoorType::Door;
 	_type = ObjectType::Door;
 	_state = ObjectState::CLOSE;
+	_connectedCubeID = -1;
 }
