@@ -398,7 +398,8 @@ struct S_DropItem_Packet
 	bool isTool;
 	ItemType itemType;
 	Vector itemPos;
-	// 임시로 배터리 추가 예정
+	unsigned char cost;
+	unsigned char laternBattery;
 };
 
 struct S_UpdateCurrentTool_Packet

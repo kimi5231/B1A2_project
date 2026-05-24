@@ -668,7 +668,14 @@ void ServerNetwork::SendItemPickupNotifyPacket(Item* item, int playerID, bool is
 void ServerNetwork::SendDropItemPacket(Item* item, int playerID, Vector itemPos, bool isTool, Session* client)
 {
 	// Packet Data 생성
-	S_DropItem_Packet packetData{ sizeof(S_DropItem_Packet), S_DropItem, item->GetID(), playerID, isTool, item->GetItemType(), itemPos };
+	S_DropItem_Packet packetData{ sizeof(S_DropItem_Packet), S_DropItem, item->GetID(), playerID, isTool, item->GetItemType(), itemPos, item->GetCost(), 0};
+
+	// 아이템이 랜턴이라면 배터리 추가
+	if (item->GetItemType() == ItemType::LANTERN)
+	{
+		Lantern* lantern = dynamic_cast<Lantern*>(item);
+		packetData.laternBattery = lantern->GetCurrentBattery();
+	}
 
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);
