@@ -19,7 +19,6 @@ Monster::Monster(MonsterType monsterType, Room* ownerRoom)
 	_target = nullptr;
 	_sumTime = 0.f;
 	_ownerRoom = ownerRoom;
-	_currentCubeID = -1;
 	_isNeedDoorOpen = false;
 
 	_rotation = { 0, 0, 0 };
@@ -109,12 +108,19 @@ void Monster::UpdatePath(Vector currentGoal, CubeRef goalCube)
 				break;
 			}
 
-			// 경로를 찾기 못하면 목적지 재설정
-			if (FindPath(goal, cubePath[0]).empty())
+			if ((goal - _pos).Length() > TileSize * 2)
 			{
-				SetTargetPos(std::nullopt);
-				return;
+				// 경로를 찾기 못하면 목적지 재설정
+				if (FindPath(goal, cubePath[0]).empty())
+				{
+					SetTargetPos(std::nullopt);
+					return;
+				}
+				SetTargetPos(goal);
 			}
+
+			SetTargetDoor(door);
+			SetIsNeedDoorOpen(true);
 		}
 
 		// 지나갈 문이 열려 있으면 문 너머 좌표까지 경로 찾기
@@ -182,7 +188,6 @@ void Monster::Move(float speed, ObjectState state)
 			dir.Normalize();
 			float angle = std::atan2(dir.y, dir.x) * (180.0f / 3.14159265f);
 
-			// 2. [와리가리 보정 핵심] 현재 각도에서 목표 각도로 부드럽게 회전 (Lerp)
 			float currentAngle = _rotation.yaw;
 
 			// 각도가 -180도 ~ 180도 사이에서 튈 수 있으므로 최단 거리 회전 보정
@@ -213,36 +218,62 @@ void Monster::Move(float speed, ObjectState state)
 
 	// 최종 목적지까지 도달했다면, 목적지 재설정
 	if (path.empty())
+	{
 		SetTargetPos(std::nullopt);
+		if (GetIsNeedDoorOpen())
+		{
+			GetTargetDoor()->SetState(ObjectState::OPEN);
+
+			for (auto& p : GetOwnerRoom()->GetPlayers())
+			{
+				if (!p->GetClient())
+					continue;
+
+				g_network->SendUpdateObjectStatePacket(GetTargetDoor(), p->GetClient());
+			}
+
+			SetTargetDoor(nullptr);
+			SetIsNeedDoorOpen(false);
+		}
+	}
 }
 
 const CubeRef Monster::SelectRandomConnectedCube()
 {
+	//const std::vector<CubeRef>& cubes = _ownerRoom->GetCubes();
+	//const std::vector<Door*>& doors = _ownerRoom->GetDoors();
+	//const CubeRef currentCube = cubes[_currentCubeID];
+
+	//// 연결된 Cube 중 열린 문이 있는 CubeID만 저장
+	//std::vector<int> openDoorCubeID;
+	//openDoorCubeID.reserve(currentCube->GetDoors().size());
+	//for (const int doorID : currentCube->GetDoors())
+	//{
+	//	Door* door = doors[doorID];
+	//	if (door->GetState() == ObjectState::OPEN)
+	//	{
+	//		if (door->GetConnectedCubeID() != _currentCubeID)
+	//			openDoorCubeID.push_back(door->GetConnectedCubeID());
+	//		else
+	//			openDoorCubeID.push_back(door->GetOwnerCubeID());
+	//	}
+	//}
+
+	//// 열린 문이 없다면 현재 Cube 반환
+	//if (openDoorCubeID.empty())
+	//	return currentCube;
+
+	//// 열린 문이 있다면 랜덤으로 선택
+	//std::uniform_int_distribution<int> selectCube(0, openDoorCubeID.size() - 1);
+	//return cubes[openDoorCubeID[selectCube(gen)]];
+
 	const std::vector<CubeRef>& cubes = _ownerRoom->GetCubes();
-	const std::vector<Door*>& doors = _ownerRoom->GetDoors();
 	const CubeRef currentCube = cubes[_currentCubeID];
+	const std::vector<CubeRef>& connectedCubes = currentCube->GetConnectedCubes();
 
-	// 현재 위치한 방에 열린 문이 있는지 확인
-	std::vector<int> openDoorCubeID(currentCube->GetDoors().size());
-	for (const int doorID : currentCube->GetDoors())
-	{
-		Door* door = doors[doorID];
-		if (door->GetState() == ObjectState::OPEN)
-		{
-			if(door->GetConnectedCubeID() != _currentCubeID)
-				openDoorCubeID.push_back(door->GetConnectedCubeID());
-			else
-				openDoorCubeID.push_back(door->GetOwnerCubeID());
-		}
-	}
-	
-	// 열린 문이 없으면 현재 위치한 큐브 반환
-	if (openDoorCubeID.empty())
-		return currentCube;
-
-	// 열린 문이 있다면, 해당 문으로 연결된 Cube 중 랜덤하게 선택
-	std::uniform_int_distribution<int> selectCube(0, openDoorCubeID.size() - 1);
-	return cubes[openDoorCubeID[selectCube(gen)]];
+	// 열린 문이 있다면 랜덤으로 선택
+	std::uniform_int_distribution<int> selectCube(0, connectedCubes.size() - 1);
+	return connectedCubes[selectCube(gen)];
 }
 
 Vector Monster::SelectRandomPosInCube(const CubeRef cube)

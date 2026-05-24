@@ -11,7 +11,8 @@ Spider::Spider(MonsterType monsterType, Room* ownerRoom)
 	_maxHP = 60;
 	_hp = 60;
 
-	_speed = 250.f;
+	_returnSpeed = 250.f;
+	_roamingSpeed = 250.f; 
 	_chaseSpeed = 400.f; 
 	_idleTime = 1.5f;
 	_roamingTime = 2.5f;
@@ -99,13 +100,13 @@ bool Spider::IsReadyNextState()
 	case ObjectState::IDLE:
 		return _currentWebCount < _maxWebCount && _sumTime > _idleTime;
 	case ObjectState::ROAMING:
-		return _sumTime > _roamingTime;
+		return _sumTime > _roamingTime && _path.empty();
 	case ObjectState::MAKE_WEB:
 		return _sumTime > _makeWebTime;
 	case ObjectState::CHASE:
 		return _sumTime > _chaseTime;
 	case ObjectState::RETURN:
-		return _returnPos == _pos;
+		return (_returnPos - _pos).Length() < TileSize * 2;
 	case ObjectState::ATTACK:
 		return true;
 	case ObjectState::HIT:

@@ -8,6 +8,7 @@
 GameObject::GameObject()
 {
 	_objectPoolState = ObjectPoolState::Reusable;
+	_currentCubeID = -1;
 }
 
 GameObject::~GameObject()

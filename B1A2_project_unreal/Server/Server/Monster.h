@@ -60,7 +60,8 @@ public:
 	void SetReturnPos(Vector pos) { _returnPos = pos; }
 	Room* GetOwnerRoom() { return _ownerRoom; }
 	float GetSumTime() { return _sumTime; }
-	float GetSpeed() { return _speed; }
+	float GetReturnSpeed() { return _returnSpeed; }
+	float GetRoamingSpeed() { return _roamingSpeed; }
 	float GetChaseSpeed() { return _chaseSpeed; }
 	int GetPower() { return _power; }
 	bool GetIsNeedDoorOpen() { return _isNeedDoorOpen; }
@@ -88,7 +89,7 @@ protected:
 	float _attackDelay;
 
 	// Status
-	float _speed;
+	float _returnSpeed;
 	float _roamingSpeed;
 	float _chaseSpeed;
 	float _chaseTime;
