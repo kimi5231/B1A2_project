@@ -4,7 +4,7 @@
 #include "Components/TextBlock.h"
 #include "Components/Border.h"
 
-void UToolSlotWidget::SetSlotInfo(int32 id, ItemType type, float weight)
+void UToolSlotWidget::SetSlotInfo(int32 id, ItemType type, float weight, int32 cost)
 {
 	UTexture2D* texture = nullptr;
 
@@ -50,6 +50,7 @@ void UToolSlotWidget::SetSlotInfo(int32 id, ItemType type, float weight)
 	SetToolID(id);
 	SetToolType(type);
 	SetToolWeight(weight);
+	SetToolCost(cost);
 }
 
 void UToolSlotWidget::SetSelected(bool isSelected)

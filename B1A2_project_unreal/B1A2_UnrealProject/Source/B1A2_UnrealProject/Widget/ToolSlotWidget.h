@@ -22,7 +22,7 @@ class B1A2_UNREALPROJECT_API UToolSlotWidget : public UUserWidget
 	GENERATED_BODY()
 	
 public:
-	void SetSlotInfo(int32 id, ItemType type, float weight);
+	void SetSlotInfo(int32 id, ItemType type, float weight, int32 cost);
 	void SetSelected(bool isSelected);
 
 	// 슬롯에서 장비 삭제
@@ -35,6 +35,8 @@ public:
 	ItemType GetToolType() { return _toolType; }
 	void SetToolWeight(float weight) { _toolWeight = weight; }
 	float GetToolWeight() { return _toolWeight; }
+	void SetToolCost(int32 cost) { _toolCost = cost; }
+	int32 GetToolCost() { return _toolCost; }
 
 public:
 	bool isEmpty = true;
@@ -66,4 +68,5 @@ private:
 	int32 _toolID = 0;
 	ItemType _toolType;
 	float _toolWeight = 0.f;
+	int32 _toolCost = 0;
 };

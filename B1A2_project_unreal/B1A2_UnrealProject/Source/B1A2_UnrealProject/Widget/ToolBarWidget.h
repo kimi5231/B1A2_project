@@ -11,6 +11,7 @@ struct FDroppedItemInfo
 	int32 itemID = -1;
 	ItemType type = ItemType::EmptyCan;
 	float weight = 0.0f;
+	int32 cost = 0;
 	bool isValid = false;
 };
 
@@ -32,7 +33,7 @@ protected:
 	virtual void NativeConstruct() override;
 
 public:
-	int32 AddTool(int id, ItemType type, float weight);
+	int32 AddTool(int id, ItemType type, float weight, int cost);
 	void ChangeSelection(bool forward);		// »Ÿ πÊ«‚ø° µ˚∂Û ∫Ø∞Ê
 	void SetSelectedIndex(int32 index);	// »πµÊΩ√ ¿Œµ¶Ω∫ ∞≠¡¶ ∫Ø∞Ê
 
