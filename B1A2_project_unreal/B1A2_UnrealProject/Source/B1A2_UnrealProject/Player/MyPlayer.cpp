@@ -251,6 +251,9 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		
 		// Laber Cheat Key
 		EnhancedInputComponent->BindAction(InteractLaverAction, ETriggerEvent::Started, this, &AMyPlayer::SendEndStageAndStartStage);
+
+		// Sell Item
+		EnhancedInputComponent->BindAction(SellAction, ETriggerEvent::Started, this, &AMyPlayer::InteractSellingMachine);
 	}
 }
 
@@ -455,35 +458,30 @@ void AMyPlayer::ItemOrToolDrop()
 		{
 			if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
 			{
-				// 판매기 상호작용 범위 안에서의 드랍 처리
-				ABaseSellingMachine* SellingMachine = Cast<ABaseSellingMachine>(_focusedActor);
+				ABaseSellingMachine* SellingMachine = _overlappedSellingMachine;
 
 				// 판매기 근처이고, Open 상태일 때
 				if (SellingMachine && SellingMachine->GetMachineState() == ObjectState::OPEN)
 				{
 					int32 ItemCost = info.cost;
 
-					// 판매기 제한 Credit 체크
 					if (SellingMachine->CanAddCredit(ItemCost))
 					{
-						// 제한을 초과하지 않을 때, 아이템 판매 패킷 전송
 						gameInstance->SendDropItemToSellingMachine(gameInstance->GetMyID(), info.itemID, SellingMachine->GetMachineID());
 						SellingMachine->AddPendingCredit(ItemCost);
-
-						UE_LOG(LogTemp, Display, TEXT("[SellingMachine] Item Drop To SellingMachine Packet Send! ItemID: %d, Cost: %d"), info.itemID, ItemCost);
+						UE_LOG(LogTemp, Display, TEXT("[SellingMachine] Item Drop Success! Cost: %d"), ItemCost);
 					}
-					else
+					else  // 판매 금액이 초과됐다면, 바닥에 드랍
 					{
-						// 제한을 초과했을 때는 드랍하기
 						gameInstance->SendDropItem(gameInstance->GetMyID(), false, info.itemID);
-						UE_LOG(LogTemp, Display, TEXT("[SellingMachine] Credit Limit Exceeded! Normal Item Drop Packet Send! ItemID: %d"), info.itemID);
+						UE_LOG(LogTemp, Display, TEXT("[SellingMachine] Credit Limit Exceeded! Normal Drop. MaxLimit %d, PendingCredit %d"), SellingMachine->GetMaxCredit(), SellingMachine->GetCurrentPendingCredit());
 					}
 				}
 				else
 				{
 					// 일반적인 상황에서의 드랍
 					gameInstance->SendDropItem(gameInstance->GetMyID(), false, info.itemID);
-					UE_LOG(LogTemp, Display, TEXT("[Item] Item Drop Packet Send! ItemID: %d"), info.itemID);
+					UE_LOG(LogTemp, Display, TEXT("[Item] Item Drop"));
 				}
 			}
 
@@ -770,10 +768,25 @@ void AMyPlayer::UpdateScanEffect()
 
 void AMyPlayer::OnItemOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor && OtherActor->GetClass()->ImplementsInterface(UInteractableInterface::StaticClass()))
+	if (!OtherActor) return;
+
+	if (ABaseSellingMachine* SellingMachine = Cast<ABaseSellingMachine>(OtherActor))
+	{
+		_overlappedSellingMachine = SellingMachine;
+
+		// 판매기 상태에 따른 위젯 변경 및 UI 표시
+		_overlappedSellingMachine->UpdateWidgetState();
+		IInteractableInterface::Execute_ShowInteractionUI(_overlappedSellingMachine);
+
+		UE_LOG(LogTemp, Log, TEXT("[MyPlayer] Overlapped with SellingMachine. Saved to dedicated variable."));
+		return;
+	}
+
+	// 아이템, 문 등 처리
+	if (OtherActor->GetClass()->ImplementsInterface(UInteractableInterface::StaticClass()))
 	{
 		_nearInteractables.Add(OtherActor);
-
+	
 		// 아이템 인식 중에 아이템이 삭제되는 경우 - 삭제될 때 호출(구독)
 		if (!OtherActor->OnDestroyed.IsAlreadyBound(this, &AMyPlayer::OnItemDestroyed))
 		{
@@ -784,9 +797,22 @@ void AMyPlayer::OnItemOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAc
 
 void AMyPlayer::OnItemOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (!OtherActor)
-		return;
+	if (!OtherActor) return;
 
+	// 판매기 구역에서 벗어난 경우 처리
+	if (ABaseSellingMachine* SellingMachine = Cast<ABaseSellingMachine>(OtherActor))
+	{
+		if (_overlappedSellingMachine == SellingMachine)
+		{
+			IInteractableInterface::Execute_HideInteractionUI(_overlappedSellingMachine);
+			_overlappedSellingMachine = nullptr;
+
+			UE_LOG(LogTemp, Log, TEXT("[MyPlayer] Left SellingMachine Range. Cleared dedicated variable."));
+		}
+		return;
+	}
+
+	// 일반 인터페이스 상호작용 객체 처리
 	if (_nearInteractables.Contains(OtherActor))
 	{
 		_nearInteractables.Remove(OtherActor);
@@ -890,24 +916,36 @@ void AMyPlayer::Interact()
 
 		gameInstance->SendInteractDoor(gameInstance->GetMyID(), door->GetDoorID());
 	}
-	// SellingMachine인 경우
-	else if (ABaseSellingMachine* machine = Cast<ABaseSellingMachine>(_focusedActor))
-	{
-		// Open 상태 && 등록된 아이템이 있을 때만 판매 가능
-		if (machine->GetMachineState() == ObjectState::OPEN && machine->GetCurrentPendingCredit() > 0)
-		{
-			// 서버에 C_SellItem_Packet 송신
-			gameInstance->SendSellItem(gameInstance->GetMyID(), machine->GetMachineID());
+	//// SellingMachine인 경우
+	//else if (ABaseSellingMachine* machine = Cast<ABaseSellingMachine>(_focusedActor))
+	//{
+	//	// Open 상태 && 등록된 아이템이 있을 때만 판매 가능
+	//	if (machine->GetMachineState() == ObjectState::OPEN)
+	//	{
+	//		if (machine->GetCurrentPendingCredit() > 0)
+	//		{
+	//			UE_LOG(LogTemp, Display, TEXT("[Interact] Focused on SellingMachine and Send SellItemPacket ID: %d, CurrentState: %d, PendingCredit: %d"),
+	//				machine->GetMachineID(), (int32)machine->GetMachineState(), machine->GetCurrentPendingCredit());
 
-			// 판매기 위젯 숨김
-			IInteractableInterface::Execute_Interact(machine);
+	//			// 서버에 C_SellItem_Packet 송신
+	//			gameInstance->SendSellItem(gameInstance->GetMyID(), machine->GetMachineID());
 
-			// 로컬 등록 크레딧 리셋 (이후 서버로부터 S_ 패킷을 받아 동기화되겠지만 미리 클리어)
-			//machine->ResetPendingCredit();
+	//			// 판매기 위젯 숨김
+	//			IInteractableInterface::Execute_Interact(machine);
 
-			UE_LOG(LogTemp, Display, TEXT("[SellingMachine] Sell Item Packet Send! MachineID: %d"), machine->GetMachineID());
-		}
-	}
+	//			// 로컬 등록 크레딧 리셋 (이후 서버로부터 S_ 패킷을 받아 동기화되겠지만 미리 클리어)
+	//			//machine->ResetPendingCredit();
+	//		}
+	//		else
+	//		{
+	//			UE_LOG(LogTemp, Display, TEXT("[SellingMachine] Cannot Sell: Pending Credit is 0."));
+	//		}
+	//	}
+	//	else
+	//	{
+	//		UE_LOG(LogTemp, Warning, TEXT("[SellingMachine] Cannot Sell: Machine State is NOT OPEN."));
+	//	}
+	//}
 }
 
 void AMyPlayer::TurnLanternSendOrUseToolAnimationAndSend()
@@ -1009,6 +1047,26 @@ void AMyPlayer::TurnLanternSendOrUseToolAnimationAndSend()
 
 	gameInstance->SendUseTool(gameInstance->GetMyID(), ToolInfo.itemID, rotation);
 	//UE_LOG(LogTemp, Log, TEXT("[Tool] Use Tool, Tool ID: %d, Type: %d"), ToolInfo.itemID, (int32)type);
+}
+
+void AMyPlayer::InteractSellingMachine()
+{
+	if (IsBusy || !_overlappedSellingMachine)
+		return;
+
+	UMain* gameInstance = Cast<UMain>(GetGameInstance());
+	if (!gameInstance) return;
+
+	// 판매기가 Open 상태 && 아이템이 올려진 상태(크레딧이 있을 때)일 때 판매 패킷 송신
+	if (_overlappedSellingMachine->GetMachineState() == ObjectState::OPEN && _overlappedSellingMachine->GetCurrentPendingCredit() > 0)
+	{
+		gameInstance->SendSellItem(gameInstance->GetMyID(), _overlappedSellingMachine->GetMachineID());
+
+		// 판매가 시작되면 상호작용 UI 가시성 처리
+		IInteractableInterface::Execute_Interact(_overlappedSellingMachine);
+
+		UE_LOG(LogTemp, Display, TEXT("[SellingMachine] F Key Interact! Packets Sent."));
+	}
 }
 
 void AMyPlayer::OnToolMontageEnded(UAnimMontage* Montage, bool bInterrupted)
