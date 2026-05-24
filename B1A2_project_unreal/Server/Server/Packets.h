@@ -88,7 +88,7 @@ struct SellingMachineDTO
 	Vector pos;
 	Dir dir;
 	ObjectState state;
-	char creditLimit;
+	unsigned char creditLimit;
 };
 
 // Client
