@@ -12,6 +12,7 @@
 #include "SellingMachine.h"
 #include "Ghost.h"
 #include "PollutionMonitor.h"
+#include "TrashCollector.h"
 
 Room::Room()
 {
@@ -28,7 +29,7 @@ Room::Room()
 	_maxMonsterCount[MonsterType::Spider] = 9;
 	_maxMonsterCount[MonsterType::EmotionGame] = 3;
 	_maxMonsterCount[MonsterType::Ghost] = 1;
-	_maxMonsterCount[MonsterType::TrashColletcor] = 0;
+	_maxMonsterCount[MonsterType::TrashCollector] = 7;
 	_maxMonsterCount[MonsterType::PollutionMonitor] = 1;
 }
 
@@ -67,8 +68,8 @@ void Room::Init()
 			case MonsterType::PollutionMonitor:
 				_monsters[monsterID] = new PollutionMonitor(type, this);
 				break;
-			default:
-				_monsters[monsterID] = new Monster(type, this);
+			case MonsterType::TrashCollector:
+				_monsters[monsterID] = new TrashCollector(type, this);
 				break;
 			}
 
@@ -439,12 +440,18 @@ void Room::CreateFactoryCubes()
 	}
 
 	// 몬스터 생성
-	// 테스트용 Spider 먼저 생성
+	// 테스트용 먼저 생성
 	Monster* spider = AddMonster(MonsterType::Spider, { 0, 675, 25 });
 	spider->SetState(ObjectState::HIT, false);
 	spider->SetState(ObjectState::IDLE, false);
 	_currentPower += spider->GetPower();
 	_currentMonsterCount[MonsterType::Spider]++;
+
+	Monster* trashCollector = AddMonster(MonsterType::TrashCollector, { 0, 675, 25 });
+	trashCollector->SetState(ObjectState::HIT, false);
+	trashCollector->SetState(ObjectState::IDLE, false);
+	_currentPower += trashCollector->GetPower();
+	_currentMonsterCount[MonsterType::TrashCollector]++;
 
 	while (_currentPower < conditions.power)
 	{

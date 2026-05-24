@@ -1631,7 +1631,7 @@ void UMain::RecvAddMonster(S_AddMonster_Packet packet)
 			monsterActor = world->SpawnActor<ABaseMonster>(GhostClass, spawnLocation, spawnRotation);
 			UE_LOG(LogTemp, Log, TEXT("Ghost Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
 			break;
-		case MonsterType::TrashColletcor:
+		case MonsterType::TrashCollector:
 			monsterActor = world->SpawnActor<ABaseMonster>(TrashCollectorClass, spawnLocation, spawnRotation);
 			UE_LOG(LogTemp, Log, TEXT("TrashCollector Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
 			break;

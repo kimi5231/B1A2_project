@@ -43,7 +43,7 @@ enum class MonsterType : char
 	EmotionGame,
 	PollutionMonitor,
 	Ghost,
-	TrashColletcor,
+	TrashCollector,
 
 	MonsterTypeCount,
 };

@@ -33,6 +33,8 @@ TrashCollector::TrashCollector(MonsterType monsterType, Room* ownerRoom)
 
 	_power = 2;
 
+	_size = { 100, 100, 100 };
+
 	_maxScrapCount = 3;
 	_currentScrap.reserve(_maxScrapCount);
 
@@ -83,5 +85,21 @@ bool TrashCollector::IsReadyNextState()
 
 bool TrashCollector::SetState(ObjectState state, bool isSend)
 {
-	return false;
+	if (!Monster::SetState(state, isSend))
+		return false;
+
+	switch (state)
+	{
+	case ObjectState::MOVE:
+		_fsm->ChangeState(g_moveState, this);
+		break;
+	case ObjectState::COLLECT:
+		_fsm->ChangeState(g_collectState, this);
+		break;
+	case ObjectState::ESCAPE:
+		_fsm->ChangeState(g_escapeState, this);
+		break;
+	}
+
+	return true;
 }

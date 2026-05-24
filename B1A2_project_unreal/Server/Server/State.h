@@ -31,6 +31,9 @@ extern class Vanishing* g_vanishingState;
 extern class CheckState* g_checkState;
 extern class SpawnState* g_spawnState;
 extern class AllAttackState* g_allAttackState;
+extern class MoveState* g_moveState;
+extern class CollectState* g_collectState;
+extern class EscapeState* g_escapeState;
 
 // Common State
 class IdleState : public State

@@ -19,6 +19,10 @@ public:
 	Item* GetTargetScrap() { return _targetScrap; }
 	void SetTargetScrap(Item* scrap) { _targetScrap = scrap; }
 	int GetEscapeDistance() { return _escapeDistance; }
+	float GetMoveSpeed() { return _moveSpeed; }
+	void SetEscapeCube(CubeRef cube) { _escapeCube = cube; }
+	CubeRef GetEscapeCube() { return _escapeCube; }
+	float GetEscapeSpeed() { return _escapeSpeed; }
 
 private:
 	int _aggroRange;
@@ -36,4 +40,5 @@ private:
 	std::vector<int> _currentScrap;
 
 	Item* _targetScrap;
+	CubeRef _escapeCube;
 };
