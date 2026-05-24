@@ -746,7 +746,7 @@ void ServerNetwork::SendSellItemResultPacket(char playerID, char sellingMachineI
 	std::vector<char> serializedPacketData(sizeof(unsigned short));
 
 	memcpy(serializedPacketData.data(), &packetSize, sizeof(unsigned short));
-	serializedPacketData.push_back(S_CreateCubes);
+	serializedPacketData.push_back(S_SellItemResult);
 	serializedPacketData.push_back(sellingMachineID);
 	serializedPacketData.push_back(playerID);
 	serializedPacketData.push_back(sellingMachineState);
