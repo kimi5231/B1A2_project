@@ -17,7 +17,7 @@ public:
 	virtual bool IsReadyNextState() { return false; };
 
 	void UpdatePath(Vector currentGoal, CubeRef goalCube);
-	void Move();
+	void Move(float speed, ObjectState state);
 
 	const CubeRef SelectRandomConnectedCube(); 
 	Vector SelectRandomPosInCube(const CubeRef cube); 

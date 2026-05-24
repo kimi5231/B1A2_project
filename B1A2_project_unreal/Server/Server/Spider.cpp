@@ -24,7 +24,7 @@ Spider::Spider(MonsterType monsterType, Room* ownerRoom)
 	_attackAngle = 90.f;
 	_attackHeight = 400;
 
-	_attackDelay = 3.f;
+	_attackDelay = 1.f;
 
 	_damage = 15;
 
@@ -117,6 +117,7 @@ void Spider::CreateWeb()
 {
 	_ownerRoom->AddObstacle(ObstacleType::Web, _pos, _rotation);
 	_currentWebCount++;
+	std::cout << "Spider " << _id << " created a web. Current web count: " << _currentWebCount << " Pos: (" << _pos.x << ", " << _pos.y << ", " << _pos.z << ")" << std::endl;
 }
 
  bool Spider::SetState(ObjectState state, bool isSend)

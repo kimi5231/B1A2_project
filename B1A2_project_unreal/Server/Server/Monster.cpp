@@ -154,6 +154,68 @@ void Monster::UpdatePath(Vector currentGoal, CubeRef goalCube)
 	}
 }
 
+void Monster::Move(float speed, ObjectState state)
+{
+	std::deque<VectorInt>& path = GetPath();
+	if (!path.empty())
+	{
+		// 방향, 거리 계산
+		Vector dir = path[0] - _pos;
+		float distance = dir.Length();
+
+		// 이동 속도 적용
+		float moveDist = speed * g_timer->GetDeltaTime();
+
+		// 남은 거리가 이동할 거리보다 목적지 위치로 바로 이동
+		if (distance <= moveDist)
+		{
+			SetPos(path[0]);
+			path.pop_front();
+
+			// Chase일 때만 실시간 경로 갱신
+			if (state == ObjectState::CHASE)
+				SetTargetPos(std::nullopt);
+		}
+		else
+		{
+			// 이동 방향 계산
+			dir.Normalize();
+			float angle = std::atan2(dir.y, dir.x) * (180.0f / 3.14159265f);
+
+			// 2. [와리가리 보정 핵심] 현재 각도에서 목표 각도로 부드럽게 회전 (Lerp)
+			float currentAngle = _rotation.yaw;
+
+			// 각도가 -180도 ~ 180도 사이에서 튈 수 있으므로 최단 거리 회전 보정
+			float angleDiff = angle - currentAngle;
+			while (angleDiff < -180.0f) angleDiff += 360.0f;
+			while (angleDiff > 180.0f)  angleDiff -= 360.0f;
+
+			// 회전 속도 설정 (숫자가 클수록 빠르게 회전, 5.0f~10.0f 정도가 적당해)
+			float rotationSpeed = 8.0f;
+			float nextAngle = currentAngle + angleDiff * rotationSpeed * g_timer->GetDeltaTime();
+
+			// 3. 보정된 회전값 적용
+			Rotation rotation = { 0.f, nextAngle, 0.f };
+
+			_rotation = rotation;
+			SetPos(_pos + (dir * moveDist));
+		}
+
+		// 몬스터 이동 알리기
+		for (auto& p : _ownerRoom->GetPlayers())
+		{
+			if (!p->GetClient())
+				continue;
+
+			g_network->SendMovePacket(this, p->GetClient());
+		}
+	}
+
+	// 최종 목적지까지 도달했다면, 목적지 재설정
+	if (path.empty())
+		SetTargetPos(std::nullopt);
+}
+
 const CubeRef Monster::SelectRandomConnectedCube()
 {
 	const std::vector<CubeRef>& cubes = _ownerRoom->GetCubes();
@@ -302,6 +364,8 @@ std::deque<VectorInt> Monster::FindPath(Vector goal, const CubeRef currentCube)
 	std::unordered_map<VectorInt, TileNode*, VectorIntHash> openMap;
 	std::unordered_set<VectorInt, VectorIntHash> closeList;
 
+	std::vector<TileNode*> allocatedNodes;
+
 	// 시작 위치와 목적지의 인덱스 계산
 	VectorInt startIndex = PosToIndex(_pos, currentCube);
 	VectorInt goalIndex = PosToIndex(goal, currentCube);
@@ -312,6 +376,14 @@ std::deque<VectorInt> Monster::FindPath(Vector goal, const CubeRef currentCube)
 	TileNode* startNode = new TileNode(startIndex, 0, startH, startH, nullptr);
 	openList.push(startNode);
 	openMap[startIndex] = startNode;
+	allocatedNodes.push_back(startNode);
+
+	// 평면 4방향 오프셋 (우, 좌, 상, 하)
+	const int dx[4] = { 1, -1, 0, 0 };
+	const int dy[4] = { 0, 0, 1, -1 };
+
+	// 오르내릴 수 있는 Z축 3개 층 오프셋 (현재층, 윗층, 아랫층)
+	const int dz[5] = { 0, 1, 2, -1, -2 };
 
 	while (!openList.empty())
 	{
@@ -321,39 +393,43 @@ std::deque<VectorInt> Monster::FindPath(Vector goal, const CubeRef currentCube)
 		openMap.erase(currentNode->index);
 		closeList.insert(currentNode->index);
 
-		// 현재 노드와 연결된 모든 노드 확인
-		// 상하좌우 대각선
-		for (int x = -1; x <= 1; ++x)
+		// 현재 노드와 연결된 노드 확인
+		for (int i = 0; i < 4; ++i)
 		{
-			for (int y = -1; y <= 1; ++y)
+			for (int j = 0; j < 5; ++j)
 			{
-				VectorInt connectedIndex{ currentNode->index.x +  x, currentNode->index.y + y, currentNode->index.z };
+				int nextX = currentNode->index.x + dx[i];
+				int nextY = currentNode->index.y + dy[i];
+				int nextZ = currentNode->index.z + dz[j];
 
-				// 현재 노드는 제외
-				if (x == 0 && y == 0)
-					continue;
-
-				// 목적지 노드라면 경로	반환
-				if (connectedIndex.x == goalIndex.x && connectedIndex.y == goalIndex.y)
-				{
-					std::deque<VectorInt> path;
-					//path.push_back(IndexToPos(goalIndex, currentCube));
-					TileNode* node = currentNode;
-					while (node)
-					{
-						path.push_back(IndexToPos(node->index, currentCube));
-						node = node->parent;
-					}
-					std::reverse(path.begin(), path.end());
-					_path = path;
-					return _path;
-				}
+				VectorInt connectedIndex{ nextX, nextY, nextZ };
 
 				// 이미 closeList에 있으면 무시
 				if (closeList.contains(connectedIndex))
 					continue;
 
-				// 갈 수 있는 노드인지 확인
+				// 목적지 노드인지 먼저 확인 (Z축 높이까지 일치하는지 체크)
+				if (connectedIndex.x == goalIndex.x && connectedIndex.y == goalIndex.y && connectedIndex.z == goalIndex.z)
+				{
+					std::deque<VectorInt> path;
+					TileNode* node = currentNode;
+					while (node != startNode)
+					{
+						Vector worldPos = IndexToPos(node->index, currentCube);
+						path.push_back(worldPos);
+						node = node->parent;
+					}
+					std::reverse(path.begin(), path.end());
+					_path = path;
+
+					// 메모리 해제 후 경로 반환
+					for (TileNode* allocated : allocatedNodes)
+						delete allocated;
+					
+					return _path;
+				}
+
+				// Index가 소속된 Cube 찾기
 				CubeRef cube = FindCubeAtIndex(connectedIndex, currentCube);
 				if (!cube)
 					continue;
@@ -362,23 +438,27 @@ std::deque<VectorInt> Monster::FindPath(Vector goal, const CubeRef currentCube)
 				if (!IsCanGo(index, cube) && !IsCanGo(connectedIndex, currentCube))
 					continue;
 
-				//float g = currentNode->g + ((x != 0 && y != 0) ? 1.414f : 1.0f);
-				float g = currentNode->g + 1;
+				// 이동 비용 계산
+				float moveCost = (dz[j] != 0) ? 1.414f : 1.0f;
+				float g = currentNode->g + moveCost;
 				float h = abs(connectedIndex.x - goalIndex.x) + abs(connectedIndex.y - goalIndex.y) + abs(connectedIndex.z - goalIndex.z);
 				float f = g + h;
-				
+
 				// 이미 openList에 있지만 기존 경로가 더 낫다면 무시
 				if (openMap.contains(connectedIndex) && openMap[connectedIndex]->f <= f)
 					continue;
-				
+
 				// 두 List에 모두 없거나, 새로운 경로가 더 낫다면 openList에 추가
 				TileNode* newNode = new TileNode{ connectedIndex, g, h, f, currentNode };
 				openList.push(newNode);
 				openMap[connectedIndex] = newNode;
-				continue;
+				allocatedNodes.push_back(newNode);
 			}
 		}
 	}
+	
+	for (TileNode* allocated : allocatedNodes)
+		delete allocated;
 
 	return {};
 }
@@ -523,7 +603,7 @@ bool Monster::IsCanGo(VectorInt index, const CubeRef cube)
 	if (index < Vector{ 0, 0, 0 } || index >= max)
 		return false;
 
-	return tilemap[index.z][index.y][index.x] == 1 && tilemap[index.z - 1][index.y][index.x] == 0;
+	return tilemap[index.z][index.y][index.x] == 1 && (tilemap[index.z - 1][index.y][index.x] == 0 || tilemap[index.z - 1][index.y][index.x] == 2);
 }
 
 CubeRef Monster::FindCubeAtWorldPos(VectorInt wp, CubeRef currentCube)

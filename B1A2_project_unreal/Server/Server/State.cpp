@@ -135,55 +135,7 @@ void ChaseState::Tick(Monster* monster)
 
 	const std::vector<CubeRef>& cubes = monster->GetOwnerRoom()->GetCubes();
 	monster->UpdatePath(monster->GetTarget()->GetPos(), cubes[monster->GetTarget()->GetCurrentCubeID()]);
-
-	std::deque<VectorInt>& path = monster->GetPath();
-	if (!path.empty())
-	{
-		Vector targetPos = path[0];
-		Vector currentPos = monster->GetPos();
-
-		// 2. 방향 및 거리 계산
-		Vector dir = targetPos - currentPos;
-		float distance = dir.Length(); // 현재 타겟까지 남은 거리
-
-		// 3. 이동 속도 적용
-		float moveDist = monster->GetChaseSpeed() * g_timer->GetDeltaTime();
-
-		if (distance <= moveDist)
-		{
-			// 이번 프레임에 타겟 타일에 도착할 수 있다면
-			monster->SetPos(targetPos); // 딱 맞춰서 도착
-			path.pop_front();           // 도착했으니 다음 경로로
-		}
-		else
-		{
-			// 아직 가는 중이라면 방향벡터만큼 조금만 이동
-			dir.Normalize();
-
-			float angleRad = std::atan2(dir.y, dir.x);
-			float angleDeg = angleRad * (180.0f / 3.14159265f); // 라디안 -> 디그리 변환
-
-			Rotation newRot = { 0.f, angleDeg, 0.f }; // 바닥에서만 도니까 Roll, Pitch는 0
-
-			monster->SetRotation(newRot);
-			monster->SetPos(currentPos + (dir * moveDist));
-		}
-
-		// Broadcast
-		for (auto& p : monster->GetOwnerRoom()->GetPlayers())
-		{
-			if (!p->GetClient())
-				continue;
-
-			g_network->SendMovePacket(monster, p->GetClient());
-		}
-	}
-
-	// 최종 목적지 도달 체크
-	if (path.empty())
-	{
-		monster->SetTargetPos(std::nullopt);
-	}
+	monster->Move(monster->GetChaseSpeed(), ObjectState::CHASE);
 }
 
 void ChaseState::Exit(Monster* monster)
