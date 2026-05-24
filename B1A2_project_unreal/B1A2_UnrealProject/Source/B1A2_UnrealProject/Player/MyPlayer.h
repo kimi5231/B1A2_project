@@ -19,6 +19,7 @@ class UMain;
 class ABaseItem;
 class UMaterialInterface;
 class UMaterialInstanceDynamic;
+class ABaseSellingMachine;
 
 /**
  * 
@@ -108,6 +109,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
 	UInputAction* InteractLaverAction;
 
+	// 판매하기
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
+	UInputAction* SellAction;
+
 public:
 	AMyPlayer();
 
@@ -136,6 +141,9 @@ protected:
 
 	UPROPERTY()
 	AActor* _focusedActor;	// E 버튼을 띄울 아이템 or 문
+
+	UPROPERTY()
+	ABaseSellingMachine* _overlappedSellingMachine;
 
 	// 위젯
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
@@ -300,6 +308,9 @@ private:
 
 	void Interact();
 	void TurnLanternSendOrUseToolAnimationAndSend();
+
+	void InteractSellingMachine();
+
 	// 몽타주 애니메이션 종료시 호출
 	UFUNCTION()
 	void OnToolMontageEnded(UAnimMontage* Montage, bool bInterrupted);

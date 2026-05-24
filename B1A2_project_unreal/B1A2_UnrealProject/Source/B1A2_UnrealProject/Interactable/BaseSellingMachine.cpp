@@ -70,19 +70,21 @@ void ABaseSellingMachine::HideInteractionUI_Implementation()
 
 void ABaseSellingMachine::Interact_Implementation()
 {
-	// 판매하기 상태에서 버튼을 누르면 위젯 숨김
-	if (_currentState == ObjectState::OPEN && _currentPendingCredit > 0)
-	{
-		HideInteractionUI_Implementation();
-	}
-
-	UE_LOG(LogTemp, Log, TEXT("[SellingMachine] EButton Interact Called"));
+	 // 판매하기 상태에서 버튼을 누르면 위젯 숨김
+	HideInteractionUI_Implementation();
+	UE_LOG(LogTemp, Log, TEXT("[SellingMachine] EButton Interact Called and Hide Widget"));
 }
 
 void ABaseSellingMachine::UpdateMachineState(ObjectState newState)
 {
+	UE_LOG(LogTemp, Log, TEXT("[SellingMachine] UpdateMachineState Requested. MachineID: %d, OldState: %d -> NewState: %d"),
+		GetMachineID(), (int32)_currentState, (int32)newState);
+
 	if (_currentState == newState)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[SellingMachine] State is already identical. Skipping update."));
 		return;
+	}
 
 	ObjectState oldState = _currentState;
 	_currentState = newState;
@@ -126,6 +128,10 @@ bool ABaseSellingMachine::CanAddCredit(int32 itemCost) const
 void ABaseSellingMachine::AddPendingCredit(int32 itemCost)
 {
 	_currentPendingCredit += itemCost;
+	
+	UE_LOG(LogTemp, Display, TEXT("[SellingMachine] AddPendingCredit. MachineID: %d, Credit: %d (Max: %d)"),
+		GetMachineID(), _currentPendingCredit, _maxCredit);
+
 	UpdateWidgetState();
 }
 
@@ -134,20 +140,31 @@ void ABaseSellingMachine::UpdateWidgetState()
 	// 0: 판매 불가능(CLOSE)
 	// 1: 아이템 내려놓기(OPEN 및 물건 없음)
 	// 2: 판매하기(OPEN 및 물건 있음)
+
+	int32 TargetWidgetState = -1;
+
 	if (_currentState == ObjectState::CLOSE)
 	{
-		K2_UpdateWidgetByState(0);
+		TargetWidgetState = 0;
 	}
 	else if (_currentState == ObjectState::OPEN)
 	{
 		if (_currentPendingCredit > 0)
 		{
-			K2_UpdateWidgetByState(2);
+			TargetWidgetState = 2;
 		}
 		else
 		{
-			K2_UpdateWidgetByState(1);
+			TargetWidgetState = 1;
 		}
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("[SellingMachine] UpdateWidgetState Called. MachineID: %d, MachineState: %d, PendingCredit: %d, Sending Widget State: %d"),
+		GetMachineID(), (int32)_currentState, _currentPendingCredit, TargetWidgetState);
+
+	if (TargetWidgetState != -1)
+	{
+		K2_UpdateWidgetByState(TargetWidgetState);
 	}
 }
 

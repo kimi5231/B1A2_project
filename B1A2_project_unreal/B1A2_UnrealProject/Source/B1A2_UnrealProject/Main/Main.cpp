@@ -755,6 +755,8 @@ void UMain::RecvDropItem(S_DropItem_Packet packet)
 	int playerID = packet.playerID;
 	int itemID = packet.itemID;
 	bool isTool = packet.isTool;
+	int cost = packet.cost;
+	int lanternBattery = packet.laternBattery;
 
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
@@ -830,9 +832,8 @@ void UMain::RecvDropItem(S_DropItem_Packet packet)
 				tool = world->SpawnActor<ABaseItem>(LanternClass, (spawnLocation.X, spawnLocation.Y, spawnLocation), spawnRotation);
 				tool->SetItemType(ItemType::LANTERN);
 
-				// 여기서 Lanter의 배터리를 설정해줘야 함!!!!!!!!! 패킷에 추가해야 할듯??
-				// ...
-				// ...
+				// 여기서 Lanter의 배터리를 설정해줘야 함!!!!!!!!!
+				//
 
 				UE_LOG(LogTemp, Log, TEXT("[Tool] Lantern Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
 				break;
@@ -840,6 +841,7 @@ void UMain::RecvDropItem(S_DropItem_Packet packet)
 
 			tool->SetItemID(itemID);
 			tool->SetIsTool(true);
+			tool->SetCost(0);	// tool의 cost는 0
 			_tools.Add(itemID, tool);
 		}
 		// 아이템
@@ -903,6 +905,8 @@ void UMain::RecvDropItem(S_DropItem_Packet packet)
 
 			item->SetItemID(itemID);
 			item->SetIsTool(false);
+			item->SetCost(cost);
+
 			_items.Add(itemID, item);
 		}
 	});
@@ -1323,8 +1327,7 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 			smActor->SetLeverLength(sm.state);	// 상태에 따라 레버 위치 설정
 
 			_sellingMachines.Add(packet.sellingMachines[i].id, smActor);
-			UE_LOG(LogTemp, Log, TEXT("[Room] SellingMachine Spawned [%d] pos = %f, %f, %f, dir = %d"), packet.sellingMachines[i].id, sm.pos.x, sm.pos.y, sm.pos.z, sm.dir);
-
+			UE_LOG(LogTemp, Log, TEXT("[Room] SellingMachine Spawned [%d] pos = %f, %f, %f, dir = %d, creditLimit = %d"), packet.sellingMachines[i].id, sm.pos.x, sm.pos.y, sm.pos.z, sm.dir, sm.creditLimit);
 		}
 	});
 }
