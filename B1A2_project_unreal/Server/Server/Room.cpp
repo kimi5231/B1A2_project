@@ -19,18 +19,22 @@ Room::Room()
 	_currentDifficulty = Difficulty::Easy;
 	_detailDifficulty = Difficulty::Easy;
 
-	_currentCredit = 0;
-	_goalCredit = 360;
-	_currentPower = 0;
-	_currentSurpriseCount = 0;
-	_currentFearCount = 0;
-
 	// 몬스터별 최대 개수 초기화 (나중에 Json으로 읽어오기)
 	_maxMonsterCount[MonsterType::Spider] = 9;
 	_maxMonsterCount[MonsterType::EmotionGame] = 3;
 	_maxMonsterCount[MonsterType::Ghost] = 1;
 	_maxMonsterCount[MonsterType::TrashCollector] = 7;
 	_maxMonsterCount[MonsterType::PollutionMonitor] = 1;
+
+	_stage = 0;
+	// 나중에 Json으로 읽어오기
+	_goalCredit = 360;
+	_collectCredit = 0;
+	_currentCredit = 0;
+	// 나중에 Json으로 읽어오기
+	_currentPower = 0;
+	_currentSurpriseCount = 0;
+	_currentFearCount = 0;
 }
 
 Room::~Room()
@@ -528,6 +532,13 @@ void Room::CreateFactoryCubes()
 
 void Room::StartStage()
 {
+	// 스테이지가 3의 배수일때마다 목표 크레딧, 모은 크레딧 초기화
+	/*if (_stage % 3 == 0)
+	{
+		_goalCredit = 0;
+		_collectCredit = 0;
+	}*/
+	
 	// Cube 생성
 	CreateFactoryCubes();
 	

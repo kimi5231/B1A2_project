@@ -54,12 +54,47 @@ public:
 	int GetCurrentCredit() { return _currentCredit; }
 	int GetID() { return _id; }
 	RoomState GetRoomState() { return _roomState; }
-	int GetCurrentPlayer() { return _currentPlayer; }
+	int GetCurrentPlayerCount() { return _currentPlayerCount; }
 	std::vector<char>& GetTitle() { return _title; }
 	int GetCurrentFearCount() { return _currentFearCount; }
 	int GetCurrentSurpriseCount() { return _currentSurpriseCount; }
 
+// Lobby에 나타낼 정보
 private:
+	int _id;
+	RoomState _roomState;
+	int _currentPlayerCount;
+	std::vector<char> _title;
+
+// 절차적 생성에 필요한 정보
+private:
+	// 현재 난이도
+	Difficulty _currentDifficulty{};
+	// 세부 난이도 (삭제 예정)
+	Difficulty _detailDifficulty{};
+
+	// 나중에 JSON으로 읽어오기
+	std::unordered_map<MonsterType, int> _maxMonsterCount;
+	std::unordered_map < Dir, float> _roomSpawnChance;
+	Floor _minFloor;
+	Floor _maxFloor;
+
+	std::unordered_map<CubeType, int> _currentCubeCount;
+	std::unordered_map<MonsterType, int> _currentMonsterCount;
+	std::unordered_map<Dir, std::vector<Door*>> _connectableDoors;
+
+// 게임 진행에 필요한 정보
+private:
+	int _stage;
+	int _goalCredit;
+	int _collectCredit;
+	int _currentCredit;
+
+	int _currentPower;
+
+	int _currentSurpriseCount;
+	int _currentFearCount;
+
 	std::vector<CubeRef> _cubes;
 	std::vector<Door*> _doors;
 	std::vector<SellingMachine*> _sellingMachines;
@@ -68,35 +103,4 @@ private:
 	std::array<Item*, MAX_ITEM> _items;
 	std::array<Obstacle*, MAX_OBSTACLE> _obstacles;
 	std::unordered_map<int, Item*> _processingItems;
-
-private:
-	int _id;
-	RoomState _roomState;
-	int _currentPlayer;
-	std::vector<char> _title;
-
-	// 현재 맵의 난이도
-	Difficulty _currentDifficulty{};
-	// 세부 난이도
-	Difficulty _detailDifficulty{};
-
-	std::unordered_map<CubeType, int> _currentCubeCount;
-	std::unordered_map<MonsterType, int> _currentMonsterCount;
-	std::unordered_map<MonsterType, int> _maxMonsterCount;
-
-	std::unordered_map<Dir, std::vector<Door*>> _connectableDoors;
-
-	// 각 방향별로 방이 생성될 확률
-	std::unordered_map < Dir, float> _roomSpawnChance;
-
-	Floor _minFloor;
-	Floor _maxFloor;
-
-	int _goalCredit;
-	int _currentCredit;
-
-	int _currentPower;
-
-	int _currentSurpriseCount;
-	int _currentFearCount;
 };

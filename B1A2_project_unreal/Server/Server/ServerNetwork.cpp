@@ -492,7 +492,7 @@ void ServerNetwork::SendCurrentRoomListPacket(std::array<Room*, MAX_ROOM>& rooms
 		{
 			char title[MAX_TITLE];
 
-			RoomDTO DTO{ room->GetCurrentPlayer(), room->GetID(), room->GetRoomState(), SerializeVector(room->GetTitle()) };
+			RoomDTO DTO{ room->GetCurrentPlayerCount(), room->GetID(), room->GetRoomState(), SerializeVector(room->GetTitle()) };
 			roomDTOs.push_back(DTO);
 		}	
 	}
