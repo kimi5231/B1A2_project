@@ -742,16 +742,16 @@ void ServerNetwork::SendSellItemResultPacket(char playerID, char sellingMachineI
 {
 	// Packet Serialize
 	std::vector<char> itemIDs = SerializeVector(sellItems);
-	unsigned short packetSize = sizeof(unsigned short) + sizeof(PacketID) + itemIDs.size();
+	unsigned short packetSize = sizeof(unsigned short) + sizeof(PacketID) + sizeof(char) + sizeof(char) + sizeof(ObjectState) + sizeof(char) + sizeof(char) + itemIDs.size();
 	std::vector<char> serializedPacketData(sizeof(unsigned short));
 
 	memcpy(serializedPacketData.data(), &packetSize, sizeof(unsigned short));
 	serializedPacketData.push_back(S_SellItemResult);
 	serializedPacketData.push_back(sellingMachineID);
 	serializedPacketData.push_back(playerID);
-	serializedPacketData.push_back(sellingMachineState);
 	serializedPacketData.push_back(remainCredit);
 	serializedPacketData.push_back(currentCredit);
+	serializedPacketData.push_back(sellingMachineState);
 	serializedPacketData.insert(serializedPacketData.end(), itemIDs.begin(), itemIDs.end());
 
 	client->Send(serializedPacketData);
