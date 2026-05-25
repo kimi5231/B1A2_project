@@ -11,7 +11,7 @@
             },
             {
                "layer" : [
-                    { "pattern" : [[0, 26]], "repeatY" :  1 },
+                    { "pattern" : [[0, 7], [1, 12], [0, 7]], "repeatY" :  1 },
                     { "pattern" : [[0, 1], [1, 24], [0, 1]], "repeatY" :  9 },
                     { "pattern" : [[1, 26]], "repeatY" :  6 },
                     { "pattern" : [[0, 1], [1, 24], [0, 1]], "repeatY" :  9 },
