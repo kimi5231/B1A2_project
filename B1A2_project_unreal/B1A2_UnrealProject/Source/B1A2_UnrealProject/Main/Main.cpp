@@ -1289,10 +1289,9 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 
 				UE_LOG(LogTemp, Log, TEXT("[Room] Door Spawned [%d] pos = %f, %f, %f, dir = %d"), i, door.pos.x, door.pos.y, door.pos.z, door.dir);
 			}
-			// Hatch 추가되면 주석 풀기!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		/*	else if (door.doorType == DoorType::Hatch)
+			else if (door.doorType == DoorType::Hatch)
 			{
-				ABaseHatch* hatchActor = world->SpawnActor<Z_Construct_UClass_ABaseHatch_Statics>(HatchClass, pos, rot, params);
+				ABaseHatch* hatchActor = world->SpawnActor<ABaseHatch>(HatchClass, pos, rot, params);
 				hatchActor->SetHatchState(packet.doors[i].state);
 				hatchActor->SetHatchID(packet.doors[i].id);
 				hatchActor->SetHatchRotation(packet.doors[i].state);
@@ -1300,7 +1299,7 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 				_hatch = hatchActor;
 
 				UE_LOG(LogTemp, Log, TEXT("[Room] Hatch Spawned [%d] pos = %f, %f, %f, dir = %d"), i, door.pos.x, door.pos.y, door.pos.z, door.dir);
-			}*/
+			}
 			else if (door.doorType == DoorType::Wall)
 			{
 				AStaticMeshActor* wallActor = world->SpawnActor<AStaticMeshActor>(Wall_FillerClass, pos, rot, params);
@@ -1591,12 +1590,31 @@ void UMain::RecvInteractDoorNotify(S_InteractDoorNotify_Packet packet)
 		if (!world)
 			return;
 
+		// Hatch 생성되면 지우기!!!!
 		ABaseDoor** foundDoor = _doors.Find(doorID);
 		if (foundDoor && *foundDoor)
 		{
 			(*foundDoor)->UpdateDoorState(state);
 			UE_LOG(LogTemp, Log, TEXT("[Door] DoorID %d State Updated to %d"), doorID, (int)state);
 		}
+
+		// Hatch 생성되면 주석 풀기!!!!!!!!!!!
+		//// ID가 0이면 hatch
+		//if (doorID == 0)
+		//{
+		//	_hatch->UpdateHatchState(state);
+		//	UE_LOG(LogTemp, Log, TEXT("[Hatch] Hatch ID %d State Updated to %d"), doorID, (int)state);
+		//}
+		//// 나머지 아이디는 door
+		//else
+		//{
+		//	ABaseDoor** foundDoor = _doors.Find(doorID);
+		//	if (foundDoor && *foundDoor)
+		//	{
+		//		(*foundDoor)->UpdateDoorState(state);
+		//		UE_LOG(LogTemp, Log, TEXT("[Door] DoorID %d State Updated to %d"), doorID, (int)state);
+		//	}
+		//}
 	});
 }
 

@@ -70,9 +70,7 @@ void ABaseSellingMachine::HideInteractionUI_Implementation()
 
 void ABaseSellingMachine::Interact_Implementation()
 {
-	 // 판매하기 상태에서 버튼을 누르면 위젯 숨김
-	HideInteractionUI_Implementation();
-	UE_LOG(LogTemp, Log, TEXT("[SellingMachine] EButton Interact Called and Hide Widget"));
+	UE_LOG(LogTemp, Log, TEXT("[SellingMachine] FButton Interact Called and Hide Widget"));
 }
 
 void ABaseSellingMachine::UpdateMachineState(ObjectState newState)
@@ -140,6 +138,7 @@ void ABaseSellingMachine::UpdateWidgetState()
 	// 0: 판매 불가능(CLOSE)
 	// 1: 아이템 내려놓기(OPEN 및 물건 없음)
 	// 2: 판매하기(OPEN 및 물건 있음)
+	// 3: 판매 중 - 이건 버튼 누를 때만 따로 설정하므로 함수 구현 X
 
 	int32 TargetWidgetState = -1;
 
@@ -170,6 +169,9 @@ void ABaseSellingMachine::UpdateWidgetState()
 
 void ABaseSellingMachine::PlaySellAnimation()
 {
+	// 위젯을 '판매 중'으로 변경
+	K2_UpdateWidgetByState(3);
+
 	// state는 변경하지 않고, 레버를 올리는 애니메이션 실행
 	leverTimeline.Play();
 
@@ -195,7 +197,7 @@ void ABaseSellingMachine::OnStateChanged(ObjectState oldState, ObjectState newSt
 
 void ABaseSellingMachine::UpdateLeverAnimation(float value)
 {
-	FVector newLocation = FVector(0.f, value * LeverDistance, 0.f);
+	FVector newLocation = FVector(0.f, 0.f, value * LeverDistance);
 	LeverMesh->SetRelativeLocation(newLocation);
 }
 
@@ -205,6 +207,7 @@ void ABaseSellingMachine::ReverseLeverTimer()
 	if (_currentState == ObjectState::OPEN)
 	{
 		leverTimeline.Reverse();
+		UpdateWidgetState();
 	}
 }
 
