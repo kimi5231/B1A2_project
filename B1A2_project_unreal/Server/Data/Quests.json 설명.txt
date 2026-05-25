@@ -1,0 +1,17 @@
+type : 퀘스트 번호
+title : 퀘스트 제목 텍스트
+client : 퀘스트 의뢰인 텍스트
+request : 퀘스트 의뢰 시 텍스트
+reward : 퀘스트 성공 보상 설명 텍스트
+complete : 퀘스트 성공 시 텍스트
+deadline : 판 수 제한. -1~n. -1은 기한 없음, 0은 이번 판 안에, 1은 다음 판 안에... 매 판이 끝날 때 기한이 0인 퀘스트는 실패 처리하여 삭제.
+missionCategory : 해야할 일의 종류. Kill, Collect, Sell, Courier, Interact, Remit 중 택 1
+targetName : 의뢰 목적이 몬스터일 경우, 몬스터 이름. 크레딧일 경우, Credit. 아이템일 경우, None.
+targetType : 의뢰 목적이 아이템일 경우, 해당 아이템의 type. 단, 목적이 몬스터나 크레딧일 경우에는 -1
+targetAmount : 타겟의 수/금액.
+rewardCategory1 : 첫번째 보상의 종류. Credit, Item, HP, None(보상 없음) 중 택 1. None일 경우에는 다음 내용 읽지 않음.
+rewardType1 : 첫번째 보상이 Item일 경우에는 해당 아이템의 type 입력. Item이 아닐 경우 -1 입력
+rewardAmount1 : 첫번째 보상의 수/양
+rewardCategory2 : 두번째 보상의 종류. Credit, Item, HP, None(보상 없음) 중 택 1. None일 경우에는 다음 내용 읽지 않음.
+rewardType2 : 두번째 보상이 Item일 경우에는 해당 아이템의 type 입력. Item이 아니거나 None일 경우 -1 입력
+rewardAmount2 : 두번째 보상의 수/양(보상이 하나 뿐이라면 0)
