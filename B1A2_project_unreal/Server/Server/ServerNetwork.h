@@ -47,7 +47,7 @@ public:
 	void SendAddItemToInventoryPacket(Item* item, bool isTool, Session* client);
 	void SendRemoveItemFromInventoryPacket(Item* item, bool isTool, Session* client);
 	void SendItemPickupNotifyPacket(Item* item, int playerID, bool isTool, Session* client);
-	void SendDropItemPacket(Item* item, int playerID, Vector itemPos, bool isTool, Session* client);
+	void SendDropItemPacket(Item* item, int playerID, Vector itemPos, bool isTool, bool isToSellingMachine, Session* client);
 	void SendUpdateCurrentToolPacket(int itemID, int playerID, ItemType type, Session* client);
 	void SendUseToolPacket(int playerID, ItemType type, Session* client);
 	void SendTurnOnLanternPacket(Lantern* lantern, int playerID, Session* client);

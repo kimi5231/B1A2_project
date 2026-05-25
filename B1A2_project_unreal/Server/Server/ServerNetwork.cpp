@@ -665,10 +665,10 @@ void ServerNetwork::SendItemPickupNotifyPacket(Item* item, int playerID, bool is
 	client->Send(serializedPacketData);
 }
 
-void ServerNetwork::SendDropItemPacket(Item* item, int playerID, Vector itemPos, bool isTool, Session* client)
+void ServerNetwork::SendDropItemPacket(Item* item, int playerID, Vector itemPos, bool isTool, bool isToSellingMachine, Session* client)
 {
 	// Packet Data 생성
-	S_DropItem_Packet packetData{ sizeof(S_DropItem_Packet), S_DropItem, item->GetID(), playerID, isTool, item->GetItemType(), itemPos, item->GetCost(), 0};
+	S_DropItem_Packet packetData{ sizeof(S_DropItem_Packet), S_DropItem, item->GetID(), playerID, isTool, isToSellingMachine, item->GetItemType(), itemPos, item->GetCost(), 0};
 
 	// 아이템이 랜턴이라면 배터리 추가
 	if (item->GetItemType() == ItemType::LANTERN)
@@ -982,7 +982,7 @@ void ServerNetwork::ProcessDropItemPacket(C_DropItem_Packet packet, int clientIn
 			if (!p->GetClient())
 				continue;
 
-			SendDropItemPacket(item, player->GetID(), item->GetPos(), packet.isTool,  p->GetClient());
+			SendDropItemPacket(item, player->GetID(), item->GetPos(), packet.isTool, false,  p->GetClient());
 		}
 	}
 }
@@ -1023,7 +1023,7 @@ void ServerNetwork::ProcessDropItemToSellingMachinePacket(C_DropItemToSellingMac
 			if (!p->GetClient())
 				continue;
 
-			SendDropItemPacket(item, player->GetID(), item->GetPos(), false, p->GetClient());
+			SendDropItemPacket(item, player->GetID(), item->GetPos(), false, true, p->GetClient());
 		}
 	}
 }

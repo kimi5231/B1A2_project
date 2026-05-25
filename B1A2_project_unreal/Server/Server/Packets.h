@@ -396,6 +396,7 @@ struct S_DropItem_Packet
 	unsigned char itemID;
 	unsigned char playerID;
 	bool isTool;
+	bool isToSellingMachine;
 	ItemType itemType;
 	Vector itemPos;
 	unsigned char cost;
