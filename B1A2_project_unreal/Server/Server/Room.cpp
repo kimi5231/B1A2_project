@@ -226,7 +226,7 @@ void Room::CreateFactoryCubes()
 		hatch->SetID(generateDoorID++);
 		hatch->SetOwnerRoom(this);
 		hatch->SetConnectedCubeID(generateCubeID);
-		hatch->SetDoorType(DoorType::Door);
+		hatch->SetDoorType(DoorType::Hatch);
 		base->AddDoor(hatch->GetID());
 		_doors.push_back(hatch);
 		
