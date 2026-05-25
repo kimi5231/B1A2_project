@@ -14,3 +14,12 @@ void UPlayerStatusWidget::SetBattery(float Ratio)
         BatteryBar->SetFillColorAndOpacity(color);
     }
 }
+
+void UPlayerStatusWidget::SetWeight(float currentWeight)
+{
+    if (WeightText)
+    {
+        FString weightStr = FString::Printf(TEXT("%.1fkg"), currentWeight);
+        WeightText->SetText(FText::FromString(weightStr));
+    }
+}

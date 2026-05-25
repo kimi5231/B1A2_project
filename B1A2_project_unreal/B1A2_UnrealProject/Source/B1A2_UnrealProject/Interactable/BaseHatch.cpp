@@ -39,13 +39,12 @@ void ABaseHatch::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	if (!HatchCurve)
-		return;
-
-	// 타임라인에 업데이트 함수 바인딩
-	FOnTimelineFloat ProgressUpdate;
-	ProgressUpdate.BindUFunction(this, FName("UpdateDoor"));
-	HatchTimeline.AddInterpFloat(HatchCurve, ProgressUpdate);
+	if (HatchCurve)
+	{
+		FOnTimelineFloat ProgressUpdate;
+		ProgressUpdate.BindUFunction(this, FName("UpdateHatchSlide"));
+		HatchTimeline.AddInterpFloat(HatchCurve, ProgressUpdate);
+	}
 }
 
 // Called every frame
@@ -61,6 +60,7 @@ void ABaseHatch::ShowInteractionUI_Implementation()
 	if (EWidget)
 	{
 		EWidget->SetVisibility(true);
+		UE_LOG(LogTemp, Log, TEXT("[Hatch] Show Widget"));
 	}
 }
 
@@ -69,12 +69,13 @@ void ABaseHatch::HideInteractionUI_Implementation()
 	if (EWidget)
 	{
 		EWidget->SetVisibility(false);
+		UE_LOG(LogTemp, Log, TEXT("[Hatch] Hide Widget"));
 	}
 }
 
 void ABaseHatch::Interact_Implementation()
 {
-	UE_LOG(LogTemp, Log, TEXT("[Door] EButton Interact Called"));
+	UE_LOG(LogTemp, Log, TEXT("[Hatch] EButton Interact Called"));
 }
 
 void ABaseHatch::UpdateHatchState(ObjectState newState)
@@ -82,12 +83,13 @@ void ABaseHatch::UpdateHatchState(ObjectState newState)
 	if (_currentState == newState) 
 		return;
 	
+	ObjectState oldState = _currentState;
 	_currentState = newState;
 
-	if (_currentState == ObjectState::OPEN)
-		HatchTimeline.Play();
-	else
-		HatchTimeline.Reverse();
+	UE_LOG(LogTemp, Log, TEXT("[Hatch] State Changed: %d -> %d"), (int)oldState, (int)newState);
+
+	// 애니메이션 실행
+	OnStateChanged(oldState, newState);
 }
 
 void ABaseHatch::SetHatchRotation(ObjectState state)
@@ -98,21 +100,37 @@ void ABaseHatch::SetHatchRotation(ObjectState state)
 	switch (state)
 	{
 	case ObjectState::OPEN:
-		HatchTimeline.SetPlaybackPosition(1.0f, true);
-		_currentState = ObjectState::OPEN;
+		LeftDoorMesh->SetRelativeLocation(FVector(100.f, 0.f, 0.f));
+		RightDoorMesh->SetRelativeLocation(FVector(-100.f, 0.f, 0.f));
+		HatchTimeline.SetPlaybackPosition(1.0f, false);
 		break;
 	case ObjectState::CLOSE:
-		HatchTimeline.SetPlaybackPosition(0.0f, true);
-		_currentState = ObjectState::CLOSE;
+		LeftDoorMesh->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
+		RightDoorMesh->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
+		HatchTimeline.SetPlaybackPosition(0.0f, false);
 		break;
 	}
+}
+
+void ABaseHatch::OnStateChanged(ObjectState oldState, ObjectState newState)
+{
+	switch (newState)
+	{
+	case ObjectState::OPEN:
+		HatchTimeline.Play();
+		break;
+	case ObjectState::CLOSE:
+		HatchTimeline.Reverse();
+		break;
+	}
+
+	UE_LOG(LogTemp, Display, TEXT("[Hatch] Animation"));
 }
 
 void ABaseHatch::UpdateHatchSlide(float value)
 {
 	float Offset = value * MaxSlideDistance;
 
-	// X축 기준 벌어짐
 	LeftDoorMesh->SetRelativeLocation(FVector(-Offset, 0.f, 0.f));
 	RightDoorMesh->SetRelativeLocation(FVector(Offset, 0.f, 0.f));
 }

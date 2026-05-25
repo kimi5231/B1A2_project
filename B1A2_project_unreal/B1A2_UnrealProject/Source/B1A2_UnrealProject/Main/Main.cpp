@@ -1590,31 +1590,22 @@ void UMain::RecvInteractDoorNotify(S_InteractDoorNotify_Packet packet)
 		if (!world)
 			return;
 
-		// Hatch 생성되면 지우기!!!!
-		ABaseDoor** foundDoor = _doors.Find(doorID);
-		if (foundDoor && *foundDoor)
+		// ID가 0이면 hatch
+		if (doorID == 0)
 		{
-			(*foundDoor)->UpdateDoorState(state);
-			UE_LOG(LogTemp, Log, TEXT("[Door] DoorID %d State Updated to %d"), doorID, (int)state);
+			_hatch->UpdateHatchState(state);
+			UE_LOG(LogTemp, Log, TEXT("[Hatch] Hatch ID %d State Updated to %d"), doorID, (int)state);
 		}
-
-		// Hatch 생성되면 주석 풀기!!!!!!!!!!!
-		//// ID가 0이면 hatch
-		//if (doorID == 0)
-		//{
-		//	_hatch->UpdateHatchState(state);
-		//	UE_LOG(LogTemp, Log, TEXT("[Hatch] Hatch ID %d State Updated to %d"), doorID, (int)state);
-		//}
-		//// 나머지 아이디는 door
-		//else
-		//{
-		//	ABaseDoor** foundDoor = _doors.Find(doorID);
-		//	if (foundDoor && *foundDoor)
-		//	{
-		//		(*foundDoor)->UpdateDoorState(state);
-		//		UE_LOG(LogTemp, Log, TEXT("[Door] DoorID %d State Updated to %d"), doorID, (int)state);
-		//	}
-		//}
+		// 나머지 아이디는 door
+		else
+		{
+			ABaseDoor** foundDoor = _doors.Find(doorID);
+			if (foundDoor && *foundDoor)
+			{
+				(*foundDoor)->UpdateDoorState(state);
+				UE_LOG(LogTemp, Log, TEXT("[Door] DoorID %d State Updated to %d"), doorID, (int)state);
+			}
+		}
 	});
 }
 

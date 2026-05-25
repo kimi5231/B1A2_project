@@ -21,6 +21,7 @@
 #include "Interactable/InteractableInterface.h"
 #include "Interactable/BaseItem.h"
 #include "Interactable/BaseDoor.h"
+#include "Interactable/BaseHatch.h"
 #include "Interactable/BaseSellingMachine.h"
 
 #include "Widget/InventoryWidget.h" 
@@ -198,6 +199,9 @@ void AMyPlayer::Tick(float DeltaTime)
 
 		// Lantern Battery 업데이트 (로컬, 서버 상관 없을듯 Tick이라서??)
 		ui->SetBattery(_currentBattery / 180.f);
+
+		// 무게
+		ui->SetWeight(_currentWeight);
 	}
 }
 
@@ -349,6 +353,10 @@ int32 AMyPlayer::AddToolToToolBar(ItemType type, int id, float weight, int cost)
 	UToolBarWidget* toolBar = Cast<UToolBarWidget>(_toolBarWidgetInstance);
 	if (toolBar)
 	{
+		// 현재 무게 및 이동 스탯 갱신
+		_currentWeight += weight;
+		UpdateMovementStats();
+
 		return toolBar->AddTool(id, type, weight, cost);
 	}
 	else
@@ -512,6 +520,11 @@ void AMyPlayer::ItemOrToolDrop()
 
 			// 랜턴 들기 상태 해제
 			IsCarryingLantern = false;
+
+			// 무게 및 이동 스탯 갱신 (기존 로직 유지)
+			_currentWeight -= info.weight;
+			_currentWeight = FMath::Max(0.f, _currentWeight);	// 음수 방지
+			UpdateMovementStats();
 		}
 	}
 }
@@ -916,36 +929,11 @@ void AMyPlayer::Interact()
 
 		gameInstance->SendInteractDoor(gameInstance->GetMyID(), door->GetDoorID());
 	}
-	//// SellingMachine인 경우
-	//else if (ABaseSellingMachine* machine = Cast<ABaseSellingMachine>(_focusedActor))
-	//{
-	//	// Open 상태 && 등록된 아이템이 있을 때만 판매 가능
-	//	if (machine->GetMachineState() == ObjectState::OPEN)
-	//	{
-	//		if (machine->GetCurrentPendingCredit() > 0)
-	//		{
-	//			UE_LOG(LogTemp, Display, TEXT("[Interact] Focused on SellingMachine and Send SellItemPacket ID: %d, CurrentState: %d, PendingCredit: %d"),
-	//				machine->GetMachineID(), (int32)machine->GetMachineState(), machine->GetCurrentPendingCredit());
-
-	//			// 서버에 C_SellItem_Packet 송신
-	//			gameInstance->SendSellItem(gameInstance->GetMyID(), machine->GetMachineID());
-
-	//			// 판매기 위젯 숨김
-	//			IInteractableInterface::Execute_Interact(machine);
-
-	//			// 로컬 등록 크레딧 리셋 (이후 서버로부터 S_ 패킷을 받아 동기화되겠지만 미리 클리어)
-	//			//machine->ResetPendingCredit();
-	//		}
-	//		else
-	//		{
-	//			UE_LOG(LogTemp, Display, TEXT("[SellingMachine] Cannot Sell: Pending Credit is 0."));
-	//		}
-	//	}
-	//	else
-	//	{
-	//		UE_LOG(LogTemp, Warning, TEXT("[SellingMachine] Cannot Sell: Machine State is NOT OPEN."));
-	//	}
-	//}
+	else if (ABaseHatch* hatch = Cast<ABaseHatch>(_focusedActor))
+	{
+		gameInstance->SendInteractDoor(gameInstance->GetMyID(), 0);	// Hatch의 ID는 0
+		UE_LOG(LogTemp, Display, TEXT("[Hatch] Interact Packet Send!"));
+	}
 }
 
 void AMyPlayer::TurnLanternSendOrUseToolAnimationAndSend()

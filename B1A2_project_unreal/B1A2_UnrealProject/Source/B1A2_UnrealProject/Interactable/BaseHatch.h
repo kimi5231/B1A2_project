@@ -46,6 +46,9 @@ public:
     void SetHatchRotation(ObjectState state);   // Open일 때는 문 열어놓기
 
 protected:
+    // 애니메이션
+    void OnStateChanged(ObjectState oldState, ObjectState newState);
+
     // 슬라이드 애니메이션 업데이트
     UFUNCTION()
     void UpdateHatchSlide(float value);
@@ -73,7 +76,7 @@ protected:
     FTimeline HatchTimeline;
 
     UPROPERTY(EditAnywhere, Category = "Hatch|Animation")
-    float MaxSlideDistance = 150.f; // 문이 옆으로 밀려날 거리
+    float MaxSlideDistance = 100.f; // 문이 옆으로 밀려날 거리
 
 private:
     int _doorID;
