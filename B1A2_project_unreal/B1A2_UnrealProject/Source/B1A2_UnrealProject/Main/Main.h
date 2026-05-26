@@ -117,6 +117,7 @@ public:
 
 	void RecvEmotionGameResult(S_EmotionGameResult_Packet packet);
 	void RecvSellItemResult(S_SellItemResult_Packet packet);
+	void RecvBuyItemResult(S_BuyItemResult_Packet packet);
 
 	FRotator DirToRotation(Dir dir);
 

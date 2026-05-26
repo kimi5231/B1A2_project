@@ -274,6 +274,14 @@ void UMain::ProcessRecv()
 			event->isComplete = true;
 			break;
 		}
+		case S_BuyItemResult:
+		{
+			S_BuyItemResult_Packet buyItemResultPacket;
+			FMemory::Memcpy(&buyItemResultPacket, event->serializedPacketData.data(), sizeof(S_BuyItemResult_Packet));
+			RecvBuyItemResult(buyItemResultPacket);
+			event->isComplete = true;
+			break;
+		}
 		case S_UpdateHp:
 		{
 			S_UpdateHp_Packet updateHpPacket;
@@ -1947,6 +1955,10 @@ void UMain::RecvSellItemResult(S_SellItemResult_Packet packet)
 			}
 		}
 	});
+}
+
+void UMain::RecvBuyItemResult(S_BuyItemResult_Packet packet)
+{
 }
 
 FRotator UMain::DirToRotation(Dir dir)
