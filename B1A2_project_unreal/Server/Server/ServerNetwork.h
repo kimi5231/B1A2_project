@@ -53,8 +53,8 @@ public:
 	void SendTurnOnLanternPacket(Lantern* lantern, int playerID, Session* client);
 	void SendTurnOffLanternPacket(Lantern* lantern, int playerID, Session* client);
 	void SendInteractDoorNotifyPacket(int playerID, int doorID, ObjectState doorState, Session* client);
-	void SendSellItemResultPacket(char playerID, char sellingMachineID, ObjectState sellingMachineState, char remainCredit, char currentCredit, std::vector<int>& itemIDs, Session* client);
-	void SendBuyItemResultPacket(char currentCredit, Session* client);
+	void SendSellItemResultPacket(char playerID, char sellingMachineID, ObjectState sellingMachineState, short remainCredit, short collectCredit, short currentCredit, std::vector<int>& itemIDs, Session* client);
+	void SendBuyItemResultPacket(short currentCredit, Session* client);
 	void SendUpdateHpPacket(int playerID, int hp, Session* client);
 	void SendEmotionGameResultPacket(int playerID, int playerHP, EmotionGame* emotionGame,  Session* client);
 	void SendSpawnParticlePacket(Vector pos, Session* client);

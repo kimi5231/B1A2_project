@@ -455,8 +455,9 @@ struct S_SellItemResult_Packet
 	PacketID packetID;
 	unsigned char sellingMachineID;
 	unsigned char playerID;
-	unsigned char remainCredit;
-	unsigned char currentCredit;
+	unsigned short remainCredit;
+	unsigned short collectCredit;
+	unsigned short currentCredit;
 	ObjectState sellingMachineState;
 	std::vector<char> itemIDs;
 };
@@ -465,7 +466,7 @@ struct S_BuyItemResult_Packet
 {
 	unsigned short size;
 	PacketID packetID;
-	unsigned char currentCredit;
+	unsigned short currentCredit;
 };
 
 struct S_UpdateHp_Packet

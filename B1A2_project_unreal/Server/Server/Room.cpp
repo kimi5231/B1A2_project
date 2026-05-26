@@ -689,6 +689,33 @@ void Room::RemoveObject(ObjectType type, int id, bool isSend)
 	}
 }
 
+void Room::PlusCredit(int credit)
+{
+	_collectCredit += credit;
+	_currentCredit += credit;
+	if (_collectCredit > _goalCredit)
+		_collectCredit = _goalCredit;
+
+	for (auto& player : _players)
+	{
+		if (player->GetClient())
+			g_network->SendUpdateCreditPacket(_currentCredit, player->GetClient());
+	}
+}
+
+void Room::MinusCredit(int credit)
+{
+	_currentCredit -= credit;
+	if (_currentCredit < 0)
+		_currentCredit = 0;
+
+	for (auto& player : _players)
+	{
+		if (player->GetClient())
+			g_network->SendUpdateCreditPacket(_currentCredit, player->GetClient());
+	}
+}
+
 Player* Room::SelectPlayerForGhost()
 {
 	std::uniform_int_distribution<int> selectCondition(0, 1);

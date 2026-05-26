@@ -256,17 +256,20 @@ void UMain::ProcessRecv()
 			unsigned char playerID;
 			memcpy(&playerID, event->serializedPacketData.data(), sizeof(unsigned char));
 			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned char));
-			unsigned char remainCredit;
-			memcpy(&remainCredit, event->serializedPacketData.data(), sizeof(unsigned char));
-			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned char));
-			unsigned char currentCredit;
-			memcpy(&currentCredit, event->serializedPacketData.data(), sizeof(unsigned char));
-			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned char));
+			unsigned short remainCredit;
+			memcpy(&remainCredit, event->serializedPacketData.data(), sizeof(unsigned short));
+			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned short));
+			unsigned short collectCredit;
+			memcpy(&collectCredit, event->serializedPacketData.data(), sizeof(unsigned short));
+			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned short));
+			unsigned short currentCredit;
+			memcpy(&currentCredit, event->serializedPacketData.data(), sizeof(unsigned short));
+			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned short));
 			ObjectState sellingMachineState;
 			memcpy(&sellingMachineState, event->serializedPacketData.data(), sizeof(ObjectState));
 			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(ObjectState));
 			
-			S_SellItemResult_Packet sellItemResultPacket{ packetSize, S_SellItemResult, sellingMachineID, playerID, remainCredit, currentCredit, sellingMachineState, _gameNetwork->DeserializeVector<char>(event->serializedPacketData) };
+			S_SellItemResult_Packet sellItemResultPacket{ packetSize, S_SellItemResult, sellingMachineID, playerID, remainCredit, collectCredit, currentCredit, sellingMachineState, _gameNetwork->DeserializeVector<char>(event->serializedPacketData) };
 			RecvSellItemResult(sellItemResultPacket);
 			event->isComplete = true;
 			break;

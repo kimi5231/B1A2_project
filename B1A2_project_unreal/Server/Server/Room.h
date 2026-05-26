@@ -34,8 +34,8 @@ public:
 	void AddProcessingItem(Item* item) { _processingItems[item->GetID()] = item; }
 	void RemoveProcessingItem(int itemID) { _processingItems.erase(itemID); }
 
-	void PlusCredit(int credit) { _currentCredit += credit; if (_currentCredit > _goalCredit) _currentCredit = _goalCredit; }
-	void MinusCredit(int credit) { _currentCredit -= credit; if (_currentCredit < 0) _currentCredit = 0; }
+	void PlusCredit(int credit);
+	void MinusCredit(int credit);
 	
 	void AddFearCount() { _currentFearCount++; }
 	void AddSurpriseCount() { _currentSurpriseCount++; }
@@ -51,6 +51,7 @@ public:
 	const std::vector<Door*>& GetDoors() { return _doors; }
 	const std::vector<SellingMachine*>& GetSellingMachine() { return _sellingMachines; }
 	int GetGoalCredit() { return _goalCredit; }
+	int GetCollectCredit() { return _collectCredit; }
 	int GetCurrentCredit() { return _currentCredit; }
 	int GetID() { return _id; }
 	RoomState GetRoomState() { return _roomState; }

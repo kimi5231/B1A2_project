@@ -738,26 +738,28 @@ void ServerNetwork::SendInteractDoorNotifyPacket(int playerID, int doorID, Objec
 	client->Send(serializedPacketData);
 }
 
-void ServerNetwork::SendSellItemResultPacket(char playerID, char sellingMachineID, ObjectState sellingMachineState, char remainCredit, char currentCredit, std::vector<int>& sellItems, Session* client)
+void ServerNetwork::SendSellItemResultPacket(char playerID, char sellingMachineID, ObjectState sellingMachineState, short remainCredit, short collectCredit, short currentCredit, std::vector<int>& sellItems, Session* client)
 {
 	// Packet Serialize
+	PacketID packetID = S_SellItemResult;
 	std::vector<char> itemIDs = SerializeVector(sellItems);
-	unsigned short packetSize = sizeof(unsigned short) + sizeof(PacketID) + sizeof(char) + sizeof(char) + sizeof(ObjectState) + sizeof(char) + sizeof(char) + itemIDs.size();
-	std::vector<char> serializedPacketData(sizeof(unsigned short));
+	unsigned short packetSize = sizeof(unsigned short) + sizeof(PacketID) + sizeof(char) + sizeof(char) + sizeof(ObjectState) + sizeof(short) + sizeof(short) + sizeof(short) + itemIDs.size();
+	std::vector<char> serializedPacketData(packetSize - itemIDs.size());
 
 	memcpy(serializedPacketData.data(), &packetSize, sizeof(unsigned short));
-	serializedPacketData.push_back(S_SellItemResult);
-	serializedPacketData.push_back(sellingMachineID);
-	serializedPacketData.push_back(playerID);
-	serializedPacketData.push_back(remainCredit);
-	serializedPacketData.push_back(currentCredit);
-	serializedPacketData.push_back(sellingMachineState);
+	memcpy(serializedPacketData.data() + sizeof(unsigned short), &packetID, sizeof(unsigned char));
+	memcpy(serializedPacketData.data() + sizeof(unsigned short) + sizeof(PacketID), &sellingMachineID, sizeof(unsigned char));
+	memcpy(serializedPacketData.data() + sizeof(unsigned short) + sizeof(PacketID) + sizeof(unsigned char), &playerID, sizeof(unsigned char));
+	memcpy(serializedPacketData.data() + sizeof(unsigned short) + sizeof(PacketID) + sizeof(unsigned char) + sizeof(unsigned char), &remainCredit, sizeof(unsigned short));
+	memcpy(serializedPacketData.data() + sizeof(unsigned short) + sizeof(PacketID) + sizeof(unsigned char) + sizeof(unsigned char) + sizeof(unsigned short), &collectCredit, sizeof(unsigned short));
+	memcpy(serializedPacketData.data() + sizeof(unsigned short) + sizeof(PacketID) + sizeof(unsigned char) + sizeof(unsigned char) + sizeof(unsigned short) + sizeof(unsigned short), &currentCredit, sizeof(unsigned short));
+	memcpy(serializedPacketData.data() + sizeof(unsigned short) + sizeof(PacketID) + sizeof(unsigned char) + sizeof(unsigned char) + sizeof(unsigned short) + sizeof(unsigned short) + sizeof(unsigned short), &sellingMachineState, sizeof(ObjectState));
 	serializedPacketData.insert(serializedPacketData.end(), itemIDs.begin(), itemIDs.end());
 
 	client->Send(serializedPacketData);
 }
 
-void ServerNetwork::SendBuyItemResultPacket(char currentCredit, Session* client)
+void ServerNetwork::SendBuyItemResultPacket(short currentCredit, Session* client)
 {
 	// Packet Data 생성
 	S_BuyItemResult_Packet packetData{ sizeof(S_BuyItemResult_Packet), S_BuyItemResult, currentCredit };
@@ -1200,7 +1202,7 @@ void ServerNetwork::ProcessSellItemPacket(C_SellItem_Packet packet, int clientIn
 		if (!p->GetClient())
 			continue;
 
-		SendSellItemResultPacket(player->GetID(), sellingMachine->GetID(), sellingMachine->GetState(), remainCredit, _clients[clientIndex]->_room->GetCurrentCredit(), sellItems, p->GetClient());
+		SendSellItemResultPacket(player->GetID(), sellingMachine->GetID(), sellingMachine->GetState(), remainCredit, _clients[clientIndex]->_room->GetCollectCredit(), _clients[clientIndex]->_room->GetCurrentCredit(), sellItems, p->GetClient());
 	}
 
 	// 데이터 사용을 위해 나중에 초기화
