@@ -1164,6 +1164,15 @@ void ServerNetwork::ProcessInteractDoorPacket(C_InteractDoor_Packet packet, int 
 
 	// 거리 확인 코드 추가하기
 
+	// Hatch라면 Base 안쪽에서 상호작용하는 것인지 확인
+	if(door->GetDoorType() == DoorType::Hatch)
+	{
+		const std::vector<CubeRef>& cubes = _clients[clientIndex]->_room->GetCubes();
+		// Player가 Base 안에 있지 않다면 무시
+		if (!cubes[door->GetOwnerCubeID()]->CheckInclude(player->GetBoundingBox()))
+			return;
+	}
+
 	// 상호작용 가능하면 Door State 변경
 	if (door->GetState() == ObjectState::OPEN)
 		door->SetState(ObjectState::CLOSE);
