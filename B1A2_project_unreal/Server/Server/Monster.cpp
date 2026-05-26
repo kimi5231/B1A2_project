@@ -119,6 +119,10 @@ void Monster::UpdatePath(Vector currentGoal, CubeRef goalCube)
 				SetTargetPos(goal);
 			}
 
+			// Hatch´Â Á¦¿Ü
+			if (door->GetDoorType() == DoorType::Hatch)
+				return;
+
 			SetTargetDoor(door);
 			SetIsNeedDoorOpen(true);
 		}
