@@ -9,4 +9,12 @@ public:
 
 public:
 	void Update() override;
+
+public:
+	virtual bool SetState(ObjectState state, bool isSend = true);
+
+private:
+	float _sumTime;
+
+	float _changeStateTime;
 };

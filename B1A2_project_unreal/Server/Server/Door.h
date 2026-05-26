@@ -16,7 +16,7 @@ public:
 	DoorType GetDoorType() { return _doorType;  }
 	void SetConnectable(bool isConnectable) { _isConnectable = isConnectable; }
 
-private:
+protected:
 	int _ownerCubeID;
 	int _connectedCubeID;
 	Dir _dir;

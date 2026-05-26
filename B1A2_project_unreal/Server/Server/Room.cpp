@@ -163,6 +163,8 @@ void Room::Update()
 
 			item->Update();
 		}
+
+		_hatch->Update();
 			
 		lastUpdate = now;
 	}
@@ -230,10 +232,9 @@ void Room::CreateFactoryCubes()
 		hatch->SetID(generateDoorID++);
 		hatch->SetOwnerRoom(this);
 		hatch->SetConnectedCubeID(generateCubeID);
-		hatch->SetDoorType(DoorType::Hatch);
 		base->AddDoor(hatch->GetID());
 		_doors.push_back(hatch);
-		
+		_hatch = hatch;
 		_cubes.push_back(base);
 	}
 

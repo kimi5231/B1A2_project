@@ -4,6 +4,7 @@
 #include "Item.h"
 
 class Door;
+class Hatch;
 class SellingMachine;
 
 class Room
@@ -96,6 +97,7 @@ private:
 	int _currentSurpriseCount;
 	int _currentFearCount;
 
+	Hatch* _hatch;
 	std::vector<CubeRef> _cubes;
 	std::vector<Door*> _doors;
 	std::vector<SellingMachine*> _sellingMachines;
