@@ -10,6 +10,7 @@ TrashCollector::TrashCollector(MonsterType monsterType, Room* ownerRoom)
 	// Status √ ±‚»≠
 	_maxHP = 80;
 	_hp = _maxHP;
+	_isInvincible = false;
 
 	_moveSpeed = 400.f;
 	_roamingSpeed = 300.f;

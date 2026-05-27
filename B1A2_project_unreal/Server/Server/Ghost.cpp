@@ -10,6 +10,7 @@ Ghost::Ghost(MonsterType monsterType, Room* ownerRoom)
 {
 	_maxHP = 10000;
 	_hp = _maxHP;
+	_isInvincible = true;
 	_chaseSpeed = 450.f;
 	_idleTime = 15.f;
 	_chaseTime = 20.f;

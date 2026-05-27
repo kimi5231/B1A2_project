@@ -8,6 +8,7 @@ Player::Player()
 {
 	_maxHP = 100;
 	_hp = _maxHP;
+	_isInvincible = false;
 	_pos = { 0, 0, 25 };
 	_currentCubeID = 0;
 	_rotation = {0, 0, 0};
@@ -68,6 +69,9 @@ void Player::Attack(Room* room)
 				// 공격 범위 내에 있다면 데미지 주기
 				monster->TackDamage(cutlass->GetDamage());
 				std::cout << "Monster " << monster->GetID() << " HP: " << monster->GetHP() << "\n";
+			
+				// 맞은 몬스터는 플레이어를 타겟으로 지정
+				monster->SetTarget(this);
 			}
 		}
 	}

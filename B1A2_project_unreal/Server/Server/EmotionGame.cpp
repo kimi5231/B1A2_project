@@ -13,6 +13,7 @@ EmotionGame::EmotionGame(MonsterType monsterType, Room* ownerRoom)
 	// Status √ ±‚»≠
 	_maxHP = 10000;
 	_hp = _maxHP;
+	_isInvincible = true;
 	_idleTime = 15.f;
 	_playTime = 3.f;
 	_releaseTime = 3.f;

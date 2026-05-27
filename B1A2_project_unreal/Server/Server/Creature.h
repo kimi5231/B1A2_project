@@ -18,4 +18,5 @@ public:
 protected:
 	int _maxHP;
 	int _hp;
+	bool _isInvincible;
 };

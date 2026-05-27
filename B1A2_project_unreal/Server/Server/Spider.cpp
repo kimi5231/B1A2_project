@@ -10,6 +10,7 @@ Spider::Spider(MonsterType monsterType, Room* ownerRoom)
 	// Status √ ±‚»≠
 	_maxHP = 60;
 	_hp = 60;
+	_isInvincible = false;
 
 	_returnSpeed = 250.f;
 	_roamingSpeed = 250.f; 

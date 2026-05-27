@@ -9,6 +9,7 @@ PollutionMonitor::PollutionMonitor(MonsterType monsterType, Room* ownerRoom)
 	// Status √ ±‚»≠
 	_maxHP = 200;
 	_hp = _maxHP;
+	_isInvincible = false;
 	_idleTime = 120.f;
 	_checkTime = 40.f;
 	_spawnTime = 30.f;

@@ -9,6 +9,9 @@ Creature::Creature()
 
 bool Creature::TackDamage(int damage)
 {
+    if (_isInvincible)
+        return false;
+
     _hp -= damage;
 
     if(_hp <= 0)
@@ -16,7 +19,6 @@ bool Creature::TackDamage(int damage)
     else
     	SetState(ObjectState::HIT);
 
-    // 나중에 무적같은 거 확인
     return true;
 }
 
