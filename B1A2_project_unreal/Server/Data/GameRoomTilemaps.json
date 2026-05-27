@@ -154,7 +154,7 @@
             },
             {
                "layer" : [
-                    { "pattern" : [[0, 52]], "repeatY" :  26 }
+                    { "pattern" : [[0, 52]], "repeatY" :  52 }
                ], "repeatZ" : 1
             }
             ]
