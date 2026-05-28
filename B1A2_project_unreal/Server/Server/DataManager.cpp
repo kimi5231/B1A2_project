@@ -12,6 +12,7 @@ DataManager::DataManager()
     LoadCubeConditionInfos();
     LoadCubeInfos();
     LoadCubeTilemaps();
+    LoadMainQuestInfos();
     LoadItemInfos();
     LoadPlayerStat();
 }
@@ -172,6 +173,26 @@ void DataManager::LoadCubeTilemaps()
     }
 }
 
+void DataManager::LoadMainQuestInfos()
+{
+    std::ifstream file(_dataPath / "MainQuestInfos.json");
+    json data = json::parse(file);
+
+    // MainQuestInfo √ﬂ√‚
+    for (const auto& item : data["mainQuests"])
+    {
+        MainQuestInfo info;
+
+        info.targetItemType = item["targetItemType"];
+        info.targetAmount = item["targetAmount"];
+        info.rewardType = item["rewardType"];
+        info.rewardItemType = item["rewardItemType"];
+        info.rewardAmount = item["rewardAmount"];
+
+        _mainQuestInfos.push_back(info);
+    }
+}
+
 void DataManager::LoadItemInfos()
 {
     std::ifstream file(_dataPath / "ItemInfos.json");
@@ -191,10 +212,6 @@ void DataManager::LoadItemInfos()
 
         _itemInfos[info.type] = info;
     }
-}
-
-void DataManager::LoadMainQuestInfos()
-{
 }
 
 void DataManager::LoadPlayerStat()

@@ -87,7 +87,7 @@ enum class StructureType : char
 	StructureTypeCount,
 };
 
-enum class rewardType : char
+enum class RewardType : char
 {
 	Item,
 	Credit,
@@ -465,6 +465,19 @@ struct TileNode
 	TileNode* parent;
 };
 
+struct CubeConditionInfo
+{
+	int totalCubeCount;
+	std::pair<int, int> createItemCount;
+	std::pair<int, int> createExitCount;
+	int createSellingMachineCount;
+	int createSpecialSellingMachineCount;
+	int power;
+	std::pair<int, int> sellingMachineCreditLimit;
+	std::pair<int, int> exitPos;
+	std::pair<int, int> floor;
+};
+
 struct CubeInfo
 {
 	CubeType type;
@@ -486,25 +499,21 @@ struct CubeInfo
 	int enterDistance;
 };
 
+struct MainQuestInfo
+{
+	ItemType targetItemType;
+	int targetAmount;
+	RewardType rewardType;
+	ItemType rewardItemType;
+	int rewardAmount;
+};
+
 struct ItemInfo
 {
 	ItemType type;
 	Vector size;
 	float weight;
 	int cost;
-};
-
-struct CubeConditionInfo
-{
-	int totalCubeCount;
-	std::pair<int, int> createItemCount;
-	std::pair<int, int> createExitCount;
-	int createSellingMachineCount;
-	int createSpecialSellingMachineCount;
-	int power;
-	std::pair<int, int> sellingMachineCreditLimit;
-	std::pair<int, int> exitPos;
-	std::pair<int, int> floor;
 };
 
 struct PlayerStat
