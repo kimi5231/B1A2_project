@@ -1,6 +1,6 @@
 {
-	"hp":100.0,
-	"stamina": 100.0,
+	"hp":100,
+	"stamina": 100,
 	"recoveryStamina": 2.0,
 	"walkSpeed":5.0,
 	"runSpeed":6.5,
