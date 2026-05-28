@@ -10,6 +10,7 @@ public:
 	~GameObject();
 
 public:
+	virtual void Init();
 	virtual void Update();
 
 	bool CheckCollision(BoundingBox other) { return _box.CheckCollision(other.GetBounds()); };
@@ -38,13 +39,13 @@ public:
 	void SetCurrentCubeID();
 	
 protected:
-	int _id{};
-	ObjectType _type{};
-	Vector _pos{};
-	Vector _size{};
-	Rotation _rotation{};
-	ObjectState _state{};
+	int _id;
+	ObjectType _type;
+	Vector _pos;
+	Rotation _rotation;
+	VectorInt _size;
 	BoundingBox _box;
+	ObjectState _state;
 	ObjectPoolState _objectPoolState;
 	Room* _ownerRoom;
 	int _currentCubeID;

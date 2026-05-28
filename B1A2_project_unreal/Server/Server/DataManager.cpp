@@ -13,6 +13,7 @@ DataManager::DataManager()
     LoadCubeInfos();
     LoadCubeTilemaps();
     LoadItemInfos();
+    LoadPlayerStat();
 }
 
 void DataManager::LoadCubeConditionInfos()
@@ -190,4 +191,30 @@ void DataManager::LoadItemInfos()
 
         _itemInfos[info.type] = info;
     }
+}
+
+void DataManager::LoadMainQuestInfos()
+{
+}
+
+void DataManager::LoadPlayerStat()
+{
+    std::ifstream file(_dataPath / "PlayerStat.json");
+    json data = json::parse(file);
+
+    PlayerStat stat;
+
+    stat.hp = data["hp"];
+    stat.stamina = data["stamina"];
+    stat.recoveryStamina = data["recoveryStamina"];
+    stat.walkSpeed = data["walkSpeed"];
+    stat.runSpeed = data["runSpeed"];
+    stat.jumpSpeed = data["jumpSpeed"];
+    stat.playerWeight = data["playerWeight"];
+    stat.maxWeight = data["maxWeight"];
+    stat.size.x = data["size"][0];
+    stat.size.y = data["size"][1];
+    stat.size.z = data["size"][2];
+
+    _playerStat = stat;
 }

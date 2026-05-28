@@ -48,7 +48,6 @@ void Room::Init()
 	{
 		_players[i] = new Player();
 		_players[i]->SetID(i);
-		_players[i]->SetObjectPoolState(ObjectPoolState::Reusable);
 		_players[i]->SetOwnerRoom(this);
 	}
 
@@ -576,7 +575,7 @@ Player* Room::AddPlayer()
 		if (_players[i]->GetObjectPoolState() == ObjectPoolState::Reusable)
 		{
 			// ObjectPoolState º¯°æ
-			_players[i]->SetObjectPoolState(ObjectPoolState::InWorld);
+			_players[i]->Init();
 
 			for (auto& player : _players)
 			{

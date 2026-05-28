@@ -12,6 +12,7 @@ public:
 	virtual ~Player();
 
 public:
+	virtual void Init();
 	virtual void Update();
 
 public:

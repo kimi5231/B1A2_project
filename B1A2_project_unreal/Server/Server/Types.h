@@ -87,6 +87,13 @@ enum class StructureType : char
 	StructureTypeCount,
 };
 
+enum class rewardType : char
+{
+	Item,
+	Credit,
+	Hp,
+};
+
 enum ObjectState : char
 {
 	IDLE,
@@ -498,6 +505,19 @@ struct CubeConditionInfo
 	std::pair<int, int> sellingMachineCreditLimit;
 	std::pair<int, int> exitPos;
 	std::pair<int, int> floor;
+};
+
+struct PlayerStat
+{
+	int hp;
+	int stamina;
+	int recoveryStamina;
+	float walkSpeed;
+	float runSpeed;
+	float jumpSpeed;
+	float playerWeight;
+	int maxWeight;
+	VectorInt size;
 };
 
 struct SpiderStatus

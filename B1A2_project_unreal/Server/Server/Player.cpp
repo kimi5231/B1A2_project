@@ -3,31 +3,43 @@
 #include "Cutlass.h"
 #include "Inventory.h"
 #include "Room.h"
+#include "Global.h"
 
 Player::Player()
 {
-	_maxHP = 100;
-	_hp = _maxHP;
-	_isInvincible = false;
-	_pos = { 0, 0, 25 };
-	_currentCubeID = 0;
-	_rotation = {0, 0, 0};
-	_type = ObjectType::Player;
-	_currentEmotion = Emotion::Neutral;
-	_box.SetBounds(_pos, {60, 30, 180}, Front);
-	_inventory = new Inventory();
+	const PlayerStat& stat = g_dataManager->GetPlayerStat();
 
-	_fearCount = 0;
-
+	// 최초 생성 시에만 초기화하면 되는 것들
+	_maxHP = stat.hp;
 	_lookRange = 1500;
 	_lookHeight = 200;
 	_lookAngle = 90.f;
-
-	_isCanMove = true;
+	_isInvincible = false;
+	_size = stat.size;
+	_type = ObjectType::Player;
+	_box.SetBounds({ 0, 0, 25 }, _size, Front);
+	_inventory = new Inventory();
 }
 
 Player::~Player()
 {
+	delete _inventory;
+}
+
+void Player::Init()
+{
+	// 재사용시 초기화해야 하는 것들
+	_hp = _maxHP;
+	_fearCount = 0;
+	_isCanMove = true;
+
+	SetPos({ 0, 0, 25 });
+	SetRotation({ 0, 0, 0 });
+
+	_currentEmotion = Emotion::Neutral;
+	_objectPoolState = ObjectPoolState::InWorld;
+
+	// 인벤토리 초기화 추가하기
 }
 
 void Player::Update()
