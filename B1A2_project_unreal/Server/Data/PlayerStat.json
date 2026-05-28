@@ -6,5 +6,6 @@
 	"runSpeed":6.5,
 	"jumpSpeed":3.5,
 	"playerWeight":70.0,
-	"maxWeight":30
+	"maxWeight":30,
+	"size":[32, 55, 163]
 }
