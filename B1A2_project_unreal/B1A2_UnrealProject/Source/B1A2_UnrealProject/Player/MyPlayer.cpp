@@ -27,7 +27,9 @@
 #include "Widget/InventoryWidget.h" 
 #include "Widget/ToolBarWidget.h" 
 #include "Widget/PlayerStatusWidget.h"
+#include "Widget/ShopWidget.h"
 #include "Blueprint/UserWidget.h"
+#include "Interactable/BaseBase.h"
 
 AMyPlayer::AMyPlayer()
 {
@@ -103,6 +105,11 @@ void AMyPlayer::BeginPlay()
 
 		if (_emotionResultWidgetInstance)
 			_emotionResultWidgetInstance->AddToViewport();
+	}
+	// Shop 위젯
+	if (_shopWidgetClass)
+	{
+		_shopWidgetInstance = CreateWidget<UShopWidget>(GetWorld(), _shopWidgetClass);
 	}
 
 	// Scan Material 설정
@@ -907,12 +914,19 @@ void AMyPlayer::UpdateBestInteractableActor()
 }
 
 void AMyPlayer::Interact()
-{
-	if (IsBusy || !_focusedActor)	// 다른 몽타주 실행 중 or 상호작용 할 객체가 없으면 무시
-		return;
-
+{	
 	UMain* gameInstance = Cast<UMain>(GetGameInstance());
 	if (!gameInstance)
+		return;
+
+	// ShopWidget이 열렸을 경우 지우기
+	if (_shopWidgetInstance->IsInViewport())
+	{
+		_shopWidgetInstance->RemoveFromParent();
+		return;
+	}	
+	
+	if (IsBusy || !_focusedActor)	// 다른 몽타주 실행 중 or 상호작용 할 객체가 없으면 무시
 		return;
 
 	// Item or Tool인 경우
@@ -933,6 +947,15 @@ void AMyPlayer::Interact()
 	{
 		gameInstance->SendInteractDoor(gameInstance->GetMyID(), 0);	// Hatch의 ID는 0
 		UE_LOG(LogTemp, Display, TEXT("[Hatch] Interact Packet Send!"));
+	}
+	// Base의 모니터인 경우
+	else if (ABaseBase* base = Cast<ABaseBase>(_focusedActor))
+	{
+		if (!_shopWidgetInstance)
+			return;
+
+		if (!_shopWidgetInstance->IsInViewport())
+			_shopWidgetInstance->AddToViewport();
 	}
 }
 

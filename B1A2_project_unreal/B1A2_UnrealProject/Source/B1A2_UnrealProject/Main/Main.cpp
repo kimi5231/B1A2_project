@@ -15,6 +15,7 @@
 #include "Monster/BaseMonster.h"
 #include "Monster/BaseEmotionGame.h"
 #include "Widget/EmotionResultWidget.h"
+#include "Widget/ShopWidget.h"
 
 #define BUFSIZE	64
 
@@ -535,6 +536,18 @@ void UMain::SendUseLantern(int playerID, int lanternID)
 		return;
 
 	_gameNetwork->SendUseLanternPacket(playerID, lanternID);
+}
+
+void UMain::SendBuyItem(int playerID, ItemType itemType, int itemCount)
+{
+	if (_myID == -1)
+		return;
+
+	UWorld* world = GetWorld();
+	if (!world)
+		return;
+
+	_gameNetwork->SendBuyItemPacket(playerID, itemType, itemCount);
 }
 
 void UMain::Update()
@@ -1954,11 +1967,24 @@ void UMain::RecvSellItemResult(S_SellItemResult_Packet packet)
 				_items.Remove(itemID);
 			}
 		}
+
+		// 플레이어 크레딧(공용) 변경, Shop에 연결된 값도 갱신
+		_currentCredit = packet.currentCredit;
+		_myPlayer->GetShopWidget()->SetCurrentCredit(packet.currentCredit);
+		_myPlayer->GetShopWidget()->UpdateUI();
+		UE_LOG(LogTemp, Display, TEXT("[Sell] Recv Sell Item Result, currentCredit %d"), packet.currentCredit);
 	});
 }
 
 void UMain::RecvBuyItemResult(S_BuyItemResult_Packet packet)
 {
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		_currentCredit = packet.currentCredit;
+		_myPlayer->GetShopWidget()->SetCurrentCredit(packet.currentCredit);
+		_myPlayer->GetShopWidget()->UpdateUI();
+		UE_LOG(LogTemp, Display, TEXT("[Buy] Recv Buy Item Result, currentCredit %d"), packet.currentCredit);
+	});
 }
 
 FRotator UMain::DirToRotation(Dir dir)

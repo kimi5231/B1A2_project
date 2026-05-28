@@ -71,6 +71,7 @@ public:
 	void SendEndStage(bool result);
 	void SendStartStage(bool result);
 	void SendUseLantern(int playerID, int lanternID);
+	void SendBuyItem(int playerID, ItemType itemType, int itemCount);
 
 	// Recv
 	void Update();
@@ -126,6 +127,8 @@ public:
 
 	// 감정 관련
 	void HandleNewEmotionData(const TArray<float>& emotionScores);
+
+	int32 GetCurrentCredit() { return _currentCredit; }
 
 public:
 	// Base Class
@@ -184,9 +187,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Cube")
 	TSubclassOf<ABaseHatch> HatchClass;
 
-	// 판매기 클래스 구현하면 AActor 변경하기!!!!!!
 	UPROPERTY(EditDefaultsOnly, Category = "Cube")
-	TSubclassOf<AActor> SellingMachineClass;
+	TSubclassOf<ABaseSellingMachine> SellingMachineClass;
 
 	// 몬스터
 	UPROPERTY(EditDefaultsOnly, Category = "Monster")
@@ -296,6 +298,8 @@ private:
 
 	float _totalElapsedTime = 0.0f;
 	int32 _lastSentEmotionIndex = -1; // 마지막으로 보낸 감정 인덱스
+
+	int32 _currentCredit = 0;
 
 public:
 	// 스캔 시 맵에 있는 아이템 + 장비 반환

@@ -21,6 +21,8 @@ class UMaterialInterface;
 class UMaterialInstanceDynamic;
 class ABaseSellingMachine;
 
+class UShopWidget;
+
 /**
  * 
  */
@@ -217,12 +219,21 @@ protected:
 	UPROPERTY()
 	UUserWidget* _statusWidgetInstance;
 
+	// Shop
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<UUserWidget> _shopWidgetClass;
+
+	UPROPERTY()
+	UShopWidget* _shopWidgetInstance;
+
 public:
 	// 로컬 플레이어 모델 업데이트
 	void UpdateToolVisual();
 
 	UUserWidget* GetToolBarWidget() const { return _toolBarWidgetInstance; }
 	UUserWidget* GetEmotionResultWidget() const { return _emotionResultWidgetInstance; }
+
+	UShopWidget* GetShopWidget() const { return _shopWidgetInstance; }
 
 protected:
 	// Scan
