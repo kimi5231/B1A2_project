@@ -85,7 +85,7 @@
             "size": [18, 85, 18],
             "name": "커틀러스",
             "weight": 1.5,
-            "cost": 0,
+            "cost": 65,
             "spawnWeight": []
         },
         {
@@ -93,7 +93,7 @@
             "size": [18, 45, 30],
             "name": "광선총",
             "weight": 2.5,
-            "cost": 0,
+            "cost": 100,
             "spawnWeight": []
         },
         {
@@ -109,7 +109,7 @@
             "size": [9, 9, 43],
             "name": "랜턴",
             "weight": 1.0,
-            "cost": 0,
+            "cost": 30,
             "spawnWeight": []
         }
     ]
