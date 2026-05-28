@@ -1,0 +1,10 @@
+{
+	"hp":0,
+	"stamina": 0,
+	"recoveryStamina": 0,
+	"walkSpeed":-1,
+	"runSpeed":0,
+	"jumpSpeed":0,
+	"playerWeight":0,
+	"maxWeight":1
+}
