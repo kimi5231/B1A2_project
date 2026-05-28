@@ -511,6 +511,6 @@ struct S_UpdateCredit_Packet
 {
 	unsigned short size;
 	PacketID packetID;
-	unsigned char currentCredit;
+	unsigned short currentCredit;
 };
 #pragma pack(pop)

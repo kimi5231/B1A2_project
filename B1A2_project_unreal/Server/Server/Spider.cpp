@@ -105,6 +105,7 @@ bool Spider::IsReadyNextState()
 	case ObjectState::MAKE_WEB:
 		return _sumTime > _makeWebTime;
 	case ObjectState::CHASE:
+		//return false;
 		return _sumTime > _chaseTime;
 	case ObjectState::RETURN:
 		return (_returnPos - _pos).Length() < TileSize * 2;
