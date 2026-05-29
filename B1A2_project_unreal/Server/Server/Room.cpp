@@ -14,6 +14,7 @@
 #include "PollutionMonitor.h"
 #include "TrashCollector.h"
 #include "MainQuest.h"
+#include "SubQuest.h"
 
 Room::Room()
 {
@@ -34,6 +35,7 @@ Room::Room()
 	_currentCredit = 0;
 
 	_mainQuest = new MainQuest();
+	_subQuest = new SubQuest(_stage);
 
 	// 나중에 Json으로 읽어오기
 	_currentPower = 0;

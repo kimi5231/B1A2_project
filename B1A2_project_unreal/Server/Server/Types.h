@@ -508,6 +508,16 @@ struct MainQuestInfo
 	int rewardAmount;
 };
 
+struct SubQuestInfo
+{
+	ItemType targetItemType;
+	int targetAmount;
+	RewardType rewardType;
+	ItemType rewardItemType;
+	int rewardAmount;
+	int deadLine;
+};
+
 struct ItemInfo
 {
 	ItemType type;

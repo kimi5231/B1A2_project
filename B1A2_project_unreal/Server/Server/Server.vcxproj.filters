@@ -158,6 +158,9 @@
     <ClCompile Include="MainQuest.cpp">
       <Filter>소스 파일\Game\Quest</Filter>
     </ClCompile>
+    <ClCompile Include="SubQuest.cpp">
+      <Filter>소스 파일\Game\Quest</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -266,6 +269,9 @@
       <Filter>소스 파일\Game\Quest</Filter>
     </ClInclude>
     <ClInclude Include="MainQuest.h">
+      <Filter>소스 파일\Game\Quest</Filter>
+    </ClInclude>
+    <ClInclude Include="SubQuest.h">
       <Filter>소스 파일\Game\Quest</Filter>
     </ClInclude>
   </ItemGroup>
