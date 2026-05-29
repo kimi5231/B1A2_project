@@ -194,6 +194,7 @@ void ServerNetwork::ProcessAccept()
 
 	// 나중에 삭제하기
 	SendCreateCubesPacket(_clients[clientIndex]->_room->GetCubes(), _clients[clientIndex]->_room->GetDoors(), _clients[clientIndex]->_room->GetSellingMachine(), _clients[clientIndex]);
+	SendUpdateQuestPacket(_clients[clientIndex]->_room->GetMainQuest(), true, _clients[clientIndex]);
 
 	_clients[clientIndex]->Recv();
 

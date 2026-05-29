@@ -269,7 +269,7 @@ void UMain::ProcessRecv()
 			ObjectState sellingMachineState;
 			memcpy(&sellingMachineState, event->serializedPacketData.data(), sizeof(ObjectState));
 			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(ObjectState));
-			
+
 			S_SellItemResult_Packet sellItemResultPacket{ packetSize, S_SellItemResult, sellingMachineID, playerID, remainCredit, collectCredit, currentCredit, sellingMachineState, _gameNetwork->DeserializeVector<char>(event->serializedPacketData) };
 			RecvSellItemResult(sellItemResultPacket);
 			event->isComplete = true;
@@ -320,6 +320,30 @@ void UMain::ProcessRecv()
 			S_EndStage_Packet endStagePacket;
 			FMemory::Memcpy(&endStagePacket, event->serializedPacketData.data(), sizeof(S_EndStage_Packet));
 			RecvEndStage(endStagePacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_UpdateQuest:
+		{
+			S_UpdateQuest_Packet updateQuestPacket;
+			FMemory::Memcpy(&updateQuestPacket, event->serializedPacketData.data(), sizeof(S_UpdateQuest_Packet));
+			RecvUpdateQuest(updateQuestPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_UpdateQuestProgress:
+		{
+			S_UpdateQuestProgress_Packet updateQuestProgressPacket;
+			FMemory::Memcpy(&updateQuestProgressPacket, event->serializedPacketData.data(), sizeof(S_UpdateQuestProgress_Packet));
+			RecvUpdateQuestProgress(updateQuestProgressPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_UpdateCredit:
+		{
+			S_UpdateCredit_Packet updateCreditPacket;
+			FMemory::Memcpy(&updateCreditPacket, event->serializedPacketData.data(), sizeof(S_UpdateCredit_Packet));
+			RecvUpdateCredit(updateCreditPacket);
 			event->isComplete = true;
 			break;
 		}
@@ -1985,6 +2009,18 @@ void UMain::RecvBuyItemResult(S_BuyItemResult_Packet packet)
 		_myPlayer->GetShopWidget()->UpdateUI();
 		UE_LOG(LogTemp, Display, TEXT("[Buy] Recv Buy Item Result, currentCredit %d"), packet.currentCredit);
 	});
+}
+
+void UMain::RecvUpdateQuest(S_UpdateQuest_Packet packet)
+{
+}
+
+void UMain::RecvUpdateQuestProgress(S_UpdateQuestProgress_Packet packet)
+{
+}
+
+void UMain::RecvUpdateCredit(S_UpdateCredit_Packet packet)
+{
 }
 
 FRotator UMain::DirToRotation(Dir dir)

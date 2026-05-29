@@ -39,6 +39,8 @@ Room::Room()
 	_currentPower = 0;
 	_currentSurpriseCount = 0;
 	_currentFearCount = 0;
+
+	// Base »ý¼º
 }
 
 Room::~Room()

@@ -365,6 +365,39 @@ void GameNetwork::ProcessRecv()
 		_recvEvents.push_back(event);
 		break;
 	}
+	case S_UpdateQuest:
+	{
+		NetworkEventRef event = std::make_shared<NetworkEvent>();
+		event->packetID = id;
+		event->serializedPacketData.resize(sizeof(S_UpdateQuest_Packet));
+		memcpy(event->serializedPacketData.data(), &packetSize, sizeof(unsigned short));
+		memcpy(event->serializedPacketData.data() + sizeof(unsigned short), packet.data(), packetSize - sizeof(unsigned short));
+		std::lock_guard<std::mutex> lock(_recvMutex);
+		_recvEvents.push_back(event);
+		break;
+	}
+	case S_UpdateQuestProgress:
+	{
+		NetworkEventRef event = std::make_shared<NetworkEvent>();
+		event->packetID = id;
+		event->serializedPacketData.resize(sizeof(S_UpdateQuestProgress_Packet));
+		memcpy(event->serializedPacketData.data(), &packetSize, sizeof(unsigned short));
+		memcpy(event->serializedPacketData.data() + sizeof(unsigned short), packet.data(), packetSize - sizeof(unsigned short));
+		std::lock_guard<std::mutex> lock(_recvMutex);
+		_recvEvents.push_back(event);
+		break;
+	}
+	case S_UpdateCredit:
+	{
+		NetworkEventRef event = std::make_shared<NetworkEvent>();
+		event->packetID = id;
+		event->serializedPacketData.resize(sizeof(S_UpdateCredit_Packet));
+		memcpy(event->serializedPacketData.data(), &packetSize, sizeof(unsigned short));
+		memcpy(event->serializedPacketData.data() + sizeof(unsigned short), packet.data(), packetSize - sizeof(unsigned short));
+		std::lock_guard<std::mutex> lock(_recvMutex);
+		_recvEvents.push_back(event);
+		break;
+	}
 	}
 }
 
@@ -619,6 +652,22 @@ void GameNetwork::SendEndStagePacket()
 	// SendEvent 持失
 	NetworkEventRef event = std::make_shared<NetworkEvent>();
 	event->packetID = C_EndStage;
+	event->serializedPacketData = serializedPacketData;
+	std::lock_guard<std::mutex> lock(_sendMutex);
+	_sendEvents.push_back(event);
+}
+
+void GameNetwork::SendRequestQuestRewardPacket(bool isMain)
+{
+	// Packet Data 持失
+	C_RequestQuestReward_Packet packetData{ sizeof(C_RequestQuestReward_Packet), C_RequestQuestReward, isMain };
+	
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+	
+	// SendEvent 持失
+	NetworkEventRef event = std::make_shared<NetworkEvent>();
+	event->packetID = C_RequestQuestReward;
 	event->serializedPacketData = serializedPacketData;
 	std::lock_guard<std::mutex> lock(_sendMutex);
 	_sendEvents.push_back(event);

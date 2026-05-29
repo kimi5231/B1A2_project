@@ -40,6 +40,7 @@ public:
 	void SendEmotionResultPacket(float angryTime, float disgustTime, float fearTime, float happyTime, float sadTime, float surpriseTime, float neutralTime);
 	void SendStartStagePacket();
 	void SendEndStagePacket();
+	void SendRequestQuestRewardPacket(bool isMain);
 
 public:
 	std::vector<NetworkEventRef>& GetRecvEvents() { return _recvEvents; }

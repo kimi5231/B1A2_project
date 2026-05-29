@@ -120,6 +120,10 @@ public:
 	void RecvSellItemResult(S_SellItemResult_Packet packet);
 	void RecvBuyItemResult(S_BuyItemResult_Packet packet);
 
+	void RecvUpdateQuest(S_UpdateQuest_Packet packet);
+	void RecvUpdateQuestProgress(S_UpdateQuestProgress_Packet packet);
+	void RecvUpdateCredit(S_UpdateCredit_Packet packet);
+
 	FRotator DirToRotation(Dir dir);
 
 	// ID
