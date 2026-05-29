@@ -159,6 +159,7 @@
     <ClInclude Include="Spider.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="FSM.h" />
+    <ClInclude Include="SubQuest.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Tool.h" />
     <ClInclude Include="TrashCollector.h" />
@@ -207,6 +208,7 @@
     <ClCompile Include="Spider.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="FSM.cpp" />
+    <ClCompile Include="SubQuest.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Tool.cpp" />
     <ClCompile Include="TrashCollector.cpp" />

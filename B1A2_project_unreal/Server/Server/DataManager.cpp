@@ -13,6 +13,7 @@ DataManager::DataManager()
     LoadCubeInfos();
     LoadCubeTilemaps();
     LoadMainQuestInfos();
+	LoadSubQuestInfos();
     LoadItemInfos();
     LoadPlayerStat();
 }
@@ -190,6 +191,27 @@ void DataManager::LoadMainQuestInfos()
         info.rewardAmount = item["rewardAmount"];
 
         _mainQuestInfos.push_back(info);
+    }
+}
+
+void DataManager::LoadSubQuestInfos()
+{
+    std::ifstream file(_dataPath / "SubQuestInfos.json");
+    json data = json::parse(file);
+
+    // SubQuestInfo √ﬂ√‚
+    for (const auto& item : data["subQuests"])
+    {
+        SubQuestInfo info;
+
+        info.targetItemType = item["targetItemType"];
+        info.targetAmount = item["targetAmount"];
+        info.rewardType = item["rewardType"];
+        info.rewardItemType = item["rewardItemType"];
+        info.rewardAmount = item["rewardAmount"];
+        info.deadLine = item["deadLine"];
+
+        _subQuestInfos.push_back(info);
     }
 }
 
