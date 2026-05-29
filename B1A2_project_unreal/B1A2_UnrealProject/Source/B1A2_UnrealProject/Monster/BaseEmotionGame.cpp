@@ -14,6 +14,9 @@ void ABaseEmotionGame::BeginPlay()
     {
         MonitorDynamicMat = MeshComp->CreateDynamicMaterialInstance(0); // 모니터 머테리얼 슬롯은 0
     }
+
+    // 보간 X
+    _isInterpolation = false;
 }
 
 void ABaseEmotionGame::StartGrabCountdown()
