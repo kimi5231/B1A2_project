@@ -16,6 +16,7 @@
 #include "Monster/BaseEmotionGame.h"
 #include "Widget/EmotionResultWidget.h"
 #include "Widget/ShopWidget.h"
+#include "Widget/QuestWidget.h"
 
 #define BUFSIZE	64
 
@@ -2004,23 +2005,54 @@ void UMain::RecvBuyItemResult(S_BuyItemResult_Packet packet)
 {
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
+		// 현재 크레딧 변경
 		_currentCredit = packet.currentCredit;
+
+		// 위젯 변수 업데이트
 		_myPlayer->GetShopWidget()->SetCurrentCredit(packet.currentCredit);
 		_myPlayer->GetShopWidget()->UpdateUI();
+
 		UE_LOG(LogTemp, Display, TEXT("[Buy] Recv Buy Item Result, currentCredit %d"), packet.currentCredit);
+	});
+}
+
+void UMain::RecvUpdateCredit(S_UpdateCredit_Packet packet)
+{
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		// 현재 크레딧 변경
+		_currentCredit = packet.currentCredit;
+
+		// 위젯 변수 업데이트
+		_myPlayer->GetShopWidget()->SetCurrentCredit(packet.currentCredit);
+		_myPlayer->GetShopWidget()->UpdateUI();
+
+		UE_LOG(LogTemp, Display, TEXT("[Credit] Recv Update Credit, currentCredit %d"), packet.currentCredit);
 	});
 }
 
 void UMain::RecvUpdateQuest(S_UpdateQuest_Packet packet)
 {
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		bool isMain = packet.isMain;
+		int questID = packet.questID;
+		int goalCount = packet.goalCount;
+		ItemType type = packet.itemType;
+
+		_myPlayer->GetQuestWidget()->HandleUpdateQuest(isMain, questID, goalCount, type);
+	});
 }
 
 void UMain::RecvUpdateQuestProgress(S_UpdateQuestProgress_Packet packet)
 {
-}
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		bool isMain = packet.isMain;
+		int currentCount = packet.currentCount;
 
-void UMain::RecvUpdateCredit(S_UpdateCredit_Packet packet)
-{
+		_myPlayer->GetQuestWidget()->HandleUpdateQuestProgress(isMain, currentCount);
+	});
 }
 
 FRotator UMain::DirToRotation(Dir dir)

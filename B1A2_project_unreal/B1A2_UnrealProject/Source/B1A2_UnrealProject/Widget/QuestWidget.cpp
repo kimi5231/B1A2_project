@@ -138,7 +138,7 @@ void UQuestWidget::UpdateQuestUI()
 	if (_mainQuestSlot.questItem != ItemType::None)
 	{
 		FText ItemName = GetItemNameText(_mainQuestSlot.questItem);
-		MainQuestText->SetText(FText::Format(FText::FromString(TEXT("메인: {0} {1}ea 가져오기")), ItemName, FText::AsNumber(_mainQuestSlot.goalCount)));
+		MainQuestText->SetText(FText::Format(FText::FromString(TEXT("메인: {0} {1}개 수집하기")), ItemName, FText::AsNumber(_mainQuestSlot.goalCount)));
 		MainQuestProgress->SetText(FText::Format(FText::FromString(TEXT("({0} / {1})")), FText::AsNumber(_mainQuestSlot.currentCount), FText::AsNumber(_mainQuestSlot.goalCount)));
 
 		// 보상 수령이 활성화되면 버튼을 노출, 아니면 숨기기
@@ -151,7 +151,7 @@ void UQuestWidget::UpdateQuestUI()
 	if (_subQuestSlot.questItem != ItemType::None)
 	{
 		FText ItemName = GetItemNameText(_subQuestSlot.questItem);
-		SubQuestText->SetText(FText::Format(FText::FromString(TEXT("일반: {0} {1}ea 가져오기")), ItemName, FText::AsNumber(_subQuestSlot.goalCount)));
+		SubQuestText->SetText(FText::Format(FText::FromString(TEXT("서브: {0} {1}개 수집하기")), ItemName, FText::AsNumber(_subQuestSlot.goalCount)));
 		SubQuestProgress->SetText(FText::Format(FText::FromString(TEXT("({0} / {1})")), FText::AsNumber(_subQuestSlot.currentCount), FText::AsNumber(_subQuestSlot.goalCount)));
 
 		if (SubRewardButton)

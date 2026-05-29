@@ -247,8 +247,8 @@ public:
 
 	UUserWidget* GetToolBarWidget() const { return _toolBarWidgetInstance; }
 	UUserWidget* GetEmotionResultWidget() const { return _emotionResultWidgetInstance; }
-
 	UShopWidget* GetShopWidget() const { return _shopWidgetInstance; }
+	UQuestWidget* GetQuestWidget() const { return _questWidgetInstance; }
 
 protected:
 	// Scan
