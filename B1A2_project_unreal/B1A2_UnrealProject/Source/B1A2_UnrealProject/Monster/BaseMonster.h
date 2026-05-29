@@ -44,6 +44,8 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float AnimSmoothingSpeed = 10.0f;
 
+	bool _isInterpolation = true;
+
 private:
 	FVector _destPos;
 	FRotator _destRot;

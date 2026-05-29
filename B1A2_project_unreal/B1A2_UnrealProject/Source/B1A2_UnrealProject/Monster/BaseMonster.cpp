@@ -38,21 +38,18 @@ void ABaseMonster::Tick(float DeltaTime)
     if (!_isHasTarget)
         return;
 
-    FVector oldLocation = GetActorLocation();
-
-    float distance = FVector::Dist(oldLocation, _destPos);
-    const float teleportThreshold = 300.f;  // 3미터 이상 차이나면 텔레포트
-
-    if (distance > teleportThreshold)
+    // 보간하지 않을 경우(EmotionGame 텔포)
+    if (!_isInterpolation)
     {
-        // 보간을 타지 않고 즉시 위치/회전 설정
         SetActorLocationAndRotation(_destPos, _destRot, false, nullptr, ETeleportType::TeleportPhysics);
 
-        // 보간용 내부 변수들도 즉시 업데이트해서 Tick에서 튀는 현상 방지
         _currentAnimSpeed = 0.f;
         CalculatedSpeed = 0.f;
+        return;
     }
 
+    FVector oldLocation = GetActorLocation();
+  
     // 보간
     FVector newLocation = FMath::VInterpTo(oldLocation, _destPos, DeltaTime, InterpolationSpeed);
     FRotator newRotation = FMath::RInterpTo(GetActorRotation(), _destRot, DeltaTime, InterpolationSpeed);
@@ -60,7 +57,6 @@ void ABaseMonster::Tick(float DeltaTime)
     SetActorLocationAndRotation(newLocation, newRotation, false, nullptr, ETeleportType::TeleportPhysics);
 
     FVector deltaMove = (newLocation - oldLocation);
-
     FVector horizonDelta = FVector(deltaMove.X, deltaMove.Y, 0.f);
     float horizonInstantSpeed = horizonDelta.Size() / DeltaTime;
     float verticalInstantSpeed = deltaMove.Z / DeltaTime;
