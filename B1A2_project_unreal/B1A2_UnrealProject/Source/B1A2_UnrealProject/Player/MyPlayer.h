@@ -22,6 +22,7 @@ class UMaterialInstanceDynamic;
 class ABaseSellingMachine;
 
 class UShopWidget;
+class UQuestWidget;
 
 /**
  * 
@@ -115,6 +116,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
 	UInputAction* SellAction;
 
+	// 퀘스트 마우스 입력
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
+	UInputAction* QuestInputAction;
+
 public:
 	AMyPlayer();
 
@@ -171,6 +176,9 @@ protected:
 public:
 	// Tool 획득시 변경
 	void OnToolSelectionChanged();
+	
+	// 퀘스트 키 입력 시 마우스 입력 모드 전환(보상 받을 수 있도록)
+	void QuestInputToggle();
 
 protected:
 	// Item/Tool 버리기 입력
@@ -225,6 +233,13 @@ protected:
 
 	UPROPERTY()
 	UShopWidget* _shopWidgetInstance;
+
+	// Quest
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<UUserWidget> _questWidgetClass;
+
+	UPROPERTY()
+	UQuestWidget* _questWidgetInstance;
 
 public:
 	// 로컬 플레이어 모델 업데이트

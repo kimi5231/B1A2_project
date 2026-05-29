@@ -28,6 +28,8 @@
 #include "Widget/ToolBarWidget.h" 
 #include "Widget/PlayerStatusWidget.h"
 #include "Widget/ShopWidget.h"
+#include "Widget/QuestWidget.h"
+
 #include "Blueprint/UserWidget.h"
 #include "Interactable/BaseBase.h"
 
@@ -110,6 +112,14 @@ void AMyPlayer::BeginPlay()
 	if (_shopWidgetClass)
 	{
 		_shopWidgetInstance = CreateWidget<UShopWidget>(GetWorld(), _shopWidgetClass);
+	}
+	// Quest À§Á¬
+	if (_questWidgetClass)
+	{
+		_questWidgetInstance = CreateWidget<UQuestWidget>(GetWorld(), _questWidgetClass);
+
+		if (_questWidgetInstance)
+			_questWidgetInstance->AddToViewport();
 	}
 
 	// Scan Material ¼³Á¤
@@ -265,6 +275,9 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 		// Sell Item
 		EnhancedInputComponent->BindAction(SellAction, ETriggerEvent::Started, this, &AMyPlayer::InteractSellingMachine);
+
+		// Quest Key
+		EnhancedInputComponent->BindAction(QuestInputAction, ETriggerEvent::Started, this, &AMyPlayer::QuestInputToggle);
 	}
 }
 
@@ -637,6 +650,14 @@ void AMyPlayer::SendEndStageAndStartStage()
 		laverPullCount = 0;
 		gameInstance->SendStartStage(true);
 		UE_LOG(LogTemp, Display, TEXT("[Stage] Send C_StartStage_Packet (Count: 1->0)"));
+	}
+}
+
+void AMyPlayer::QuestInputToggle()
+{
+	if (_questWidgetInstance)
+	{
+		_questWidgetInstance->ToggleMouseMode();
 	}
 }
 
