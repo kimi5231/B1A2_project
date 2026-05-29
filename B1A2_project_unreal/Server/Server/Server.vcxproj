@@ -147,10 +147,12 @@
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Lantern.h" />
+    <ClInclude Include="MainQuest.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="Obstacle.h" />
     <ClInclude Include="Packets.h" />
     <ClInclude Include="PollutionMonitor.h" />
+    <ClInclude Include="Quest.h" />
     <ClInclude Include="SellingMachine.h" />
     <ClInclude Include="ServerNetwork.h" />
     <ClInclude Include="Session.h" />
@@ -187,6 +189,7 @@
     <ClCompile Include="Lantern.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="MainQuest.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Obstacle.cpp" />
     <ClCompile Include="pch.cpp">
@@ -195,6 +198,7 @@
     </ClCompile>
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PollutionMonitor.cpp" />
+    <ClCompile Include="Quest.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="SellingMachine.cpp" />
     <ClCompile Include="ServerFramework.cpp" />

@@ -501,7 +501,7 @@ struct CubeInfo
 
 struct MainQuestInfo
 {
-	ItemType targetItemType;
+	ItemType targetItemType; 
 	int targetAmount;
 	RewardType rewardType;
 	ItemType rewardItemType;

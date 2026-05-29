@@ -11,6 +11,7 @@
 #include "EmotionGame.h"
 #include "SellingMachine.h"
 #include "Global.h"
+#include "MainQuest.h"
 
 ServerNetwork::ServerNetwork(ServerFramework* framework)
 {
@@ -265,7 +266,7 @@ void ServerNetwork::ProcessPacket(std::vector<char>& packet, int clientIndex)
 		unsigned short packetSize;
 		memcpy(&packetSize, packet.data(), sizeof(unsigned short));
 		packet.erase(packet.begin(), packet.begin() + sizeof(unsigned short) + sizeof(PacketID));
-		
+
 		C_Login_Packet loginPacket{ packetSize, C_Login, DeserializeVector<char>(packet), DeserializeVector<char>(packet) };
 		ProcessLoginPacket(loginPacket, clientIndex);
 		break;
@@ -433,6 +434,14 @@ void ServerNetwork::ProcessPacket(std::vector<char>& packet, int clientIndex)
 		memcpy(&endStagePacket, packet.data(), sizeof(C_EndStage_Packet));
 		packet.erase(packet.begin(), packet.begin() + sizeof(C_EndStage_Packet));
 		ProcessEndStagePacket(endStagePacket, clientIndex);
+		break;
+	}
+	case C_RequestQuestReward:
+	{
+		C_RequestQuestReward_Packet requestQuestRewardPacket;
+		memcpy(&requestQuestRewardPacket, packet.data(), sizeof(C_RequestQuestReward_Packet));
+		packet.erase(packet.begin(), packet.begin() + sizeof(C_RequestQuestReward_Packet));
+		ProcessRequestQuestRewardPacket(requestQuestRewardPacket, clientIndex);
 		break;
 	}
 	}
@@ -822,6 +831,28 @@ void ServerNetwork::SendEndStagePacket(Session* client)
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);
 
+	client->Send(serializedPacketData);
+}
+
+void ServerNetwork::SendUpdateQuestPacket(Quest* quest, bool isMain, Session* client)
+{
+	// Packet Data 생성
+	S_UpdateQuest_Packet packetData{ sizeof(S_UpdateQuest_Packet), S_UpdateQuest, isMain, quest->GetID(), quest->GetGoalCollectCount(), quest->GetCollectItemType() };
+	
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+	
+	client->Send(serializedPacketData);
+}
+
+void ServerNetwork::SendUpdateQuestProgressPacket(int currentCollectCount, bool isMain, Session* client)
+{
+	// Packet Data 생성
+	S_UpdateQuestProgress_Packet packetData{ sizeof(S_UpdateQuestProgress_Packet), S_UpdateQuestProgress, isMain, currentCollectCount };
+	
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+	
 	client->Send(serializedPacketData);
 }
 
@@ -1297,4 +1328,28 @@ void ServerNetwork::ProcessEndStagePacket(C_EndStage_Packet packet, int clientIn
 	}
 
 	_clients[clientIndex]->_room->EndStage();
+}
+
+void ServerNetwork::ProcessRequestQuestRewardPacket(C_RequestQuestReward_Packet packet, int clientIndex)
+{
+	Quest* quest;
+	if(packet.isMain)
+		quest = _clients[clientIndex]->_room->GetMainQuest();
+	else
+		quest = _clients[clientIndex]->_room->GetSubQuest();
+	
+	if (quest->IsClear())
+	{
+		switch (quest->GetRewardType())
+		{
+		case RewardType::Item:
+			// 보상 아이템 생성
+			for(int i = 0; i < quest->GetRewardAmount(); ++i)
+				_clients[clientIndex]->_room->AddItem(true, quest->GetRewardItemType(), { 0, 0, 0 });
+			
+			// 퀘스트 업데이트
+
+			break;
+		}
+	}
 }

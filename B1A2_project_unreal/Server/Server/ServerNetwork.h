@@ -8,6 +8,7 @@ class Lantern;
 class EmotionGame;
 class SellingMachine;
 class Room;
+class Quest;
 
 class ServerNetwork
 {
@@ -60,6 +61,8 @@ public:
 	void SendSpawnParticlePacket(Vector pos, Session* client);
 	void SendStartStagePacket(Session* client);
 	void SendEndStagePacket(Session* client);
+	void SendUpdateQuestPacket(Quest* quest, bool isMain, Session* client);
+	void SendUpdateQuestProgressPacket(int currentCollectCount, bool isMain, Session* client);
 	void SendUpdateCreditPacket(char currentCredit, Session* client);
 	
 public:
@@ -85,6 +88,7 @@ public:
 	void ProcessEmotionResultPacket(C_EmotionResult_Packet packet, int clientIndex);
 	void ProcessStartStagePacket(C_StartStage_Packet packet, int clientIndex);
 	void ProcessEndStagePacket(C_EndStage_Packet packet, int clientIndex);
+	void ProcessRequestQuestRewardPacket(C_RequestQuestReward_Packet packet, int clientIndex);
 
 private:
 	SOCKET _listenSocket{};

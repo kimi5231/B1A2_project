@@ -6,6 +6,7 @@
 class Door;
 class Hatch;
 class SellingMachine;
+class Quest;
 
 class Room
 {
@@ -60,6 +61,8 @@ public:
 	std::vector<char>& GetTitle() { return _title; }
 	int GetCurrentFearCount() { return _currentFearCount; }
 	int GetCurrentSurpriseCount() { return _currentSurpriseCount; }
+	Quest* GetMainQuest() { return _mainQuest; }
+	Quest* GetSubQuest() { return _subQuest; }
 
 // Lobby에 나타낼 정보
 private:
@@ -91,6 +94,9 @@ private:
 	int _goalCredit;
 	int _collectCredit;
 	int _currentCredit;
+
+	Quest* _mainQuest;
+	Quest* _subQuest;
 
 	int _currentPower;
 

@@ -51,6 +51,9 @@
     <Filter Include="소스 파일\Game\Object\Structure">
       <UniqueIdentifier>{458cf1f7-2a37-4074-b141-8dd9fce22c02}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Game\Quest">
+      <UniqueIdentifier>{ae27082d-c5d5-4026-9e80-11afe1755231}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -148,6 +151,12 @@
     </ClCompile>
     <ClCompile Include="Hatch.cpp">
       <Filter>소스 파일\Game\Object\Structure</Filter>
+    </ClCompile>
+    <ClCompile Include="Quest.cpp">
+      <Filter>소스 파일\Game\Quest</Filter>
+    </ClCompile>
+    <ClCompile Include="MainQuest.cpp">
+      <Filter>소스 파일\Game\Quest</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -252,6 +261,12 @@
     </ClInclude>
     <ClInclude Include="Hatch.h">
       <Filter>소스 파일\Game\Object\Structure</Filter>
+    </ClInclude>
+    <ClInclude Include="Quest.h">
+      <Filter>소스 파일\Game\Quest</Filter>
+    </ClInclude>
+    <ClInclude Include="MainQuest.h">
+      <Filter>소스 파일\Game\Quest</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

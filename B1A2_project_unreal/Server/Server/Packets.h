@@ -26,6 +26,7 @@ enum PacketID : char
 	C_EmotionResult,
 	C_StartStage,
 	C_EndStage,
+	C_RequestQuestReward,
 
 	//Server
 	S_LoginResult,
@@ -54,6 +55,8 @@ enum PacketID : char
 	S_SpawnParticle,
 	S_StartStage,
 	S_EndStage,
+	S_UpdateQuest,
+	S_UpdateQuestProgress,
 	S_UpdateCredit,
 };
 
@@ -265,6 +268,13 @@ struct C_EndStage_Packet
 {
 	unsigned char size;
 	PacketID packetID;
+};
+
+struct C_RequestQuestReward_Packet
+{
+	unsigned char size;
+	PacketID packetID;
+	bool isMain;
 };
 
 // Server
@@ -505,6 +515,24 @@ struct S_EndStage_Packet
 {
 	unsigned short size;
 	PacketID packetID;
+};
+
+struct S_UpdateQuest_Packet
+{
+	unsigned short size;
+	PacketID packetID;
+	bool isMain;
+	unsigned char questID;
+	unsigned char goalCount;
+	ItemType itemType;
+};
+
+struct S_UpdateQuestProgress_Packet
+{
+	unsigned short size;
+	PacketID packetID;
+	bool isMain;
+	unsigned char currentCount;
 };
 
 struct S_UpdateCredit_Packet

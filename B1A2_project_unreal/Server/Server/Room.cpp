@@ -13,6 +13,7 @@
 #include "Ghost.h"
 #include "PollutionMonitor.h"
 #include "TrashCollector.h"
+#include "MainQuest.h"
 
 Room::Room()
 {
@@ -31,6 +32,9 @@ Room::Room()
 	_goalCredit = 360;
 	_collectCredit = 0;
 	_currentCredit = 0;
+
+	_mainQuest = new MainQuest();
+
 	// 나중에 Json으로 읽어오기
 	_currentPower = 0;
 	_currentSurpriseCount = 0;
