@@ -496,30 +496,40 @@ void AMyPlayer::ItemOrToolDrop()
 		{
 			if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
 			{
-				ABaseSellingMachine* SellingMachine = _overlappedSellingMachine;
-
-				// 판매기 근처이고, Open 상태일 때
-				if (SellingMachine && SellingMachine->GetMachineState() == ObjectState::OPEN)
+				// Base의 모니터 근처에서 아이템을 버린다면
+				if (ABaseBase* BaseActor = Cast<ABaseBase>(_focusedActor))
 				{
-					int32 ItemCost = info.cost;
-
-					if (SellingMachine->CanAddCredit(ItemCost))
-					{
-						gameInstance->SendDropItemToSellingMachine(gameInstance->GetMyID(), info.itemID, SellingMachine->GetMachineID());
-						SellingMachine->AddPendingCredit(ItemCost);
-						UE_LOG(LogTemp, Display, TEXT("[SellingMachine] Item Drop Success! Cost: %d"), ItemCost);
-					}
-					else  // 판매 금액이 초과됐다면, 바닥에 드랍
-					{
-						gameInstance->SendDropItem(gameInstance->GetMyID(), false, info.itemID);
-						UE_LOG(LogTemp, Display, TEXT("[SellingMachine] Credit Limit Exceeded! Normal Drop. MaxLimit %d, PendingCredit %d"), SellingMachine->GetMaxCredit(), SellingMachine->GetCurrentPendingCredit());
-					}
+					// 바닥에 드랍하지 않고 기지에 아이템 제출하기 패킷 송신
+					gameInstance->SendSubmitItem(info.itemID, gameInstance->GetMyID());
+					UE_LOG(LogTemp, Display, TEXT("[Base] Item Submit Success! ItemID: %d"), info.itemID);
 				}
 				else
 				{
-					// 일반적인 상황에서의 드랍
-					gameInstance->SendDropItem(gameInstance->GetMyID(), false, info.itemID);
-					UE_LOG(LogTemp, Display, TEXT("[Item] Item Drop"));
+					ABaseSellingMachine* SellingMachine = _overlappedSellingMachine;
+
+					// 판매기 근처이고, Open 상태일 때
+					if (SellingMachine && SellingMachine->GetMachineState() == ObjectState::OPEN)
+					{
+						int32 ItemCost = info.cost;
+
+						if (SellingMachine->CanAddCredit(ItemCost))
+						{
+							gameInstance->SendDropItemToSellingMachine(gameInstance->GetMyID(), info.itemID, SellingMachine->GetMachineID());
+							SellingMachine->AddPendingCredit(ItemCost);
+							UE_LOG(LogTemp, Display, TEXT("[SellingMachine] Item Drop Success! Cost: %d"), ItemCost);
+						}
+						else  // 판매 금액이 초과됐다면, 바닥에 드랍
+						{
+							gameInstance->SendDropItem(gameInstance->GetMyID(), false, info.itemID);
+							UE_LOG(LogTemp, Display, TEXT("[SellingMachine] Credit Limit Exceeded! Normal Drop. MaxLimit %d, PendingCredit %d"), SellingMachine->GetMaxCredit(), SellingMachine->GetCurrentPendingCredit());
+						}
+					}
+					else
+					{
+						// 일반적인 상황에서의 드랍
+						gameInstance->SendDropItem(gameInstance->GetMyID(), false, info.itemID);
+						UE_LOG(LogTemp, Display, TEXT("[Item] Item Drop"));
+					}
 				}
 			}
 
