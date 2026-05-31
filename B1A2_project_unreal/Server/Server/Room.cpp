@@ -28,9 +28,9 @@ Room::Room()
 
 	_stage = 0;
 	// 나중에 Json으로 읽어오기
-	_goalCredit = 360;
+	_goalCredit = 200;
 	_collectCredit = 0;
-	_currentCredit = 0;
+	_currentCredit = 100;
 
 	_mainQuest = new MainQuest();
 	_subQuest = new SubQuest(_stage);
@@ -716,7 +716,7 @@ void Room::PlusCredit(int credit)
 	for (auto& player : _players)
 	{
 		if (player->GetClient())
-			g_network->SendUpdateCreditPacket(_currentCredit, player->GetClient());
+			g_network->SendUpdateCreditPacket(_goalCredit, _collectCredit, _currentCredit, player->GetClient());
 	}
 }
 
@@ -729,7 +729,7 @@ void Room::MinusCredit(int credit)
 	for (auto& player : _players)
 	{
 		if (player->GetClient())
-			g_network->SendUpdateCreditPacket(_currentCredit, player->GetClient());
+			g_network->SendUpdateCreditPacket(_goalCredit, _collectCredit, _currentCredit, player->GetClient());
 	}
 }
 

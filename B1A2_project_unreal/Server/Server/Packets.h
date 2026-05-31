@@ -548,6 +548,8 @@ struct S_UpdateCredit_Packet
 {
 	unsigned short size;
 	PacketID packetID;
+	unsigned short goalCredit;
+	unsigned short collectCredit;
 	unsigned short currentCredit;
 };
 #pragma pack(pop)

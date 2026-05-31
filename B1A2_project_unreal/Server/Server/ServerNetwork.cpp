@@ -196,6 +196,7 @@ void ServerNetwork::ProcessAccept()
 	SendCreateCubesPacket(_clients[clientIndex]->_room->GetCubes(), _clients[clientIndex]->_room->GetDoors(), _clients[clientIndex]->_room->GetSellingMachine(), _clients[clientIndex]);
 	SendUpdateQuestPacket(_clients[clientIndex]->_room->GetMainQuest(), true, _clients[clientIndex]);
 	SendUpdateQuestPacket(_clients[clientIndex]->_room->GetSubQuest(), false, _clients[clientIndex]);
+	SendUpdateCreditPacket(_clients[clientIndex]->_room->GetGoalCredit(), _clients[clientIndex]->_room->GetCollectCredit(), _clients[clientIndex]->_room->GetCurrentCredit(), _clients[clientIndex]);
 
 	_clients[clientIndex]->Recv();
 
@@ -866,10 +867,10 @@ void ServerNetwork::SendUpdateQuestProgressPacket(int currentCollectCount, bool 
 	client->Send(serializedPacketData);
 }
 
-void ServerNetwork::SendUpdateCreditPacket(char currentCredit, Session* client)
+void ServerNetwork::SendUpdateCreditPacket(short goalCredit, short collectCredit, short currentCredit, Session* client)
 {
 	// Packet Data 생성
-	S_UpdateCredit_Packet packetData{ sizeof(S_UpdateCredit_Packet), S_UpdateCredit, currentCredit };
+	S_UpdateCredit_Packet packetData{ sizeof(S_UpdateCredit_Packet), S_UpdateCredit, goalCredit, collectCredit, currentCredit };
 
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);
@@ -1272,7 +1273,7 @@ void ServerNetwork::ProcessBuyItemPacket(C_BuyItem_Packet packet, int clientInde
 	if (_clients[clientIndex]->_room->GetCurrentCredit() >= needCredit)
 	{
 		for (int i = 0; i < packet.itemCount; ++i)
-			_clients[clientIndex]->_room->AddItem(true, packet.itemType, {0, 0, 0});
+			_clients[clientIndex]->_room->AddItem(true, packet.itemType, {0, 0, 25});
 		
 		// 아이템 가격만큼 크레딧 마이너스
 		_clients[clientIndex]->_room->MinusCredit(needCredit);
