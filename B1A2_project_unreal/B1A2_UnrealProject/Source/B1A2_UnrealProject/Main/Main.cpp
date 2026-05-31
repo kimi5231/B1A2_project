@@ -575,6 +575,18 @@ void UMain::SendBuyItem(int playerID, ItemType itemType, int itemCount)
 	_gameNetwork->SendBuyItemPacket(playerID, itemType, itemCount);
 }
 
+void UMain::SendSubmitItem(int itemID, int playerID)
+{
+	if (_myID == -1)
+		return;
+
+	UWorld* world = GetWorld();
+	if (!world)
+		return;
+
+	_gameNetwork->SendSubmitItemPacket(itemID, playerID);
+}
+
 void UMain::Update()
 {
 	if (!_gameNetwork)
