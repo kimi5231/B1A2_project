@@ -26,6 +26,7 @@ enum PacketID : char
 	C_EmotionResult,
 	C_StartStage,
 	C_EndStage,
+	C_SubmitItem,
 	C_RequestQuestReward,
 
 	//Server
@@ -268,6 +269,14 @@ struct C_EndStage_Packet
 {
 	unsigned char size;
 	PacketID packetID;
+};
+
+struct C_SubmitItem_Packet
+{
+	unsigned char size;
+	PacketID packetID;
+	unsigned char itemID;
+	unsigned char playerID;
 };
 
 struct C_RequestQuestReward_Packet

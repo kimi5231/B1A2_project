@@ -438,6 +438,14 @@ void ServerNetwork::ProcessPacket(std::vector<char>& packet, int clientIndex)
 		ProcessEndStagePacket(endStagePacket, clientIndex);
 		break;
 	}
+	case C_SubmitItem:
+	{
+		C_SubmitItem_Packet submitItemPacket;
+		memcpy(&submitItemPacket, packet.data(), sizeof(C_SubmitItem_Packet));
+		packet.erase(packet.begin(), packet.begin() + sizeof(C_SubmitItem_Packet));
+		ProcessSubmitItemPacket(submitItemPacket, clientIndex);
+		break;
+	}
 	case C_RequestQuestReward:
 	{
 		C_RequestQuestReward_Packet requestQuestRewardPacket;
@@ -1330,6 +1338,34 @@ void ServerNetwork::ProcessEndStagePacket(C_EndStage_Packet packet, int clientIn
 	}
 
 	_clients[clientIndex]->_room->EndStage();
+}
+
+void ServerNetwork::ProcessSubmitItemPacket(C_SubmitItem_Packet packet, int clientIndex)
+{
+	// 제출하려는 아이템과 대응되는 퀘스트가 있는지 확인
+	Item* item = dynamic_cast<Item*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::Item, packet.itemID));
+	Quest* quest = _clients[clientIndex]->_room->IsNeedForQuest(item->GetItemType());
+	
+	// 없다면 무시
+	if (!quest)
+		return;
+
+	// 대응되는 퀘스트가 있다면, Player 인벤토리에서 아이템 제거
+	Player* player = dynamic_cast<Player*>(_clients[clientIndex]->_room->GetGameObject(ObjectType::Player, packet.playerID));
+	// 아이템이 제대로 제거되었다면
+	if (player->RemoveItemFromInventory(false, packet.itemID))
+	{
+		// 아이템 제거 및 퀘스트 진행 상황 업데이트
+		_clients[clientIndex]->_room->RemoveObject(ObjectType::Item, packet.itemID, false);
+		quest->AddCollectCount();
+
+		// Broadcast
+		for (auto& p : _clients[clientIndex]->_room->GetPlayers())
+		{
+			if (p->GetClient())
+				SendUpdateQuestPacket(quest, quest == _clients[clientIndex]->_room->GetMainQuest(), p->GetClient());
+		}
+	}
 }
 
 void ServerNetwork::ProcessRequestQuestRewardPacket(C_RequestQuestReward_Packet packet, int clientIndex)

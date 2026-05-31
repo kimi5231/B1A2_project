@@ -44,6 +44,8 @@ public:
 
 	Player* SelectPlayerForGhost();
 
+	Quest* IsNeedForQuest(ItemType itemType);
+
 public:
 	GameObject* GetGameObject(ObjectType type, int id);
 	const std::array<Player*, MAX_PLAYER>& GetPlayers() { return _players; }

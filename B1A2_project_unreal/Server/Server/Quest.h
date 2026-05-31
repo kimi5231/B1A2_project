@@ -7,7 +7,10 @@ public:
 
 public:
 	virtual void UpdateQuest(int currentStage) {};
-	bool IsClear() { return _currentCollectCount == _goalCollectCount; }
+	bool IsNeed(ItemType itemType);
+	bool IsClear() const { return _currentCollectCount == _goalCollectCount; }
+
+	void AddCollectCount() { _currentCollectCount++; }
 
 public:
 	int GetID() { return _id; }

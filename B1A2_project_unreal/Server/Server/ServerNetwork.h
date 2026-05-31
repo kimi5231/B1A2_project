@@ -88,6 +88,7 @@ public:
 	void ProcessEmotionResultPacket(C_EmotionResult_Packet packet, int clientIndex);
 	void ProcessStartStagePacket(C_StartStage_Packet packet, int clientIndex);
 	void ProcessEndStagePacket(C_EndStage_Packet packet, int clientIndex);
+	void ProcessSubmitItemPacket(C_SubmitItem_Packet packet, int clientIndex);
 	void ProcessRequestQuestRewardPacket(C_RequestQuestReward_Packet packet, int clientIndex);
 
 private:

@@ -40,6 +40,7 @@ public:
 	void SendEmotionResultPacket(float angryTime, float disgustTime, float fearTime, float happyTime, float sadTime, float surpriseTime, float neutralTime);
 	void SendStartStagePacket();
 	void SendEndStagePacket();
+	void SendSubmitItemPacket(int itemID, int playerID);
 	void SendRequestQuestRewardPacket(bool isMain);
 
 public:

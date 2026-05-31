@@ -546,7 +546,9 @@ void Room::StartStage()
 		_goalCredit = 0;
 		_collectCredit = 0;
 	}*/
-	
+
+	// 기간이 다 된 SubQuest 업데이트
+
 	// Cube 생성
 	CreateFactoryCubes();
 	
@@ -768,6 +770,17 @@ Player* Room::SelectPlayerForGhost()
 	}
 
 	return player;
+}
+
+Quest* Room::IsNeedForQuest(ItemType itemType)
+{
+	if(_mainQuest->IsNeed(itemType))
+		return _mainQuest;
+
+	if (_subQuest->IsNeed(itemType))
+		return _subQuest;
+
+	return nullptr;
 }
 
 GameObject* Room::GetGameObject(ObjectType type, int id)

@@ -657,6 +657,22 @@ void GameNetwork::SendEndStagePacket()
 	_sendEvents.push_back(event);
 }
 
+void GameNetwork::SendSubmitItemPacket(int itemID, int playerID)
+{
+	// Packet Data 持失
+	C_SubmitItem_Packet packetData{ sizeof(C_SubmitItem_Packet), C_SubmitItem, itemID, playerID };
+	
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+	
+	// SendEvent 持失
+	NetworkEventRef event = std::make_shared<NetworkEvent>();
+	event->packetID = C_SubmitItem;
+	event->serializedPacketData = serializedPacketData;
+	std::lock_guard<std::mutex> lock(_sendMutex);
+	_sendEvents.push_back(event);
+}
+
 void GameNetwork::SendRequestQuestRewardPacket(bool isMain)
 {
 	// Packet Data 持失

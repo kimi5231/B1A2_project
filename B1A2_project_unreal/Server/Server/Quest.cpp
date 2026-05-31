@@ -9,3 +9,14 @@ Quest::Quest()
 Quest::~Quest()
 {
 }
+
+bool Quest::IsNeed(ItemType itemType)
+{
+	if(_collectItemType != itemType)
+		return false;
+
+	if (_currentCollectCount == _goalCollectCount)
+		return false;
+
+	return true;
+}
