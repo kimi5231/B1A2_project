@@ -62,7 +62,7 @@ public:
 	void SendStartStagePacket(Session* client);
 	void SendEndStagePacket(Session* client);
 	void SendUpdateQuestPacket(Quest* quest, bool isMain, Session* client);
-	void SendUpdateQuestProgressPacket(int currentCollectCount, bool isMain, Session* client);
+	void SendUpdateQuestProgressPacket(Quest* quest, bool isMain, Session* client);
 	void SendUpdateCreditPacket(short goalCredit, short collectCredit, short currentCredit, Session* client);
 	
 public:

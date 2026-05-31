@@ -856,10 +856,10 @@ void ServerNetwork::SendUpdateQuestPacket(Quest* quest, bool isMain, Session* cl
 	client->Send(serializedPacketData);
 }
 
-void ServerNetwork::SendUpdateQuestProgressPacket(int currentCollectCount, bool isMain, Session* client)
+void ServerNetwork::SendUpdateQuestProgressPacket(Quest* quest, bool isMain, Session* client)
 {
 	// Packet Data »ý¼º
-	S_UpdateQuestProgress_Packet packetData{ sizeof(S_UpdateQuestProgress_Packet), S_UpdateQuestProgress, isMain, currentCollectCount };
+	S_UpdateQuestProgress_Packet packetData{ sizeof(S_UpdateQuestProgress_Packet), S_UpdateQuestProgress, isMain, quest->GetCurrentCollectCount(), quest->GetDeadLine() };
 	
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);
@@ -1384,7 +1384,7 @@ void ServerNetwork::ProcessSubmitItemPacket(C_SubmitItem_Packet packet, int clie
 		for (auto& p : _clients[clientIndex]->_room->GetPlayers())
 		{
 			if (p->GetClient())
-				SendUpdateQuestProgressPacket(quest->GetCurrentCollectCount(), quest == _clients[clientIndex]->_room->GetMainQuest(), p->GetClient());
+				SendUpdateQuestProgressPacket(quest, quest == _clients[clientIndex]->_room->GetMainQuest(), p->GetClient());
 		}
 	}
 }

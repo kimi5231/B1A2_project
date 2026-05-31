@@ -543,6 +543,7 @@ struct S_UpdateQuestProgress_Packet
 	PacketID packetID;
 	bool isMain;
 	unsigned char currentCount;
+	unsigned char deadLine;
 };
 
 struct S_UpdateCredit_Packet
