@@ -33,7 +33,9 @@ Room::Room()
 	_currentCredit = 100;
 
 	_mainQuest = new MainQuest();
-	_subQuest = new SubQuest(_stage);
+	_mainQuest->UpdateQuest();
+	_subQuest = new SubQuest();
+	_subQuest->UpdateQuest();
 
 	// 나중에 Json으로 읽어오기
 	_currentPower = 0;
@@ -540,9 +542,10 @@ void Room::CreateFactoryCubes()
 void Room::StartStage()
 {
 	// 기간이 다 된 SubQuest 업데이트
-	if (_subQuest->IsEnd(_stage))
+	if (_subQuest->GetDeadLine() == 0)
 	{
-		_subQuest->UpdateQuest(_stage);
+		_subQuest->UpdateQuest();
+		_subQuest->MinusDeadLine();
 
 		for (auto& p : _players)
 		{
