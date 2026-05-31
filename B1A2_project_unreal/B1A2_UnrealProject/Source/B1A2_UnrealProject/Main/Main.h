@@ -73,6 +73,7 @@ public:
 	void SendUseLantern(int playerID, int lanternID);
 	void SendBuyItem(int playerID, ItemType itemType, int itemCount);
 	void SendSubmitItem(int itemID, int playerID);
+	void SendRequestQuestReward(bool isMain);
 
 	// Recv
 	void Update();
