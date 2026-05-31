@@ -1054,7 +1054,24 @@ void ServerNetwork::ProcessDropItemToSellingMachinePacket(C_DropItemToSellingMac
 		
 		// SellingMachine 안에 배치. 나중에 제대로 된 값으로 입력할 것.
 		Vector pos = sellingMachine->GetPos();
-		pos.z += 100;
+		Dir dir = sellingMachine->GetDir();
+
+		switch (dir)
+		{
+		case Front:
+			pos.y -= 35;
+			break;
+		case Right:
+			pos.x -= 35;
+			break;
+		case Back:
+			pos.y += 35;
+			break;
+		case Left:
+			pos.x += 35;
+			break;
+		}
+		pos.z += 147;
 		item->SetPos(pos);
 		sellingMachine->AddItem(item->GetID());
 
