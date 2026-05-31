@@ -10,6 +10,8 @@ public:
 public:
 	virtual void UpdateQuest(int currentStage) override;
 
+	bool IsEnd(int currentStage);
+
 private:
 	int _startStage;
 	int _deadLine;

@@ -2,11 +2,12 @@
 #include "Player.h"
 #include "Monster.h"
 #include "Item.h"
+#include "MainQuest.h"
+#include "SubQuest.h"
 
 class Door;
 class Hatch;
 class SellingMachine;
-class Quest;
 
 class Room
 {
@@ -98,8 +99,8 @@ private:
 	int _collectCredit;
 	int _currentCredit;
 
-	Quest* _mainQuest;
-	Quest* _subQuest;
+	MainQuest* _mainQuest;
+	SubQuest* _subQuest;
 
 	int _currentPower;
 

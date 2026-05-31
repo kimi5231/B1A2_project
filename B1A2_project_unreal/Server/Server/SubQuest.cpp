@@ -28,3 +28,11 @@ void SubQuest::UpdateQuest(int currentStage)
 	_rewardType = info.rewardType;
 	_deadLine = info.deadLine;
 }
+
+bool SubQuest::IsEnd(int currentStage)
+{
+	if (currentStage - _startStage == _deadLine)
+		return true;
+
+	return false;
+}

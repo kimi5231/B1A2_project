@@ -13,8 +13,6 @@
 #include "Ghost.h"
 #include "PollutionMonitor.h"
 #include "TrashCollector.h"
-#include "MainQuest.h"
-#include "SubQuest.h"
 
 Room::Room()
 {
@@ -540,30 +538,39 @@ void Room::CreateFactoryCubes()
 
 void Room::StartStage()
 {
-	// 스테이지가 3의 배수일때마다 목표 크레딧, 모은 크레딧 초기화
-	/*if (_stage % 3 == 0)
-	{
-		_goalCredit = 0;
-		_collectCredit = 0;
-	}*/
-
 	// 기간이 다 된 SubQuest 업데이트
+	if (_subQuest->IsEnd(_stage))
+	{
+		_subQuest->UpdateQuest(_stage);
+
+		for (auto& p : _players)
+		{
+			if (p->GetClient())
+				g_network->SendUpdateQuestPacket(_subQuest, false, p->GetClient());
+		}
+	}
+
+	_stage++;
 
 	// Cube 생성
 	CreateFactoryCubes();
 	
-	// Broadcast
 	for (auto& p : _players)
 	{
-		if (!p->GetClient())
-			continue;
-
-		g_network->SendCreateCubesPacket(_cubes, _doors, _sellingMachines, p->GetClient());
+		if (p->GetClient())
+			g_network->SendCreateCubesPacket(_cubes, _doors, _sellingMachines, p->GetClient());
 	}
 }
 
 void Room::EndStage()
 {
+	// 스테이지가 4의 배수일때마다 목표 크레딧, 모은 크레딧 초기화
+	/*if (_stage % 4 == 0)
+	{
+		_goalCredit = 0;
+		_collectCredit = 0;
+	}*/
+
 	_cubes.clear();
 	_doors.clear();
 	_sellingMachines.clear();
