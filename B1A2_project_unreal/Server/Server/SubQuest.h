@@ -12,6 +12,9 @@ public:
 
 	bool IsEnd(int currentStage);
 
+public:
+	virtual int GetDeadLine() override { return _deadLine; }
+
 private:
 	int _startStage;
 	int _deadLine;

@@ -848,7 +848,7 @@ void ServerNetwork::SendEndStagePacket(Session* client)
 void ServerNetwork::SendUpdateQuestPacket(Quest* quest, bool isMain, Session* client)
 {
 	// Packet Data »ý¼º
-	S_UpdateQuest_Packet packetData{ sizeof(S_UpdateQuest_Packet), S_UpdateQuest, isMain, quest->GetID(), quest->GetGoalCollectCount(), quest->GetCollectItemType() };
+	S_UpdateQuest_Packet packetData{ sizeof(S_UpdateQuest_Packet), S_UpdateQuest, isMain, quest->GetID(), quest->GetGoalCollectCount(), quest->GetDeadLine(), quest->GetCollectItemType()};
 	
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);

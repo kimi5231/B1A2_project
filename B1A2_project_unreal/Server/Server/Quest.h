@@ -20,6 +20,7 @@ public:
 	ItemType GetRewardItemType() { return _rewardItemType; }
 	int GetRewardAmount() { return _rewardAmount; }
 	RewardType GetRewardType() { return _rewardType; }
+	virtual int GetDeadLine() { return 0; }
 
 protected:
 	int _id;

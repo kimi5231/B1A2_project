@@ -533,6 +533,7 @@ struct S_UpdateQuest_Packet
 	bool isMain;
 	unsigned char questID;
 	unsigned char goalCount;
+	unsigned char deadLine;
 	ItemType itemType;
 };
 
