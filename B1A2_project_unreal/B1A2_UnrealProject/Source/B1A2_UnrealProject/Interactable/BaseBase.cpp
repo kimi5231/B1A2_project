@@ -20,6 +20,10 @@ ABaseBase::ABaseBase()
     EWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("InteractionWidget"));
     EWidget->SetupAttachment(RootComponent);
     EWidget->SetVisibility(false);
+
+    SubmitWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("SubmitWidget"));
+    SubmitWidget->SetupAttachment(RootComponent);
+    SubmitWidget->SetVisibility(false);
 }
 
 void ABaseBase::BeginPlay()
@@ -34,23 +38,35 @@ void ABaseBase::Tick(float DeltaTime)
 
 void ABaseBase::ShowInteractionUI_Implementation()
 {
-    if (EWidget)
-    {
-        EWidget->SetVisibility(true);
-        UE_LOG(LogTemp, Log, TEXT("[Shop] Widget Show Called"));
-    }
+    ShowInteractionUI_Dynamic(false);
 }
 
 void ABaseBase::HideInteractionUI_Implementation()
 {
-    if (EWidget)
-    {
-        EWidget->SetVisibility(false);
-        UE_LOG(LogTemp, Log, TEXT("[Shop] Widget Hide Called"));
-    }
+    if (EWidget) EWidget->SetVisibility(false);
+    if (SubmitWidget) SubmitWidget->SetVisibility(false);
+    UE_LOG(LogTemp, Log, TEXT("[Base] All Widgets Hidden"));
 }
 
 void ABaseBase::Interact_Implementation()
 {
     UE_LOG(LogTemp, Log, TEXT("[Shop] EButton Interact Called"));
+}
+
+void ABaseBase::ShowInteractionUI_Dynamic(bool isInventoryOpen)
+{
+    if (!EWidget || !SubmitWidget) return;
+
+    if (isInventoryOpen)
+    {
+        EWidget->SetVisibility(false);
+        SubmitWidget->SetVisibility(true);
+        UE_LOG(LogTemp, Log, TEXT("[Base] Submit Widget (V) Show Called"));
+    }
+    else
+    {
+        SubmitWidget->SetVisibility(false);
+        EWidget->SetVisibility(true);
+        UE_LOG(LogTemp, Log, TEXT("[Base] Shop Widget (E) Show Called"));
+    }
 }
