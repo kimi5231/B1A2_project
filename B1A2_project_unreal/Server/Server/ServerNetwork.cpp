@@ -1359,6 +1359,9 @@ void ServerNetwork::ProcessSubmitItemPacket(C_SubmitItem_Packet packet, int clie
 		_clients[clientIndex]->_room->RemoveObject(ObjectType::Item, packet.itemID, false);
 		quest->AddCollectCount();
 
+		// 아이템을 제출한 Player에게 인벤토리에서 아이템 제거 알림
+		SendRemoveItemFromInventoryPacket(item, false, player->GetClient());
+
 		// Broadcast
 		for (auto& p : _clients[clientIndex]->_room->GetPlayers())
 		{
