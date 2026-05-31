@@ -9,6 +9,8 @@
 #include <variant>
 #include <memory>
 #include <mutex>
+#include <string>
+#include <filesystem>
 
 #include "../../../../Server/Server/Packets.h"
 #include "UnrealPackets.h"
