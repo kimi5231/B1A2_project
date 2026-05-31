@@ -23,11 +23,6 @@ Cube::~Cube()
 {
 }
 
-void Cube::Update()
-{
-
-}
-
 // 추후 비상구 생성 여부도 따질 것
 std::vector<Door*> Cube::CreateDoors()
 {

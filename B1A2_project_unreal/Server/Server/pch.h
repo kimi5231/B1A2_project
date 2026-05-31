@@ -21,6 +21,8 @@
 #include <optional>
 #include <MSWSock.h>
 #include <limits>
+#include <thread>
+#include <mutex>
 
 #include "Types.h"
 #include "Utils.h"
