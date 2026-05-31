@@ -19,6 +19,7 @@ struct FQuestData
     unsigned char currentCount = 0;
     ItemType questItem = ItemType::None;
     bool canClaimReward = false;
+    unsigned char deadLine = 0;
 };
 /**
  * 
@@ -34,7 +35,7 @@ protected:
 
 public:
     // 서버 패킷 수신 시 호출
-    void HandleUpdateQuest(bool isMain, int questID, int goalCount, ItemType itemType);
+    void HandleUpdateQuest(bool isMain, int questID, int goalCount, ItemType itemType, int deadLine);
     void HandleUpdateQuestProgress(bool isMain,int CurrentCount);
 
     // Q 입력 인풋 모드 토글
@@ -68,6 +69,9 @@ protected:
 
     UPROPERTY(meta = (BindWidget))
     UButton* SubRewardButton;
+
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* SubDeadline;
 
 private:
     // 퀘스트 상태 저장

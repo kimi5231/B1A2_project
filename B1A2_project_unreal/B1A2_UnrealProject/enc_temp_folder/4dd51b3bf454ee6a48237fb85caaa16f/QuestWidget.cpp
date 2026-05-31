@@ -144,7 +144,7 @@ void UQuestWidget::UpdateQuestUI()
 		FText ItemName = GetItemNameText(_subQuestSlot.questItem);
 		SubQuestText->SetText(FText::Format(FText::FromString(TEXT("서브: {0} {1}개 수집하기")), ItemName, FText::AsNumber(_subQuestSlot.goalCount)));
 		SubQuestProgress->SetText(FText::Format(FText::FromString(TEXT("({0} / {1})")), FText::AsNumber(_subQuestSlot.currentCount), FText::AsNumber(_subQuestSlot.goalCount)));
-		SubDeadline->SetText(FText::Format(FText::FromString(TEXT("기한: {0}일 남음")), FText::AsNumber(_subQuestSlot.deadLine)));
+		SubDeadline->SetText(FText::Format(FText::FromString(TEXT("기한: {0}남음")), FText::AsNumber(_subQuestSlot.deadLine)));
 
 		if (SubRewardButton)
 		{

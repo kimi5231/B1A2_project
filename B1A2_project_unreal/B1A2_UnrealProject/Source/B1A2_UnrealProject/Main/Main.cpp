@@ -599,6 +599,18 @@ void UMain::SendSubmitItem(int itemID, int playerID)
 	_gameNetwork->SendSubmitItemPacket(itemID, playerID);
 }
 
+void UMain::SendRequestQuestReward(bool isMain)
+{
+	if (_myID == -1)
+		return;
+
+	UWorld* world = GetWorld();
+	if (!world)
+		return;
+
+	_gameNetwork->SendRequestQuestRewardPacket(isMain);
+}
+
 void UMain::Update()
 {
 	if (!_gameNetwork)
@@ -1504,7 +1516,10 @@ void UMain::RecvRemoveItemFromInventory(S_RemoveItemFromInventory_Packet packet)
 		// 아이템
 		else
 		{
-			// ...
+			// 인벤에서 삭제
+			_myPlayer->RemoveItemInInventoryByID(itemID);
+
+			UE_LOG(LogTemp, Display, TEXT("[RecvRemoveItemFromInventory] Tool %d removed from Inventory"), itemID);
 		}
 	});
 }
@@ -2063,8 +2078,9 @@ void UMain::RecvUpdateQuest(S_UpdateQuest_Packet packet)
 		int questID = packet.questID;
 		int goalCount = packet.goalCount;
 		ItemType type = packet.itemType;
+		int deadLine = packet.deadLine;
 
-		_myPlayer->GetQuestWidget()->HandleUpdateQuest(isMain, questID, goalCount, type);
+		_myPlayer->GetQuestWidget()->HandleUpdateQuest(isMain, questID, goalCount, type, deadLine);
 	});
 }
 
