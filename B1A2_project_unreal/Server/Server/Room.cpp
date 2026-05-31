@@ -41,8 +41,6 @@ Room::Room()
 	_currentPower = 0;
 	_currentSurpriseCount = 0;
 	_currentFearCount = 0;
-
-	// Base 积己
 }
 
 Room::~Room()
@@ -118,7 +116,7 @@ void Room::Init()
 		_items[i]->SetOwnerRoom(this);
 	}
 
-	// 厘局拱 ObjectPool 固府 犬焊
+	// Obstacle ObjectPool 固府 犬焊
 	for (int i = 0; i < MAX_OBSTACLE; ++i)
 	{
 		ObstacleType type = static_cast<ObstacleType>(i % static_cast<int>(ObstacleType::ObstacleTypeCount));
@@ -139,6 +137,22 @@ void Room::Init()
 		_obstacles[i]->SetObstacleType(ObstacleType::Web);
 	}
 
+	// Base 积己
+	CubeInfo info = g_dataManager->GetCubeInfo(CubeType::Base);
+	CubeRef base = std::make_shared<Cube>(Vector{ 0, 0, 0 }, Back, info);
+	base->SetID(0);
+	_cubes.push_back(base);
+
+	// Hatch 积己
+	Hatch* hatch = new Hatch(info.doorPos[0], Back, 0, Back);
+	hatch->SetID(0);
+	hatch->SetOwnerRoom(this);
+	hatch->SetConnectedCubeID(1);
+	base->AddDoor(hatch->GetID());
+	_doors.push_back(hatch);
+	
+	_hatch = hatch;
+	
 	CreateFactoryCubes();
 }
 
@@ -225,25 +239,8 @@ void Room::CreateFactoryCubes()
 		}
 	}
 
-	int generateCubeID = 0;
-	int generateDoorID = 0;
-
-	// Base 积己
-	{
-		CubeInfo info = g_dataManager->GetCubeInfo(CubeType::Base);
-		CubeRef base = std::make_shared<Cube>(Vector{ 0, 0, 0 }, Back, info);
-		base->SetID(generateCubeID);
-
-		// Hatch 积己
-		Hatch* hatch = new Hatch(info.doorPos[0], Back, generateCubeID++, Back);
-		hatch->SetID(generateDoorID++);
-		hatch->SetOwnerRoom(this);
-		hatch->SetConnectedCubeID(generateCubeID);
-		base->AddDoor(hatch->GetID());
-		_doors.push_back(hatch);
-		_hatch = hatch;
-		_cubes.push_back(base);
-	}
+	int generateCubeID = 1;
+	int generateDoorID = 1;
 
 	// MainEntranceRoom 积己
 	{
@@ -545,8 +542,7 @@ void Room::StartStage()
 	if (_subQuest->GetDeadLine() == 0)
 	{
 		_subQuest->UpdateQuest();
-		_subQuest->MinusDeadLine();
-
+		
 		for (auto& p : _players)
 		{
 			if (p->GetClient())
@@ -555,6 +551,7 @@ void Room::StartStage()
 	}
 
 	_stage++;
+	_subQuest->MinusDeadLine();
 
 	// Cube 积己
 	CreateFactoryCubes();
@@ -575,8 +572,8 @@ void Room::EndStage()
 		_collectCredit = 0;
 	}*/
 
-	_cubes.clear();
-	_doors.clear();
+	_cubes.erase(_cubes.begin() + 1, _cubes.end());
+	_doors.erase(_doors.begin() + 1, _doors.end());
 	_sellingMachines.clear();
 	_connectableDoors.clear();
 
