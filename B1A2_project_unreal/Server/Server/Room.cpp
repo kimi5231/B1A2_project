@@ -33,14 +33,14 @@ Room::Room()
 	_currentCredit = 100;
 
 	_mainQuest = new MainQuest();
-	_subQuest = new SubQuest(_stage);
+	_mainQuest->UpdateQuest();
+	_subQuest = new SubQuest();
+	_subQuest->UpdateQuest();
 
 	// 나중에 Json으로 읽어오기
 	_currentPower = 0;
 	_currentSurpriseCount = 0;
 	_currentFearCount = 0;
-
-	// Base 생성
 }
 
 Room::~Room()
@@ -116,7 +116,7 @@ void Room::Init()
 		_items[i]->SetOwnerRoom(this);
 	}
 
-	// 장애물 ObjectPool 미리 확보
+	// Obstacle ObjectPool 미리 확보
 	for (int i = 0; i < MAX_OBSTACLE; ++i)
 	{
 		ObstacleType type = static_cast<ObstacleType>(i % static_cast<int>(ObstacleType::ObstacleTypeCount));
@@ -137,6 +137,22 @@ void Room::Init()
 		_obstacles[i]->SetObstacleType(ObstacleType::Web);
 	}
 
+	// Base 생성
+	CubeInfo info = g_dataManager->GetCubeInfo(CubeType::Base);
+	CubeRef base = std::make_shared<Cube>(Vector{ 0, 0, 0 }, Back, info);
+	base->SetID(0);
+	_cubes.push_back(base);
+
+	// Hatch 생성
+	Hatch* hatch = new Hatch(info.doorPos[0], Back, 0, Back);
+	hatch->SetID(0);
+	hatch->SetOwnerRoom(this);
+	hatch->SetConnectedCubeID(1);
+	base->AddDoor(hatch->GetID());
+	_doors.push_back(hatch);
+	
+	_hatch = hatch;
+	
 	CreateFactoryCubes();
 }
 
@@ -223,25 +239,8 @@ void Room::CreateFactoryCubes()
 		}
 	}
 
-	int generateCubeID = 0;
-	int generateDoorID = 0;
-
-	// Base 생성
-	{
-		CubeInfo info = g_dataManager->GetCubeInfo(CubeType::Base);
-		CubeRef base = std::make_shared<Cube>(Vector{ 0, 0, 0 }, Back, info);
-		base->SetID(generateCubeID);
-
-		// Hatch 생성
-		Hatch* hatch = new Hatch(info.doorPos[0], Back, generateCubeID++, Back);
-		hatch->SetID(generateDoorID++);
-		hatch->SetOwnerRoom(this);
-		hatch->SetConnectedCubeID(generateCubeID);
-		base->AddDoor(hatch->GetID());
-		_doors.push_back(hatch);
-		_hatch = hatch;
-		_cubes.push_back(base);
-	}
+	int generateCubeID = 1;
+	int generateDoorID = 1;
 
 	// MainEntranceRoom 생성
 	{
@@ -540,10 +539,10 @@ void Room::CreateFactoryCubes()
 void Room::StartStage()
 {
 	// 기간이 다 된 SubQuest 업데이트
-	if (_subQuest->IsEnd(_stage))
+	if (_subQuest->GetDeadLine() == 0)
 	{
-		_subQuest->UpdateQuest(_stage);
-
+		_subQuest->UpdateQuest();
+		
 		for (auto& p : _players)
 		{
 			if (p->GetClient())
@@ -552,6 +551,7 @@ void Room::StartStage()
 	}
 
 	_stage++;
+	_subQuest->MinusDeadLine();
 
 	// Cube 생성
 	CreateFactoryCubes();
@@ -572,8 +572,8 @@ void Room::EndStage()
 		_collectCredit = 0;
 	}*/
 
-	_cubes.clear();
-	_doors.clear();
+	_cubes.erase(_cubes.begin() + 1, _cubes.end());
+	_doors.erase(_doors.begin() + 1, _doors.end());
 	_sellingMachines.clear();
 	_connectableDoors.clear();
 

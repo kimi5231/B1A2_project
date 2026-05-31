@@ -4,18 +4,16 @@
 class SubQuest : public Quest
 {
 public:
-	SubQuest(int currentStage);
+	SubQuest();
 	virtual ~SubQuest();
 
 public:
-	virtual void UpdateQuest(int currentStage) override;
-
-	bool IsEnd(int currentStage);
+	virtual void UpdateQuest() override;
+	void MinusDeadLine() { _deadLine--; }
 
 public:
 	virtual int GetDeadLine() override { return _deadLine; }
 
 private:
-	int _startStage;
 	int _deadLine;
 };

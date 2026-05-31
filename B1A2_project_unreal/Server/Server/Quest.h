@@ -6,7 +6,7 @@ public:
 	virtual ~Quest();
 
 public:
-	virtual void UpdateQuest(int currentStage) {};
+	virtual void UpdateQuest() {};
 	bool IsNeed(ItemType itemType);
 	bool IsClear() const { return _currentCollectCount == _goalCollectCount; }
 

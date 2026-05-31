@@ -1435,7 +1435,7 @@ void ServerNetwork::ProcessRequestQuestRewardPacket(C_RequestQuestReward_Packet 
 		}
 
 		// 퀘스트 업데이트
-		quest->UpdateQuest(_clients[clientIndex]->_room->GetCurrentStage());
+		quest->UpdateQuest();
 
 		for (auto& p : _clients[clientIndex]->_room->GetPlayers())
 		{

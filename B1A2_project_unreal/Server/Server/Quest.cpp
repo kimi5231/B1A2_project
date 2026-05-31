@@ -3,6 +3,7 @@
 
 Quest::Quest()
 {
+	_id = 0;
 	_currentCollectCount = 0;
 }
 

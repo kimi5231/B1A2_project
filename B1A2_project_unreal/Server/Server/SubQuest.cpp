@@ -2,19 +2,16 @@
 #include "SubQuest.h"
 #include "Global.h"
 
-SubQuest::SubQuest(int currentStage)
+SubQuest::SubQuest()
 {
-	UpdateQuest(currentStage);
 }
 
 SubQuest::~SubQuest()
 {
 }
 
-void SubQuest::UpdateQuest(int currentStage)
+void SubQuest::UpdateQuest()
 {
-	_startStage = currentStage;
-
 	// 랜덤으로 선택
 	std::uniform_int_distribution<int> selectQuest(0, 0);
 	_id = selectQuest(gen);
@@ -27,12 +24,4 @@ void SubQuest::UpdateQuest(int currentStage)
 	_rewardAmount = info.rewardAmount;
 	_rewardType = info.rewardType;
 	_deadLine = info.deadLine;
-}
-
-bool SubQuest::IsEnd(int currentStage)
-{
-	if (currentStage - _startStage == _deadLine)
-		return true;
-
-	return false;
 }
