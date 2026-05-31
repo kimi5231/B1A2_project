@@ -1384,7 +1384,7 @@ void ServerNetwork::ProcessSubmitItemPacket(C_SubmitItem_Packet packet, int clie
 		for (auto& p : _clients[clientIndex]->_room->GetPlayers())
 		{
 			if (p->GetClient())
-				SendUpdateQuestPacket(quest, quest == _clients[clientIndex]->_room->GetMainQuest(), p->GetClient());
+				SendUpdateQuestProgressPacket(quest->GetCurrentCollectCount(), quest == _clients[clientIndex]->_room->GetMainQuest(), p->GetClient());
 		}
 	}
 }
