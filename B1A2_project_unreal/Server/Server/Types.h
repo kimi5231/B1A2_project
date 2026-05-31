@@ -17,6 +17,7 @@ enum class IOType
 enum class LoginResult
 {
 	Sucess,
+	Failed,
 };
 
 enum class RoomState
