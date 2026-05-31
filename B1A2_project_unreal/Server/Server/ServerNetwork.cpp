@@ -1416,7 +1416,7 @@ void ServerNetwork::ProcessRequestQuestRewardPacket(C_RequestQuestReward_Packet 
 			}
 
 			for (int i = 0; i < quest->GetRewardAmount(); ++i)
-				_clients[clientIndex]->_room->AddItem(isTool, quest->GetRewardItemType(), { 0, 0, 0 });
+				_clients[clientIndex]->_room->AddItem(isTool, quest->GetRewardItemType(), { 0, 0, 25 });
 			break;
 		}
 		case RewardType::Credit:

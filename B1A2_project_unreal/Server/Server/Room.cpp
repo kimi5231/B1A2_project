@@ -528,6 +528,7 @@ void Room::CreateFactoryCubes()
 
 	// 아이템 생성
 	AddItem(false, ItemType::CardboardBox, { 0, 675, 25 });
+	AddItem(false, ItemType::CardboardBox, { 0, 750, 25 });
 	AddItem(true, ItemType::CUTLASS, { 0, 0, 25 });
 	AddItem(true, ItemType::Blaster, { 0, 100, 25 });
 	AddItem(true, ItemType::Key, { 0, -100, 25 });
