@@ -16,6 +16,8 @@
 
 Room::Room()
 {
+	_roomState = RoomState::Wait;
+
 	_currentDifficulty = Difficulty::Easy;
 	_detailDifficulty = Difficulty::Easy;
 

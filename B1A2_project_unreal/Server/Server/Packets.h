@@ -101,7 +101,6 @@ struct C_Login_Packet
 	unsigned char size;
 	PacketID packetID;
 	std::vector<char> id;
-	std::vector<char> password;
 };
 
 struct C_Logout_Packet

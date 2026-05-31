@@ -270,7 +270,7 @@ void ServerNetwork::ProcessPacket(std::vector<char>& packet, int clientIndex)
 		memcpy(&packetSize, packet.data(), sizeof(unsigned short));
 		packet.erase(packet.begin(), packet.begin() + sizeof(unsigned short) + sizeof(PacketID));
 
-		C_Login_Packet loginPacket{ packetSize, C_Login, DeserializeVector<char>(packet), DeserializeVector<char>(packet) };
+		C_Login_Packet loginPacket{ packetSize, C_Login, DeserializeVector<char>(packet) };
 		ProcessLoginPacket(loginPacket, clientIndex);
 		break;
 	}
