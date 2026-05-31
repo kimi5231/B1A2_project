@@ -4,14 +4,14 @@
 
 SubQuest::SubQuest(int currentStage)
 {
-	ChangeQuest(currentStage);
+	UpdateQuest(currentStage);
 }
 
 SubQuest::~SubQuest()
 {
 }
 
-void SubQuest::ChangeQuest(int currentStage)
+void SubQuest::UpdateQuest(int currentStage)
 {
 	_startStage = currentStage;
 
@@ -21,6 +21,7 @@ void SubQuest::ChangeQuest(int currentStage)
 
 	SubQuestInfo info = g_dataManager->GetSubQuestInfo(_id);
 	_goalCollectCount = info.targetAmount;
+	_currentCollectCount = 0;
 	_collectItemType = info.targetItemType;
 	_rewardItemType = info.rewardItemType;
 	_rewardAmount = info.rewardAmount;

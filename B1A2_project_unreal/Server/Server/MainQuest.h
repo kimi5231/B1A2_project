@@ -8,5 +8,5 @@ public:
 	virtual ~MainQuest();
 
 public:
-	void ChangeNextQuest();
+	virtual void UpdateQuest(int currentStage) override;
 };

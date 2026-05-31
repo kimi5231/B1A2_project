@@ -1342,16 +1342,48 @@ void ServerNetwork::ProcessRequestQuestRewardPacket(C_RequestQuestReward_Packet 
 	
 	if (quest->IsClear())
 	{
+		// 보상 지급
 		switch (quest->GetRewardType())
 		{
 		case RewardType::Item:
-			// 보상 아이템 생성
-			for(int i = 0; i < quest->GetRewardAmount(); ++i)
-				_clients[clientIndex]->_room->AddItem(true, quest->GetRewardItemType(), { 0, 0, 0 });
-			
-			// 퀘스트 업데이트
+		{
+			bool isTool = false;
+			switch (quest->GetRewardItemType())
+			{
+			case ItemType::CUTLASS:
+			case ItemType::Blaster:
+			case ItemType::Key:
+			case ItemType::LANTERN:
+				isTool = true;
+				break;
+			}
 
+			for (int i = 0; i < quest->GetRewardAmount(); ++i)
+				_clients[clientIndex]->_room->AddItem(isTool, quest->GetRewardItemType(), { 0, 0, 0 });
 			break;
+		}
+		case RewardType::Credit:
+			_clients[clientIndex]->_room->PlusCredit(quest->GetRewardAmount());
+			break;
+		case RewardType::Hp:
+			for (auto& p : _clients[clientIndex]->_room->GetPlayers())
+			{
+				if (p->GetClient() && p->GetState() != ObjectState::DEAD)
+				{
+					p->TackHeal(quest->GetRewardAmount());
+					SendUpdateHpPacket(p->GetID(), p->GetHP(), p->GetClient());
+				}
+			}
+			break;
+		}
+
+		// 퀘스트 업데이트
+		quest->UpdateQuest(_clients[clientIndex]->_room->GetCurrentStage());
+
+		for (auto& p : _clients[clientIndex]->_room->GetPlayers())
+		{
+			if (p->GetClient())
+				SendUpdateQuestPacket(quest, packet.isMain, _clients[clientIndex]);
 		}
 	}
 }

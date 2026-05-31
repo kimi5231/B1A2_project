@@ -8,7 +8,7 @@ public:
 	virtual ~SubQuest();
 
 public:
-	void ChangeQuest(int currentStage);
+	virtual void UpdateQuest(int currentStage) override;
 
 private:
 	int _startStage;

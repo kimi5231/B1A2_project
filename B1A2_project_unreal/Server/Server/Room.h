@@ -63,6 +63,7 @@ public:
 	int GetCurrentSurpriseCount() { return _currentSurpriseCount; }
 	Quest* GetMainQuest() { return _mainQuest; }
 	Quest* GetSubQuest() { return _subQuest; }
+	int GetCurrentStage() { return _stage; }
 
 // Lobby에 나타낼 정보
 private:

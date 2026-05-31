@@ -6,6 +6,7 @@ public:
 	virtual ~Quest();
 
 public:
+	virtual void UpdateQuest(int currentStage) {};
 	bool IsClear() { return _currentCollectCount == _goalCollectCount; }
 
 public:

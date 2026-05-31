@@ -17,7 +17,7 @@ MainQuest::~MainQuest()
 {
 }
 
-void MainQuest::ChangeNextQuest()
+void MainQuest::UpdateQuest(int currentStage)
 {
 	_id++;
 

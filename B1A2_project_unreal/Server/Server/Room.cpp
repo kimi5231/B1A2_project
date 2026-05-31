@@ -704,11 +704,11 @@ void Room::PlusCredit(int credit)
 	if (_collectCredit > _goalCredit)
 		_collectCredit = _goalCredit;
 
-	/*for (auto& player : _players)
+	for (auto& player : _players)
 	{
 		if (player->GetClient())
 			g_network->SendUpdateCreditPacket(_currentCredit, player->GetClient());
-	}*/
+	}
 }
 
 void Room::MinusCredit(int credit)
@@ -717,11 +717,11 @@ void Room::MinusCredit(int credit)
 	if (_currentCredit < 0)
 		_currentCredit = 0;
 
-	/*for (auto& player : _players)
+	for (auto& player : _players)
 	{
 		if (player->GetClient())
 			g_network->SendUpdateCreditPacket(_currentCredit, player->GetClient());
-	}*/
+	}
 }
 
 Player* Room::SelectPlayerForGhost()
