@@ -32,10 +32,19 @@ public:
 	virtual void HideInteractionUI_Implementation() override;
 	virtual void Interact_Implementation() override;
 
+	void ShowInteractionUI_Dynamic(bool isInventoryOpen);
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UBoxComponent* CollisionBox;		// 플레이어와 충돌 처리
 
+	// 인벤토리가 닫혔으면 상점 이용하기, 인벤토리가 열렸으면 제출하기
+	// 상점 이용하기 위젯
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UWidgetComponent* EWidget;
+	
+	// 제출하기 위젯
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UWidgetComponent* SubmitWidget;
+
 };

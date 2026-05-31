@@ -402,6 +402,16 @@ void AMyPlayer::ToggleInventory()
 		if (widget)
 			widget->ResetSelectSlot();
 	}
+
+	// Base의 충돌 박스와 충돌하는 중에 인벤토리를 열거나 닫으면 위젯 변경하도록 함
+	if (_focusedActor)
+	{
+		if (ABaseBase* BaseActor = Cast<ABaseBase>(_focusedActor))
+		{
+			bool bIsInventoryOpen = (_inventoryWidgetInstance && _inventoryWidgetInstance->IsInViewport());
+			BaseActor->ShowInteractionUI_Dynamic(bIsInventoryOpen);
+		}
+	}
 }
 
 void AMyPlayer::InventoryItemSelectForward()
@@ -890,7 +900,21 @@ void AMyPlayer::SetFocusedActor(AActor* newActor)
 	_focusedActor = newActor;
 
 	if (_focusedActor)
-		IInteractableInterface::Execute_ShowInteractionUI(_focusedActor);
+	{
+		// 인벤토리 위젯이 빌드가 되어 있고, 현재 뷰포트에 떠 있는지 확인
+		bool isInventoryOpen = (_inventoryWidgetInstance && _inventoryWidgetInstance->IsInViewport());
+
+		// Base이면, 인벤토리 창이 켜져있는지 확인하여 위젯 변경
+		if (ABaseBase* BaseActor = Cast<ABaseBase>(_focusedActor))
+		{
+			BaseActor->ShowInteractionUI_Dynamic(isInventoryOpen);
+		}
+		else
+		{
+			// 일반 인터페이스 객체들은 기존 호출
+			IInteractableInterface::Execute_ShowInteractionUI(_focusedActor);
+		}
+	}
 }
 
 void AMyPlayer::ClearFocusedActor()
