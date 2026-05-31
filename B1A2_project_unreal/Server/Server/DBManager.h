@@ -1,4 +1,6 @@
 #pragma once
+#include <sqlext.h> 
+
 class DBManager
 {
 public:
@@ -7,7 +9,16 @@ public:
 
 public:
 	void Update();
+	void AddWork(DBWork work);
+
+public:
+	void ProcessExistID(DBWork work);
 
 private:
-	std::deque<int> _workList;
+	SQLHENV _henv;
+	SQLHDBC _hdbc;
+	SQLHSTMT _hstmt;
+
+	std::mutex _mutex;
+	std::deque<DBWork> _workList;
 };
