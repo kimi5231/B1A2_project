@@ -12,6 +12,12 @@ enum class IOType
 	Send,
 	Recv,
 	Accept,
+	DB,
+};
+
+enum class DBType
+{
+	ExistID,
 };
 
 enum class LoginResult
@@ -553,4 +559,11 @@ struct SpiderStatus
 	unsigned char maxWebCount;
 	float pauseTime;
 	float roamingTime;
+};
+
+struct DBWork
+{
+	DBType type;
+	int id;
+	std::vector<char> loginID;
 };

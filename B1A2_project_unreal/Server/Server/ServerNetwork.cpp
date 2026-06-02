@@ -108,15 +108,14 @@ void ServerNetwork::Update()
 		ProcessAccept();
 		break;
 	case IOType::Recv:
-		//printf("ID[%lld]로부터 %d 바이트 받음\n", key, numByte);
 		ProcessRecv(static_cast<int>(key), numByte, expOver);
 		break;
 	case IOType::Send:
-	{
-		ExpOver* o = reinterpret_cast<ExpOver*>(over);
-		delete o;
+		delete expOver;
 		break;
-	}	
+	case IOType::DB:
+		ProcessDB(static_cast<int>(key), expOver);
+		break;
 	default:
 		std::cout << "Unknown IO type.\n";
 		exit(-1);
@@ -453,6 +452,22 @@ void ServerNetwork::ProcessPacket(std::vector<char>& packet, int clientIndex)
 		memcpy(&requestQuestRewardPacket, packet.data(), sizeof(C_RequestQuestReward_Packet));
 		packet.erase(packet.begin(), packet.begin() + sizeof(C_RequestQuestReward_Packet));
 		ProcessRequestQuestRewardPacket(requestQuestRewardPacket, clientIndex);
+		break;
+	}
+	}
+}
+
+void ServerNetwork::ProcessDB(int clientIndex, ExpOver* expOver)
+{
+	switch (expOver->_dbType)
+	{
+	case DBType::ExistID:
+	{
+		if(expOver->_dbResult)
+			SendLoginResultPacket(LoginResult::Sucess, _clients[clientIndex]);
+		else
+			SendLoginResultPacket(LoginResult::Failed, _clients[clientIndex]);	
+		delete expOver;
 		break;
 	}
 	}
@@ -880,11 +895,11 @@ void ServerNetwork::SendUpdateCreditPacket(short goalCredit, short collectCredit
 
 void ServerNetwork::ProcessLoginPacket(C_Login_Packet packet, int clientIndex)
 {
-	// ID가 데이터베이스 있는지 확인 후, 비밀번호가 일치한다면 로그인 성공 패킷 전송
-
+	// DB에 존재하는 ID인지 확인
+	/*DBWork work{DBType::ExistID, clientIndex, packet.id };
+	g_dbManager->AddWork(work);*/
 
 	LoginResult result = LoginResult::Sucess;
-
 	SendLoginResultPacket(result, _clients[clientIndex]);
 }
 

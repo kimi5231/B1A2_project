@@ -22,6 +22,7 @@ public:
 	void ProcessDisconnected(int clientIndex);
 	void ProcessRecv(int clientIndex, int numByte, ExpOver* expOver);
 	void ProcessPacket(std::vector<char>& packet, int clientIndex);
+	void ProcessDB(int clientIndex, ExpOver* expOver);
 	
 private:
 	template <class T >
@@ -90,6 +91,9 @@ public:
 	void ProcessEndStagePacket(C_EndStage_Packet packet, int clientIndex);
 	void ProcessSubmitItemPacket(C_SubmitItem_Packet packet, int clientIndex);
 	void ProcessRequestQuestRewardPacket(C_RequestQuestReward_Packet packet, int clientIndex);
+
+public:
+	HANDLE GetIOCP() const { return _iocp; }
 
 private:
 	SOCKET _listenSocket{};

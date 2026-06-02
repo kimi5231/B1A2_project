@@ -23,6 +23,8 @@ public:
 
 	WSAOVERLAPPED _over;
 	IOType  _ioType;
+	DBType _dbType;
+	bool _dbResult;
 	WSABUF	_wsaBuffer;
 	std::vector<char> _buffer;
 };

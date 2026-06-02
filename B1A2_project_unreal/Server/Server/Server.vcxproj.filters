@@ -161,6 +161,9 @@
     <ClCompile Include="SubQuest.cpp">
       <Filter>소스 파일\Game\Quest</Filter>
     </ClCompile>
+    <ClCompile Include="DBManager.cpp">
+      <Filter>소스 파일\Main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -273,6 +276,9 @@
     </ClInclude>
     <ClInclude Include="SubQuest.h">
       <Filter>소스 파일\Game\Quest</Filter>
+    </ClInclude>
+    <ClInclude Include="DBManager.h">
+      <Filter>소스 파일\Main</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
