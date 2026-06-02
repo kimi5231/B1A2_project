@@ -3,7 +3,7 @@
 
 class Room;
 
-class GameObject : public std::enable_shared_from_this<GameObject>
+class GameObject
 {
 public:
 	GameObject();
@@ -16,7 +16,7 @@ public:
 	bool CheckCollision(BoundingBox other) { return _box.CheckCollision(other.GetBounds()); };
 	bool CheckCollision(BoundingBox my, BoundingBox other){ return my.CheckCollision(other.GetBounds()); };
 	bool CheckInclude(Vector targetPos, float range, float angle, float height);
-
+	
 public:
 	void SetID(int id) { _id = id; }
 	int GetID() { return _id; }

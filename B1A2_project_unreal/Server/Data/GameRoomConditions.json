@@ -4,7 +4,7 @@
             "current": 0,
             "detail": 0, 
             "totalRoomCount": 37,
-            "createItemCount": {"min": 13, "max": 16},
+            "createItemCount": {"min": 30, "max": 30},
             "createExitCount": {"min": 3, "max": 3},
             "createSellingMachineCount": 6,
             "createSpecialSellingMachineCount": 0,

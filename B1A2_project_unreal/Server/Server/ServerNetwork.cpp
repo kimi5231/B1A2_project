@@ -136,10 +136,10 @@ void ServerNetwork::ProcessAccept()
 		}
 	}
 
-	// 할당할 수 있는 Client Session이 없다면 로그인 실패 패킷 전송
+	// 할당할 수 있는 Client Session이 없다면 연결끊기
 	if (clientIndex == -1)
 	{
-		// 로그인 실패 패킷 전송
+		closesocket(_tempSocket);
 		return;
 	}
 
@@ -177,22 +177,10 @@ void ServerNetwork::ProcessAccept()
 
 			SendAddPlayerPacket(player, _clients[clientIndex]);
 		}
-
-		for (auto& monster : _clients[clientIndex]->_room->GetMonsters())
-		{
-			if(monster->GetObjectPoolState() == ObjectPoolState::InWorld)
-				SendAddMonsterPacket(monster, _clients[clientIndex]);
-		}
-
-		for (auto& item : _clients[clientIndex]->_room->GetItems())
-		{
-			if (item->GetObjectPoolState() == ObjectPoolState::InWorld)
-				SendAddItemPacket(item, dynamic_cast<Tool*>(item), _clients[clientIndex]);
-		}
 	}
 
 	// 나중에 삭제하기
-	SendCreateCubesPacket(_clients[clientIndex]->_room->GetCubes(), _clients[clientIndex]->_room->GetDoors(), _clients[clientIndex]->_room->GetSellingMachine(), _clients[clientIndex]);
+	//SendCreateCubesPacket(_clients[clientIndex]->_room->GetCubes(), _clients[clientIndex]->_room->GetDoors(), _clients[clientIndex]->_room->GetSellingMachine(), _clients[clientIndex]);
 	SendUpdateQuestPacket(_clients[clientIndex]->_room->GetMainQuest(), true, _clients[clientIndex]);
 	SendUpdateQuestPacket(_clients[clientIndex]->_room->GetSubQuest(), false, _clients[clientIndex]);
 	SendUpdateCreditPacket(_clients[clientIndex]->_room->GetGoalCredit(), _clients[clientIndex]->_room->GetCollectCredit(), _clients[clientIndex]->_room->GetCurrentCredit(), _clients[clientIndex]);

@@ -164,6 +164,9 @@
     <ClCompile Include="DBManager.cpp">
       <Filter>소스 파일\Main</Filter>
     </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>소스 파일\Main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
