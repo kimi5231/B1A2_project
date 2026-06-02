@@ -9,13 +9,6 @@ void AMainMenuPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// 서버 연결
-	UMain* gameInstance = Cast<UMain>(GetGameInstance());
-	if (gameInstance)
-	{
-		gameInstance->ConnectServer();
-	}
-
 	// 마우스 커서 보이도록 설정
 	SetShowMouseCursor(true);
 

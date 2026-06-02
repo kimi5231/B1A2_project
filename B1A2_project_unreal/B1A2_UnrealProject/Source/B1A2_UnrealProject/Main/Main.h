@@ -74,6 +74,9 @@ public:
 	void SendBuyItem(int playerID, ItemType itemType, int itemCount);
 	void SendSubmitItem(int itemID, int playerID);
 	void SendRequestQuestReward(bool isMain);
+	void SendLogin(const std::vector<char>& id);
+	void SendLogout();
+
 
 	// Recv
 	void Update();

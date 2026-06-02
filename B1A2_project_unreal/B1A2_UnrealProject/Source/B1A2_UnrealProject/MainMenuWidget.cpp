@@ -5,6 +5,7 @@
 #include "Components/Button.h"
 #include "AccountWidget.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Main/Main.h"
 
 void UMainMenuWidget::NativeConstruct()
 {
@@ -23,6 +24,13 @@ void UMainMenuWidget::NativeConstruct()
 
 void UMainMenuWidget::OnStartClicked()
 {
+	// 서버 연결
+	UMain* gameInstance = Cast<UMain>(GetGameInstance());
+	if (gameInstance)
+	{
+		gameInstance->ConnectServer();
+	}
+
 	if (AccountWidgetClass)
 	{
 		if (!AccountWidgetInstance)

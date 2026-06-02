@@ -38,7 +38,11 @@ void UAccountWidget::OnLoginClicked()
 	UMain* gameInstance = Cast<UMain>(GetGameInstance());
 	if (gameInstance)
 	{
-		
+		FTCHARToUTF8 Convert(*UserID);
+		std::vector<char> IdVector(Convert.Get(), Convert.Get() + Convert.Length());
+		gameInstance->SendLogin(IdVector);
+
+		//UE_LOG(LogTemp, Display, TEXT("[Login] 패킷 전송 완료"));
 	}
 }
 

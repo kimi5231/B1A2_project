@@ -611,6 +611,30 @@ void UMain::SendRequestQuestReward(bool isMain)
 	_gameNetwork->SendRequestQuestRewardPacket(isMain);
 }
 
+void UMain::SendLogin(const std::vector<char>& id)
+{
+	if (_myID == -1)
+		return;
+
+	UWorld* world = GetWorld();
+	if (!world)
+		return;
+
+	_gameNetwork->SendLoginPacket(id);
+}
+
+void UMain::SendLogout()
+{
+	if (_myID == -1)
+		return;
+
+	UWorld* world = GetWorld();
+	if (!world)
+		return;
+
+	_gameNetwork->SendLogoutPacket();
+}
+
 void UMain::Update()
 {
 	if (!_gameNetwork)
