@@ -3,7 +3,7 @@
 
 class Room;
 
-class GameObject : public std::enable_shared_from_this<GameObject>
+class GameObject
 {
 public:
 	GameObject();
@@ -16,6 +16,13 @@ public:
 	bool CheckCollision(BoundingBox other) { return _box.CheckCollision(other.GetBounds()); };
 	bool CheckCollision(BoundingBox my, BoundingBox other){ return my.CheckCollision(other.GetBounds()); };
 	bool CheckInclude(Vector targetPos, float range, float angle, float height);
+	Vector SelectRandomPosInCube(const CubeRef cube);
+	
+	// 바운딩박스까지 확인하는 것 추가 예정
+	bool IsCanExist(VectorInt index, const CubeRef cube);
+
+	VectorInt PosToIndex(Vector pos, const CubeRef cube);
+	Vector IndexToPos(VectorInt index, const CubeRef cube);
 
 public:
 	void SetID(int id) { _id = id; }

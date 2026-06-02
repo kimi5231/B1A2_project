@@ -1,56 +1,28 @@
 #include "pch.h"
-#include "GameObject.h"
-#include "Global.h"
 #include "Utils.h"
-#include "Room.h"
+#include <cmath>
+#include "Types.h"
+#include "Global.h"
+#include "BoundingBox.h"
+#include "Monster.h"
 #include "Cube.h"
 
-GameObject::GameObject()
+Vector GetForwardVector(float pitch, float yaw)
 {
-	_objectPoolState = ObjectPoolState::Reusable;
-	_currentCubeID = -1;
+    float p = pitch * (3.14159265f / 180.0f);
+    float y = yaw * (3.14159265f / 180.0f);
+
+    float x = cos(p) * cos(y);
+    float y_pos = cos(p) * sin(y);
+    float z = sin(p);
+
+    Vector v{ x, y_pos, x };
+    v.Normalize();
+
+    return v;
 }
 
-GameObject::~GameObject()
-{
-}
-
-void GameObject::Init()
-{
-
-}
-
-void GameObject::Update()
-{
-
-}
-
-bool GameObject::CheckInclude(Vector targetPos, float range, float angle, float height)
-{
-	float heightDiff = abs(targetPos.z - _pos.z);
-	if (heightDiff > height)
-		return false;
-
-	// 거리 내에 있는지 확인
-	Vector diff = targetPos - _pos;
-	diff.z = 0; // 높이 차이 무시
-
-	float disSquare = diff.LengthSquared();
-	if (disSquare > range * range)
-		return false;
-
-	// 각도 내에 있는지 확인
-	Vector forward = GetForwardVector(_rotation.pitch, _rotation.yaw);
-	Vector target = diff / sqrt(disSquare);
-
-	float dot = forward.Dot(target);
-
-	float cosHalf = cos((angle * 0.5f) * (3.14159265f / 180.0f));
-
-	return dot >= cosHalf;
-}
-
-Vector GameObject::SelectRandomPosInCube(const CubeRef cube)
+Vector SelectRandomPosInCube(const CubeRef cube)
 {
 	const std::vector<std::vector<std::vector<short>>>& tilemap = g_dataManager->GetTilemap(cube->GetCubeType());
 	Vector cubePos = cube->GetPos();
@@ -84,7 +56,7 @@ Vector GameObject::SelectRandomPosInCube(const CubeRef cube)
 	return IndexToPos(index, cube);
 }
 
-bool GameObject::IsCanExist(VectorInt index, const CubeRef cube)
+bool IsCanExist(VectorInt index, const CubeRef cube)
 {
 	const auto& tilemap = g_dataManager->GetTilemap(cube->GetCubeType());
 	VectorInt max{ tilemap[0][0].size(), tilemap[0].size(), tilemap.size() };
@@ -96,7 +68,7 @@ bool GameObject::IsCanExist(VectorInt index, const CubeRef cube)
 	return tilemap[index.z][index.y][index.x] == 1 && (tilemap[index.z - 1][index.y][index.x] == 0 || tilemap[index.z - 1][index.y][index.x] == 2);
 }
 
-VectorInt GameObject::PosToIndex(Vector pos, const CubeRef cube)
+VectorInt PosToIndex(Vector pos, const CubeRef cube)
 {
 	Vector cubePos = cube->GetPos();
 	Vector cubeSize = cube->GetSize();
@@ -150,7 +122,7 @@ VectorInt GameObject::PosToIndex(Vector pos, const CubeRef cube)
 	return result;
 }
 
-Vector GameObject::IndexToPos(VectorInt index, const CubeRef cube)
+Vector IndexToPos(VectorInt index, const CubeRef cube)
 {
 	Vector cubePos = cube->GetPos();
 	Vector cubeSize = cube->GetSize();
@@ -204,81 +176,4 @@ Vector GameObject::IndexToPos(VectorInt index, const CubeRef cube)
 	pos *= TileSize;
 
 	return startPos + pos;
-}
-
-void GameObject::SetPos(Vector pos)
-{
-	_pos = pos;
-	// 방향 나중에 바꾸기
-	_box.SetOwnerPos(pos, Front);
-	SetCurrentCubeID();
-}
-
-bool GameObject::SetState(ObjectState state, bool isSend)
-{
-	if(_state == state)
-		return false;
-
-	_state = state;
-
-	// Broadcast
-	for (auto& p : _ownerRoom->GetPlayers())
-	{
-		if (!p->GetClient())
-			continue;
-
-		g_network->SendUpdateObjectStatePacket(this, p->GetClient());
-	}
-	
-	return true;
-}
-
-void GameObject::SetObjectPoolState(ObjectPoolState objectPoolState)
-{
-	if (_objectPoolState == objectPoolState)
-		return;
-
-	_objectPoolState = objectPoolState;
-
-	if (_objectPoolState == ObjectPoolState::Reusable)
-	{
-		// Broadcast
-		for (auto& p : _ownerRoom->GetPlayers())
-		{
-			if (!p->GetClient())
-				continue;
-
-			g_network->SendRemoveObjectPacket(_type, _id, p->GetClient());
-		}
-	}
-}
-
-void GameObject::SetCurrentCubeID()
-{
-	const std::vector<CubeRef>& cubes = _ownerRoom->GetCubes();
-	if (cubes.empty())
-		return;
-
-	// 최초로 지정하는 것이라면 전부 확인
-	if (_currentCubeID == -1)
-	{
-		for (const auto& cube : cubes)
-		{
-			if (cube->GetBoundingBox().CheckInclude(_pos))
-			{
-				_currentCubeID = cube->GetID();
-				return;
-			}
-		}
-	}
-
-	//for (const auto& cube : cubes[_currentCubeID]->GetConnectedCubes())
-	for (const auto& cube : cubes)
-	{
-		if (cube->GetBoundingBox().CheckInclude(_pos))
-		{
-			_currentCubeID = cube->GetID();
-			return;
-		}
-	}
 }

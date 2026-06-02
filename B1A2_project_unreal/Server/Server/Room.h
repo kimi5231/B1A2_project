@@ -22,7 +22,7 @@ public:
 public:
 	// 절차적 생성 관련 함수
 	void SetupCubeConditions();
-	void CreateFactoryCubes();
+	void CreateCubes();
 
 	void StartStage();
 	void EndStage();
