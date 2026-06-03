@@ -28,7 +28,7 @@ Room::Room()
 	_maxMonsterCount[MonsterType::TrashCollector] = 7;
 	_maxMonsterCount[MonsterType::PollutionMonitor] = 1;
 
-	_stage = 0;
+	_stage = -1;
 	// 나중에 Json으로 읽어오기
 	_goalCredit = 200;
 	_collectCredit = 0;
@@ -154,8 +154,6 @@ void Room::Init()
 	_doors.push_back(hatch);
 	
 	_hatch = hatch;
-	
-	CreateFactoryCubes();
 }
 
 void Room::Update()
@@ -198,7 +196,7 @@ void Room::SetupCubeConditions()
 	
 }
 
-void Room::CreateFactoryCubes()
+void Room::CreateCubes()
 {
 	// 난이도에 맞춰 조건 설정
 	CubeConditionInfo conditions = g_dataManager->GetCubeConditionInfo(_currentDifficulty, _detailDifficulty);
@@ -517,8 +515,7 @@ void Room::CreateFactoryCubes()
 		while (index < 2)
 			index = selectCube(gen);
 		CubeRef cube = _cubes[index];
-		Monster* monster = AddMonster(type, { 0, 675, 25 });
-		monster->SetPos(monster->SelectRandomPosInCube(cube));
+		Monster* monster = AddMonster(type, SelectRandomPosInCube(cube));
 		monster->SetState(ObjectState::HIT, false);
 		monster->SetState(ObjectState::IDLE, false);
 		_currentPower += monster->GetPower();
@@ -528,6 +525,25 @@ void Room::CreateFactoryCubes()
 	}
 
 	// 아이템 생성
+	std::uniform_int_distribution<int> selectItemCount(conditions.createItemCount.first, conditions.createItemCount.second);
+	int createItemCount = selectItemCount(gen);
+	for (int i = 0; i < createItemCount; ++i)
+	{
+		CubeRef cube = nullptr;
+		while (!cube)
+		{
+			std::uniform_int_distribution<int> selectCube(0, _cubes.size() - 1);
+			cube = _cubes[selectCube(gen)];
+
+			CubeInfo info = cube->GetCubeInfo();
+			if(info.isCreateItem == false)
+				cube = nullptr;
+		}
+
+		std::uniform_int_distribution<int> selectItemType(static_cast<int>(ItemType::CardboardBox), static_cast<int>(ItemType::EmptyCan));
+		Item* item = AddItem(false, static_cast<ItemType>(selectItemType(gen)), SelectRandomPosInCube(cube));
+	}
+
 	AddItem(false, ItemType::CardboardBox, { 0, 675, 25 });
 	AddItem(false, ItemType::CardboardBox, { 0, 750, 25 });
 	AddItem(true, ItemType::CUTLASS, { 0, 0, 25 });
@@ -535,11 +551,26 @@ void Room::CreateFactoryCubes()
 	AddItem(true, ItemType::Key, { 0, -100, 25 });
 	AddItem(true, ItemType::LANTERN, { 0, 200, 25 });
 
-	std::cout << "Success Create GameRooms" << std::endl;
+	std::cout << "Success Create Cubes" << std::endl;
 }
 
 void Room::StartStage()
 {
+	// Cube 생성
+	CreateCubes();
+
+	for (auto& p : _players)
+	{
+		if (p->GetClient())
+			g_network->SendCreateCubesPacket(_cubes, _doors, _sellingMachines, p->GetClient());
+	}
+
+	_stage++;
+
+	// 처음 시작하는 것이라면 아래 작업은 제외
+	if (_stage == 0)
+		return;
+	
 	// 기간이 다 된 SubQuest 업데이트
 	if (_subQuest->GetDeadLine() == 0)
 	{
@@ -552,17 +583,7 @@ void Room::StartStage()
 		}
 	}
 
-	_stage++;
 	_subQuest->MinusDeadLine();
-
-	// Cube 생성
-	CreateFactoryCubes();
-	
-	for (auto& p : _players)
-	{
-		if (p->GetClient())
-			g_network->SendCreateCubesPacket(_cubes, _doors, _sellingMachines, p->GetClient());
-	}
 }
 
 void Room::EndStage()
@@ -655,6 +676,8 @@ Item* Room::AddItem(bool isTool, ItemType itemType, Vector pos)
 			return item;
 		}
 	}
+
+	return nullptr;
 }
 
 Obstacle* Room::AddObstacle(ObstacleType obstacleType, Vector pos, Rotation rotation)

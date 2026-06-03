@@ -1811,7 +1811,7 @@ void UMain::RecvTurnOnLantern(S_TurnOnLantern_Packet packet)
 				float range = static_cast<float>(packet.laternRange);
 				float angle = packet.laternAngle;
 
-				lantern->UpdateLantern(true, range * 10);
+				lantern->UpdateLantern(true, range * 200);	// 임시로 범위 늘림
 			}
 
 			// MyPlayer 전용 추가 로직 (잔량 동기화 및 상태 변수)

@@ -20,15 +20,12 @@ public:
 	void Move(float speed, ObjectState state);
 
 	const CubeRef SelectRandomConnectedCube(); 
-	Vector SelectRandomPosInCube(const CubeRef cube); 
 
 	std::deque<CubeRef> FindCubePath(const CubeRef goalCube, const CubeRef currentCube, const std::vector<CubeRef>& gameRooms);
 	std::deque<VectorInt> FindPath(Vector goal, const CubeRef currentCubeube);
 	void ClearPath() { _cubePath.clear(); _path.clear(); }
 
 	VectorInt RotateIndexByDir(VectorInt index, VectorInt max, Dir dir);
-	VectorInt PosToIndex(Vector pos, CubeRef cube);
-	Vector IndexToPos(VectorInt index, const CubeRef cube);
 
 	bool IsCanGo(VectorInt index, const CubeRef cube);
 
