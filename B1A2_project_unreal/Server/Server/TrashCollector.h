@@ -25,11 +25,8 @@ public:
 	float GetEscapeSpeed() { return _escapeSpeed; }
 
 private:
-	int _aggroRange;
-	int _aggroHeight;
-	int _attackWidth;
-	int _attackLength;
-	int _attackHeight;
+	VectorInt _aggroRange;
+	VectorInt _attackRange;
 
 	float _moveSpeed;
 	float _escapeSpeed;
