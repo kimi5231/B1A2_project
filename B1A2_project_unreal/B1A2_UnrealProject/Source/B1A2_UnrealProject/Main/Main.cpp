@@ -776,6 +776,7 @@ void UMain::RecvAddItem(S_AddItem_Packet packet)
 		item->SetItemID(id);
 		item->SetIsTool(false);
 		item->SetCost(cost);
+		item->InitScanInfoWidget();
 
 		// Spawn 후 Map에 등록
 		_items.Add(id, item);	
@@ -829,6 +830,7 @@ void UMain::RecvAddTool(S_AddItem_Packet packet)
 		tool->SetItemID(id);
 		tool->SetIsTool(true);
 		tool->SetCost(cost);
+		tool->InitScanInfoWidget();
 
 		// Spawn 후 Map에 등록
 		_tools.Add(id, tool);
@@ -927,6 +929,8 @@ void UMain::RecvDropItem(S_DropItem_Packet packet)
 			tool->SetItemID(itemID);
 			tool->SetIsTool(true);
 			tool->SetCost(0);	// tool의 cost는 0
+			tool->InitScanInfoWidget();
+
 			_tools.Add(itemID, tool);
 		}
 		// 아이템
@@ -991,6 +995,7 @@ void UMain::RecvDropItem(S_DropItem_Packet packet)
 			item->SetItemID(itemID);
 			item->SetIsTool(false);
 			item->SetCost(cost);
+			item->InitScanInfoWidget();
 
 			_items.Add(itemID, item);
 		}
