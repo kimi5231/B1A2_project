@@ -514,9 +514,9 @@ void AMyPlayer::ItemOrToolDrop()
 
 						if (SellingMachine->CanAddCredit(ItemCost))
 						{
-							gameInstance->SendDropItemToSellingMachine(gameInstance->GetMyID(), info.itemID, SellingMachine->GetMachineID());
+							gameInstance->SendDropItemToSellingMachine(info.itemID, gameInstance->GetMyID(), SellingMachine->GetMachineID());
 							SellingMachine->AddPendingCredit(ItemCost);
-							UE_LOG(LogTemp, Display, TEXT("[SellingMachine] Item Drop Success! Cost: %d"), ItemCost);
+							UE_LOG(LogTemp, Display, TEXT("[SellingMachine] Item Drop Success! Cost: %d, itemID: %d, SellingMachine ID: %d"), ItemCost, info.itemID, SellingMachine->GetMachineID());
 						}
 						else  // 판매 금액이 초과됐다면, 바닥에 드랍
 						{
