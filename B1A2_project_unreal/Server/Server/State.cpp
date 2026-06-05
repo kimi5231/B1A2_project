@@ -9,6 +9,7 @@
 #include "Ghost.h"
 #include "PollutionMonitor.h"
 #include "TrashCollector.h"
+#include "Tool.h"
 
 void State::Tick(Monster* monster)
 {
@@ -139,6 +140,18 @@ void HitState::Tick(Monster* monster)
 void DeadState::Enter(Monster* monster)
 {
 	monster->SetObjectPoolState(ObjectPoolState::Reusable);
+
+	if (monster->GetMonsterType() == MonsterType::TrashCollector)
+	{
+		TrashCollector* trashCollector = dynamic_cast<TrashCollector*>(monster);
+		std::vector<int>& scraps = trashCollector->GetCurrentScrap();
+		for (int id : scraps)
+		{
+			Item* scrap = dynamic_cast<Item*>(monster->GetOwnerRoom()->GetGameObject(ObjectType::Item, id));
+			monster->GetOwnerRoom()->AddItem(dynamic_cast<Tool*>(scrap), scrap->GetItemType(), monster->GetPos());
+		}
+		trashCollector->ClearScrap();
+	}
 }
 
 // Spider State
