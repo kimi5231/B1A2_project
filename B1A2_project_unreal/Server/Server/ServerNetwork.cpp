@@ -489,13 +489,15 @@ void ServerNetwork::SendCurrentRoomListPacket(std::vector<Room*>& rooms, Session
 		roomData.push_back(roomDTO.playerCount);
 		roomData.push_back(roomDTO.roomID);
 		roomData.push_back(static_cast<char>(roomDTO.roomState));
+		roomData.push_back(roomDTO.roomTitle.size());
 		roomData.insert(roomData.end(), roomDTO.roomTitle.begin(), roomDTO.roomTitle.end());
 	}
 
-	unsigned short packetSize = sizeof(unsigned short) + sizeof(PacketID) + roomData.size();
+	unsigned short packetSize = sizeof(unsigned short) + sizeof(PacketID) + sizeof(char) + roomData.size();
 	std::vector<char> serializedPacketData(sizeof(unsigned short));
 	memcpy(serializedPacketData.data(), &packetSize, sizeof(unsigned short));
 	serializedPacketData.push_back(S_CurrentRoomList);
+	serializedPacketData.push_back(roomData.size());
 	serializedPacketData.insert(serializedPacketData.end(), roomData.begin(), roomData.end());
 
 	client->Send(serializedPacketData);
