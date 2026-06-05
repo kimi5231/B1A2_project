@@ -50,6 +50,24 @@ bool GameObject::CheckInclude(Vector targetPos, float range, float angle, float 
 	return dot >= cosHalf;
 }
 
+bool GameObject::CheckInclude(Vector targetPos, VectorInt size)
+{
+	Vector halfSize = Vector(size.x / 2.0f, size.y / 2.0f, size.z / 2.0f);
+	Vector minBound = _pos - halfSize;
+	Vector maxBound = _pos + halfSize;
+
+	if (targetPos.x < minBound.x || targetPos.x > maxBound.x)
+		return false;
+
+	if (targetPos.y < minBound.y || targetPos.y > maxBound.y)
+		return false;
+
+	if (targetPos.z < minBound.z || targetPos.z > maxBound.z)
+		return false;
+
+	return true;
+}
+
 void GameObject::SetPos(Vector pos)
 {
 	_pos = pos;

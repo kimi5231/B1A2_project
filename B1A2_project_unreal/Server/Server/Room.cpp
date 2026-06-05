@@ -461,11 +461,11 @@ void Room::CreateCubes()
 
 	// 몬스터 생성
 	// 테스트용 먼저 생성
-	Monster* spider = AddMonster(MonsterType::Spider, { 0, 675, 25 });
+	/*Monster* spider = AddMonster(MonsterType::Spider, { 0, 675, 25 });
 	spider->SetState(ObjectState::HIT, false);
 	spider->SetState(ObjectState::IDLE, false);
 	_currentPower += spider->GetPower();
-	_currentMonsterCount[MonsterType::Spider]++;
+	_currentMonsterCount[MonsterType::Spider]++;*/
 
 	Monster* trashCollector = AddMonster(MonsterType::TrashCollector, { 0, 675, 25 });
 	trashCollector->SetState(ObjectState::HIT, false);
@@ -541,15 +541,17 @@ void Room::CreateCubes()
 		}
 
 		std::uniform_int_distribution<int> selectItemType(static_cast<int>(ItemType::CardboardBox), static_cast<int>(ItemType::EmptyCan));
-		Item* item = AddItem(false, static_cast<ItemType>(selectItemType(gen)), SelectRandomPosInCube(cube));
+		ItemType itemType = static_cast<ItemType>(selectItemType(gen));
+		ItemInfo itemInfo = g_dataManager->GetItemInfo(itemType);
+		Item* item = AddItem(false, itemType, SelectRandomPosInCube(itemInfo.size, cube));
 	}
 
 	AddItem(false, ItemType::CardboardBox, { 0, 675, 25 });
 	AddItem(false, ItemType::CardboardBox, { 0, 750, 25 });
-	AddItem(true, ItemType::CUTLASS, { 0, 0, 25 });
+	/*AddItem(true, ItemType::CUTLASS, { 0, 0, 25 });
 	AddItem(true, ItemType::Blaster, { 0, 100, 25 });
 	AddItem(true, ItemType::Key, { 0, -100, 25 });
-	AddItem(true, ItemType::LANTERN, { 0, 200, 25 });
+	AddItem(true, ItemType::LANTERN, { 0, 200, 25 });*/
 
 	std::cout << "Success Create Cubes" << std::endl;
 }

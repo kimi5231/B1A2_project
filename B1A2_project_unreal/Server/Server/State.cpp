@@ -9,6 +9,7 @@
 #include "Ghost.h"
 #include "PollutionMonitor.h"
 #include "TrashCollector.h"
+#include "Tool.h"
 
 void State::Tick(Monster* monster)
 {
@@ -139,6 +140,18 @@ void HitState::Tick(Monster* monster)
 void DeadState::Enter(Monster* monster)
 {
 	monster->SetObjectPoolState(ObjectPoolState::Reusable);
+
+	if (monster->GetMonsterType() == MonsterType::TrashCollector)
+	{
+		TrashCollector* trashCollector = dynamic_cast<TrashCollector*>(monster);
+		std::vector<int>& scraps = trashCollector->GetCurrentScrap();
+		for (int id : scraps)
+		{
+			Item* scrap = dynamic_cast<Item*>(monster->GetOwnerRoom()->GetGameObject(ObjectType::Item, id));
+			monster->GetOwnerRoom()->AddItem(dynamic_cast<Tool*>(scrap), scrap->GetItemType(), monster->GetPos());
+		}
+		trashCollector->ClearScrap();
+	}
 }
 
 // Spider State
@@ -489,32 +502,29 @@ void MoveState::Exit(Monster* monster)
 }
 
 //--------------Collect----------------
-void CollectState::Enter(Monster* monster)
+void CollectState::Tick(Monster* monster)
+{
+	State::Tick(monster);
+}
+
+void CollectState::Exit(Monster* monster)
 {
 	TrashCollector* trashCollector = dynamic_cast<TrashCollector*>(monster);
 	Item* scrap = trashCollector->GetTargetScrap();
 	if (!scrap)
-	{
-		trashCollector->SetTargetScrap(nullptr);
 		return;
-	}
-		
+
 	trashCollector->AddScrap(scrap->GetID());
 	scrap->SetObjectPoolState(ObjectPoolState::InInventory);
 	trashCollector->SetTargetScrap(nullptr);
 
-	for(auto& p : monster->GetOwnerRoom()->GetPlayers())
+	for (auto& p : monster->GetOwnerRoom()->GetPlayers())
 	{
 		if (!p->GetClient())
 			continue;
 
 		g_network->SendRemoveObjectPacket(ObjectType::Item, scrap->GetID(), p->GetClient());
 	}
-}
-
-void CollectState::Tick(Monster* monster)
-{
-	State::Tick(monster);
 }
 
 //--------------Escape----------------
@@ -535,11 +545,16 @@ void EscapeState::Enter(Monster* monster)
 }
 
 void EscapeState::Tick(Monster* monster)
-{
-	State::Tick(monster);
-	  
+{  
 	TrashCollector* trashCollector = dynamic_cast<TrashCollector*>(monster);
 	CubeRef goalCube = trashCollector->GetEscapeCube();
 	trashCollector->UpdatePath(SelectRandomPosInCube(goalCube), goalCube);
 	trashCollector->Move(trashCollector->GetEscapeSpeed(), ObjectState::ESCAPE);
+
+	State::Tick(monster);
+}
+
+void EscapeState::Exit(Monster* monster)
+{
+	monster->ClearPath();
 }

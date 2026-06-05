@@ -13,6 +13,7 @@ public:
 	virtual bool IsReadyNextState() override;
 
 	void AddScrap(int scrapID) { _currentScrap.push_back(scrapID); }
+	void ClearScrap() { _currentScrap.clear(); }
 
 public:
 	virtual bool SetState(ObjectState state, bool isSend = true) override;
@@ -23,13 +24,11 @@ public:
 	void SetEscapeCube(CubeRef cube) { _escapeCube = cube; }
 	CubeRef GetEscapeCube() { return _escapeCube; }
 	float GetEscapeSpeed() { return _escapeSpeed; }
+	std::vector<int>& GetCurrentScrap() { return _currentScrap; }
 
 private:
-	int _aggroRange;
-	int _aggroHeight;
-	int _attackWidth;
-	int _attackLength;
-	int _attackHeight;
+	VectorInt _aggroRange;
+	VectorInt _attackRange;
 
 	float _moveSpeed;
 	float _escapeSpeed;

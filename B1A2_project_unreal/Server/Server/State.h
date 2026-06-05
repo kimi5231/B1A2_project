@@ -264,9 +264,9 @@ public:
 	CollectState() {};
 	virtual ~CollectState() {}
 public:
-	virtual void Enter(Monster* monster) override;
+	virtual void Enter(Monster* monster) override {};
 	virtual void Tick(Monster* monster) override;
-	virtual void Exit(Monster* monster) override {};
+	virtual void Exit(Monster* monster) override;
 };
 
 class EscapeState : public State
@@ -277,5 +277,5 @@ public:
 public:
 	virtual void Enter(Monster* monster) override;
 	virtual void Tick(Monster* monster) override;
-	virtual void Exit(Monster* monster) override {};
+	virtual void Exit(Monster* monster) override;
 };

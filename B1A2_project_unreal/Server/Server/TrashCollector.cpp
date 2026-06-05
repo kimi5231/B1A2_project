@@ -3,6 +3,7 @@
 #include "FSM.h"
 #include "State.h"
 #include "Item.h"
+#include "Room.h"
 
 TrashCollector::TrashCollector(MonsterType monsterType, Room* ownerRoom)
 	: Monster(monsterType, ownerRoom)
@@ -22,19 +23,15 @@ TrashCollector::TrashCollector(MonsterType monsterType, Room* ownerRoom)
 
 	_escapeDistance = 2500;
 
-	_aggroRange = 600;
-	_aggroHeight = 300;
-
-	_attackWidth = 70;
-	_attackLength = 140;
-	_attackHeight = 140;
+	_aggroRange = {600, 600, 300};
+	_attackRange = {70, 140, 140};
 
 	_attackDelay = 3.f;
 	_damage = 20;
 
 	_power = 2;
 
-	_size = { 100, 100, 100 };
+	_size = { 62, 75, 119 };
 
 	_maxScrapCount = 3;
 	_currentScrap.reserve(_maxScrapCount);
@@ -49,7 +46,7 @@ TrashCollector::TrashCollector(MonsterType monsterType, Room* ownerRoom)
 	_stateTable[MOVE] = COLLECT;
 	_stateTable[COLLECT] = ROAMING;
 	_stateTable[ATTACK] = ESCAPE;
-	_stateTable[HIT] = ESCAPE;
+	_stateTable[HIT] = CHASE;
 }
 
 TrashCollector::~TrashCollector()
@@ -59,6 +56,71 @@ TrashCollector::~TrashCollector()
 void TrashCollector::Update(Room* room)
 {
 	Monster::Update(room);
+
+	if (_state != ObjectState::ESCAPE)
+	{
+		const std::array<Player*, MAX_PLAYER>& players = room->GetPlayers();
+
+		// 공격 범위 안에 플레이어가 있는지 확인
+		if (std::chrono::steady_clock::now() > _nextAttackTime)
+		{
+			for (auto& player : players)
+			{
+				if (player->GetObjectPoolState() == ObjectPoolState::Reusable)
+					continue;
+
+				// 플레이어가 있으면, 플레이어 위치를 타겟으로 설정
+				if (CheckInclude(player->GetPos(), _attackRange))
+				{
+					_target = player;
+					SetState(ObjectState::ATTACK);
+					return;
+				}
+			}
+		}
+
+		// 인식 범위 안에 플레이어가 있는지 확인
+		for (auto& player : players)
+		{
+			if (player->GetObjectPoolState() == ObjectPoolState::Reusable)
+				continue;
+
+			// 플레이어가 있으면, 플레이어 위치를 타겟으로 설정
+			if (CheckInclude(player->GetPos(), _aggroRange) && 0 < _currentScrap.size() && _currentScrap.size() < _maxScrapCount)
+			{
+				_target = player;
+				SetState(ObjectState::CHASE);
+				return;
+			}
+
+			// 플레이어가 있으면서 Angry면 Escape
+			if (CheckInclude(player->GetPos(), _aggroRange) && player->GetCurrentEmotion() == Emotion::Angry)
+			{
+				SetState(ObjectState::ESCAPE);
+				return;
+			}
+		}
+	
+		// 인식 범위 안에 아이템이 있는지 확인
+		if (_currentScrap.size() != _maxScrapCount && _state != ObjectState::COLLECT)
+		{
+			const std::array<Item*, MAX_ITEM>& items = room->GetItems();
+
+			for (auto& item : items)
+			{
+				if (item->GetObjectPoolState() == ObjectPoolState::Reusable || item->GetObjectPoolState() == ObjectPoolState::InInventory)
+					continue;
+
+				// 아이템이 있으면, 아이템 위치를 타겟으로 설정
+				if (CheckInclude(item->GetPos(), _aggroRange))
+				{
+					_targetScrap = item;
+					SetState(ObjectState::MOVE);
+					return;
+				}
+			}
+		}
+	}
 }
 
 bool TrashCollector::IsReadyNextState()
@@ -72,7 +134,7 @@ bool TrashCollector::IsReadyNextState()
 	case ObjectState::CHASE:
 		return _sumTime > _chaseTime;
 	case ObjectState::MOVE:
-		return _targetScrap->GetObjectPoolState() == ObjectPoolState::InInventory || _targetScrap->GetPos() == _pos;
+		return (_targetScrap->GetPos() - _pos).Length() < TileSize * 2 || _targetScrap->GetObjectPoolState() == ObjectPoolState::InInventory || _targetScrap->GetObjectPoolState() == ObjectPoolState::Reusable;
 	case ObjectState::COLLECT:
 		return true;
 	case ObjectState::ESCAPE:
@@ -80,6 +142,12 @@ bool TrashCollector::IsReadyNextState()
 	case ObjectState::ATTACK:
 		return true;
 	case ObjectState::HIT:
+		if (_currentScrap.size() == _maxScrapCount)
+		{
+			SetState(ObjectState::ESCAPE, true);
+			return false;
+		}
+
 		return true;
 	}
 }

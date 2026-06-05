@@ -238,14 +238,15 @@ enum Floor
 
 enum Corner
 {
-	LeftFrontBottom,
 	LeftFrontTop,
-	LeftBackBottom,
 	LeftBackTop,
-	RightFrontBottom,
 	RightFrontTop,
-	RightBackBottom,
 	RightBackTop,
+
+	LeftFrontBottom,
+	LeftBackBottom,
+	RightFrontBottom,
+	RightBackBottom,
 
 	CornerCount
 };

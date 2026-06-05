@@ -47,6 +47,9 @@ public:
 	void OnScanned();		// 스캔 범위에 들었을 때 위젯 On
 	void HideScanInfo();	// 3초 후 Hide
 
+	void InitScanInfoWidget();
+	FString GetItemNameToString();
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* ItemMesh;
