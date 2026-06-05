@@ -110,18 +110,25 @@ bool IsCanExist(VectorInt index, VectorInt size, const CubeRef cube)
 	Vector pos = IndexToPos(index, cube);
 	BoundingBox box;
 	box.SetBounds(pos, size, Front);
-	const std::array<Vector, CornerCount> corners = box.GetCorners();
-	for (const Vector& corner : corners)
+	const std::unordered_map<Corner, Vector> corners = box.GetCorners();
+	for (const auto& [corner, cornerPos] : corners)
 	{
-		VectorInt index = PosToIndex(corner, cube);
+		VectorInt index = PosToIndex(cornerPos, cube);
 
 		// 인덱스가 실제 배열 크기를 벗어나는지 최종 체크
 		if (index < Vector{ 0, 0, 0 } || index >= max)
 			return false;
 
-		
-		if (tilemap[index.z][index.y][index.x] != 1)
-			return false;
+		if (corner < LeftFrontBottom)
+		{
+			if (tilemap[index.z][index.y][index.x] != 1)
+				return false;
+		}
+		else
+		{
+			if (tilemap[index.z][index.y][index.x] != 1 || tilemap[index.z - 1][index.y][index.x] != 0)
+				return false;
+		}
 	}
 	
 	return true;

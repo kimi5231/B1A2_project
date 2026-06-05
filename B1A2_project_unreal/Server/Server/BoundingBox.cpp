@@ -63,7 +63,18 @@ void BoundingBox::SetOwnerPos(Vector pos, Dir dir)
 
 const std::unordered_map<Corner, Vector> BoundingBox::GetCorners()
 {
-    return std::unordered_map<Corner, Vector>();
+    std::unordered_map<Corner, Vector> coners;
+
+    coners[LeftFrontBottom] = _bounds.min;
+    coners[LeftFrontTop] = { _bounds.min.x, _bounds.min.y, _bounds.max.z };
+    coners[LeftBackBottom] = { _bounds.min.x, _bounds.max.y, _bounds.min.z };
+    coners[LeftBackTop] = { _bounds.min.x, _bounds.max.y, _bounds.max.z };
+    coners[RightFrontBottom] = { _bounds.max.x, _bounds.min.y, _bounds.min.z };
+    coners[RightFrontTop] = { _bounds.max.x, _bounds.min.y, _bounds.max.z };
+    coners[RightBackBottom] = { _bounds.max.x, _bounds.max.y, _bounds.min.z };
+    coners[RightBackTop] = _bounds.max;
+    
+    return coners;
 }
 
 //const std::array<Vector, CornerCount> BoundingBox::GetCorners()
