@@ -2,6 +2,7 @@
 
 
 #include "BaseItem.h"
+#include "ScanInfoWidget.h"
 
 // Sets default values
 ABaseItem::ABaseItem()
@@ -91,5 +92,40 @@ void ABaseItem::HideScanInfo()
     {
         ScanInfoWidget->SetVisibility(false);
     }
+}
+
+void ABaseItem::InitScanInfoWidget()
+{
+    if (!ScanInfoWidget)
+        return;
+
+    UScanInfoWidget* scanWidget = Cast<UScanInfoWidget>(ScanInfoWidget->GetUserWidgetObject());
+    if (scanWidget)
+    {
+        FString name = GetItemNameToString();
+        scanWidget->SetScanInfo(_isTool, name, _cost);
+    }
+}
+
+FString ABaseItem::GetItemNameToString()
+{
+    switch (_type)
+    {
+    case ItemType::CardboardBox:  return TEXT("Cardboard Box");
+    case ItemType::GoldBar:       return TEXT("Gold Bar");
+    case ItemType::RubberDuck:    return TEXT("Rubber Duck");
+    case ItemType::PlasticCrate:  return TEXT("Plastic Crate");
+    case ItemType::Screw:         return TEXT("Screw");
+    case ItemType::PirateHat:     return TEXT("Pirate Hat");
+    case ItemType::HardHat:       return TEXT("Hard Hat");
+    case ItemType::EngineCore:    return TEXT("Engine Core");
+    case ItemType::ScrapMetal:    return TEXT("Scrap Metal");
+    case ItemType::EmptyCan:      return TEXT("Empty Can");
+    case ItemType::CUTLASS:       return TEXT("Cutlass");
+    case ItemType::Blaster:       return TEXT("Blaster");
+    case ItemType::Key:           return TEXT("Key");
+    case ItemType::LANTERN:       return TEXT("Lantern");
+    }
+    return TEXT("Unknown Item");
 }
 
