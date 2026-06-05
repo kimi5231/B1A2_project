@@ -13,8 +13,10 @@ public:
 	void Update();
 
 public:
-	Room* GetRoom() { return _room; }
+	Room* GetRoom(int id) { return _rooms[id]; }
+	std::array<Room*, MAX_ROOM>& GetRooms() { return _rooms; }
+	std::vector<Room*>& GetWaitingRooms();
 
 private:
-	Room* _room{};
+	std::array<Room*, MAX_ROOM> _rooms;
 };

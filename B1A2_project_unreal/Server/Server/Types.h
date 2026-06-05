@@ -27,8 +27,9 @@ enum class LoginResult
 	Failed,
 };
 
-enum class RoomState
+enum class RoomState : char
 {
+	Reusable,
 	Wait,
 	Lock,
 	Play,

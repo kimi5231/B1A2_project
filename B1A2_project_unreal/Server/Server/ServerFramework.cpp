@@ -4,17 +4,37 @@
 
 ServerFramework::ServerFramework()
 {
-	// Room 积己
-	_room = new Room();
-	_room->Init();
+	// Room 固府 积己
+	for (int i = 0; i < MAX_ROOM; ++i)
+	{
+		_rooms[i] = new Room();
+		_rooms[i]->Init();
+	}
 }
 
 ServerFramework::~ServerFramework()
 {
-	delete _room;
+	for (int i = 0; i < MAX_ROOM; ++i)
+		delete _rooms[i];
 }
 
 void ServerFramework::Update()
 {
-	_room->Update();
+	for (int i = 0; i < MAX_ROOM; ++i)
+	{
+		if (_rooms[i]->GetRoomState() != RoomState::Reusable)
+			_rooms[i]->Update();
+	}
+}
+
+std::vector<Room*>& ServerFramework::GetWaitingRooms()
+{
+	std::vector<Room*> runningRooms;
+	for (int i = 0; i < MAX_ROOM; ++i)
+	{
+		if (_rooms[i]->GetRoomState() == RoomState::Wait)
+			runningRooms.push_back(_rooms[i]);
+	}
+
+	return runningRooms;
 }

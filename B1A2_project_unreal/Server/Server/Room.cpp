@@ -16,7 +16,7 @@
 
 Room::Room()
 {
-	_roomState = RoomState::Wait;
+	_roomState = RoomState::Reusable;
 
 	_currentDifficulty = Difficulty::Easy;
 	_detailDifficulty = Difficulty::Easy;
@@ -619,6 +619,7 @@ Player* Room::AddPlayer()
 		{
 			// ObjectPoolState 변경
 			_players[i]->Init();
+			_currentPlayerCount++;
 
 			for (auto& player : _players)
 			{
@@ -629,6 +630,8 @@ Player* Room::AddPlayer()
 			return _players[i];
 		}
 	}
+
+	return nullptr;
 }
 
 Monster* Room::AddMonster(MonsterType monsterType, Vector pos)
@@ -715,6 +718,9 @@ void Room::RemoveObject(ObjectType type, int id, bool isSend)
 	case ObjectType::Player:
 		_players[id]->SetObjectPoolState(ObjectPoolState::Reusable);
 		_players[id]->SetPos({0, 0, 0});
+		_currentPlayerCount--;
+
+		// 초기화
 		break;
 	case ObjectType::Item:
 		_items[id]->SetObjectPoolState(ObjectPoolState::Reusable);

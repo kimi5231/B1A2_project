@@ -37,7 +37,7 @@ private:
 public:
 	// Send
 	void SendLoginResultPacket(LoginResult result, Session* client);
-	void SendCurrentRoomListPacket(std::array<Room*, MAX_ROOM>& rooms, Session* client);
+	void SendCurrentRoomListPacket(std::vector<Room*>& rooms, Session* client);
 	void SendAddPlayerPacket(Player* player, Session* client);
 	void SendAddMonsterPacket(Monster* monster, Session* client);
 	void SendAddItemPacket(Item* item, bool isTool, Session* client);

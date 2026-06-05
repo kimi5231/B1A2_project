@@ -151,39 +151,7 @@ void ServerNetwork::ProcessAccept()
 	_clients[clientIndex]->_id = clientIndex;
 	_clients[clientIndex]->_isConnected = true;
 	_clients[clientIndex]->_prevRecv = 0;
-	
-	// 나중에 nullptr로 초기화하기
-	_clients[clientIndex]->_room = _framework->GetRoom();
-
-	// 나중에 이 부분은 Room에 들어간 후 처리하는 것으로 변경할 것
-	{
-		// 나중에 nullptr로 초기화하기
-		// 새로 접속한 Client를 나타낼 Player 생성
-		_clients[clientIndex]->_player = _clients[clientIndex]->_room->AddPlayer();
-		_clients[clientIndex]->_player->SetClient(_clients[clientIndex]);
-
-		// 새로 접속한 Client에게 자신을 나타낼 Player 정보 전송
-		SendAddPlayerPacket(_clients[clientIndex]->_player, _clients[clientIndex]);
-
-		// 새로 접속한 Client에게 기존에 있던 Object 정보 전송
-		for (auto& player : _clients[clientIndex]->_room->GetPlayers())
-		{
-			if (!player->GetClient())
-				continue;
-
-			// 자기 자신 제외
-			if (_clients[clientIndex]->_player == player)
-				continue;  
-
-			SendAddPlayerPacket(player, _clients[clientIndex]);
-		}
-	}
-
-	// 나중에 삭제하기
-	//SendCreateCubesPacket(_clients[clientIndex]->_room->GetCubes(), _clients[clientIndex]->_room->GetDoors(), _clients[clientIndex]->_room->GetSellingMachine(), _clients[clientIndex]);
-	SendUpdateQuestPacket(_clients[clientIndex]->_room->GetMainQuest(), true, _clients[clientIndex]);
-	SendUpdateQuestPacket(_clients[clientIndex]->_room->GetSubQuest(), false, _clients[clientIndex]);
-	SendUpdateCreditPacket(_clients[clientIndex]->_room->GetGoalCredit(), _clients[clientIndex]->_room->GetCollectCredit(), _clients[clientIndex]->_room->GetCurrentCredit(), _clients[clientIndex]);
+	_clients[clientIndex]->_room = nullptr;
 
 	_clients[clientIndex]->Recv();
 
@@ -505,27 +473,24 @@ void ServerNetwork::SendLoginResultPacket(LoginResult result, Session* client)
 	client->Send(serializedPacketData);
 }
 
-void ServerNetwork::SendCurrentRoomListPacket(std::array<Room*, MAX_ROOM>& rooms, Session* client)
+void ServerNetwork::SendCurrentRoomListPacket(std::vector<Room*>& rooms, Session* client)
 {
 	std::vector<RoomDTO> roomDTOs;
 	for (auto& room : rooms)
 	{
-		// 들어갈 수 있는 room의 정보만 기록
-		if (room->GetRoomState() == RoomState::Wait || room->GetRoomState() == RoomState::Lock)
-		{
-			char title[MAX_TITLE];
-
-			RoomDTO DTO{ room->GetCurrentPlayerCount(), room->GetID(), room->GetRoomState(), SerializeVector(room->GetTitle()) };
-			roomDTOs.push_back(DTO);
-		}	
+		RoomDTO DTO{ room->GetCurrentPlayerCount(), room->GetID(), room->GetRoomState(), SerializeVector(room->GetTitle()) };
+		roomDTOs.push_back(DTO);
 	}
 
 	// Packet Serialize
-	int vectorSize = roomDTOs.size();
-	int DTOSize = sizeof(roomDTOs[0].playerCount) + sizeof(roomDTOs[0].roomID) + sizeof(roomDTOs[0].roomState) + roomDTOs[0].roomTitle.size();
-	std::vector<char> roomData(sizeof(int) + DTOSize * vectorSize);
-	memcpy(roomData.data(), &vectorSize, sizeof(int));
-	memcpy(roomData.data() + sizeof(int), roomDTOs.data(), vectorSize * DTOSize);
+	std::vector<char> roomData;
+	for(auto& roomDTO : roomDTOs)
+	{
+		roomData.push_back(roomDTO.playerCount);
+		roomData.push_back(roomDTO.roomID);
+		roomData.push_back(static_cast<char>(roomDTO.roomState));
+		roomData.insert(roomData.end(), roomDTO.roomTitle.begin(), roomDTO.roomTitle.end());
+	}
 
 	unsigned short packetSize = sizeof(unsigned short) + sizeof(PacketID) + roomData.size();
 	std::vector<char> serializedPacketData(sizeof(unsigned short));
@@ -888,12 +853,23 @@ void ServerNetwork::ProcessLoginPacket(C_Login_Packet packet, int clientIndex)
 	g_dbManager->AddWork(work);*/
 
 	LoginResult result = LoginResult::Sucess;
+
+	// 로그인에 성공했다면 RoomList 보내주기
+	if(result == LoginResult::Sucess)
+		SendCurrentRoomListPacket(_framework->GetWaitingRooms(), _clients[clientIndex]);
+
+	// 로그인 결과 전송
 	SendLoginResultPacket(result, _clients[clientIndex]);
 }
 
 void ServerNetwork::ProcessLogoutPacket(C_Logout_Packet packet, int clientIndex)
 {
 	// RoomList 보내주는 Client 목록에서 제외
+
+	// 게임 중이었다면, Room에서 제외
+	_clients[clientIndex]->_room->RemoveObject(ObjectType::Player, _clients[clientIndex]->_player->GetID(), true);
+	_clients[clientIndex]->_player = nullptr;
+	_clients[clientIndex]->_room = nullptr;
 }
 
 void ServerNetwork::ProcessCreateRoomPacket(C_CreateRoom_Packet packet, int clientIndex)
@@ -904,15 +880,47 @@ void ServerNetwork::ProcessCreateRoomPacket(C_CreateRoom_Packet packet, int clie
 void ServerNetwork::ProcessEnterRoomPacket(C_EnterRoom_Packet packet, int clientIndex)
 {
 	// 요청한 Room에 들어갈 수 있는지 확인
+	std::array<Room*, MAX_ROOM>& rooms = _framework->GetRooms();
 	
 	// 들어갈 수 있다면, 해당 Room에 Player 추가
-	// 나중에 Accept에 있는 코드 가져오기
+	if (rooms[packet.roomID]->GetRoomState() == RoomState::Wait)
+	{
+		_clients[clientIndex]->_player = _clients[clientIndex]->_room->AddPlayer();
+		_clients[clientIndex]->_player->SetClient(_clients[clientIndex]);
+		_clients[clientIndex]->_room = rooms[packet.roomID];
+
+		// 새로 접속한 Client에게 자신을 나타낼 Player 정보 전송
+		SendAddPlayerPacket(_clients[clientIndex]->_player, _clients[clientIndex]);
+
+		// 새로 접속한 Client에게 기존에 있던 Object 정보 전송
+		for (auto& player : _clients[clientIndex]->_room->GetPlayers())
+		{
+			if (!player->GetClient())
+				continue;
+
+			// 자기 자신 제외
+			if (_clients[clientIndex]->_player == player)
+				continue;
+
+			SendAddPlayerPacket(player, _clients[clientIndex]);
+		}
+
+		// 기본 셋팅 정보 전송
+		SendUpdateQuestPacket(_clients[clientIndex]->_room->GetMainQuest(), true, _clients[clientIndex]);
+		SendUpdateQuestPacket(_clients[clientIndex]->_room->GetSubQuest(), false, _clients[clientIndex]);
+		SendUpdateCreditPacket(_clients[clientIndex]->_room->GetGoalCredit(), _clients[clientIndex]->_room->GetCollectCredit(), _clients[clientIndex]->_room->GetCurrentCredit(), _clients[clientIndex]);
+	}
 }
 
 void ServerNetwork::ProcessExitRoomPacket(C_ExitRoom_Packet packet, int clientIndex)
 {
-	// 접속할 있는 RoomList 전송
-	//SendCurrentRoomListPacket()
+	// Room에서 Player 제거
+	_clients[clientIndex]->_room->RemoveObject(ObjectType::Player, _clients[clientIndex]->_player->GetID(), true);
+	_clients[clientIndex]->_player = nullptr;
+	_clients[clientIndex]->_room = nullptr;
+
+	// RoomList 전송
+	SendCurrentRoomListPacket(_framework->GetWaitingRooms(), _clients[clientIndex]);
 }
 
 void ServerNetwork::ProcessMovePacket(C_Move_Packet packet, int clientIndex)
