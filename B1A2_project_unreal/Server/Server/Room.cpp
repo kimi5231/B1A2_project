@@ -541,7 +541,9 @@ void Room::CreateCubes()
 		}
 
 		std::uniform_int_distribution<int> selectItemType(static_cast<int>(ItemType::CardboardBox), static_cast<int>(ItemType::EmptyCan));
-		Item* item = AddItem(false, static_cast<ItemType>(selectItemType(gen)), SelectRandomPosInCube(cube));
+		ItemType itemType = static_cast<ItemType>(selectItemType(gen));
+		ItemInfo itemInfo = g_dataManager->GetItemInfo(itemType);
+		Item* item = AddItem(false, itemType, SelectRandomPosInCube(itemInfo.size, cube));
 	}
 
 	AddItem(false, ItemType::CardboardBox, { 0, 675, 25 });
