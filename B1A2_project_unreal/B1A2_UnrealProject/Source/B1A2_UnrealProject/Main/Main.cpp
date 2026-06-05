@@ -114,6 +114,43 @@ void UMain::ProcessRecv()
 			event->isComplete = true;
 			break;
 		}
+		case S_CurrentRoomList:
+		{
+			unsigned short packetSize;
+			memcpy(&packetSize, event->serializedPacketData.data(), sizeof(unsigned short));
+			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned short) + sizeof(PacketID));
+			S_CurrentRoomList_Packet currentRoomListPacket;
+			currentRoomListPacket.size = packetSize;
+			currentRoomListPacket.packetID = S_CurrentRoomList;
+
+			int roomDTOSize;
+			memcpy(&roomDTOSize, event->serializedPacketData.data(), sizeof(unsigned char));
+			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned char));
+			
+			for(int i = 0; i < roomDTOSize; ++i)
+			{
+				RoomDTO roomDTO;
+
+				memcpy(&roomDTO.playerCount, event->serializedPacketData.data(), sizeof(unsigned char));
+				event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned char));
+				memcpy(&roomDTO.roomID, event->serializedPacketData.data(), sizeof(unsigned char));
+				event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned char));
+				memcpy(&roomDTO.roomState, event->serializedPacketData.data(), sizeof(RoomState));
+				event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(RoomState));
+				
+				int roomTitleSize;
+				memcpy(&roomTitleSize, event->serializedPacketData.data(), sizeof(unsigned char));
+				event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned char));
+				roomDTO.roomTitle.resize(roomTitleSize);
+				memcpy(roomDTO.roomTitle.data(), event->serializedPacketData.data(), sizeof(char) * roomTitleSize);
+				event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(char) * roomTitleSize);
+				currentRoomListPacket.roomList.push_back(roomDTO);
+			}
+
+			RecvCurrentRoomList(currentRoomListPacket);
+			event->isComplete = true;
+			break;
+		}
 		case S_AddPlayer:
 		{
 			S_AddPlayer_Packet addPlayerPacket;
@@ -361,6 +398,10 @@ void UMain::ProcessRecv()
 }
 
 void UMain::RecvLoginResult(S_LoginResult_Packet packet)
+{
+}
+
+void UMain::RecvCurrentRoomList(S_CurrentRoomList_Packet packet)
 {
 }
 

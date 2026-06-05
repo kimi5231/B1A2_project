@@ -84,6 +84,8 @@ public:
 	
 	void RecvLoginResult(S_LoginResult_Packet packet);	
 
+	void RecvCurrentRoomList(S_CurrentRoomList_Packet packet);
+
 	void RecvAddPlayer(S_AddPlayer_Packet packet);
 
 	void RecvAddItem(S_AddItem_Packet packet);
