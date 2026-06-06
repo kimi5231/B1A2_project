@@ -17,6 +17,7 @@
 #include "Widget/EmotionResultWidget.h"
 #include "Widget/ShopWidget.h"
 #include "Widget/QuestWidget.h"
+#include "MainMenuPlayerController.h"
 
 #define BUFSIZE	64
 
@@ -399,10 +400,42 @@ void UMain::ProcessRecv()
 
 void UMain::RecvLoginResult(S_LoginResult_Packet packet)
 {
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		UWorld* World = GetWorld();
+		if (!World) return;
+
+		APlayerController* PC = World->GetFirstPlayerController();
+		AMainMenuPlayerController* menuPC = Cast<AMainMenuPlayerController>(PC);
+
+		if (menuPC)
+		{
+			menuPC->HandleLoginResult(packet.result);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("현재 PlayerController가 AMainMenuPlayerController가 아닙니다."));
+		}
+	});
 }
 
 void UMain::RecvCurrentRoomList(S_CurrentRoomList_Packet packet)
 {
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		UWorld* World = GetWorld();
+		if (!World) return;
+
+		AMainMenuPlayerController* MenuPC = Cast<AMainMenuPlayerController>(World->GetFirstPlayerController());
+		if (MenuPC)
+		{
+			if (!packet.roomList.empty())
+			{
+				// ????????????
+				MenuPC->HandleCurrentRoomList(packet.roomList[0]);
+			}
+		}
+	});
 }
 
 void UMain::ProcessSend(PacketID id, const void* packetData, int dataSize)
@@ -654,9 +687,7 @@ void UMain::SendRequestQuestReward(bool isMain)
 
 void UMain::SendLogin(const std::vector<char>& id)
 {
-	if (_myID == -1)
-		return;
-
+	// 로그인 할 땐 _myID 검사 X
 	UWorld* world = GetWorld();
 	if (!world)
 		return;
@@ -666,9 +697,6 @@ void UMain::SendLogin(const std::vector<char>& id)
 
 void UMain::SendLogout()
 {
-	if (_myID == -1)
-		return;
-
 	UWorld* world = GetWorld();
 	if (!world)
 		return;

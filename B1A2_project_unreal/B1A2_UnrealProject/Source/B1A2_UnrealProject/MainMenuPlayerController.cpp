@@ -4,6 +4,7 @@
 #include "MainMenuPlayerController.h"
 #include "Blueprint/UserWidget.h"
 #include "Main/Main.h"
+#include "LobbyWidget.h"
 
 void AMainMenuPlayerController::BeginPlay()
 {
@@ -24,5 +25,56 @@ void AMainMenuPlayerController::BeginPlay()
 		{
 			MainMenuWidgetInstance->AddToViewport();
 		}
+	}
+}
+
+void AMainMenuPlayerController::HandleLoginResult(LoginResult result)
+{
+	if (result == LoginResult::Sucess)
+	{
+		// 로비 위젯 생성 & 띄우기
+		if (LobbyWidgetClass && !LobbyWidgetInstance)
+		{
+			LobbyWidgetInstance = CreateWidget<UUserWidget>(this, LobbyWidgetClass);
+			if (LobbyWidgetInstance)
+			{
+				LobbyWidgetInstance->AddToViewport();
+			}
+		}
+	}
+	else if (result == LoginResult::Failed)
+	{
+		// 다시 입력하세요 위젯을 1.5초 띄우고 지움
+		if (FailureWidgetClass && !FailureWidgetInstance)
+		{
+			FailureWidgetInstance = CreateWidget<UUserWidget>(this, FailureWidgetClass);
+			if (FailureWidgetInstance)
+			{
+				FailureWidgetInstance->AddToViewport();
+
+				GetWorldTimerManager().SetTimer(failureTimerHandle, this, &AMainMenuPlayerController::HideFailureWidget, 1.5f, false);
+			}
+		}
+	}
+}
+
+void AMainMenuPlayerController::HandleCurrentRoomList(const RoomDTO& roomData)
+{
+	if (LobbyWidgetInstance)
+	{
+		ULobbyWidget* LobbyUI = Cast<ULobbyWidget>(LobbyWidgetInstance);
+		if (LobbyUI)
+		{
+			LobbyUI->UpdateRoomInfo(roomData);
+		}
+	}
+}
+
+void AMainMenuPlayerController::HideFailureWidget()
+{
+	if (FailureWidgetInstance)
+	{
+		FailureWidgetInstance->RemoveFromParent();
+		FailureWidgetInstance = nullptr;
 	}
 }
