@@ -12,6 +12,7 @@ public:
 	
 private:
 	void ProcessRecv();
+	void ProcessUDPRecv();
 
 public:
 	template <class T >
@@ -61,9 +62,11 @@ private:
 
 	std::vector<NetworkEventRef> _recvEvents;
 	std::vector<NetworkEventRef> _sendEvents;
+	std::vector<NetworkEventRef> _unpSendEvents;
 
 	std::mutex _recvMutex;
 	std::mutex _sendMutex;
+	std::mutex _udpSendMutex;
 };
 
 template<class T>

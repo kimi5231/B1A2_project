@@ -137,6 +137,8 @@ public:
 	void RecvUpdateQuestProgress(S_UpdateQuestProgress_Packet packet);
 	void RecvUpdateCredit(S_UpdateCredit_Packet packet);
 
+	void RecvVoiceData(S_VoiceData_Packet packet);
+
 	FRotator DirToRotation(Dir dir);
 
 	// ID

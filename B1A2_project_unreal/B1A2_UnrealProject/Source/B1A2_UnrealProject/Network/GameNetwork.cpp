@@ -39,13 +39,6 @@ GameNetwork::GameNetwork()
 		_serverAddr.sin_family = AF_INET;
 		_serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 		_serverAddr.sin_port = htons(7777);
-
-		short testSize = sizeof(short) + sizeof(PacketID);
-		PacketID testID = C_VoiceData;
-		std::vector<char> testBuffer;
-		testBuffer.insert(testBuffer.end(), (char*)&testSize, (char*)&testSize + sizeof(short));
-		testBuffer.insert(testBuffer.end(), (char*)&testID, (char*)&testID + sizeof(PacketID));
-		sendto(_udpSocket, testBuffer.data(), testBuffer.size(), 0, (sockaddr*)&_serverAddr, sizeof(_serverAddr));
 	}
 }
 
@@ -64,18 +57,21 @@ void GameNetwork::Update()
 	FD_ZERO(&_readSet);
  	FD_ZERO(&_writeSet);
 
-	// readSet, writeSet에 clientSocket 등록
+	// readSet, writeSet에 clientSocket, udpSocket 등록
 	FD_SET(_clientSocket, &_readSet);
 	FD_SET(_clientSocket, &_writeSet);
+	FD_SET(_udpSocket, &_readSet);
+	FD_SET(_udpSocket, &_writeSet);
 
 	// select
 	if (select(0, &_readSet, &_writeSet, NULL, 0) == SOCKET_ERROR)
 		return;
 
 	if (FD_ISSET(_clientSocket, &_readSet))
-	{
 		ProcessRecv();
-	}
+
+	if (FD_ISSET(_udpSocket, &_readSet))
+		ProcessUDPRecv();
 
 	// send가 가능할 때마다 true
 	if (FD_ISSET(_clientSocket, &_writeSet))
@@ -91,6 +87,21 @@ void GameNetwork::Update()
 			[](NetworkEventRef event) {
 				return event->isComplete;
 			}), _sendEvents.end());
+	}
+
+	if (FD_ISSET(_udpSocket, &_writeSet))
+	{
+		std::lock_guard<std::mutex> lock(_udpSendMutex);
+		for (NetworkEventRef event : _unpSendEvents)
+		{
+			sendto(_udpSocket, event->serializedPacketData.data(), event->serializedPacketData.size(), 0, (sockaddr*)&_serverAddr, sizeof(_serverAddr));
+			event->isComplete = true;
+		}
+
+		_unpSendEvents.erase(std::remove_if(_unpSendEvents.begin(), _unpSendEvents.end(),
+			[](NetworkEventRef event) {
+				return event->isComplete;
+			}), _unpSendEvents.end());
 	}
 
 	// 처리된 Recv 이벤트 삭제
@@ -441,6 +452,43 @@ void GameNetwork::ProcessRecv()
 		event->serializedPacketData.resize(sizeof(S_UpdateCredit_Packet));
 		memcpy(event->serializedPacketData.data(), &packetSize, sizeof(unsigned short));
 		memcpy(event->serializedPacketData.data() + sizeof(unsigned short), packet.data(), packetSize - sizeof(unsigned short));
+		std::lock_guard<std::mutex> lock(_recvMutex);
+		_recvEvents.push_back(event);
+		break;
+	}
+	}
+}
+
+void GameNetwork::ProcessUDPRecv()
+{
+	int addrLen = sizeof(_serverAddr);
+	std::vector<char> packet(BufferSize);
+	int recvBytes = recvfrom(_udpSocket, packet.data(), packet.size(), 0, (sockaddr*)&_serverAddr, &addrLen);
+
+	if (recvBytes < sizeof(short) + sizeof(PacketID))
+		return;
+
+	// packetSize 추출
+	short packetSize;
+	memcpy(&packetSize, packet.data(), sizeof(short));
+
+	// 남은 데이터의 사이즈가 패킷의 사이즈보다 작으면 중단
+	if (packetSize > recvBytes)
+		return;
+
+	// packetID 추출
+	PacketID id;
+	memcpy(&id, packet.data() + sizeof(short), sizeof(PacketID));
+	
+	// Data 추출
+	switch (id)
+	{
+	case S_VoiceData:
+	{
+		NetworkEventRef event = std::make_shared<NetworkEvent>();
+		event->packetID = id;
+		event->serializedPacketData.resize(packetSize);
+		memcpy(event->serializedPacketData.data(), packet.data(), packetSize);
 		std::lock_guard<std::mutex> lock(_recvMutex);
 		_recvEvents.push_back(event);
 		break;
@@ -804,8 +852,8 @@ void GameNetwork::SendVoiceDataPacket(short clientID, char playerID, int sequenc
 
 	// SendEvent 생성
 	NetworkEventRef event = std::make_shared<NetworkEvent>();
-	event->packetID = C_Login;
+	event->packetID = C_VoiceData;
 	event->serializedPacketData = serializedPacketData;
-	std::lock_guard<std::mutex> lock(_sendMutex);
-	_sendEvents.push_back(event);
+	std::lock_guard<std::mutex> lock(_udpSendMutex);
+	_unpSendEvents.push_back(event);
 }

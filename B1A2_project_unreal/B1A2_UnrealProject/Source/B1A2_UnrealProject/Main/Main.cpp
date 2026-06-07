@@ -411,6 +411,23 @@ void UMain::ProcessRecv()
 			event->isComplete = true;
 			break;
 		}
+		case S_VoiceData:
+		{
+			unsigned short packetSize;
+			memcpy(&packetSize, event->serializedPacketData.data(), sizeof(unsigned short));
+			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned short) + sizeof(PacketID));
+			unsigned char playerID;
+			memcpy(&playerID, event->serializedPacketData.data(), sizeof(unsigned char));
+			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned char));
+			int sequenceNumber;
+			memcpy(&sequenceNumber, event->serializedPacketData.data(), sizeof(int));
+			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(int));
+			
+			S_VoiceData_Packet voiceDataPacket{ packetSize, S_VoiceData, playerID, sequenceNumber, _gameNetwork->DeserializeVector<char>(event->serializedPacketData) };
+			RecvVoiceData(voiceDataPacket);
+			event->isComplete = true;
+			break;
+		}
 		}
 	}
 }
@@ -2187,6 +2204,10 @@ void UMain::RecvUpdateCredit(S_UpdateCredit_Packet packet)
 
 		UE_LOG(LogTemp, Display, TEXT("[Credit] Recv Update Credit, currentCredit %d"), packet.currentCredit);
 	});
+}
+
+void UMain::RecvVoiceData(S_VoiceData_Packet packet)
+{
 }
 
 void UMain::RecvUpdateQuest(S_UpdateQuest_Packet packet)
