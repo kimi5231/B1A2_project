@@ -1,0 +1,22 @@
+{
+	"hp":100,
+	"isInvincible" : false,
+	"roaminSpeed":5.0,
+	"returnSpeed":5.0,
+	"chaseSpeed":5.0,
+	"idleTime" :5.0,
+	"roamingTime":5.0,
+	"chaseTime":5.0,
+	"makeWebTime":5.0,
+	"aggroRange": 500,
+	"aggroAngle": 500.0,
+	"aggroHeight": 500,
+	"attackRange": 500,
+	"attackAngle": 500.0,
+	"attackHeight": 500,
+	"attackDelay": 5.0,
+	"damage": 500,
+	"makeWebCount":5,
+	"power" : 1,
+	"size":[32, 55, 163]
+}

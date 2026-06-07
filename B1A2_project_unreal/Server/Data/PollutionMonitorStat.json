@@ -1,0 +1,11 @@
+{
+	"hp":100,
+	"isInvincible" : false,
+	"idleTime" :5.0,
+	"checkTime":5.0,
+	"spawnTime":5.0,
+	"damage": 500,
+	"emotionCount": 5,
+	"power" : 1,
+	"size":[32, 55, 163]
+}

@@ -1,0 +1,12 @@
+{
+	"isInvincible" : false,
+	"chaseSpeed" :5.0,
+	"idleTime" :5.0,
+	"chaseTime":5.0,
+	"waitTime":5.0,
+	"absentTime":5.0,
+	"staringTime":5.0,
+	"damage": 500,
+	"power" : 1,
+	"size":[32, 55, 163]
+}
