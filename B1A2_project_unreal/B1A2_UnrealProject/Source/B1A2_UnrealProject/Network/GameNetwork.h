@@ -45,6 +45,7 @@ public:
 	void SendEndStagePacket();
 	void SendSubmitItemPacket(int itemID, int playerID);
 	void SendRequestQuestRewardPacket(bool isMain);
+	void SendVoiceDataPacket(short clientID, char playerID, int sequenceNumber, std::vector<char>& audioData);
 
 public:
 	std::vector<NetworkEventRef>& GetRecvEvents() { return _recvEvents; }
@@ -54,6 +55,9 @@ private:
 	fd_set _writeSet{};
 
 	SOCKET _clientSocket{};
+	SOCKET _udpSocket{};
+
+	sockaddr_in _serverAddr;
 
 	std::vector<NetworkEventRef> _recvEvents;
 	std::vector<NetworkEventRef> _sendEvents;

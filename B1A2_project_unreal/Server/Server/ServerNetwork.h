@@ -21,6 +21,7 @@ public:
 	void ProcessAccept();
 	void ProcessDisconnected(int clientIndex);
 	void ProcessRecv(int clientIndex, int numByte, ExpOver* expOver);
+	void ProcessUDPRecv(int numByte, ExpOver* expOver);
 	void ProcessPacket(std::vector<char>& packet, int clientIndex);
 	void ProcessDB(int clientIndex, ExpOver* expOver);
 	
@@ -66,7 +67,8 @@ public:
 	void SendUpdateQuestPacket(Quest* quest, bool isMain, Session* client);
 	void SendUpdateQuestProgressPacket(Quest* quest, bool isMain, Session* client);
 	void SendUpdateCreditPacket(short goalCredit, short collectCredit, short currentCredit, Session* client);
-	
+	void SendVoiceDataPacket(char playerId, int sequenceNumber, std::vector<char>& audioData, ExpOver* expOver);
+
 public:
 	// Recv
 	void ProcessLoginPacket(C_Login_Packet packet, int clientIndex);
@@ -92,12 +94,14 @@ public:
 	void ProcessEndStagePacket(C_EndStage_Packet packet, int clientIndex);
 	void ProcessSubmitItemPacket(C_SubmitItem_Packet packet, int clientIndex);
 	void ProcessRequestQuestRewardPacket(C_RequestQuestReward_Packet packet, int clientIndex);
+	void ProcessVoiceDataPacket(C_VoiceData_Packet packet, ExpOver* expOver);
 
 public:
 	HANDLE GetIOCP() const { return _iocp; }
 
 private:
 	SOCKET _listenSocket{};
+	SOCKET _udpSocket{};
 	SOCKET _tempSocket{};
 	ExpOver _acceptOver{};
 	HANDLE _iocp{};

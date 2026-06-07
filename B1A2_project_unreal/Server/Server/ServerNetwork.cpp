@@ -25,33 +25,54 @@ ServerNetwork::ServerNetwork(ServerFramework* framework)
 		return;
 	}
 
-	// listenSocket 생성
-	_listenSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
-	if (_listenSocket == INVALID_SOCKET)
+	// TCP
 	{
-		std::cout << "listenSocket 생성 실패" << std::endl;
-		return;
-	}
+		// listenSocket 생성
+		_listenSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
+		if (_listenSocket == INVALID_SOCKET)
+		{
+			std::cout << "listenSocket 생성 실패" << std::endl;
+			return;
+		}
 
-	// bind
-	sockaddr_in addr;
-	memset(&addr, 0, sizeof(addr));
-	addr.sin_family = AF_INET;
-	addr.sin_addr.s_addr = htonl(INADDR_ANY);
-	addr.sin_port = htons(PORT);
-	if (bind(_listenSocket, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR)
+		// bind
+		sockaddr_in addr;
+		memset(&addr, 0, sizeof(addr));
+		addr.sin_family = AF_INET;
+		addr.sin_addr.s_addr = htonl(INADDR_ANY);
+		addr.sin_port = htons(PORT);
+		if (bind(_listenSocket, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR)
+		{
+			std::cout << "TCP bind 실패" << std::endl;
+			return;
+		}
+
+		// listen
+		if (listen(_listenSocket, SOMAXCONN) == SOCKET_ERROR)
+		{
+			std::cout << "listen 실패" << std::endl;
+			return;
+		}
+	}
+	
+	// UDP
 	{
-		std::cout << "bind 실패" << std::endl;
-		return;
-	}
+		// socket 생성
+		_udpSocket = WSASocket(AF_INET, SOCK_DGRAM, IPPROTO_UDP, NULL, 0, WSA_FLAG_OVERLAPPED);
 
-	// listen
-	if (listen(_listenSocket, SOMAXCONN) == SOCKET_ERROR)
-	{
-		std::cout << "listen 실패" << std::endl;
-		return;
+		// bind
+		sockaddr_in addr;
+		memset(&addr, 0, sizeof(addr));
+		addr.sin_family = AF_INET;
+		addr.sin_addr.s_addr = htonl(INADDR_ANY);
+		addr.sin_port = htons(PORT);
+		if (bind(_udpSocket, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR)
+		{
+			std::cout << "UDP bind 실패" << std::endl;
+			return;
+		}
 	}
-
+	
 	// iocp port 생성
 	_iocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 0);
 	
@@ -62,6 +83,19 @@ ServerNetwork::ServerNetwork(ServerFramework* framework)
 	_tempSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
 	_acceptOver._ioType = IOType::Accept;
 	AcceptEx(_listenSocket, _tempSocket, _acceptOver._buffer.data(), 0, sizeof(SOCKADDR_IN) + 16, sizeof(SOCKADDR_IN) + 16, NULL, &_acceptOver._over);
+
+	// UDP 소켓 등록
+	CreateIoCompletionPort((HANDLE)_udpSocket, _iocp, 0, 0);
+
+	// recv
+	for (int i = 0; i < 1; ++i)
+	{
+		ExpOver* udpOver = new ExpOver(IOType::UDPRecv);
+
+		DWORD recvFlag = 0;
+		DWORD bytesReceived = 0;
+		WSARecvFrom(_udpSocket, &udpOver->_wsaBuffer, 1, &bytesReceived, &recvFlag, (sockaddr*)&udpOver->_udpAddr, &udpOver->_udpAddrLen, &udpOver->_over, nullptr);
+	}
 
 	for (int i = 0; i < MAX_CLIENT; ++i)
 		_clients[i] = new Session();
@@ -108,6 +142,9 @@ void ServerNetwork::Update()
 	case IOType::DB:
 		ProcessDB(static_cast<int>(key), expOver);
 		break;
+	case IOType::UDPRecv:
+		ProcessUDPRecv(numByte, expOver);
+		break;
 	default:
 		std::cout << "Unknown IO type.\n";
 		exit(-1);
@@ -144,6 +181,7 @@ void ServerNetwork::ProcessAccept()
 	_clients[clientIndex]->_isConnected = true;
 	_clients[clientIndex]->_prevRecv = 0;
 	_clients[clientIndex]->_room = nullptr;
+	_clients[clientIndex]->_player = nullptr;
 
 	_clients[clientIndex]->Recv();
 
@@ -206,6 +244,54 @@ void ServerNetwork::ProcessRecv(int clientIndex, int numByte, ExpOver* expOver)
 	}
 
 	_clients[clientIndex]->Recv();
+}
+
+void ServerNetwork::ProcessUDPRecv(int numByte, ExpOver* expOver)
+{
+	// 남은 데이터가 최소 수치보다 적으면 무시
+	if (numByte < sizeof(unsigned short) + sizeof(PacketID))
+		return;
+
+	std::vector<char> packet;
+	packet.insert(packet.end(), expOver->_buffer.begin(), expOver->_buffer.begin() + numByte);
+
+	// packetSize 추출
+	short packetSize;
+	memcpy(&packetSize, packet.data(), sizeof(short));
+
+	// 남은 데이터의 사이즈가 패킷의 사이즈보다 작으면 중단
+	if (packetSize > numByte)
+		return;
+
+	// packetID 추출
+	PacketID id;
+	memcpy(&id, packet.data() + sizeof(short), sizeof(PacketID));
+	packet.erase(packet.begin(), packet.begin() + sizeof(unsigned short) + sizeof(PacketID));
+
+	switch (id)
+	{
+	case C_VoiceData:
+	{
+		C_VoiceData_Packet voiceDataPacket;
+
+		voiceDataPacket.size = packetSize;
+		voiceDataPacket.packetID = id;
+		memcpy(&voiceDataPacket.clientID, packet.data(), sizeof(unsigned short));
+		packet.erase(packet.begin(), packet.begin() + sizeof(unsigned short));
+		memcpy(&voiceDataPacket.playerID, packet.data(), sizeof(unsigned char));
+		packet.erase(packet.begin(), packet.begin() + sizeof(unsigned char));
+		memcpy(&voiceDataPacket.sequenceNumber, packet.data(), sizeof(unsigned int));
+		packet.erase(packet.begin(), packet.begin() + sizeof(unsigned int));
+		voiceDataPacket.audioData = DeserializeVector<char>(packet);
+		
+		ProcessVoiceDataPacket(voiceDataPacket, expOver);
+		break;
+	}
+	}
+
+	DWORD recvFlag = 0;
+	DWORD bytesReceived = 0;
+	WSARecvFrom(_udpSocket, &expOver->_wsaBuffer, 1, &bytesReceived, &recvFlag, (sockaddr*)&expOver->_udpAddr, &expOver->_udpAddrLen, &expOver->_over, nullptr);
 }
 
 void ServerNetwork::ProcessPacket(std::vector<char>& packet, int clientIndex)
@@ -852,6 +938,27 @@ void ServerNetwork::SendUpdateCreditPacket(short goalCredit, short collectCredit
 	client->Send(serializedPacketData);
 }
 
+void ServerNetwork::SendVoiceDataPacket(char playerId, int sequenceNumber, std::vector<char>& audioData, ExpOver* expOver)
+{
+	std::vector<char> voiceData = SerializeVector(audioData);
+	unsigned short packetSize = sizeof(short) + sizeof(PacketID) + sizeof(char) + sizeof(int) + voiceData.size();
+	PacketID id = S_VoiceData;
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData(packetSize - voiceData.size());
+	memcpy(serializedPacketData.data(), &packetSize, sizeof(short));
+	memcpy(serializedPacketData.data() + sizeof(short), &id, sizeof(PacketID));
+	memcpy(serializedPacketData.data() + sizeof(short) + sizeof(PacketID), &playerId, sizeof(char));
+	memcpy(serializedPacketData.data() + sizeof(short) + sizeof(PacketID) + sizeof(char), &sequenceNumber, sizeof(int));
+	serializedPacketData.insert(serializedPacketData.end(), voiceData.begin(), voiceData.end());
+
+	ExpOver* over = new ExpOver(IOType::Send);
+	memcpy(over->_buffer.data(), serializedPacketData.data(), serializedPacketData.size());
+	over->_wsaBuffer.buf = (char*)over->_buffer.data();
+	over->_wsaBuffer.len = serializedPacketData.size();
+	WSASendTo(_udpSocket, &over->_wsaBuffer, 1, 0, 0,(sockaddr*)&expOver->_udpAddr, expOver->_udpAddrLen, &over->_over, nullptr);
+}
+
 void ServerNetwork::ProcessLoginPacket(C_Login_Packet packet, int clientIndex)
 {
 	// DB에 존재하는 ID인지 확인
@@ -1479,5 +1586,22 @@ void ServerNetwork::ProcessRequestQuestRewardPacket(C_RequestQuestReward_Packet 
 			if (p->GetClient())
 				SendUpdateQuestPacket(quest, packet.isMain, _clients[clientIndex]);
 		}
+	}
+}
+
+void ServerNetwork::ProcessVoiceDataPacket(C_VoiceData_Packet packet, ExpOver* expOver)
+{
+	if (packet.clientID < 0 || packet.clientID >= MAX_CLIENT)
+		return;
+
+	if (!_clients[packet.clientID]->_isConnected || !_clients[packet.clientID]->_room || !_clients[packet.clientID]->_player)
+		return;
+
+	// 살아있는 Player와 죽어있는 Player 통신 따로 하기
+	bool isDead = _clients[packet.clientID]->_player->GetState() == ObjectState::DEAD;
+	for (auto& player : _clients[packet.clientID]->_room->GetPlayers())
+	{
+		if (player->GetClient() && isDead == (player->GetState() == ObjectState::DEAD))
+			SendVoiceDataPacket(packet.playerID, packet.sequenceNumber, packet.audioData, expOver);
 	}
 }

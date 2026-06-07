@@ -10,25 +10,42 @@ GameNetwork::GameNetwork()
 		return;
 	}
 
-	// listenSocket 积己
-	_clientSocket = socket(AF_INET, SOCK_STREAM, 0);
-	if (_clientSocket == INVALID_SOCKET)
+	// TCP
 	{
-		//std::cout << "listenSocket 积己 角菩" << std::endl;
-		return;
-	}
+		// clientSocket 积己
+		_clientSocket = socket(AF_INET, SOCK_STREAM, 0);
+		if (_clientSocket == INVALID_SOCKET)
+			return;
 
-	// connect
-	sockaddr_in addr;
-	memset(&addr, 0, sizeof(addr));
-	addr.sin_family = AF_INET;
-	addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-	//addr.sin_addr.s_addr = inet_addr("61.255.49.141");
-	addr.sin_port = htons(7777);
-	if (connect(_clientSocket, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR)
+		// connect
+		sockaddr_in addr;
+		memset(&addr, 0, sizeof(addr));
+		addr.sin_family = AF_INET;
+		addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+		//addr.sin_addr.s_addr = inet_addr("61.255.49.141");
+		addr.sin_port = htons(7777);
+		if (connect(_clientSocket, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR)
+			return;
+	}
+	
+	// UDP
 	{
-		//std::cout << "bind 角菩" << std::endl;
-		return;
+		// udpSocket 积己
+		_udpSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+		if (_udpSocket == INVALID_SOCKET)
+			return;
+
+		memset(&_serverAddr, 0, sizeof(_serverAddr));
+		_serverAddr.sin_family = AF_INET;
+		_serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+		_serverAddr.sin_port = htons(7777);
+
+		short testSize = sizeof(short) + sizeof(PacketID);
+		PacketID testID = C_VoiceData;
+		std::vector<char> testBuffer;
+		testBuffer.insert(testBuffer.end(), (char*)&testSize, (char*)&testSize + sizeof(short));
+		testBuffer.insert(testBuffer.end(), (char*)&testID, (char*)&testID + sizeof(PacketID));
+		sendto(_udpSocket, testBuffer.data(), testBuffer.size(), 0, (sockaddr*)&_serverAddr, sizeof(_serverAddr));
 	}
 }
 
@@ -53,10 +70,7 @@ void GameNetwork::Update()
 
 	// select
 	if (select(0, &_readSet, &_writeSet, NULL, 0) == SOCKET_ERROR)
-	{
-		//std::cout << "select 角菩" << std::endl;
 		return;
-	}
 
 	if (FD_ISSET(_clientSocket, &_readSet))
 	{
@@ -768,6 +782,29 @@ void GameNetwork::SendRequestQuestRewardPacket(bool isMain)
 	// SendEvent 积己
 	NetworkEventRef event = std::make_shared<NetworkEvent>();
 	event->packetID = C_RequestQuestReward;
+	event->serializedPacketData = serializedPacketData;
+	std::lock_guard<std::mutex> lock(_sendMutex);
+	_sendEvents.push_back(event);
+}
+
+void GameNetwork::SendVoiceDataPacket(short clientID, char playerID, int sequenceNumber, std::vector<char>& audioData)
+{
+	std::vector<char> voiceData = SerializeVector(audioData);
+	unsigned short packetSize = sizeof(short) + sizeof(PacketID) + sizeof(short) + sizeof(char) + sizeof(int) + voiceData.size();
+	PacketID id = C_VoiceData;
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData(packetSize - voiceData.size());
+	memcpy(serializedPacketData.data(), &packetSize, sizeof(short));
+	memcpy(serializedPacketData.data() + sizeof(short), &id, sizeof(PacketID));
+	memcpy(serializedPacketData.data() + sizeof(short) + sizeof(PacketID), &clientID, sizeof(short));
+	memcpy(serializedPacketData.data() + sizeof(short) + sizeof(PacketID) + sizeof(short), &playerID, sizeof(char));
+	memcpy(serializedPacketData.data() + sizeof(short) + sizeof(PacketID) + sizeof(short) + sizeof(char), &sequenceNumber, sizeof(int));
+	serializedPacketData.insert(serializedPacketData.end(), voiceData.begin(), voiceData.end());
+
+	// SendEvent 积己
+	NetworkEventRef event = std::make_shared<NetworkEvent>();
+	event->packetID = C_Login;
 	event->serializedPacketData = serializedPacketData;
 	std::lock_guard<std::mutex> lock(_sendMutex);
 	_sendEvents.push_back(event);

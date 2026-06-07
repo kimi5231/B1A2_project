@@ -28,6 +28,7 @@ enum PacketID : char
 	C_EndStage,
 	C_SubmitItem,
 	C_RequestQuestReward,
+	C_VoiceData,
 
 	//Server
 	S_LoginResult,
@@ -60,6 +61,7 @@ enum PacketID : char
 	S_UpdateQuest,
 	S_UpdateQuestProgress,
 	S_UpdateCredit,
+	S_VoiceData,
 };
 
 #pragma pack(push, 1)
@@ -281,6 +283,16 @@ struct C_RequestQuestReward_Packet
 	unsigned char size;
 	PacketID packetID;
 	bool isMain;
+};
+
+struct C_VoiceData_Packet
+{
+	unsigned short size;
+	PacketID packetID;
+	unsigned short clientID;
+	unsigned char playerID;
+	unsigned int sequenceNumber;
+	std::vector<char> audioData;
 };
 
 // Server
@@ -557,5 +569,14 @@ struct S_UpdateCredit_Packet
 	unsigned short goalCredit;
 	unsigned short collectCredit;
 	unsigned short currentCredit;
+};
+
+struct S_VoiceData_Packet
+{
+	unsigned short size;
+	PacketID packetID;
+	unsigned char playerID;
+	unsigned int sequenceNumber;
+	std::vector<char> audioData;
 };
 #pragma pack(pop)

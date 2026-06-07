@@ -14,6 +14,7 @@ enum class IOType
 	Recv,
 	Accept,
 	DB,
+	UDPRecv,
 };
 
 enum class DBType
