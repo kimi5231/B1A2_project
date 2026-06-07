@@ -116,6 +116,14 @@ void UMain::ProcessRecv()
 	{
 		switch (event->packetID)
 		{
+		case S_SignupResult:
+		{
+			S_SignupResult_Packet signupResultPacket;
+			FMemory::Memcpy(&signupResultPacket, event->serializedPacketData.data(), sizeof(S_SignupResult_Packet));
+			RecvSignupResult(signupResultPacket);
+			event->isComplete = true;
+			break;
+		}
 		case S_LoginResult:
 		{
 			S_LoginResult_Packet loginResultPacket;
@@ -430,6 +438,10 @@ void UMain::ProcessRecv()
 		}
 		}
 	}
+}
+
+void UMain::RecvSignupResult(S_SignupResult_Packet packet)
+{
 }
 
 void UMain::RecvLoginResult(S_LoginResult_Packet packet)

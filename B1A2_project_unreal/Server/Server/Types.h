@@ -22,6 +22,12 @@ enum class DBType
 	ExistID,
 };
 
+enum class SignupResult
+{
+	Sucess,
+	Failed,
+};
+
 enum class LoginResult
 {
 	Sucess,

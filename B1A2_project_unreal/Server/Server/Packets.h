@@ -5,6 +5,7 @@
 enum PacketID : char
 {
 	// Client
+	C_Signup,
 	C_Login,
 	C_Logout,
 	C_CreateRoom,
@@ -31,6 +32,7 @@ enum PacketID : char
 	C_VoiceData,
 
 	//Server
+	S_SignupResult,
 	S_LoginResult,
 	S_CurrentRoomList,
 	S_CreateRoomResult,
@@ -99,6 +101,13 @@ struct SellingMachineDTO
 };
 
 // Client
+struct C_Signup_Packet
+{
+	unsigned char size;
+	PacketID packetID;
+	std::vector<char> id;
+};
+
 struct C_Login_Packet
 {
 	unsigned char size;
@@ -296,6 +305,13 @@ struct C_VoiceData_Packet
 };
 
 // Server
+struct S_SignupResult_Packet
+{
+	unsigned short size;
+	PacketID packetID;
+	SignupResult result;
+};
+
 struct S_LoginResult_Packet
 {
 	unsigned short size;

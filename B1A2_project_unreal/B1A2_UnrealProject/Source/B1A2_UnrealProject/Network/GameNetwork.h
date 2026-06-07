@@ -25,6 +25,7 @@ public:
 	std::vector<T> DeserializeVector(std::vector<char>& data);
 
 public:
+	void SendSignupPacket(const std::vector<char>& id);
 	void SendLoginPacket(const std::vector<char>& id);
 	void SendLogoutPacket();
 	void SendCreateRoomPacket();

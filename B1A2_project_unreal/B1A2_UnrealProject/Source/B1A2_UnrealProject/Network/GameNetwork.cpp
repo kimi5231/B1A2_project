@@ -126,6 +126,17 @@ void GameNetwork::ProcessRecv()
 	// Data 眠免
 	switch (id)
 	{
+	case S_SignupResult:
+	{
+		NetworkEventRef event = std::make_shared<NetworkEvent>();
+		event->packetID = id;
+		event->serializedPacketData.resize(sizeof(S_SignupResult_Packet));
+		memcpy(event->serializedPacketData.data(), &packetSize, sizeof(unsigned short));
+		memcpy(event->serializedPacketData.data() + sizeof(unsigned short), packet.data(), packetSize - sizeof(unsigned short));
+		std::lock_guard<std::mutex> lock(_recvMutex);
+		_recvEvents.push_back(event);
+		break;
+	}
 	case S_LoginResult:
 	{
 		NetworkEventRef event = std::make_shared<NetworkEvent>();
@@ -494,6 +505,25 @@ void GameNetwork::ProcessUDPRecv()
 		break;
 	}
 	}
+}
+
+void GameNetwork::SendSignupPacket(const std::vector<char>& id)
+{
+	// Packet Data 积己
+	std::vector<char> idData = SerializeVector(id);
+	char packetSize = sizeof(char) + sizeof(PacketID) + idData.size();
+
+	std::vector<char> serializedPacketData;
+	serializedPacketData.push_back(packetSize);
+	serializedPacketData.push_back(C_Signup);
+	serializedPacketData.insert(serializedPacketData.end(), idData.begin(), idData.end());
+
+	// SendEvent 积己
+	NetworkEventRef event = std::make_shared<NetworkEvent>();
+	event->packetID = C_Signup;
+	event->serializedPacketData = serializedPacketData;
+	std::lock_guard<std::mutex> lock(_sendMutex);
+	_sendEvents.push_back(event);
 }
 
 void GameNetwork::SendLoginPacket(const std::vector<char>& id)

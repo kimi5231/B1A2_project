@@ -541,6 +541,17 @@ std::vector<T> ServerNetwork::DeserializeVector(const std::vector<char>& data)
 	return vector;
 }
 
+void ServerNetwork::SendSignupResultPacket(SignupResult result, Session* client)
+{
+	// Packet Data 생성
+	S_SignupResult_Packet packetData{ sizeof(S_SignupResult_Packet), S_SignupResult, result };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	client->Send(serializedPacketData);
+}
+
 void ServerNetwork::SendLoginResultPacket(LoginResult result, short clientID, Session* client)
 {
 	// Packet Data 생성
@@ -959,12 +970,26 @@ void ServerNetwork::SendVoiceDataPacket(char playerId, int sequenceNumber, std::
 	WSASendTo(_udpSocket, &over->_wsaBuffer, 1, 0, 0,(sockaddr*)&expOver->_udpAddr, expOver->_udpAddrLen, &over->_over, nullptr);
 }
 
+void ServerNetwork::ProcessSignupPacket(C_Signup_Packet packet, int clientIndex)
+{
+	// DB 요청
+	/*DBWork work{DBType::ExistID, clientIndex, packet.id };
+	g_dbManager->AddWork(work);*/
+
+	// 이건 ProcessDB로 옮길 예정
+	SignupResult result = SignupResult::Sucess;
+
+	// 회원가입 결과 전송
+	SendSignupResultPacket(result, _clients[clientIndex]);
+}
+
 void ServerNetwork::ProcessLoginPacket(C_Login_Packet packet, int clientIndex)
 {
 	// DB에 존재하는 ID인지 확인
 	/*DBWork work{DBType::ExistID, clientIndex, packet.id };
 	g_dbManager->AddWork(work);*/
 
+	// 이건 ProcessDB로 옮길 예정
 	LoginResult result = LoginResult::Sucess;
 
 	// 로그인에 성공했다면 RoomList 보내주기

@@ -86,6 +86,7 @@ public:
 	void Update();
 	void ProcessRecv();
 	
+	void RecvSignupResult(S_SignupResult_Packet packet);
 	void RecvLoginResult(S_LoginResult_Packet packet);
 	void RecvCurrentRoomList(S_CurrentRoomList_Packet packet);
 	void RecvCreateRoomResultList(S_CreateRoomResult_Packet packet);

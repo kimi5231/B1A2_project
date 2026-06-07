@@ -37,6 +37,7 @@ private:
 
 public:
 	// Send
+	void SendSignupResultPacket(SignupResult result, Session* client);
 	void SendLoginResultPacket(LoginResult result, short clientID, Session* client);
 	void SendCurrentRoomListPacket(std::vector<Room*>& rooms, Session* client);
 	void SendCreateRoomResultPacket(char roomID, bool result, Session* client);
@@ -71,6 +72,7 @@ public:
 
 public:
 	// Recv
+	void ProcessSignupPacket(C_Signup_Packet packet, int clientIndex);
 	void ProcessLoginPacket(C_Login_Packet packet, int clientIndex);
 	void ProcessLogoutPacket(C_Logout_Packet packet, int clientIndex);
 	void ProcessCreateRoomPacket(C_CreateRoom_Packet packet, int clientIndex);
