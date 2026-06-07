@@ -499,9 +499,9 @@ void ServerNetwork::ProcessDB(int clientIndex, ExpOver* expOver)
 	case DBType::ExistID:
 	{
 		if(expOver->_dbResult)
-			SendLoginResultPacket(LoginResult::Sucess, _clients[clientIndex]);
+			SendLoginResultPacket(LoginResult::Sucess, clientIndex, _clients[clientIndex]);
 		else
-			SendLoginResultPacket(LoginResult::Failed, _clients[clientIndex]);	
+			SendLoginResultPacket(LoginResult::Failed, clientIndex, _clients[clientIndex]);
 		delete expOver;
 		break;
 	}
@@ -541,10 +541,10 @@ std::vector<T> ServerNetwork::DeserializeVector(const std::vector<char>& data)
 	return vector;
 }
 
-void ServerNetwork::SendLoginResultPacket(LoginResult result, Session* client)
+void ServerNetwork::SendLoginResultPacket(LoginResult result, short clientID, Session* client)
 {
 	// Packet Data 생성
-	S_LoginResult_Packet packetData{ sizeof(S_LoginResult_Packet), S_LoginResult, result };
+	S_LoginResult_Packet packetData{ sizeof(S_LoginResult_Packet), S_LoginResult, result, clientID };
 
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);
@@ -972,7 +972,7 @@ void ServerNetwork::ProcessLoginPacket(C_Login_Packet packet, int clientIndex)
 		SendCurrentRoomListPacket(_framework->GetWaitingRooms(), _clients[clientIndex]);
 
 	// 로그인 결과 전송
-	SendLoginResultPacket(result, _clients[clientIndex]);
+	SendLoginResultPacket(result, clientIndex, _clients[clientIndex]);
 }
 
 void ServerNetwork::ProcessLogoutPacket(C_Logout_Packet packet, int clientIndex)

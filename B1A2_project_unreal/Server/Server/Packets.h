@@ -301,6 +301,7 @@ struct S_LoginResult_Packet
 	unsigned short size;
 	PacketID packetID;
 	LoginResult result;
+	unsigned short clientID;
 };
 
 struct S_CurrentRoomList_Packet
