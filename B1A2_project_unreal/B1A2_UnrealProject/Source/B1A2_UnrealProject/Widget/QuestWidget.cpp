@@ -5,6 +5,7 @@
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
 #include "Main/Main.h"
+#include "Network/DataManager.h"
 
 void UQuestWidget::NativeOnInitialized()
 {
@@ -20,6 +21,17 @@ void UQuestWidget::NativeOnInitialized()
 	{
 		SubRewardButton->OnClicked.RemoveDynamic(this, &UQuestWidget::OnSubRewardButtonClicked);
 		SubRewardButton->OnClicked.AddDynamic(this, &UQuestWidget::OnSubRewardButtonClicked);
+	}
+
+	if (MainToggleButton)
+	{
+		MainToggleButton->OnClicked.RemoveDynamic(this, &UQuestWidget::OnMainQuestToggleClicked);
+		MainToggleButton->OnClicked.AddDynamic(this, &UQuestWidget::OnMainQuestToggleClicked);
+	}
+	if (SubToggleButton)
+	{
+		SubToggleButton->OnClicked.RemoveDynamic(this, &UQuestWidget::OnSubQuestToggleClicked);
+		SubToggleButton->OnClicked.AddDynamic(this, &UQuestWidget::OnSubQuestToggleClicked);
 	}
 }
 
@@ -124,31 +136,100 @@ void UQuestWidget::OnSubRewardButtonClicked()
 	}
 }
 
+void UQuestWidget::OnMainQuestToggleClicked()
+{
+	_isMainQuestExpaneded = !_isMainQuestExpaneded;
+	UpdateQuestUI();
+}
+
+void UQuestWidget::OnSubQuestToggleClicked()
+{
+	_isSubQuestExpanded = !_isSubQuestExpanded;
+	UpdateQuestUI();
+}
+
 void UQuestWidget::UpdateQuestUI()
 {
+	UMain* gameInstance = Cast<UMain>(GetGameInstance());
+	if (!gameInstance || !gameInstance->GetDataManager()) return;
+
+	DataManager* DataMgr = gameInstance->GetDataManager();
+
+	// Main 퀘스트
 	if (_mainQuestSlot.questItem != ItemType::None)
 	{
 		FText ItemName = GetItemNameText(_mainQuestSlot.questItem);
-		MainQuestText->SetText(FText::Format(FText::FromString(TEXT("메인: {0} {1}개 수집하기")), ItemName, FText::AsNumber(_mainQuestSlot.goalCount)));
+		MainQuestText->SetText(FText::Format(FText::FromString(TEXT("메인: {0} {1}개 제출하기")), ItemName, FText::AsNumber(_mainQuestSlot.goalCount)));
 		MainQuestProgress->SetText(FText::Format(FText::FromString(TEXT("({0} / {1})")), FText::AsNumber(_mainQuestSlot.currentCount), FText::AsNumber(_mainQuestSlot.goalCount)));
 
-		// 보상 수령이 활성화되면 버튼을 노출, 아니면 숨기기
-		if (MainRewardButton)
+		if (_isMainQuestExpaneded)
 		{
-			MainRewardButton->SetVisibility(_mainQuestSlot.canClaimReward ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+			MainDetailsContainer->SetVisibility(ESlateVisibility::Visible);
+
+			const QuestInfo& info = DataMgr->GetMainQuestInfo(_mainQuestSlot.questID);
+
+			MainTitleText->SetText(FText::FromString(FString::Printf(TEXT("제목: %s"), *info.title)));
+			MainClientText->SetText(FText::FromString(FString::Printf(TEXT("의뢰인: %s"), *info.client)));
+			MainRequestText->SetText(FText::FromString(FString::Printf(TEXT("의뢰 내용:\n%s"), *info.request)));
+			MainRewardText->SetText(FText::FromString(info.reward));
+			
+			// 보상 버튼 활성화 및 완료 대사 출력
+			if (_mainQuestSlot.canClaimReward)
+			{
+				// 퀘스트 완료 시 버튼과 대사를 모두 노출
+				if (MainRewardButton) MainRewardButton->SetVisibility(ESlateVisibility::Visible);
+				if (MainCompleteText) MainCompleteText->SetVisibility(ESlateVisibility::Visible);
+
+				MainCompleteText->SetText(FText::FromString(info.complete));
+			}
+			else
+			{
+				// 완료되지 않았다면 둘 다 숨기기
+				if (MainRewardButton) MainRewardButton->SetVisibility(ESlateVisibility::Collapsed);
+				if (MainCompleteText) MainCompleteText->SetVisibility(ESlateVisibility::Collapsed);
+			}
+		}
+		else
+		{
+			MainDetailsContainer->SetVisibility(ESlateVisibility::Collapsed);
 		}
 	}
 
+	// Sub 퀘스트
 	if (_subQuestSlot.questItem != ItemType::None)
 	{
 		FText ItemName = GetItemNameText(_subQuestSlot.questItem);
-		SubQuestText->SetText(FText::Format(FText::FromString(TEXT("서브: {0} {1}개 수집하기")), ItemName, FText::AsNumber(_subQuestSlot.goalCount)));
+		SubQuestText->SetText(FText::Format(FText::FromString(TEXT("서브: {0} {1}개 제출하기")), ItemName, FText::AsNumber(_subQuestSlot.goalCount)));
 		SubQuestProgress->SetText(FText::Format(FText::FromString(TEXT("({0} / {1})")), FText::AsNumber(_subQuestSlot.currentCount), FText::AsNumber(_subQuestSlot.goalCount)));
 		SubDeadline->SetText(FText::Format(FText::FromString(TEXT("기한: {0}일 남음")), FText::AsNumber(_subQuestSlot.deadLine)));
 
-		if (SubRewardButton)
+		if (_isSubQuestExpanded)
 		{
-			SubRewardButton->SetVisibility(_subQuestSlot.canClaimReward ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+			SubDetailsContainer->SetVisibility(ESlateVisibility::Visible);
+
+			const QuestInfo& info = DataMgr->GetSubQuestInfo(_subQuestSlot.questID);
+			
+			SubTitleText->SetText(FText::FromString(FString::Printf(TEXT("제목: %s"), *info.title)));
+			SubClientText->SetText(FText::FromString(FString::Printf(TEXT("의뢰인: %s"), *info.client)));
+			SubRequestText->SetText(FText::FromString(FString::Printf(TEXT("의뢰 내용:\n%s"), *info.request)));
+			SubRewardText->SetText(FText::FromString(info.reward));
+			
+			if (_subQuestSlot.canClaimReward)
+			{
+				if (SubRewardButton) SubRewardButton->SetVisibility(ESlateVisibility::Visible);
+				if (SubCompleteText) SubCompleteText->SetVisibility(ESlateVisibility::Visible);
+
+				SubCompleteText->SetText(FText::FromString(info.reward));
+			}
+			else
+			{
+				if (SubRewardButton) SubRewardButton->SetVisibility(ESlateVisibility::Collapsed);
+				if (SubCompleteText) SubCompleteText->SetVisibility(ESlateVisibility::Collapsed);
+			}
+		}
+		else
+		{
+			SubDetailsContainer->SetVisibility(ESlateVisibility::Collapsed);
 		}
 	}
 }

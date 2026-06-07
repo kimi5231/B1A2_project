@@ -254,6 +254,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Tool")
 	TSubclassOf<class ABaseItem> LanternClass;
 
+	DataManager* GetDataManager() { return _dataManager; }
+
 private:
 	DataManager* _dataManager = nullptr;
 	GameNetwork* _gameNetwork = nullptr;
