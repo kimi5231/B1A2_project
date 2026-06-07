@@ -997,17 +997,6 @@ void ServerNetwork::ProcessCreateRoomPacket(C_CreateRoom_Packet packet, int clie
 
 	// Room 생성 성공 알림
 	SendCreateRoomResultPacket(true, _clients[clientIndex]);
-
-	// 생성한 Room에 Player 추가
-	_clients[clientIndex]->_player = room->AddPlayer();
-	_clients[clientIndex]->_player->SetClient(_clients[clientIndex]);
-	_clients[clientIndex]->_room = room;
-	SendAddPlayerPacket(_clients[clientIndex]->_player, _clients[clientIndex]);
-
-	// 기본 셋팅 정보 전송
-	SendUpdateQuestPacket(_clients[clientIndex]->_room->GetMainQuest(), true, _clients[clientIndex]);
-	SendUpdateQuestPacket(_clients[clientIndex]->_room->GetSubQuest(), false, _clients[clientIndex]);
-	SendUpdateCreditPacket(_clients[clientIndex]->_room->GetGoalCredit(), _clients[clientIndex]->_room->GetCollectCredit(), _clients[clientIndex]->_room->GetCurrentCredit(), _clients[clientIndex]);
 }
 
 void ServerNetwork::ProcessEnterRoomPacket(C_EnterRoom_Packet packet, int clientIndex)
