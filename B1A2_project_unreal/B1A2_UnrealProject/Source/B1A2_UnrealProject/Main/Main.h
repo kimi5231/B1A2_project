@@ -80,7 +80,7 @@ public:
 	void SendRequestQuestReward(bool isMain);
 	void SendLogin(const std::vector<char>& id);
 	void SendLogout();
-
+	void SendCreateRoom();
 
 	// Recv
 	void Update();
@@ -260,6 +260,10 @@ public:
 	TSubclassOf<class ABaseItem> KeyClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Tool")
 	TSubclassOf<class ABaseItem> LanternClass;
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Settings")
+	TSoftObjectPtr<UWorld> MainGameLevel;
 
 private:
 	DataManager* _dataManager = nullptr;

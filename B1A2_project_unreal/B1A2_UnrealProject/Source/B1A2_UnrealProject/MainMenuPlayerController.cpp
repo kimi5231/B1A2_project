@@ -58,14 +58,14 @@ void AMainMenuPlayerController::HandleLoginResult(LoginResult result)
 	}
 }
 
-void AMainMenuPlayerController::HandleCurrentRoomList(const RoomDTO& roomData)
+void AMainMenuPlayerController::HandleCurrentRoomList(const std::vector<RoomDTO>& roomList)
 {
 	if (LobbyWidgetInstance)
 	{
 		ULobbyWidget* LobbyUI = Cast<ULobbyWidget>(LobbyWidgetInstance);
 		if (LobbyUI)
 		{
-			LobbyUI->UpdateRoomInfo(roomData);
+			LobbyUI->UpdateRoomList(roomList);
 		}
 	}
 }
