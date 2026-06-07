@@ -226,6 +226,7 @@ void ServerNetwork::ProcessPacket(std::vector<char>& packet, int clientIndex)
 		packet.erase(packet.begin(), packet.begin() + sizeof(unsigned char) + sizeof(PacketID));
 
 		C_Login_Packet loginPacket{ packetSize, C_Login, DeserializeVector<char>(packet) };
+		packet.erase(packet.begin(), packet.end());
 		ProcessLoginPacket(loginPacket, clientIndex);
 		break;
 	}
