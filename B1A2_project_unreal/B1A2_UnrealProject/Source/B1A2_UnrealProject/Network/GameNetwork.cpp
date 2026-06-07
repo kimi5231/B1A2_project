@@ -426,9 +426,9 @@ void GameNetwork::ProcessRecv()
 void GameNetwork::SendLoginPacket(const std::vector<char>& id)
 {
 	// Packet Data »ý¼º
-	char packetSize = sizeof(char) + sizeof(PacketID) + id.size();
 	std::vector<char> idData = SerializeVector(id);
-
+	char packetSize = sizeof(char) + sizeof(PacketID) + idData.size();
+	
 	std::vector<char> serializedPacketData;
 	serializedPacketData.push_back(packetSize);
 	serializedPacketData.push_back(C_Login);
