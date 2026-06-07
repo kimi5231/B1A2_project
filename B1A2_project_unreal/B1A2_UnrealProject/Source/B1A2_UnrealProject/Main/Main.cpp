@@ -152,6 +152,14 @@ void UMain::ProcessRecv()
 			event->isComplete = true;
 			break;
 		}
+		case S_CreateRoomResult:
+		{
+			S_CreateRoomResult_Packet createRoomResultPacket;
+			FMemory::Memcpy(&createRoomResultPacket, event->serializedPacketData.data(), sizeof(S_CreateRoomResult_Packet));
+			RecvCreateRoomResultList(createRoomResultPacket);
+			event->isComplete = true;
+			break;
+		}
 		case S_AddPlayer:
 		{
 			S_AddPlayer_Packet addPlayerPacket;
@@ -436,6 +444,10 @@ void UMain::RecvCurrentRoomList(S_CurrentRoomList_Packet packet)
 			}
 		}
 	});
+}
+
+void UMain::RecvCreateRoomResultList(S_CreateRoomResult_Packet packet)
+{
 }
 
 void UMain::ProcessSend(PacketID id, const void* packetData, int dataSize)

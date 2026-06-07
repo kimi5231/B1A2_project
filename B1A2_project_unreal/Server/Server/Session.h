@@ -18,6 +18,7 @@ public:
 	bool _isConnected;
 	ExpOver _recvOver;
 	int _prevRecv;
+	std::vector<char> _name;
 	Room* _room;
 	Player* _player;
 };

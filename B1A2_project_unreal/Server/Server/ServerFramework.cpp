@@ -27,6 +27,21 @@ void ServerFramework::Update()
 	}
 }
 
+Room* ServerFramework::AddRoom(std::vector<char>& title)
+{
+	for (int i = 0; i < MAX_ROOM; ++i)
+	{
+		if (_rooms[i]->GetRoomState() == RoomState::Reusable)
+		{
+			_rooms[i]->SetRoomState(RoomState::Wait);
+			_rooms[i]->SetTitle(title);
+			return;
+		}
+	}
+
+	return nullptr;
+}
+
 std::vector<Room*>& ServerFramework::GetWaitingRooms()
 {
 	std::vector<Room*> runningRooms;

@@ -123,6 +123,17 @@ void GameNetwork::ProcessRecv()
 		_recvEvents.push_back(event);
 		break;
 	}
+	case S_CreateRoomResult:
+	{
+		NetworkEventRef event = std::make_shared<NetworkEvent>();
+		event->packetID = id;
+		event->serializedPacketData.resize(sizeof(S_CreateRoomResult_Packet));
+		memcpy(event->serializedPacketData.data(), &packetSize, sizeof(unsigned short));
+		memcpy(event->serializedPacketData.data() + sizeof(unsigned short), packet.data(), packetSize - sizeof(unsigned short));
+		std::lock_guard<std::mutex> lock(_recvMutex);
+		_recvEvents.push_back(event);
+		break;
+	}
 	case S_AddPlayer:
 	{
 		NetworkEventRef event = std::make_shared<NetworkEvent>();
@@ -453,6 +464,22 @@ void GameNetwork::SendLogoutPacket()
 	// SendEvent 持失
 	NetworkEventRef event = std::make_shared<NetworkEvent>();
 	event->packetID = C_Logout;
+	event->serializedPacketData = serializedPacketData;
+	std::lock_guard<std::mutex> lock(_sendMutex);
+	_sendEvents.push_back(event);
+}
+
+void GameNetwork::SendCreateRoomPacket()
+{
+	// Packet Data 持失
+	C_CreateRoom_Packet packetData{ sizeof(C_CreateRoom_Packet), C_CreateRoom };
+	
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+	
+	// SendEvent 持失
+	NetworkEventRef event = std::make_shared<NetworkEvent>();
+	event->packetID = C_CreateRoom;
 	event->serializedPacketData = serializedPacketData;
 	std::lock_guard<std::mutex> lock(_sendMutex);
 	_sendEvents.push_back(event);

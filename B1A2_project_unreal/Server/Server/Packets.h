@@ -32,6 +32,7 @@ enum PacketID : char
 	//Server
 	S_LoginResult,
 	S_CurrentRoomList,
+	S_CreateRoomResult,
 	S_AddPlayer,
 	S_AddMonster,
 	S_AddItem,
@@ -113,9 +114,6 @@ struct C_CreateRoom_Packet
 {
 	unsigned char size;
 	PacketID packetID;
-	bool isLock;
-	std::vector<char> roomTitle;
-	std::vector<char> password;
 };
 
 struct C_EnterRoom_Packet
@@ -288,16 +286,23 @@ struct C_RequestQuestReward_Packet
 // Server
 struct S_LoginResult_Packet
 {
-	unsigned char size;
+	unsigned short size;
 	PacketID packetID;
 	LoginResult result;
 };
 
 struct S_CurrentRoomList_Packet
 {
-	unsigned char size;
+	unsigned short size;
 	PacketID packetID;
 	std::vector<RoomDTO> roomList;
+};
+
+struct S_CreateRoomResult_Packet
+{
+	unsigned short size;
+	PacketID packetID;
+	bool result;
 };
 
 struct S_AddPlayer_Packet
