@@ -547,6 +547,38 @@ void GameNetwork::SendCreateRoomPacket()
 	_sendEvents.push_back(event);
 }
 
+void GameNetwork::SendEnterRoomPacket(char roomID)
+{
+	// Packet Data 持失
+	C_EnterRoom_Packet packetData{ sizeof(C_EnterRoom_Packet), C_EnterRoom, roomID };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	// SendEvent 持失
+	NetworkEventRef event = std::make_shared<NetworkEvent>();
+	event->packetID = C_EnterRoom;
+	event->serializedPacketData = serializedPacketData;
+	std::lock_guard<std::mutex> lock(_sendMutex);
+	_sendEvents.push_back(event);
+}
+
+void GameNetwork::SendExitRoomPacket()
+{
+	// Packet Data 持失
+	C_ExitRoom_Packet packetData{ sizeof(C_ExitRoom_Packet), C_ExitRoom };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	// SendEvent 持失
+	NetworkEventRef event = std::make_shared<NetworkEvent>();
+	event->packetID = C_ExitRoom;
+	event->serializedPacketData = serializedPacketData;
+	std::lock_guard<std::mutex> lock(_sendMutex);
+	_sendEvents.push_back(event);
+}
+
 void GameNetwork::SendMovePacket(ObjectType type, int id, Vector pos, Rotation rotation, ObjectState state)
 {
 	// Packet Data 持失
