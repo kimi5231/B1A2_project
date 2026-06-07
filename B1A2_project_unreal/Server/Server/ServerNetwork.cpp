@@ -582,10 +582,10 @@ void ServerNetwork::SendCurrentRoomListPacket(std::vector<Room*>& rooms, Session
 	client->Send(serializedPacketData);
 }
 
-void ServerNetwork::SendCreateRoomResultPacket(bool result, Session* client)
+void ServerNetwork::SendCreateRoomResultPacket(char roomID, bool result, Session* client)
 {
 	// Packet Data 积己
-	S_CreateRoomResult_Packet packetData{ sizeof(S_CreateRoomResult_Packet), S_CreateRoomResult, result };
+	S_CreateRoomResult_Packet packetData{ sizeof(S_CreateRoomResult_Packet), S_CreateRoomResult, result, roomID };
 	
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);
@@ -991,12 +991,12 @@ void ServerNetwork::ProcessCreateRoomPacket(C_CreateRoom_Packet packet, int clie
 	if (!room)
 	{
 		// Room 积己 角菩 舅覆
-		SendCreateRoomResultPacket(false, _clients[clientIndex]);
+		SendCreateRoomResultPacket(0, false, _clients[clientIndex]);
 		return;
 	}
 
 	// Room 积己 己傍 舅覆
-	SendCreateRoomResultPacket(true, _clients[clientIndex]);
+	SendCreateRoomResultPacket(room->GetID(), true, _clients[clientIndex]);
 }
 
 void ServerNetwork::ProcessEnterRoomPacket(C_EnterRoom_Packet packet, int clientIndex)
