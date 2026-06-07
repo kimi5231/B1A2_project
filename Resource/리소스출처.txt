@@ -62,3 +62,24 @@ https://fab.com/s/4298f728c4de
 [Sound]
 - Hit
 Cyber Punch 02 by JohnLoser -- https://freesound.org/s/573377/ -- License: Attribution 4.0
+
+- レジスターで精算(판매기_판매완료)
+: https://soundeffect-lab.info/
+
+- atmosphere_noise1(환경음_대기_atmosphere), button02a(컴퓨터 동작.mp3), turn_classic_key2(문 열기.wav)
+: https://taira-komori.net/freesoundkr.html
+
+- 762911__ienba__game-pick-up(아이템 줍기.wav)
+: Game Pick Up by IENBA -- https://freesound.org/s/762911/ -- License: Creative Commons 0
+
+- 427504__solarphasing__industrial-noises-ambient-sound-1(환경음_공장)
+: Industrial Noises Ambient Sound 1.wav by SolarPhasing -- https://freesound.org/s/427504/ -- License: Attribution 4.0
+
+- 720588__newlocknew__mechswtch_heavy-switch(레버 작동.wav)
+: MECHSwtch_Heavy Switch.Including Additions EM by newlocknew -- https://freesound.org/s/720588/ -- License: Attribution NonCommercial 4.0
+
+- 730564__tradeachest__scifi_gun_blast(Gun.wav)
+: Scifi_Gun_Blast by tradeachest -- https://freesound.org/s/730564/ -- License: Creative Commons 0
+
+- 737748__squirrel_404__large-sword-swing.wav(검휘두르기)
+: Large sword swing by Squirrel_404 -- https://freesound.org/s/737748/ -- License: Attribution 4.0

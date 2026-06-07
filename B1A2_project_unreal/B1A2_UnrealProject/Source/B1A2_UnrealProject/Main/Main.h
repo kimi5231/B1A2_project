@@ -10,6 +10,7 @@
 
 #include "Main.generated.h"
 
+class DataManager;
 class GameNetwork;
 class NetworkRunnable;
 class EmotionExtractionRunnable;
@@ -50,6 +51,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ConnectOpenCV();
+
+	UFUNCTION(BlueprintCallable)
+	void LoadQuestData();
 
 	// Base 설치 (한 번 설치 후 게임이 완전히 끝날 때까지 삭제 X)
 	void CreateBase();
@@ -256,6 +260,7 @@ public:
 	TSubclassOf<class ABaseItem> LanternClass;
 
 private:
+	DataManager* _dataManager = nullptr;
 	GameNetwork* _gameNetwork = nullptr;
 
 	// FRunnbale

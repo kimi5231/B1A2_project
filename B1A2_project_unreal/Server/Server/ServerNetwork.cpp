@@ -86,18 +86,10 @@ void ServerNetwork::Update()
 	
 	if (over == nullptr)
 	{
-		return;
-		
-		if (key == -1)
-			exit(-1);
+		if (key < 0 || key >= MAX_CLIENT)
+			return;
 
 		ProcessDisconnected(static_cast<int>(key));
-		
-		std::cout << "client[" << key << "] 立加 辆丰\n";
-		_clients[key]->_isConnected = false;
-		closesocket(_clients[key]->_clientSocket);
-		_clients[key]->_clientSocket = INVALID_SOCKET;
-		_clients[key]->_room->RemoveObject(ObjectType::Player, _clients[key]->_player->GetID(), true);
 		return;
 	}
 
@@ -163,7 +155,16 @@ void ServerNetwork::ProcessAccept()
 
 void ServerNetwork::ProcessDisconnected(int clientIndex)
 {
-
+	std::cout << "client[" << clientIndex << "] 立加 辆丰\n";
+	_clients[clientIndex]->_isConnected = false;
+	closesocket(_clients[clientIndex]->_clientSocket);
+	_clients[clientIndex]->_clientSocket = INVALID_SOCKET;
+	if (_clients[clientIndex]->_room)
+	{
+		_clients[clientIndex]->_room->RemoveObject(ObjectType::Player, _clients[clientIndex]->_player->GetID(), true);
+		_clients[clientIndex]->_room = nullptr;
+		_clients[clientIndex]->_player = nullptr;
+	}
 }
 
 void ServerNetwork::ProcessRecv(int clientIndex, int numByte, ExpOver* expOver)
@@ -171,11 +172,7 @@ void ServerNetwork::ProcessRecv(int clientIndex, int numByte, ExpOver* expOver)
 	// Client 立加 辆丰
 	if (numByte == 0)
 	{
-		std::cout << "client[" << clientIndex << "] 立加 辆丰\n";
-		_clients[clientIndex]->_isConnected = false;
-		closesocket(_clients[clientIndex]->_clientSocket);
-		_clients[clientIndex]->_clientSocket = INVALID_SOCKET;
-		_clients[clientIndex]->_room->RemoveObject(ObjectType::Player, _clients[clientIndex]->_player->GetID(), true);
+		ProcessDisconnected(clientIndex);
 		return;
 	}
 
