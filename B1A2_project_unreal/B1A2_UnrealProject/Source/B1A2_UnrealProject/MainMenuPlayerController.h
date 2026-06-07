@@ -31,7 +31,7 @@ protected:
 	TSubclassOf<class UUserWidget> FailureWidgetClass;
 public:
 	void HandleLoginResult(LoginResult result);
-	void HandleCurrentRoomList(const RoomDTO& roomData);
+	void HandleCurrentRoomList(const std::vector<RoomDTO>& roomList);
 
 private:
 	UPROPERTY()

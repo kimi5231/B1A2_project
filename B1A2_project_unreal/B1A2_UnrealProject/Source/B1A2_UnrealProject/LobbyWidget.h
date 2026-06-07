@@ -29,25 +29,11 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	class UButton* Button_Leave;
 
-	// 플레이어 ID
 	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* Text_Player1;
+	class UScrollBox* ScrollBox_RoomList;
 
-	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* Text_Player2;
-
-	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* Text_Player3;
-
-	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* Text_Player4;
-
-	// Room 정보
-	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* Text_RoomTitle;
-
-	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* Text_RoomState;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI|Room")
+	TSubclassOf<UUserWidget> RoomEntryWidgetClass;
 
 	// 인코딩 오류 방지용 변수
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI|RoomState")
@@ -71,7 +57,6 @@ protected:
 	UFUNCTION() void OnLeaveClicked();
 
 public:
-	// 유저 목록 패킷 오면 갱신하기
-	void UpdateLobbyPlayers(const TArray<FString>& PlayerNames);
-	void UpdateRoomInfo(const RoomDTO& RoomData);
+	// 목록 갱신
+	void UpdateRoomList(const std::vector<RoomDTO>& roomList);
 };

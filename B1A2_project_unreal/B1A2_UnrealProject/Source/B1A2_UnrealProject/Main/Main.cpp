@@ -465,8 +465,7 @@ void UMain::RecvCurrentRoomList(S_CurrentRoomList_Packet packet)
 		{
 			if (!packet.roomList.empty())
 			{
-				// ????????????
-				MenuPC->HandleCurrentRoomList(packet.roomList[0]);
+				MenuPC->HandleCurrentRoomList(packet.roomList);
 			}
 		}
 	});
@@ -474,6 +473,39 @@ void UMain::RecvCurrentRoomList(S_CurrentRoomList_Packet packet)
 
 void UMain::RecvCreateRoomResultList(S_CreateRoomResult_Packet packet)
 {
+	bool bSuccess = packet.result;
+
+	AsyncTask(ENamedThreads::GameThread, [this, bSuccess]()
+	{
+		UWorld* World = GetWorld();
+		if (!World) return;
+
+		// 성공 시 - 레벨 변경
+		if (bSuccess) 
+		{
+			if (!MainGameLevel.IsNull())
+			{
+				FName LevelName = FName(*MainGameLevel.ToSoftObjectPath().GetLongPackageName());
+				UGameplayStatics::OpenLevel(World, LevelName);
+				UE_LOG(LogTemp, Warning, TEXT("[Level] Level Change %s"), *LevelName.ToString());
+
+				APlayerController* PC = World->GetFirstPlayerController();
+				if (PC)
+				{
+					PC->bShowMouseCursor = false;
+					FInputModeGameOnly InputMode;
+					PC->SetInputMode(InputMode);
+				}
+
+				
+			}
+		}
+		// 실패 시 - 실패 위젯 띄우기
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("[Level] Room Failed..."));
+		}
+	});
 }
 
 void UMain::ProcessSend(PacketID id, const void* packetData, int dataSize)
@@ -742,6 +774,15 @@ void UMain::SendLogout()
 	_gameNetwork->SendLogoutPacket();
 }
 
+void UMain::SendCreateRoom()
+{
+	UWorld* world = GetWorld();
+	if (!world)
+		return;
+
+	_gameNetwork->SendCreateRoomPacket();
+}
+
 void UMain::Update()
 {
 	if (!_gameNetwork)
@@ -767,6 +808,8 @@ void UMain::RecvAddPlayer(S_AddPlayer_Packet packet)
 		{
 			UWorld* world = GetWorld();
 			if (!world) return;
+
+			UE_LOG(LogTemp, Warning, TEXT("[Player] Spawn Player Level: %s"), *world->GetMapName());
 
 			FVector spawnLocation(packet.pos.x, packet.pos.y, packet.pos.z + 98.f);
 			FRotator spawnRotation(0, packet.rotation.yaw, 0);

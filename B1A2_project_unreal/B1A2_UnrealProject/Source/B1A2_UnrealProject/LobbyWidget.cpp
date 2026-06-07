@@ -4,6 +4,9 @@
 #include "LobbyWidget.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
+#include "Components/ScrollBox.h"
+#include "RoomWidget.h"
+#include "Main/Main.h"
 
 void ULobbyWidget::NativeConstruct()
 {
@@ -17,7 +20,11 @@ void ULobbyWidget::NativeConstruct()
 void ULobbyWidget::OnHostClicked()
 {
 	// C_CreateRoom 송신
-	UE_LOG(LogTemp, Log, TEXT("Host"));
+	if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
+	{
+		gameInstance->SendCreateRoom();
+		UE_LOG(LogTemp, Log, TEXT("[Lobby] Send Create Room Packet!"));
+	}
 }
 
 void ULobbyWidget::OnJoinClicked()
@@ -29,34 +36,38 @@ void ULobbyWidget::OnJoinClicked()
 void ULobbyWidget::OnLeaveClicked()
 {
 	// C_Logout 송신
-	UE_LOG(LogTemp, Log, TEXT("Leave"));
+	if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
+	{
+		gameInstance->SendLogout();
+
+		UE_LOG(LogTemp, Log, TEXT("[Lobby] Send LogOut Packet!"));
+	}
 }
 
-void ULobbyWidget::UpdateLobbyPlayers(const TArray<FString>& PlayerNames)
+void ULobbyWidget::UpdateRoomList(const std::vector<RoomDTO>& roomList)
 {
-}
+	if (!ScrollBox_RoomList) return;
 
-void ULobbyWidget::UpdateRoomInfo(const RoomDTO& RoomData)
-{
-	// 방 제목
-	if (Text_RoomTitle)
+	// 이전 방 목록 청소
+	ScrollBox_RoomList->ClearChildren();
+
+	if (!RoomEntryWidgetClass)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("RoomEntryWidgetClass is not choose"));
+		return;
+	}
+
+	// 방 목록 배열을 순회하며 동적으로 자식 위젯 생성하기
+	for (const RoomDTO& RoomData : roomList)
 	{
 		FString titleStr = TEXT("No Title");
-
 		if (!RoomData.roomTitle.empty())
 		{
 			std::string StdTitle(RoomData.roomTitle.begin(), RoomData.roomTitle.end());
 			titleStr = FString(UTF8_TO_TCHAR(StdTitle.c_str()));
 		}
 
-		Text_RoomTitle->SetText(FText::FromString(titleStr));
-	}
-
-	// 방 상태
-	if (Text_RoomState)
-	{
 		FText stateStr = FText::FromString(TEXT("Unknown"));
-
 		switch (RoomData.roomState)
 		{
 		case RoomState::Reusable: stateStr = State_Reusable; break;
@@ -66,6 +77,16 @@ void ULobbyWidget::UpdateRoomInfo(const RoomDTO& RoomData)
 		case RoomState::Full:     stateStr = State_Full;     break;
 		}
 
-		Text_RoomState->SetText(stateStr);
+		UUserWidget* NewEntryWidget = CreateWidget<UUserWidget>(GetWorld(), RoomEntryWidgetClass);
+		if (NewEntryWidget)
+		{
+			URoomWidget* RoomWidget = Cast<URoomWidget>(NewEntryWidget);
+			if (RoomWidget)
+			{
+				RoomWidget->SetupEntry(titleStr, stateStr);
+			}
+
+			ScrollBox_RoomList->AddChild(NewEntryWidget);
+		}
 	}
 }
