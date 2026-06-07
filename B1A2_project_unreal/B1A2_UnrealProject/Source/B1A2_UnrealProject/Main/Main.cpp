@@ -1,4 +1,5 @@
 ﻿#include "Main.h"
+#include "Network/DataManager.h"
 #include "Thread/NetworkRecvRunnable.h"
 #include "Thread/EmotionExtractionRunnable.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -26,6 +27,9 @@ void UMain::Init()
 
 	// 시작할 때 카메라 연결
 	//ConnectOpenCV();
+
+	// DataManager
+	LoadQuestData();
 }
 
 void UMain::Shutdown()
@@ -71,6 +75,11 @@ void UMain::ConnectOpenCV()
 	_emotionExtractionThread = FRunnableThread::Create(_emotionExtractionRunnable, TEXT("EmotionExtractionThread"));
 
 	//_emotionExtractionRunnable->Init();
+}
+
+void UMain::LoadQuestData()
+{
+	_dataManager = new DataManager();
 }
 
 void UMain::CreateBase()
