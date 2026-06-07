@@ -35,7 +35,7 @@ Room* ServerFramework::AddRoom(std::vector<char>& title)
 		{
 			_rooms[i]->SetRoomState(RoomState::Wait);
 			_rooms[i]->SetTitle(title);
-			return;
+			return _rooms[i];
 		}
 	}
 
