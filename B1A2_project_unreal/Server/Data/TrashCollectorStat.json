@@ -1,0 +1,19 @@
+{
+    "hp": 80,
+    "isInvincible": false,
+    "moveSpeed": 400.0,
+    "roamigSpeed": 300.0,
+    "chaseSpeed": 460.0,
+    "escapeSpeed": 520.0,
+    "idleTime": 2.0,
+    "roamingTime": 40.0,
+    "chaseTime": 7.0,
+    "escapeDistance": 2500,
+    "aggroRange": [600, 600, 300],
+    "attackRange": [70, 140, 140],
+    "attackDelay": 3.0,
+    "damage": 20,
+    "maxScrapCount": 3,
+    "power": 2,
+    "size": [62, 75, 119]
+}

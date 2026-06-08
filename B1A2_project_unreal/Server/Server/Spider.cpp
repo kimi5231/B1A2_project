@@ -20,7 +20,7 @@ Spider::Spider(MonsterType monsterType, Room* ownerRoom)
 	_chaseTime = 5.f;
 
 	_aggroRange = 400;
-	_aggroAngle = 120.f;
+	_aggroAngle = 360.f;
 	_aggroHeight = 400;
 	_attackRange = 150;
 	_attackAngle = 90.f;
