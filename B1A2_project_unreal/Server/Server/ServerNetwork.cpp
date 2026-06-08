@@ -1033,10 +1033,10 @@ void ServerNetwork::ProcessEnterRoomPacket(C_EnterRoom_Packet packet, int client
 	// 들어갈 수 있다면, 해당 Room에 Player 추가
 	if (rooms[packet.roomID]->GetRoomState() == RoomState::Wait)
 	{
+		_clients[clientIndex]->_room = rooms[packet.roomID];
 		_clients[clientIndex]->_player = _clients[clientIndex]->_room->AddPlayer();
 		_clients[clientIndex]->_player->SetClient(_clients[clientIndex]);
-		_clients[clientIndex]->_room = rooms[packet.roomID];
-
+		
 		// 새로 접속한 Client에게 자신을 나타낼 Player 정보 전송
 		SendAddPlayerPacket(_clients[clientIndex]->_player, _clients[clientIndex]);
 
