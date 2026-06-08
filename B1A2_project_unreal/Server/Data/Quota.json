@@ -1,0 +1,9 @@
+{
+	"increaseCredit":50,
+	"relaxvityValue": 16,
+	"minEmotion": 0.5,
+	"maxEmotion":1.5,
+	"baseEmotion":1.2,
+	"avgBadEmotionCnt":20,
+	"initialQuota ":200
+}
