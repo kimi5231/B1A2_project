@@ -985,7 +985,17 @@ void ServerNetwork::ProcessSignupPacket(C_Signup_Packet packet, int clientIndex)
 
 void ServerNetwork::ProcessLoginPacket(C_Login_Packet packet, int clientIndex)
 {
-	// DB에 존재하는 ID인지 확인
+	// 현재 접속하고 있는 ID라면 로그인 실패
+	for (const auto& client : _clients)
+	{
+		if (client->_isConnected && client->_name == packet.id)
+		{
+			SendLoginResultPacket(LoginResult::IsExit, clientIndex, _clients[clientIndex]);
+			return;
+		}
+	}
+
+	// DB에 존재하는 ID인지 확인 요청
 	/*DBWork work{DBType::ExistID, clientIndex, packet.id };
 	g_dbManager->AddWork(work);*/
 

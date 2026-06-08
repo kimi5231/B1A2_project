@@ -32,6 +32,7 @@ enum class LoginResult
 {
 	Sucess,
 	Failed,
+	IsExit,
 };
 
 enum class RoomState : char
