@@ -1022,6 +1022,7 @@ void ServerNetwork::ProcessCreateRoomPacket(C_CreateRoom_Packet packet, int clie
 
 	// Room 생성 성공 알림
 	SendCreateRoomResultPacket(room->GetID(), true, _clients[clientIndex]);
+	_clients[clientIndex]->_room = room;
 }
 
 void ServerNetwork::ProcessEnterRoomPacket(C_EnterRoom_Packet packet, int clientIndex)
