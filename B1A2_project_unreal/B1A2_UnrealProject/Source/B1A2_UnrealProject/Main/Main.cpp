@@ -19,6 +19,7 @@
 #include "Widget/ShopWidget.h"
 #include "Widget/QuestWidget.h"
 #include "MainMenuPlayerController.h"
+#include "Misc/PackageName.h"
 
 #define BUFSIZE	64
 
@@ -31,6 +32,9 @@ void UMain::Init()
 
 	// DataManager
 	LoadQuestData();
+
+	// 맵 로드 완료시 (메뉴 레벨 -> 메인 레벨 변경 시 호출)
+	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UMain::OnLevelLoadComplete);
 }
 
 void UMain::Shutdown()
@@ -58,6 +62,8 @@ void UMain::Shutdown()
 		delete _recvThread;
 		_recvThread = nullptr;
 	}
+
+	FCoreUObjectDelegates::PostLoadMapWithWorld.RemoveAll(this);
 
 	Super::Shutdown();
 }
@@ -486,6 +492,7 @@ void UMain::RecvCurrentRoomList(S_CurrentRoomList_Packet packet)
 void UMain::RecvCreateRoomResultList(S_CreateRoomResult_Packet packet)
 {
 	bool bSuccess = packet.result;
+	_roomID = packet.roomID;
 
 	AsyncTask(ENamedThreads::GameThread, [this, bSuccess]()
 	{
@@ -508,13 +515,15 @@ void UMain::RecvCreateRoomResultList(S_CreateRoomResult_Packet packet)
 					FInputModeGameOnly InputMode;
 					PC->SetInputMode(InputMode);
 				}
-
-				
 			}
 		}
 		// 실패 시 - 실패 위젯 띄우기
 		else
 		{
+			// ...
+			// ...
+			// ...
+
 			UE_LOG(LogTemp, Error, TEXT("[Level] Room Failed..."));
 		}
 	});
@@ -793,6 +802,15 @@ void UMain::SendCreateRoom()
 		return;
 
 	_gameNetwork->SendCreateRoomPacket();
+}
+
+void UMain::SendEnterRoom(char roomID)
+{
+	UWorld* world = GetWorld();
+	if (!world)
+		return;
+
+	_gameNetwork->SendEnterRoomPacket(roomID);
 }
 
 void UMain::Update()
@@ -2346,6 +2364,28 @@ void UMain::HandleNewEmotionData(const TArray<float>& emotionScores)
 		// 마지막 전송 상태 갱신
 		_lastSentEmotionIndex = maxIndex;
 		UE_LOG(LogTemp, Warning, TEXT("[Emotion] State Changed to index [%d]. Packet Sent!"), maxIndex);
+	}
+}
+
+void UMain::OnLevelLoadComplete(UWorld* loadedWorld)
+{
+	if (!loadedWorld) return;
+
+	FString currentMapPath = loadedWorld->GetOutermost()->GetName();
+	FString targetMapPath = MainGameLevel.ToSoftObjectPath().GetLongPackageName();
+
+	// 파일 명만 추출
+	FString currentMapName = FPackageName::GetShortName(currentMapPath);
+	FString targetMapName = FPackageName::GetShortName(targetMapPath);
+	if (currentMapName.Contains(targetMapName))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[Level] MainLevel Loaded SUCCESS!!! Send Enter Game Packet..."));
+
+		SendEnterRoom(_roomID);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Display, TEXT("[Level] currentMapName != targetMapName"));
 	}
 }
 

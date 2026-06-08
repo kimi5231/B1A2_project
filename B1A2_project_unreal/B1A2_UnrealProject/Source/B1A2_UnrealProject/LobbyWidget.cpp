@@ -30,7 +30,11 @@ void ULobbyWidget::OnHostClicked()
 void ULobbyWidget::OnJoinClicked()
 {
 	// C_EnterRoom ¼Û½Å
-	UE_LOG(LogTemp, Log, TEXT("Join"));
+	if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
+	{
+		//gameInstance->SendEnterRoom();
+		UE_LOG(LogTemp, Log, TEXT("[Lobby] Send Enter Room Packet!"));
+	}
 }
 
 void ULobbyWidget::OnLeaveClicked()

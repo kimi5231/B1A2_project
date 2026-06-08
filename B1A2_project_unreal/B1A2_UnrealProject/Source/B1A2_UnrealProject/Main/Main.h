@@ -81,6 +81,7 @@ public:
 	void SendLogin(const std::vector<char>& id);
 	void SendLogout();
 	void SendCreateRoom();
+	void SendEnterRoom(char roomID);
 
 	// Recv
 	void Update();
@@ -150,6 +151,12 @@ public:
 
 	int32 GetCurrentCredit() { return _currentCredit; }
 
+private:
+	// 맵 로드가 완료됐을 때, C_EnterGame을 송신하기 위한 콜백 함수
+	void OnLevelLoadComplete(UWorld* loadedWorld);
+
+	// Host를 눌렀을 때, GameResult 패킷을 받으면 저장했다가 레벨이 메뉴에서 게임으로 바뀌었을 때 C_EnterGame 송신 위한 룸 id
+	unsigned char _roomID;
 public:
 	// Base Class
 	UPROPERTY(EditDefaultsOnly, Category = "Base")
