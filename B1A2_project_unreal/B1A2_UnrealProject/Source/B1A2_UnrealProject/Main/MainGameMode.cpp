@@ -17,6 +17,5 @@ void AMainGameMode::BeginPlay()
 	if (!_main)
 		return;
 
-	_main->ConnectServer();
 	_main->CreateBase();
 }

@@ -156,7 +156,7 @@ private:
 	void OnLevelLoadComplete(UWorld* loadedWorld);
 
 	// Host를 눌렀을 때, GameResult 패킷을 받으면 저장했다가 레벨이 메뉴에서 게임으로 바뀌었을 때 C_EnterGame 송신 위한 룸 id
-	unsigned char _roomID;
+	unsigned char _roomID = -1;
 public:
 	// Base Class
 	UPROPERTY(EditDefaultsOnly, Category = "Base")

@@ -24,11 +24,14 @@ void UMainMenuWidget::NativeConstruct()
 
 void UMainMenuWidget::OnStartClicked()
 {
-	// 서버 연결
-	UMain* gameInstance = Cast<UMain>(GetGameInstance());
-	if (gameInstance)
+	// 수정 필요!!!!!!!!!!!!! 스타트 버튼 한 번 누르면 비활성화 되도록
+	if (StartButton)
 	{
-		gameInstance->ConnectServer();
+		StartButton->SetIsEnabled(false);
+	}
+	if (QuitButton)
+	{
+		QuitButton->SetIsEnabled(false);
 	}
 
 	if (AccountWidgetClass)

@@ -27,6 +27,8 @@ void UMain::Init()
 {
 	Super::Init();
 
+	ConnectServer();
+
 	// 시작할 때 카메라 연결
 	//ConnectOpenCV();
 
@@ -181,6 +183,8 @@ void UMain::ProcessRecv()
 			FMemory::Memcpy(&createRoomResultPacket, event->serializedPacketData.data(), sizeof(S_CreateRoomResult_Packet));
 			RecvCreateRoomResultList(createRoomResultPacket);
 			event->isComplete = true;
+
+			_roomID = createRoomResultPacket.roomID;
 			break;
 		}
 		case S_AddPlayer:
