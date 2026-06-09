@@ -600,10 +600,10 @@ void ServerNetwork::SendCurrentRoomListPacket(Session* client)
 	client->Send(serializedPacketData);
 }
 
-void ServerNetwork::SendCreateRoomResultPacket(char roomID, bool result, Session* client)
+void ServerNetwork::SendCreateRoomResultPacket(bool result, Session* client)
 {
 	// Packet Data 생성
-	S_CreateRoomResult_Packet packetData{ sizeof(S_CreateRoomResult_Packet), S_CreateRoomResult, result, roomID };
+	S_CreateRoomResult_Packet packetData{ sizeof(S_CreateRoomResult_Packet), S_CreateRoomResult, result };
 	
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);
@@ -1079,13 +1079,20 @@ void ServerNetwork::ProcessCreateRoomPacket(C_CreateRoom_Packet packet, int clie
 	if (!room)
 	{
 		// Room 생성 실패 알림
-		SendCreateRoomResultPacket(0, false, _clients[clientIndex]);
+		SendCreateRoomResultPacket(false, _clients[clientIndex]);
 		return;
 	}
 
 	// Room 생성 성공 알림
-	SendCreateRoomResultPacket(room->GetID(), true, _clients[clientIndex]);
+	SendCreateRoomResultPacket(true, _clients[clientIndex]);
 	_clients[clientIndex]->_room = room;
+	_clients[clientIndex]->_player = _clients[clientIndex]->_room->AddPlayer();
+	_clients[clientIndex]->_player->SetClient(_clients[clientIndex]);
+
+	// 기본 셋팅 정보 전송
+	SendUpdateQuestPacket(_clients[clientIndex]->_room->GetMainQuest(), true, _clients[clientIndex]);
+	SendUpdateQuestPacket(_clients[clientIndex]->_room->GetSubQuest(), false, _clients[clientIndex]);
+	SendUpdateCreditPacket(_clients[clientIndex]->_room->GetGoalCredit(), _clients[clientIndex]->_room->GetCollectCredit(), _clients[clientIndex]->_room->GetCurrentCredit(), _clients[clientIndex]);
 }
 
 void ServerNetwork::ProcessEnterRoomPacket(C_EnterRoom_Packet packet, int clientIndex)

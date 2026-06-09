@@ -574,6 +574,10 @@ void UMain::RecvCreateRoomResultList(S_CreateRoomResult_Packet packet)
 	});
 }
 
+void UMain::RecvEnterRoomResultList(S_EnterRoomResult_Packet packet)
+{
+}
+
 void UMain::ProcessSend(PacketID id, const void* packetData, int dataSize)
 {
 }

@@ -40,7 +40,7 @@ public:
 	void SendSignupResultPacket(SignupResult result, Session* client);
 	void SendLoginResultPacket(LoginResult result, short clientID, Session* client);
 	void SendCurrentRoomListPacket(Session* client);
-	void SendCreateRoomResultPacket(char roomID, bool result, Session* client);
+	void SendCreateRoomResultPacket(bool result, Session* client);
 	void SendEnterRoomResultPacket(bool result, Session* client);
 	void SendAddPlayerPacket(Player* player, Session* client);
 	void SendAddMonsterPacket(Monster* monster, Session* client);

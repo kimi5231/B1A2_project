@@ -340,7 +340,6 @@ struct S_CreateRoomResult_Packet
 	unsigned short size;
 	PacketID packetID;
 	bool result;
-	unsigned char roomID;
 };
 
 struct S_EnterRoomResult_Packet
