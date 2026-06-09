@@ -16,6 +16,7 @@ DataManager::DataManager()
 	LoadSubQuestInfos();
     LoadItemInfos();
     LoadPlayerStat();
+    LoadSpiderStat();
 }
 
 void DataManager::LoadCubeConditionInfos()
@@ -256,4 +257,52 @@ void DataManager::LoadPlayerStat()
     stat.size.z = data["size"][2];
 
     _playerStat = stat;
+}
+
+void DataManager::LoadSpiderStat()
+{
+    std::ifstream file(_dataPath / "SpiderStat.json");
+    json data = json::parse(file);
+
+    SpiderStat stat;
+
+    stat.hp = data["hp"];
+    stat.isInvincible = data["isInvincible"];
+    stat.roaminSpeed = data["roaminSpeed"];
+    stat.returnSpeed = data["returnSpeed"];
+    stat.chaseSpeed = data["chaseSpeed"];
+    stat.idleTime = data["idleTime"];
+    stat.roamingTime = data["roamingTime"];
+    stat.chaseTime = data["chaseTime"];
+    stat.makeWebTime = data["makeWebTime"];
+    stat.aggroRange = data["aggroRange"];
+    stat.aggroAngle = data["aggroAngle"];
+    stat.aggroHeight = data["aggroHeight"];
+    stat.attackAngle = data["attackAngle"];
+    stat.attackHeight = data["attackHeight"];
+    stat.attackDelay = data["attackDelay"];
+    stat.damage = data["damage"];
+    stat.maxWebCount = data["maxWebCount"];
+    stat.power = data["power"];
+    stat.size.x = data["size"][0];
+    stat.size.y = data["size"][1];
+    stat.size.z = data["size"][2];
+
+    _spidrStat = stat;
+}
+
+void DataManager::LoadEmotionGameStat()
+{
+}
+
+void DataManager::LoadGhostStat()
+{
+}
+
+void DataManager::LoadTrashCollectorStat()
+{
+}
+
+void DataManager::LoadPollutionMonitorStat()
+{
 }

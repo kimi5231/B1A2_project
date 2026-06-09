@@ -16,7 +16,7 @@
     "attackHeight": 400,
     "attackDelay": 1.0,
     "damage": 15,
-    "makeWebCount": 8,
+    "maxWebCount": 8,
     "power": 1,
     "size": [80, 80, 80]
 }

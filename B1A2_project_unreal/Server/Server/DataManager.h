@@ -13,6 +13,11 @@ public:
 	void LoadSubQuestInfos();
 	void LoadItemInfos();
 	void LoadPlayerStat();
+	void LoadSpiderStat();
+	void LoadEmotionGameStat();
+	void LoadGhostStat();
+	void LoadTrashCollectorStat();
+	void LoadPollutionMonitorStat();
 
 public:
 	const CubeConditionInfo& GetCubeConditionInfo(Difficulty current, Difficulty detail) { return _cubeConditionInfos[{current, detail}]; }
@@ -22,6 +27,7 @@ public:
 	const SubQuestInfo& GetSubQuestInfo(int id) { return _subQuestInfos[id]; }
 	const ItemInfo& GetItemInfo(ItemType type) { return _itemInfos[type]; }
 	const PlayerStat& GetPlayerStat() { return _playerStat; }
+	const SpiderStat& GetSpiderStat() { return _spidrStat; }
 
 private:
 	std::filesystem::path _dataPath;
@@ -34,4 +40,5 @@ private:
 	std::unordered_map<ItemType, ItemInfo> _itemInfos;
 
 	PlayerStat _playerStat;
+	SpiderStat _spidrStat;
 };

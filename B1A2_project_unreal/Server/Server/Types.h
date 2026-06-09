@@ -548,19 +548,28 @@ struct PlayerStat
 	VectorInt size;
 };
 
-struct SpiderStatus
+struct SpiderStat
 {
 	float hp;
-	float speed;
+	bool isInvincible;
+	float roaminSpeed;
+	float returnSpeed;
 	float chaseSpeed;
-	float chaseTime;
-	float openDoorTime;
-	float attackDelay;
-	unsigned char attackDamage;
-	float makeWebTime;
-	unsigned char maxWebCount;
-	float pauseTime;
+	float idleTime;
 	float roamingTime;
+	float chaseTime;
+	float makeWebTime;
+	int aggroRange;
+	float aggroAngle;
+	int aggroHeight;
+	int attackRange;
+	float attackAngle;
+	int attackHeight;
+	float attackDelay;
+	int damage;
+	int maxWebCount;
+	int power;
+	VectorInt size;
 };
 
 struct DBWork
