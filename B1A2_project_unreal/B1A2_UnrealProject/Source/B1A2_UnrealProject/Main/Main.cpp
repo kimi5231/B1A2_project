@@ -2159,7 +2159,7 @@ void UMain::RecvTurnOffLantern(S_TurnOffLantern_Packet packet)
 void UMain::RecvEndStage(S_EndStage_Packet packet)
 {
 	// 연출 ~~~
-	// 방 닫기 ~~~
+	// 결과 창 띄우기
 }
 
 void UMain::RecvStartStage(S_StartStage_Packet packet)
@@ -2206,6 +2206,10 @@ void UMain::RecvStartStage(S_StartStage_Packet packet)
 
 void UMain::RecvGameOver(S_GameOver_Packet packet)
 {
+	// 게임 오버 연출
+	// 할당량 못채웠을 때 EndGame 후에 GameOver
+	// 이거 오면 전체 리셋
+	// 초기화는 서버가 따로 보냄
 }
 
 void UMain::RecvUpdateHp(S_UpdateHp_Packet packet)
