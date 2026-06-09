@@ -345,6 +345,9 @@ private:
 	float _movePacketSendTimer = 0.2f;	// 현재 남은 시간
 	const float MOVE_PACKET_SEND_DELAY = 0.2f;	// 전송 간격
 
+	FVector _lastSentLocation = FVector::ZeroVector;
+	FRotator _lastSentRotation = FRotator::ZeroRotator;
+
 	// 상호작용 객체 확인 타이머
 	float _interactionTimer = 0.1f;		// 현재 남은 시간
 	const float INTERACTION_DELAY = 0.1f;	// 확인 간격

@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "Engine/StaticMeshActor.h"
 #include "Animation/AnimMontage.h"
+#include <atomic>
 
 #include "Main.generated.h"
 
@@ -157,8 +158,9 @@ private:
 	// 맵 로드가 완료됐을 때, C_EnterGame을 송신하기 위한 콜백 함수
 	void OnLevelLoadComplete(UWorld* loadedWorld);
 
-	// Host를 눌렀을 때, GameResult 패킷을 받으면 저장했다가 레벨이 메뉴에서 게임으로 바뀌었을 때 C_EnterGame 송신 위한 룸 id
-	unsigned char _roomID = -1;
+	// 메뉴에서 게임 레벨로 전환 중인지 여부
+	std::atomic<bool> _bIsLoadingGameLevel{ false };
+
 public:
 	// Base Class
 	UPROPERTY(EditDefaultsOnly, Category = "Base")

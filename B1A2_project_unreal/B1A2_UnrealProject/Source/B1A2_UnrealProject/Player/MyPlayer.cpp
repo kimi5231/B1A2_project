@@ -150,10 +150,26 @@ void AMyPlayer::Tick(float DeltaTime)
 	// MovePacket Send
 	if (_movePacketSendTimer <= 0.f)
 	{
-		_movePacketSendTimer = MOVE_PACKET_SEND_DELAY;
+		FVector currentLocation = GetActorLocation();
+		FRotator currentRotation = GetActorRotation();
 
-		if (UMain* GameInstance = Cast<UMain>(GetGameInstance()))
-			GameInstance->SendLocalPosition();
+		// 이전 전송 값 비교
+		if (!currentLocation.Equals(_lastSentLocation, 0.01f) || !currentRotation.Equals(_lastSentRotation, 0.01f))
+		{
+			// 이동이나 회전이 감지되었을 때만 타이머 초기화하고 패킷 전송함
+			_movePacketSendTimer = MOVE_PACKET_SEND_DELAY;
+
+			_lastSentLocation = currentLocation;
+			_lastSentRotation = currentRotation;
+
+			if (UMain* GameInstance = Cast<UMain>(GetGameInstance()))
+				GameInstance->SendLocalPosition();
+		}
+		else
+		{
+			// 움직임이 없다면 타이머 0으로 고정(움직였을 때 바로 패킷 보내야 하므로)
+			_movePacketSendTimer = 0.f;
+		}
 	}
 
 	// 아이템 상호작용

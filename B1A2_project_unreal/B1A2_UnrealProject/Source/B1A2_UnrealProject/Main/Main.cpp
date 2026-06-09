@@ -122,6 +122,10 @@ void UMain::ProcessRecv()
 
 	for (NetworkEventRef event : recvEvents)
 	{
+		// 게임 레벨 로딩 중일 때 패킷 처리 중단
+		if (_bIsLoadingGameLevel.load())
+			return;
+
 		switch (event->packetID)
 		{
 		case S_SignupResult:
@@ -184,7 +188,9 @@ void UMain::ProcessRecv()
 			RecvCreateRoomResultList(createRoomResultPacket);
 			event->isComplete = true;
 
-			_roomID = createRoomResultPacket.roomID;
+			if (createRoomResultPacket.result)
+				_bIsLoadingGameLevel.store(true);
+
 			break;
 		}
 		case S_EnterRoomResult:
@@ -193,6 +199,10 @@ void UMain::ProcessRecv()
 			FMemory::Memcpy(&enterRoomResultPacket, event->serializedPacketData.data(), sizeof(S_EnterRoomResult_Packet));
 			RecvEnterRoomResultList(enterRoomResultPacket);
 			event->isComplete = true;
+
+			if (enterRoomResultPacket.result)
+				_bIsLoadingGameLevel.store(true);
+	
 			break;
 		}
 		case S_AddPlayer:
@@ -518,38 +528,53 @@ void UMain::RecvLoginResult(S_LoginResult_Packet packet)
 
 void UMain::RecvCurrentRoomList(S_CurrentRoomList_Packet packet)
 {
+	UE_LOG(LogTemp, Display, TEXT("[Lobby] RecvCurrentRoomList is called"));
+	
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
 		UWorld* World = GetWorld();
-		if (!World) return;
+		if (!World) 
+		{
+			UE_LOG(LogTemp, Display, TEXT("[Lobby] RecvCurrentRoomList is called, but world is not exist"));
+			return;
+		}
+		UE_LOG(LogTemp, Display, TEXT("[Lobby] RecvCurrentRoomList is called, and world exist"));
+
 
 		AMainMenuPlayerController* MenuPC = Cast<AMainMenuPlayerController>(World->GetFirstPlayerController());
 		if (MenuPC)
 		{
 			if (!packet.roomList.empty())
 			{
+				UE_LOG(LogTemp, Display, TEXT("[Lobby] Successfully processing room list. Room Count: %d"), (int32)packet.roomList.size());
 				MenuPC->HandleCurrentRoomList(packet.roomList);
 			}
+			else
+			{
+				UE_LOG(LogTemp, Display, TEXT("[Lobby] RecvCurrentRoomList is called but roomList is empty"));
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Display, TEXT("[Lobby] RecvCurrentRoomList is called but Player Controller is not valid"));
 		}
 	});
 }
 
 void UMain::RecvCreateRoomResultList(S_CreateRoomResult_Packet packet)
 {
-	bool bSuccess = packet.result;
-	_roomID = packet.roomID;
-
-	AsyncTask(ENamedThreads::GameThread, [this, bSuccess]()
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
 		UWorld* World = GetWorld();
 		if (!World) return;
 
 		// 성공 시 - 레벨 변경
-		if (bSuccess) 
+		if (packet.result) 
 		{
 			if (!MainGameLevel.IsNull())
 			{
 				FName LevelName = FName(*MainGameLevel.ToSoftObjectPath().GetLongPackageName());
+
 				UGameplayStatics::OpenLevel(World, LevelName);
 				UE_LOG(LogTemp, Warning, TEXT("[Level] Level Change %s"), *LevelName.ToString());
 
@@ -576,6 +601,31 @@ void UMain::RecvCreateRoomResultList(S_CreateRoomResult_Packet packet)
 
 void UMain::RecvEnterRoomResultList(S_EnterRoomResult_Packet packet)
 {
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{	
+		UWorld* World = GetWorld();
+		if (!World) return;
+		
+		// 성공 시 - 레벨 변경
+		if (packet.result)
+		{
+			if (!MainGameLevel.IsNull())
+			{
+				FName LevelName = FName(*MainGameLevel.ToSoftObjectPath().GetLongPackageName());
+
+				UGameplayStatics::OpenLevel(World, LevelName);
+				UE_LOG(LogTemp, Warning, TEXT("[Level] Level Change %s"), *LevelName.ToString());
+
+				APlayerController* PC = World->GetFirstPlayerController();
+				if (PC)
+				{
+					PC->bShowMouseCursor = false;
+					FInputModeGameOnly InputMode;
+					PC->SetInputMode(InputMode);
+				}
+			}
+		}
+	});
 }
 
 void UMain::ProcessSend(PacketID id, const void* packetData, int dataSize)
@@ -2432,9 +2482,9 @@ void UMain::OnLevelLoadComplete(UWorld* loadedWorld)
 	FString targetMapName = FPackageName::GetShortName(targetMapPath);
 	if (currentMapName.Contains(targetMapName))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[Level] MainLevel Loaded SUCCESS!!! Send Enter Game Packet..."));
+		UE_LOG(LogTemp, Warning, TEXT("[Level] MainLevel Loaded SUCCESS!!!"));
 
-		SendEnterRoom(_roomID);
+		_bIsLoadingGameLevel.store(false);
 	}
 	else
 	{
