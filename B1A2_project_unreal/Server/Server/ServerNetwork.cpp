@@ -587,7 +587,7 @@ void ServerNetwork::SendCurrentRoomListPacket(std::vector<Room*>& rooms, Session
 	std::vector<char> serializedPacketData(sizeof(unsigned short));
 	memcpy(serializedPacketData.data(), &packetSize, sizeof(unsigned short));
 	serializedPacketData.push_back(S_CurrentRoomList);
-	serializedPacketData.push_back(roomData.size());
+	serializedPacketData.push_back(roomDTOs.size());
 	serializedPacketData.insert(serializedPacketData.end(), roomData.begin(), roomData.end());
 
 	client->Send(serializedPacketData);
@@ -910,12 +910,15 @@ void ServerNetwork::SendEndStagePacket(Session* client)
 	std::vector<StageResultDTO> stageResultDTOs;
 	for (auto& player : client->_room->GetPlayers())
 	{
-		StageResultDTO DTO{ false, client->_name };
+		if (player->GetClient())
+		{
+			StageResultDTO DTO{ false, client->_name };
 
-		if (player->GetState() == ObjectState::DEAD)
-			DTO.isDead = true;
+			if (player->GetState() == ObjectState::DEAD)
+				DTO.isDead = true;
 
-		stageResultDTOs.push_back(DTO);
+			stageResultDTOs.push_back(DTO);
+		}
 	}
 
 	// Packet Serialize
@@ -923,6 +926,7 @@ void ServerNetwork::SendEndStagePacket(Session* client)
 	for (auto& stageResultDTO : stageResultDTOs)
 	{
 		stageResultData.push_back(stageResultDTO.isDead);
+		stageResultData.push_back(stageResultDTO.name.size());
 		stageResultData.insert(stageResultData.end(), stageResultDTO.name.begin(), stageResultDTO.name.end());
 	}
 
@@ -930,7 +934,7 @@ void ServerNetwork::SendEndStagePacket(Session* client)
 	std::vector<char> serializedPacketData(sizeof(unsigned short));
 	memcpy(serializedPacketData.data(), &packetSize, sizeof(unsigned short));
 	serializedPacketData.push_back(S_EndStage);
-	serializedPacketData.push_back(stageResultData.size());
+	serializedPacketData.push_back(stageResultDTOs.size());
 	serializedPacketData.insert(serializedPacketData.end(), stageResultData.begin(), stageResultData.end());
 
 	client->Send(serializedPacketData);

@@ -636,7 +636,7 @@ void Room::EndStage()
 	// Player 초기화 및 Credit 업데이트
 	for (auto& player : _players)
 	{
-		if (!player->GetClient())
+		if (player->GetClient())
 		{
 			player->SetPos({ 0, 0, 25 });
 			g_network->SendMovePacket(player, player->GetClient());
