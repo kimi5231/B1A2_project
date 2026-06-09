@@ -1089,6 +1089,9 @@ void ServerNetwork::ProcessCreateRoomPacket(C_CreateRoom_Packet packet, int clie
 	_clients[clientIndex]->_player = _clients[clientIndex]->_room->AddPlayer();
 	_clients[clientIndex]->_player->SetClient(_clients[clientIndex]);
 
+	// 새로 접속한 Client에게 자신을 나타낼 Player 정보 전송
+	SendAddPlayerPacket(_clients[clientIndex]->_player, _clients[clientIndex]);
+
 	// 기본 셋팅 정보 전송
 	SendUpdateQuestPacket(_clients[clientIndex]->_room->GetMainQuest(), true, _clients[clientIndex]);
 	SendUpdateQuestPacket(_clients[clientIndex]->_room->GetSubQuest(), false, _clients[clientIndex]);
