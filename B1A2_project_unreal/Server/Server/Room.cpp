@@ -633,6 +633,8 @@ void Room::EndStage()
 	else
 		_roomState = RoomState::Full;
 
+	// 다음 스테이지 난이도 변경
+
 	// Player 초기화 및 Credit 업데이트
 	for (auto& player : _players)
 	{
@@ -658,8 +660,12 @@ void Room::EndStage()
 
 	for(auto& monster : _monsters)
 		monster->SetObjectPoolState(ObjectPoolState::Reusable);
-	for(auto& item : _items)
-		item->SetObjectPoolState(ObjectPoolState::Reusable);
+	for (auto& item : _items)
+	{
+		// Base에 있는 Item은 제외
+		if(item->GetCurrentCubeID() != 0)
+			item->SetObjectPoolState(ObjectPoolState::Reusable);
+	}
 	for (auto& obstacle : _obstacles)
 		obstacle->SetObjectPoolState(ObjectPoolState::Reusable);
 }

@@ -1559,6 +1559,10 @@ void ServerNetwork::ProcessEndStagePacket(C_EndStage_Packet packet, int clientIn
 	if (!_clients[clientIndex]->_room)
 		return;
 
+	// 방의 State가 게임 진행중이 아니면 무시
+	if (_clients[clientIndex]->_room->GetRoomState() != RoomState::Play)
+		return;
+
 	// 방에 있는 모든 Player에게 게임 종료를 알림
 	for (auto& p : _clients[clientIndex]->_room->GetPlayers())
 	{
