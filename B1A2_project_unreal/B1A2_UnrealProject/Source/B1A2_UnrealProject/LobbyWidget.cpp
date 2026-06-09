@@ -5,7 +5,6 @@
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "Components/ScrollBox.h"
-#include "RoomWidget.h"
 #include "Main/Main.h"
 
 void ULobbyWidget::NativeConstruct()
@@ -30,11 +29,23 @@ void ULobbyWidget::OnHostClicked()
 void ULobbyWidget::OnJoinClicked()
 {
 	// C_EnterRoom 송신
+	// 선택된 방이 있는지
+	if (SelectedRoomWidget == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[Lobby] Join Button Clicked, But is not selected room"));
+		return;
+	}
+
+	// 방의 ID 추출
+	int targetRoomID = SelectedRoomWidget->GetRoomID();
+
+	// 패킷 송신
 	if (UMain* gameInstance = Cast<UMain>(GetGameInstance()))
 	{
-		//gameInstance->SendEnterRoom();
-		UE_LOG(LogTemp, Log, TEXT("[Lobby] Send Enter Room Packet!"));
+		gameInstance->SendEnterRoom(targetRoomID);
+		UE_LOG(LogTemp, Log, TEXT("[Lobby] Join Button Clicked! Send Enter Room, RoomID: %d"), targetRoomID);
 	}
+
 }
 
 void ULobbyWidget::OnLeaveClicked()
@@ -53,6 +64,7 @@ void ULobbyWidget::UpdateRoomList(const std::vector<RoomDTO>& roomList)
 	if (!ScrollBox_RoomList) return;
 
 	// 이전 방 목록 청소
+	SelectedRoomWidget = nullptr;
 	ScrollBox_RoomList->ClearChildren();
 
 	if (!RoomEntryWidgetClass)
@@ -86,10 +98,22 @@ void ULobbyWidget::UpdateRoomList(const std::vector<RoomDTO>& roomList)
 			URoomWidget* RoomWidget = Cast<URoomWidget>(NewEntryWidget);
 			if (RoomWidget)
 			{
-				RoomWidget->SetupEntry(titleStr, stateStr);
-			}
+				RoomWidget->SetupEntry(RoomData.roomID, titleStr, stateStr, this);
+				ScrollBox_RoomList->AddChild(NewEntryWidget);
 
-			ScrollBox_RoomList->AddChild(NewEntryWidget);
+			}
 		}
 	}
+}
+
+void ULobbyWidget::SetSelectedRoom(URoomWidget* newSelected)
+{
+	// 이전에 선택된 위젯이 있다면 체크 해제
+	if (SelectedRoomWidget && SelectedRoomWidget != newSelected)
+	{
+		SelectedRoomWidget->SetSelected(false);
+	}
+
+	// 새로운 위젯 등록
+	SelectedRoomWidget = newSelected;
 }

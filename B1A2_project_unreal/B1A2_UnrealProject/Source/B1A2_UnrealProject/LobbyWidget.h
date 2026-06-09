@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Network/Includes.h"
+#include "RoomWidget.h"
 
 #include "LobbyWidget.generated.h"
 
@@ -59,4 +60,12 @@ protected:
 public:
 	// 목록 갱신
 	void UpdateRoomList(const std::vector<RoomDTO>& roomList);
+
+	// 단일 선택
+	void SetSelectedRoom(URoomWidget* newSelected);
+	URoomWidget* GetSelectedRoom() const { return SelectedRoomWidget; }
+
+private:
+	UPROPERTY()
+	URoomWidget* SelectedRoomWidget = nullptr;
 };
