@@ -558,6 +558,9 @@ void Room::CreateCubes()
 
 void Room::StartStage()
 {
+	// RoomState 변경
+	_roomState = RoomState::Play;
+
 	// Cube 생성
 	CreateCubes();
 
@@ -567,10 +570,13 @@ void Room::StartStage()
 			g_network->SendCreateCubesPacket(_cubes, _doors, _sellingMachines, p->GetClient());
 	}
 
+	// Hatch 열어두기
+	_hatch->SetState(ObjectState::OPEN);
+
 	_stage++;
 
 	// 처음 시작하는 것이라면 아래 작업은 제외
-	if (_stage == 0)
+	if (_stage == 1)
 		return;
 	
 	// 기간이 다 된 SubQuest 업데이트
@@ -590,13 +596,61 @@ void Room::StartStage()
 
 void Room::EndStage()
 {
-	// 스테이지가 4의 배수일때마다 목표 크레딧, 모은 크레딧 초기화
-	/*if (_stage % 4 == 0)
+	// 3 스테이지가 지날 때마다 목표 크레딧 달성 여부 확인 및 초기화
+	if (_stage % 3 == 0)
 	{
-		_goalCredit = 0;
-		_collectCredit = 0;
-	}*/
+		Quota info = g_dataManager->GetQuota();
 
+		// 달성하지 못했다면 게임 오버 패킷 전송 및 게임 초기화
+		if (_goalCredit > _collectCredit)
+		{
+			_goalCredit = info.initialQuota;
+			_currentCredit = 0;
+
+			_stage = 0;
+
+			for (auto& player : _players)
+			{
+				if (!player->GetClient())
+					g_network->SendGameOverPacket(player->GetClient());
+			}
+		}
+		else // 달성했다면 다음 스테이지 goalCredit 계산
+		{
+			int goalCredit = _goalCredit;
+			float emotionCount = (_currentFearCount + _currentSurpriseCount + _currentSadCount) / info.avgBadEmotionCnt;
+			float e = std::max(info.minEmotion, std::min(info.maxEmotion, info.baseEmotion - emotionCount));
+			_goalCredit = goalCredit + info.increaseCredit * (1 + (_stage % 3) * (_stage % 3) / info.relaxivityValue) * e;
+			_goalCredit = std::round(_goalCredit);
+		}
+
+		_collectCredit = 0;
+	}
+
+	// RoomState 변경
+	if (_currentPlayerCount < MAX_PLAYER)
+		_roomState = RoomState::Wait;
+	else
+		_roomState = RoomState::Full;
+
+	// Player 초기화 및 Credit 업데이트
+	for (auto& player : _players)
+	{
+		if (!player->GetClient())
+		{
+			player->SetPos({ 0, 0, 25 });
+			g_network->SendMovePacket(player, player->GetClient());
+			g_network->SendUpdateCreditPacket(_goalCredit, _collectCredit, _currentCredit, player->GetClient());
+			player->SetState(ObjectState::IDLE, true);
+		}
+	}
+
+	// 누적 감정 횟수 초기화
+	_currentSurpriseCount = 0;
+	_currentFearCount = 0;
+	_currentSadCount = 0;
+
+	// 나중에 자료형 바꾸기
 	_cubes.erase(_cubes.begin() + 1, _cubes.end());
 	_doors.erase(_doors.begin() + 1, _doors.end());
 	_sellingMachines.clear();

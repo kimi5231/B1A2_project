@@ -907,8 +907,39 @@ void ServerNetwork::SendStartStagePacket(Session* client)
 
 void ServerNetwork::SendEndStagePacket(Session* client)
 {
+	std::vector<StageResultDTO> stageResultDTOs;
+	for (auto& player : client->_room->GetPlayers())
+	{
+		StageResultDTO DTO{ false, client->_name };
+
+		if (player->GetState() == ObjectState::DEAD)
+			DTO.isDead = true;
+
+		stageResultDTOs.push_back(DTO);
+	}
+
+	// Packet Serialize
+	std::vector<char> stageResultData;
+	for (auto& stageResultDTO : stageResultDTOs)
+	{
+		stageResultData.push_back(stageResultDTO.isDead);
+		stageResultData.insert(stageResultData.end(), stageResultDTO.name.begin(), stageResultDTO.name.end());
+	}
+
+	unsigned short packetSize = sizeof(unsigned short) + sizeof(PacketID) + sizeof(char) + stageResultData.size();
+	std::vector<char> serializedPacketData(sizeof(unsigned short));
+	memcpy(serializedPacketData.data(), &packetSize, sizeof(unsigned short));
+	serializedPacketData.push_back(S_EndStage);
+	serializedPacketData.push_back(stageResultData.size());
+	serializedPacketData.insert(serializedPacketData.end(), stageResultData.begin(), stageResultData.end());
+
+	client->Send(serializedPacketData);
+}
+
+void ServerNetwork::SendGameOverPacket(Session* client)
+{
 	// Packet Data 생성
-	S_EndStage_Packet packetData{ sizeof(S_EndStage_Packet), S_EndStage };
+	S_GameOver_Packet packetData{ sizeof(S_GameOver_Packet), S_GameOver };
 
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);
@@ -1489,6 +1520,9 @@ void ServerNetwork::ProcessChangeEmotionPacket(C_ChangeEmotion_Packet packet, in
 	
 	if (packet.emotion == Emotion::Surprise)
 		_clients[clientIndex]->_room->AddSurpriseCount();
+
+	if (packet.emotion == Emotion::Sad)
+		_clients[clientIndex]->_room->AddSadCount();
 }
 
 void ServerNetwork::ProcessEmotionResultPacket(C_EmotionResult_Packet packet, int clientIndex)
@@ -1497,13 +1531,19 @@ void ServerNetwork::ProcessEmotionResultPacket(C_EmotionResult_Packet packet, in
 
 void ServerNetwork::ProcessStartStagePacket(C_StartStage_Packet packet, int clientIndex)
 {
-	// Broadcast
+	// 게임 시작을 요청한 Client가 소속한 방이 없다면 무시
+	if (!_clients[clientIndex]->_room)
+		return;
+
+	// 방의 State가 게임 진행중이면 무시
+	if (_clients[clientIndex]->_room->GetRoomState() == RoomState::Play)
+		return;
+
+	// 방에 있는 모든 Player에게 게임 시작을 알림
 	for (auto& p : _clients[clientIndex]->_room->GetPlayers())
 	{
-		if (!p->GetClient())
-			continue;
-
-		SendStartStagePacket(p->GetClient());
+		if (p->GetClient())
+			SendStartStagePacket(p->GetClient());
 	}
 	
 	_clients[clientIndex]->_room->StartStage();
@@ -1511,17 +1551,15 @@ void ServerNetwork::ProcessStartStagePacket(C_StartStage_Packet packet, int clie
 
 void ServerNetwork::ProcessEndStagePacket(C_EndStage_Packet packet, int clientIndex)
 {
-	// Broadcast
+	// 게임 종료를 요청한 Client가 소속한 방이 없다면 무시
+	if (!_clients[clientIndex]->_room)
+		return;
+
+	// 방에 있는 모든 Player에게 게임 종료를 알림
 	for (auto& p : _clients[clientIndex]->_room->GetPlayers())
 	{
-		if (!p->GetClient())
-			continue;
-
-		// Player들 처음 위치로 이동
-		p->SetPos({ 0, 0, 25 });
-		SendMovePacket(p, p->GetClient());
-
-		SendEndStagePacket(p->GetClient());
+		if (p->GetClient())
+			SendEndStagePacket(p->GetClient());
 	}
 
 	_clients[clientIndex]->_room->EndStage();

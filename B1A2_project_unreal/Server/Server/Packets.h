@@ -60,6 +60,7 @@ enum PacketID : char
 	S_SpawnParticle,
 	S_StartStage,
 	S_EndStage,
+	S_GameOver,
 	S_UpdateQuest,
 	S_UpdateQuestProgress,
 	S_UpdateCredit,
@@ -98,6 +99,12 @@ struct SellingMachineDTO
 	Dir dir;
 	ObjectState state;
 	unsigned char creditLimit;
+};
+
+struct StageResultDTO
+{
+	bool isDead;
+	std::vector<char> name;
 };
 
 // Client
@@ -555,6 +562,13 @@ struct S_StartStage_Packet
 };
 
 struct S_EndStage_Packet
+{
+	unsigned short size;
+	PacketID packetID;
+	std::vector<StageResultDTO> stageResult;
+};
+
+struct S_GameOver_Packet
 {
 	unsigned short size;
 	PacketID packetID;

@@ -76,7 +76,6 @@ void ULobbyWidget::UpdateRoomList(const std::vector<RoomDTO>& roomList)
 		{
 		case RoomState::Reusable: stateStr = State_Reusable; break;
 		case RoomState::Wait:     stateStr = State_Wait;     break;
-		case RoomState::Lock:     stateStr = State_Lock;     break;
 		case RoomState::Play:     stateStr = State_Play;     break;
 		case RoomState::Full:     stateStr = State_Full;     break;
 		}

@@ -399,9 +399,42 @@ void UMain::ProcessRecv()
 		}
 		case S_EndStage:
 		{
+			unsigned short packetSize;
+			memcpy(&packetSize, event->serializedPacketData.data(), sizeof(unsigned short));
+			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned short) + sizeof(PacketID));
 			S_EndStage_Packet endStagePacket;
-			FMemory::Memcpy(&endStagePacket, event->serializedPacketData.data(), sizeof(S_EndStage_Packet));
+			endStagePacket.size = packetSize;
+			endStagePacket.packetID = S_EndStage;
+
+			char stageResultDTOSize;
+			memcpy(&stageResultDTOSize, event->serializedPacketData.data(), sizeof(unsigned char));
+			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned char));
+
+			for (int i = 0; i < stageResultDTOSize; ++i)
+			{
+				StageResultDTO stageResultDTO;
+
+				memcpy(&stageResultDTO.isDead, event->serializedPacketData.data(), sizeof(bool));
+				event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(bool));
+
+				int nameSize;
+				memcpy(&nameSize, event->serializedPacketData.data(), sizeof(unsigned char));
+				event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned char));
+				stageResultDTO.name.resize(nameSize);
+				memcpy(stageResultDTO.name.data(), event->serializedPacketData.data(), sizeof(char) * nameSize);
+				event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(char) * nameSize);
+				endStagePacket.stageResult.push_back(stageResultDTO);
+			}
+
 			RecvEndStage(endStagePacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_GameOver:
+		{
+			S_GameOver_Packet gameOverPacket;
+			FMemory::Memcpy(&gameOverPacket, event->serializedPacketData.data(), sizeof(S_GameOver_Packet));
+			RecvGameOver(gameOverPacket);
 			event->isComplete = true;
 			break;
 		}
@@ -2107,6 +2140,10 @@ void UMain::RecvStartStage(S_StartStage_Packet packet)
 			It.RemoveCurrent();
 		}
 	});
+}
+
+void UMain::RecvGameOver(S_GameOver_Packet packet)
+{
 }
 
 void UMain::RecvUpdateHp(S_UpdateHp_Packet packet)

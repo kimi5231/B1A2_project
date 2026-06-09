@@ -42,6 +42,7 @@ public:
 	
 	void AddFearCount() { _currentFearCount++; }
 	void AddSurpriseCount() { _currentSurpriseCount++; }
+	void AddSadCount() { _currentSadCount++; }
 
 	Player* SelectPlayerForGhost();
 
@@ -110,6 +111,7 @@ private:
 
 	int _currentSurpriseCount;
 	int _currentFearCount;
+	int _currentSadCount;
 
 	Hatch* _hatch;
 	std::vector<CubeRef> _cubes;

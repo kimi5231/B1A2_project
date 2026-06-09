@@ -39,9 +39,8 @@ enum class RoomState : char
 {
 	Reusable,
 	Wait,
-	Lock,
-	Play,
 	Full,
+	Play,
 };
 
 enum class ObjectType : char
@@ -481,6 +480,17 @@ struct TileNode
 	VectorInt index;
 	float g, h, f;
 	TileNode* parent;
+};
+
+struct Quota
+{
+	int initialQuota;
+	int increaseCredit;
+	int relaxivityValue;
+	float minEmotion;
+	float maxEmotion;
+	float baseEmotion;
+	int avgBadEmotionCnt;
 };
 
 struct CubeConditionInfo

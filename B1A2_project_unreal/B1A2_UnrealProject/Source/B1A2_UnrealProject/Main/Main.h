@@ -127,6 +127,7 @@ public:
 
 	void RecvEndStage(S_EndStage_Packet packet);
 	void RecvStartStage(S_StartStage_Packet packet);
+	void RecvGameOver(S_GameOver_Packet packet);
 
 	void RecvUpdateHp(S_UpdateHp_Packet packet);
 	void RecvAddObstacle(S_AddObstacle_Packet packet);
