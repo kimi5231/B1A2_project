@@ -41,15 +41,3 @@ Room* ServerFramework::AddRoom(std::vector<char>& title)
 
 	return nullptr;
 }
-
-std::vector<Room*>& ServerFramework::GetWaitingRooms()
-{
-	std::vector<Room*> runningRooms;
-	for (int i = 0; i < MAX_ROOM; ++i)
-	{
-		if (_rooms[i]->GetRoomState() == RoomState::Wait)
-			runningRooms.push_back(_rooms[i]);
-	}
-
-	return runningRooms;
-}

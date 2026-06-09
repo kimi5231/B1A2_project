@@ -91,6 +91,7 @@ public:
 	void RecvLoginResult(S_LoginResult_Packet packet);
 	void RecvCurrentRoomList(S_CurrentRoomList_Packet packet);
 	void RecvCreateRoomResultList(S_CreateRoomResult_Packet packet);
+	void RecvEnterRoomResultList(S_EnterRoomResult_Packet packet);
 
 	void RecvAddPlayer(S_AddPlayer_Packet packet);
 

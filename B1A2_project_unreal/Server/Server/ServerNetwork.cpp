@@ -563,10 +563,17 @@ void ServerNetwork::SendLoginResultPacket(LoginResult result, short clientID, Se
 	client->Send(serializedPacketData);
 }
 
-void ServerNetwork::SendCurrentRoomListPacket(std::vector<Room*>& rooms, Session* client)
+void ServerNetwork::SendCurrentRoomListPacket(Session* client)
 {
+	std::vector<Room*> waitingRooms;
+	for (auto& room : _framework->GetRooms())
+	{
+		if (room->GetRoomState() == RoomState::Wait)
+			waitingRooms.push_back(room);
+	}
+
 	std::vector<RoomDTO> roomDTOs;
-	for (auto& room : rooms)
+	for (auto& room : waitingRooms)
 	{
 		RoomDTO DTO{ room->GetCurrentPlayerCount(), room->GetID(), room->GetRoomState(), SerializeVector(room->GetTitle()) };
 		roomDTOs.push_back(DTO);
@@ -601,6 +608,17 @@ void ServerNetwork::SendCreateRoomResultPacket(char roomID, bool result, Session
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);
 	
+	client->Send(serializedPacketData);
+}
+
+void ServerNetwork::SendEnterRoomResultPacket(bool result, Session* client)
+{
+	// Packet Data 생성
+	S_EnterRoomResult_Packet packetData{ sizeof(S_EnterRoomResult_Packet), S_EnterRoomResult, result };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
 	client->Send(serializedPacketData);
 }
 
@@ -1037,12 +1055,12 @@ void ServerNetwork::ProcessLoginPacket(C_Login_Packet packet, int clientIndex)
 	// 이건 ProcessDB로 옮길 예정
 	LoginResult result = LoginResult::Sucess;
 
-	// 로그인에 성공했다면 RoomList 보내주기
-	if(result == LoginResult::Sucess)
-		SendCurrentRoomListPacket(_framework->GetWaitingRooms(), _clients[clientIndex]);
-
 	// 로그인 결과 전송
 	SendLoginResultPacket(result, clientIndex, _clients[clientIndex]);
+
+	// 로그인에 성공했다면 RoomList 보내주기
+	if(result == LoginResult::Sucess)
+		SendCurrentRoomListPacket(_clients[clientIndex]);
 }
 
 void ServerNetwork::ProcessLogoutPacket(C_Logout_Packet packet, int clientIndex)
@@ -1075,34 +1093,39 @@ void ServerNetwork::ProcessEnterRoomPacket(C_EnterRoom_Packet packet, int client
 	// 요청한 Room에 들어갈 수 있는지 확인
 	std::array<Room*, MAX_ROOM>& rooms = _framework->GetRooms();
 	
-	// 들어갈 수 있다면, 해당 Room에 Player 추가
-	if (rooms[packet.roomID]->GetRoomState() == RoomState::Wait)
+	// 들어갈 수 없다면, 실패 패킷 전송
+	if (rooms[packet.roomID]->GetRoomState() != RoomState::Wait)
 	{
-		_clients[clientIndex]->_room = rooms[packet.roomID];
-		_clients[clientIndex]->_player = _clients[clientIndex]->_room->AddPlayer();
-		_clients[clientIndex]->_player->SetClient(_clients[clientIndex]);
-		
-		// 새로 접속한 Client에게 자신을 나타낼 Player 정보 전송
-		SendAddPlayerPacket(_clients[clientIndex]->_player, _clients[clientIndex]);
-
-		// 새로 접속한 Client에게 기존에 있던 Object 정보 전송
-		for (auto& player : _clients[clientIndex]->_room->GetPlayers())
-		{
-			if (!player->GetClient())
-				continue;
-
-			// 자기 자신 제외
-			if (_clients[clientIndex]->_player == player)
-				continue;
-
-			SendAddPlayerPacket(player, _clients[clientIndex]);
-		}
-
-		// 기본 셋팅 정보 전송
-		SendUpdateQuestPacket(_clients[clientIndex]->_room->GetMainQuest(), true, _clients[clientIndex]);
-		SendUpdateQuestPacket(_clients[clientIndex]->_room->GetSubQuest(), false, _clients[clientIndex]);
-		SendUpdateCreditPacket(_clients[clientIndex]->_room->GetGoalCredit(), _clients[clientIndex]->_room->GetCollectCredit(), _clients[clientIndex]->_room->GetCurrentCredit(), _clients[clientIndex]);
+		SendEnterRoomResultPacket(false, _clients[clientIndex]);
+		return;
 	}
+		
+	SendEnterRoomResultPacket(true, _clients[clientIndex]);
+	
+	_clients[clientIndex]->_room = rooms[packet.roomID];
+	_clients[clientIndex]->_player = _clients[clientIndex]->_room->AddPlayer();
+	_clients[clientIndex]->_player->SetClient(_clients[clientIndex]);
+
+	// 새로 접속한 Client에게 자신을 나타낼 Player 정보 전송
+	SendAddPlayerPacket(_clients[clientIndex]->_player, _clients[clientIndex]);
+
+	// 새로 접속한 Client에게 기존에 있던 Object 정보 전송
+	for (auto& player : _clients[clientIndex]->_room->GetPlayers())
+	{
+		if (!player->GetClient())
+			continue;
+
+		// 자기 자신 제외
+		if (_clients[clientIndex]->_player == player)
+			continue;
+
+		SendAddPlayerPacket(player, _clients[clientIndex]);
+	}
+
+	// 기본 셋팅 정보 전송
+	SendUpdateQuestPacket(_clients[clientIndex]->_room->GetMainQuest(), true, _clients[clientIndex]);
+	SendUpdateQuestPacket(_clients[clientIndex]->_room->GetSubQuest(), false, _clients[clientIndex]);
+	SendUpdateCreditPacket(_clients[clientIndex]->_room->GetGoalCredit(), _clients[clientIndex]->_room->GetCollectCredit(), _clients[clientIndex]->_room->GetCurrentCredit(), _clients[clientIndex]);
 }
 
 void ServerNetwork::ProcessExitRoomPacket(C_ExitRoom_Packet packet, int clientIndex)
@@ -1113,7 +1136,7 @@ void ServerNetwork::ProcessExitRoomPacket(C_ExitRoom_Packet packet, int clientIn
 	_clients[clientIndex]->_room = nullptr;
 
 	// RoomList 전송
-	SendCurrentRoomListPacket(_framework->GetWaitingRooms(), _clients[clientIndex]);
+	SendCurrentRoomListPacket(_clients[clientIndex]);
 }
 
 void ServerNetwork::ProcessMovePacket(C_Move_Packet packet, int clientIndex)

@@ -36,6 +36,7 @@ enum PacketID : char
 	S_LoginResult,
 	S_CurrentRoomList,
 	S_CreateRoomResult,
+	S_EnterRoomResult,
 	S_AddPlayer,
 	S_AddMonster,
 	S_AddItem,
@@ -340,6 +341,13 @@ struct S_CreateRoomResult_Packet
 	PacketID packetID;
 	bool result;
 	unsigned char roomID;
+};
+
+struct S_EnterRoomResult_Packet
+{
+	unsigned short size;
+	PacketID packetID;
+	bool result;
 };
 
 struct S_AddPlayer_Packet

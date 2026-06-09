@@ -187,6 +187,14 @@ void UMain::ProcessRecv()
 			_roomID = createRoomResultPacket.roomID;
 			break;
 		}
+		case S_EnterRoomResult:
+		{
+			S_EnterRoomResult_Packet enterRoomResultPacket;
+			FMemory::Memcpy(&enterRoomResultPacket, event->serializedPacketData.data(), sizeof(S_EnterRoomResult_Packet));
+			RecvEnterRoomResultList(enterRoomResultPacket);
+			event->isComplete = true;
+			break;
+		}
 		case S_AddPlayer:
 		{
 			S_AddPlayer_Packet addPlayerPacket;
