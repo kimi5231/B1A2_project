@@ -14,6 +14,7 @@ enum class IOType
 	Recv,
 	Accept,
 	DB,
+	UDPRecv,
 };
 
 enum class DBType
@@ -21,18 +22,25 @@ enum class DBType
 	ExistID,
 };
 
-enum class LoginResult
+enum class SignupResult
 {
 	Sucess,
 	Failed,
 };
 
-enum class RoomState
+enum class LoginResult
 {
+	Sucess,
+	Failed,
+	IsExit,
+};
+
+enum class RoomState : char
+{
+	Reusable,
 	Wait,
-	Lock,
-	Play,
 	Full,
+	Play,
 };
 
 enum class ObjectType : char
@@ -472,6 +480,17 @@ struct TileNode
 	VectorInt index;
 	float g, h, f;
 	TileNode* parent;
+};
+
+struct Quota
+{
+	int initialQuota;
+	int increaseCredit;
+	int relaxivityValue;
+	float minEmotion;
+	float maxEmotion;
+	float baseEmotion;
+	int avgBadEmotionCnt;
 };
 
 struct CubeConditionInfo

@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "Engine/StaticMeshActor.h"
 #include "Animation/AnimMontage.h"
+#include <atomic>
 
 #include "Main.generated.h"
 
@@ -78,12 +79,20 @@ public:
 	void SendBuyItem(int playerID, ItemType itemType, int itemCount);
 	void SendSubmitItem(int itemID, int playerID);
 	void SendRequestQuestReward(bool isMain);
+	void SendLogin(const std::vector<char>& id);
+	void SendLogout();
+	void SendCreateRoom();
+	void SendEnterRoom(char roomID);
 
 	// Recv
 	void Update();
 	void ProcessRecv();
 	
-	void RecvLoginResult(S_LoginResult_Packet packet);	
+	void RecvSignupResult(S_SignupResult_Packet packet);
+	void RecvLoginResult(S_LoginResult_Packet packet);
+	void RecvCurrentRoomList(S_CurrentRoomList_Packet packet);
+	void RecvCreateRoomResultList(S_CreateRoomResult_Packet packet);
+	void RecvEnterRoomResultList(S_EnterRoomResult_Packet packet);
 
 	void RecvAddPlayer(S_AddPlayer_Packet packet);
 
@@ -120,6 +129,7 @@ public:
 
 	void RecvEndStage(S_EndStage_Packet packet);
 	void RecvStartStage(S_StartStage_Packet packet);
+	void RecvGameOver(S_GameOver_Packet packet);
 
 	void RecvUpdateHp(S_UpdateHp_Packet packet);
 	void RecvAddObstacle(S_AddObstacle_Packet packet);
@@ -132,6 +142,8 @@ public:
 	void RecvUpdateQuestProgress(S_UpdateQuestProgress_Packet packet);
 	void RecvUpdateCredit(S_UpdateCredit_Packet packet);
 
+	void RecvVoiceData(S_VoiceData_Packet packet);
+
 	FRotator DirToRotation(Dir dir);
 
 	// ID
@@ -141,6 +153,13 @@ public:
 	void HandleNewEmotionData(const TArray<float>& emotionScores);
 
 	int32 GetCurrentCredit() { return _currentCredit; }
+
+private:
+	// 맵 로드가 완료됐을 때, C_EnterGame을 송신하기 위한 콜백 함수
+	void OnLevelLoadComplete(UWorld* loadedWorld);
+
+	// 메뉴에서 게임 레벨로 전환 중인지 여부
+	std::atomic<bool> _bIsLoadingGameLevel{ false };
 
 public:
 	// Base Class
@@ -254,7 +273,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Tool")
 	TSubclassOf<class ABaseItem> LanternClass;
 
-	DataManager* GetDataManager() { return _dataManager; }
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Settings")
+	TSoftObjectPtr<UWorld> MainGameLevel;
 
 private:
 	DataManager* _dataManager = nullptr;

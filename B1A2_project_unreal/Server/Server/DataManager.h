@@ -6,6 +6,7 @@ public:
 	~DataManager() {}
 
 public:
+	void LoadQuota();
 	void LoadCubeConditionInfos();
 	void LoadCubeInfos();
 	void LoadCubeTilemaps();
@@ -20,6 +21,7 @@ public:
 	void LoadPollutionMonitorStat();
 
 public:
+	const Quota& GetQuota() { return _quota; }
 	const CubeConditionInfo& GetCubeConditionInfo(Difficulty current, Difficulty detail) { return _cubeConditionInfos[{current, detail}]; }
 	const CubeInfo& GetCubeInfo(CubeType type) { return _cubeInfos[type]; }
 	const std::vector<std::vector<std::vector<short>>>& GetTilemap(CubeType type) { return _cubeTilemaps[type]; }
@@ -32,6 +34,7 @@ public:
 private:
 	std::filesystem::path _dataPath;
 
+	Quota _quota;
 	std::map<std::pair<Difficulty, Difficulty>, CubeConditionInfo> _cubeConditionInfos;
 	std::unordered_map<CubeType, CubeInfo> _cubeInfos;
 	std::unordered_map<CubeType, std::vector<std::vector<std::vector<short>>>> _cubeTilemaps;

@@ -25,33 +25,54 @@ ServerNetwork::ServerNetwork(ServerFramework* framework)
 		return;
 	}
 
-	// listenSocket 생성
-	_listenSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
-	if (_listenSocket == INVALID_SOCKET)
+	// TCP
 	{
-		std::cout << "listenSocket 생성 실패" << std::endl;
-		return;
-	}
+		// listenSocket 생성
+		_listenSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
+		if (_listenSocket == INVALID_SOCKET)
+		{
+			std::cout << "listenSocket 생성 실패" << std::endl;
+			return;
+		}
 
-	// bind
-	sockaddr_in addr;
-	memset(&addr, 0, sizeof(addr));
-	addr.sin_family = AF_INET;
-	addr.sin_addr.s_addr = htonl(INADDR_ANY);
-	addr.sin_port = htons(PORT);
-	if (bind(_listenSocket, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR)
+		// bind
+		sockaddr_in addr;
+		memset(&addr, 0, sizeof(addr));
+		addr.sin_family = AF_INET;
+		addr.sin_addr.s_addr = htonl(INADDR_ANY);
+		addr.sin_port = htons(PORT);
+		if (bind(_listenSocket, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR)
+		{
+			std::cout << "TCP bind 실패" << std::endl;
+			return;
+		}
+
+		// listen
+		if (listen(_listenSocket, SOMAXCONN) == SOCKET_ERROR)
+		{
+			std::cout << "listen 실패" << std::endl;
+			return;
+		}
+	}
+	
+	// UDP
 	{
-		std::cout << "bind 실패" << std::endl;
-		return;
-	}
+		// socket 생성
+		_udpSocket = WSASocket(AF_INET, SOCK_DGRAM, IPPROTO_UDP, NULL, 0, WSA_FLAG_OVERLAPPED);
 
-	// listen
-	if (listen(_listenSocket, SOMAXCONN) == SOCKET_ERROR)
-	{
-		std::cout << "listen 실패" << std::endl;
-		return;
+		// bind
+		sockaddr_in addr;
+		memset(&addr, 0, sizeof(addr));
+		addr.sin_family = AF_INET;
+		addr.sin_addr.s_addr = htonl(INADDR_ANY);
+		addr.sin_port = htons(PORT);
+		if (bind(_udpSocket, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR)
+		{
+			std::cout << "UDP bind 실패" << std::endl;
+			return;
+		}
 	}
-
+	
 	// iocp port 생성
 	_iocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 0);
 	
@@ -62,6 +83,19 @@ ServerNetwork::ServerNetwork(ServerFramework* framework)
 	_tempSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
 	_acceptOver._ioType = IOType::Accept;
 	AcceptEx(_listenSocket, _tempSocket, _acceptOver._buffer.data(), 0, sizeof(SOCKADDR_IN) + 16, sizeof(SOCKADDR_IN) + 16, NULL, &_acceptOver._over);
+
+	// UDP 소켓 등록
+	CreateIoCompletionPort((HANDLE)_udpSocket, _iocp, 0, 0);
+
+	// recv
+	for (int i = 0; i < 1; ++i)
+	{
+		ExpOver* udpOver = new ExpOver(IOType::UDPRecv);
+
+		DWORD recvFlag = 0;
+		DWORD bytesReceived = 0;
+		WSARecvFrom(_udpSocket, &udpOver->_wsaBuffer, 1, &bytesReceived, &recvFlag, (sockaddr*)&udpOver->_udpAddr, &udpOver->_udpAddrLen, &udpOver->_over, nullptr);
+	}
 
 	for (int i = 0; i < MAX_CLIENT; ++i)
 		_clients[i] = new Session();
@@ -108,6 +142,9 @@ void ServerNetwork::Update()
 	case IOType::DB:
 		ProcessDB(static_cast<int>(key), expOver);
 		break;
+	case IOType::UDPRecv:
+		ProcessUDPRecv(numByte, expOver);
+		break;
 	default:
 		std::cout << "Unknown IO type.\n";
 		exit(-1);
@@ -143,39 +180,8 @@ void ServerNetwork::ProcessAccept()
 	_clients[clientIndex]->_id = clientIndex;
 	_clients[clientIndex]->_isConnected = true;
 	_clients[clientIndex]->_prevRecv = 0;
-	
-	// 나중에 nullptr로 초기화하기
-	_clients[clientIndex]->_room = _framework->GetRoom();
-
-	// 나중에 이 부분은 Room에 들어간 후 처리하는 것으로 변경할 것
-	{
-		// 나중에 nullptr로 초기화하기
-		// 새로 접속한 Client를 나타낼 Player 생성
-		_clients[clientIndex]->_player = _clients[clientIndex]->_room->AddPlayer();
-		_clients[clientIndex]->_player->SetClient(_clients[clientIndex]);
-
-		// 새로 접속한 Client에게 자신을 나타낼 Player 정보 전송
-		SendAddPlayerPacket(_clients[clientIndex]->_player, _clients[clientIndex]);
-
-		// 새로 접속한 Client에게 기존에 있던 Object 정보 전송
-		for (auto& player : _clients[clientIndex]->_room->GetPlayers())
-		{
-			if (!player->GetClient())
-				continue;
-
-			// 자기 자신 제외
-			if (_clients[clientIndex]->_player == player)
-				continue;  
-
-			SendAddPlayerPacket(player, _clients[clientIndex]);
-		}
-	}
-
-	// 나중에 삭제하기
-	//SendCreateCubesPacket(_clients[clientIndex]->_room->GetCubes(), _clients[clientIndex]->_room->GetDoors(), _clients[clientIndex]->_room->GetSellingMachine(), _clients[clientIndex]);
-	SendUpdateQuestPacket(_clients[clientIndex]->_room->GetMainQuest(), true, _clients[clientIndex]);
-	SendUpdateQuestPacket(_clients[clientIndex]->_room->GetSubQuest(), false, _clients[clientIndex]);
-	SendUpdateCreditPacket(_clients[clientIndex]->_room->GetGoalCredit(), _clients[clientIndex]->_room->GetCollectCredit(), _clients[clientIndex]->_room->GetCurrentCredit(), _clients[clientIndex]);
+	_clients[clientIndex]->_room = nullptr;
+	_clients[clientIndex]->_player = nullptr;
 
 	_clients[clientIndex]->Recv();
 
@@ -240,6 +246,54 @@ void ServerNetwork::ProcessRecv(int clientIndex, int numByte, ExpOver* expOver)
 	_clients[clientIndex]->Recv();
 }
 
+void ServerNetwork::ProcessUDPRecv(int numByte, ExpOver* expOver)
+{
+	// 남은 데이터가 최소 수치보다 적으면 무시
+	if (numByte < sizeof(unsigned short) + sizeof(PacketID))
+		return;
+
+	std::vector<char> packet;
+	packet.insert(packet.end(), expOver->_buffer.begin(), expOver->_buffer.begin() + numByte);
+
+	// packetSize 추출
+	short packetSize;
+	memcpy(&packetSize, packet.data(), sizeof(short));
+
+	// 남은 데이터의 사이즈가 패킷의 사이즈보다 작으면 중단
+	if (packetSize > numByte)
+		return;
+
+	// packetID 추출
+	PacketID id;
+	memcpy(&id, packet.data() + sizeof(short), sizeof(PacketID));
+	packet.erase(packet.begin(), packet.begin() + sizeof(unsigned short) + sizeof(PacketID));
+
+	switch (id)
+	{
+	case C_VoiceData:
+	{
+		C_VoiceData_Packet voiceDataPacket;
+
+		voiceDataPacket.size = packetSize;
+		voiceDataPacket.packetID = id;
+		memcpy(&voiceDataPacket.clientID, packet.data(), sizeof(unsigned short));
+		packet.erase(packet.begin(), packet.begin() + sizeof(unsigned short));
+		memcpy(&voiceDataPacket.playerID, packet.data(), sizeof(unsigned char));
+		packet.erase(packet.begin(), packet.begin() + sizeof(unsigned char));
+		memcpy(&voiceDataPacket.sequenceNumber, packet.data(), sizeof(unsigned int));
+		packet.erase(packet.begin(), packet.begin() + sizeof(unsigned int));
+		voiceDataPacket.audioData = DeserializeVector<char>(packet);
+		
+		ProcessVoiceDataPacket(voiceDataPacket, expOver);
+		break;
+	}
+	}
+
+	DWORD recvFlag = 0;
+	DWORD bytesReceived = 0;
+	WSARecvFrom(_udpSocket, &expOver->_wsaBuffer, 1, &bytesReceived, &recvFlag, (sockaddr*)&expOver->_udpAddr, &expOver->_udpAddrLen, &expOver->_over, nullptr);
+}
+
 void ServerNetwork::ProcessPacket(std::vector<char>& packet, int clientIndex)
 {
 	// packetID 추출
@@ -250,11 +304,12 @@ void ServerNetwork::ProcessPacket(std::vector<char>& packet, int clientIndex)
 	{
 	case C_Login:
 	{
-		unsigned short packetSize;
-		memcpy(&packetSize, packet.data(), sizeof(unsigned short));
-		packet.erase(packet.begin(), packet.begin() + sizeof(unsigned short) + sizeof(PacketID));
+		unsigned char packetSize;
+		memcpy(&packetSize, packet.data(), sizeof(unsigned char));
+		packet.erase(packet.begin(), packet.begin() + sizeof(unsigned char) + sizeof(PacketID));
 
 		C_Login_Packet loginPacket{ packetSize, C_Login, DeserializeVector<char>(packet) };
+		packet.erase(packet.begin(), packet.end());
 		ProcessLoginPacket(loginPacket, clientIndex);
 		break;
 	}
@@ -268,14 +323,9 @@ void ServerNetwork::ProcessPacket(std::vector<char>& packet, int clientIndex)
 	}
 	case C_CreateRoom:
 	{
-		unsigned short packetSize;
-		memcpy(&packetSize, packet.data(), sizeof(unsigned short));
-		packet.erase(packet.begin(), packet.begin() + sizeof(unsigned short) + sizeof(PacketID));
-		bool isLock;
-		memcpy(&isLock, packet.data(), sizeof(bool));
-		packet.erase(packet.begin(), packet.begin() + sizeof(bool));
-
-		C_CreateRoom_Packet createRoomPacket{ packetSize, C_CreateRoom, isLock, DeserializeVector<char>(packet), DeserializeVector<char>(packet) };
+		C_CreateRoom_Packet createRoomPacket;
+		memcpy(&createRoomPacket, packet.data(), sizeof(C_CreateRoom_Packet));
+		packet.erase(packet.begin(), packet.begin() + sizeof(C_CreateRoom_Packet));
 		ProcessCreateRoomPacket(createRoomPacket, clientIndex);
 		break;
 	}
@@ -449,9 +499,9 @@ void ServerNetwork::ProcessDB(int clientIndex, ExpOver* expOver)
 	case DBType::ExistID:
 	{
 		if(expOver->_dbResult)
-			SendLoginResultPacket(LoginResult::Sucess, _clients[clientIndex]);
+			SendLoginResultPacket(LoginResult::Sucess, clientIndex, _clients[clientIndex]);
 		else
-			SendLoginResultPacket(LoginResult::Failed, _clients[clientIndex]);	
+			SendLoginResultPacket(LoginResult::Failed, clientIndex, _clients[clientIndex]);
 		delete expOver;
 		break;
 	}
@@ -491,10 +541,10 @@ std::vector<T> ServerNetwork::DeserializeVector(const std::vector<char>& data)
 	return vector;
 }
 
-void ServerNetwork::SendLoginResultPacket(LoginResult result, Session* client)
+void ServerNetwork::SendSignupResultPacket(SignupResult result, Session* client)
 {
 	// Packet Data 생성
-	S_LoginResult_Packet packetData{ sizeof(S_LoginResult_Packet), S_LoginResult, result };
+	S_SignupResult_Packet packetData{ sizeof(S_SignupResult_Packet), S_SignupResult, result };
 
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);
@@ -502,33 +552,72 @@ void ServerNetwork::SendLoginResultPacket(LoginResult result, Session* client)
 	client->Send(serializedPacketData);
 }
 
-void ServerNetwork::SendCurrentRoomListPacket(std::array<Room*, MAX_ROOM>& rooms, Session* client)
+void ServerNetwork::SendLoginResultPacket(LoginResult result, short clientID, Session* client)
 {
-	std::vector<RoomDTO> roomDTOs;
-	for (auto& room : rooms)
-	{
-		// 들어갈 수 있는 room의 정보만 기록
-		if (room->GetRoomState() == RoomState::Wait || room->GetRoomState() == RoomState::Lock)
-		{
-			char title[MAX_TITLE];
+	// Packet Data 생성
+	S_LoginResult_Packet packetData{ sizeof(S_LoginResult_Packet), S_LoginResult, result, clientID };
 
-			RoomDTO DTO{ room->GetCurrentPlayerCount(), room->GetID(), room->GetRoomState(), SerializeVector(room->GetTitle()) };
-			roomDTOs.push_back(DTO);
-		}	
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	client->Send(serializedPacketData);
+}
+
+void ServerNetwork::SendCurrentRoomListPacket(Session* client)
+{
+	std::vector<Room*> waitingRooms;
+	for (auto& room : _framework->GetRooms())
+	{
+		if (room->GetRoomState() == RoomState::Wait)
+			waitingRooms.push_back(room);
+	}
+
+	std::vector<RoomDTO> roomDTOs;
+	for (auto& room : waitingRooms)
+	{
+		RoomDTO DTO{ room->GetCurrentPlayerCount(), room->GetID(), room->GetRoomState(), SerializeVector(room->GetTitle()) };
+		roomDTOs.push_back(DTO);
 	}
 
 	// Packet Serialize
-	int vectorSize = roomDTOs.size();
-	int DTOSize = sizeof(roomDTOs[0].playerCount) + sizeof(roomDTOs[0].roomID) + sizeof(roomDTOs[0].roomState) + roomDTOs[0].roomTitle.size();
-	std::vector<char> roomData(sizeof(int) + DTOSize * vectorSize);
-	memcpy(roomData.data(), &vectorSize, sizeof(int));
-	memcpy(roomData.data() + sizeof(int), roomDTOs.data(), vectorSize * DTOSize);
+	std::vector<char> roomData;
+	for(auto& roomDTO : roomDTOs)
+	{
+		roomData.push_back(roomDTO.playerCount);
+		roomData.push_back(roomDTO.roomID);
+		roomData.push_back(static_cast<char>(roomDTO.roomState));
+		roomData.push_back(roomDTO.roomTitle.size());
+		roomData.insert(roomData.end(), roomDTO.roomTitle.begin(), roomDTO.roomTitle.end());
+	}
 
-	unsigned short packetSize = sizeof(unsigned short) + sizeof(PacketID) + roomData.size();
+	unsigned short packetSize = sizeof(unsigned short) + sizeof(PacketID) + sizeof(char) + roomData.size();
 	std::vector<char> serializedPacketData(sizeof(unsigned short));
 	memcpy(serializedPacketData.data(), &packetSize, sizeof(unsigned short));
 	serializedPacketData.push_back(S_CurrentRoomList);
+	serializedPacketData.push_back(roomDTOs.size());
 	serializedPacketData.insert(serializedPacketData.end(), roomData.begin(), roomData.end());
+
+	client->Send(serializedPacketData);
+}
+
+void ServerNetwork::SendCreateRoomResultPacket(bool result, Session* client)
+{
+	// Packet Data 생성
+	S_CreateRoomResult_Packet packetData{ sizeof(S_CreateRoomResult_Packet), S_CreateRoomResult, result };
+	
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+	
+	client->Send(serializedPacketData);
+}
+
+void ServerNetwork::SendEnterRoomResultPacket(bool result, Session* client)
+{
+	// Packet Data 생성
+	S_EnterRoomResult_Packet packetData{ sizeof(S_EnterRoomResult_Packet), S_EnterRoomResult, result };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
 
 	client->Send(serializedPacketData);
 }
@@ -836,8 +925,43 @@ void ServerNetwork::SendStartStagePacket(Session* client)
 
 void ServerNetwork::SendEndStagePacket(Session* client)
 {
+	std::vector<StageResultDTO> stageResultDTOs;
+	for (auto& player : client->_room->GetPlayers())
+	{
+		if (player->GetClient())
+		{
+			StageResultDTO DTO{ false, client->_name };
+
+			if (player->GetState() == ObjectState::DEAD)
+				DTO.isDead = true;
+
+			stageResultDTOs.push_back(DTO);
+		}
+	}
+
+	// Packet Serialize
+	std::vector<char> stageResultData;
+	for (auto& stageResultDTO : stageResultDTOs)
+	{
+		stageResultData.push_back(stageResultDTO.isDead);
+		stageResultData.push_back(stageResultDTO.name.size());
+		stageResultData.insert(stageResultData.end(), stageResultDTO.name.begin(), stageResultDTO.name.end());
+	}
+
+	unsigned short packetSize = sizeof(unsigned short) + sizeof(PacketID) + sizeof(char) + stageResultData.size();
+	std::vector<char> serializedPacketData(sizeof(unsigned short));
+	memcpy(serializedPacketData.data(), &packetSize, sizeof(unsigned short));
+	serializedPacketData.push_back(S_EndStage);
+	serializedPacketData.push_back(stageResultDTOs.size());
+	serializedPacketData.insert(serializedPacketData.end(), stageResultData.begin(), stageResultData.end());
+
+	client->Send(serializedPacketData);
+}
+
+void ServerNetwork::SendGameOverPacket(Session* client)
+{
 	// Packet Data 생성
-	S_EndStage_Packet packetData{ sizeof(S_EndStage_Packet), S_EndStage };
+	S_GameOver_Packet packetData{ sizeof(S_GameOver_Packet), S_GameOver };
 
 	// Packet Serialize
 	std::vector<char> serializedPacketData = SerializePOD(packetData);
@@ -878,38 +1002,151 @@ void ServerNetwork::SendUpdateCreditPacket(short goalCredit, short collectCredit
 	client->Send(serializedPacketData);
 }
 
-void ServerNetwork::ProcessLoginPacket(C_Login_Packet packet, int clientIndex)
+void ServerNetwork::SendVoiceDataPacket(char playerId, int sequenceNumber, std::vector<char>& audioData, ExpOver* expOver)
 {
-	// DB에 존재하는 ID인지 확인
+	std::vector<char> voiceData = SerializeVector(audioData);
+	unsigned short packetSize = sizeof(short) + sizeof(PacketID) + sizeof(char) + sizeof(int) + voiceData.size();
+	PacketID id = S_VoiceData;
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData(packetSize - voiceData.size());
+	memcpy(serializedPacketData.data(), &packetSize, sizeof(short));
+	memcpy(serializedPacketData.data() + sizeof(short), &id, sizeof(PacketID));
+	memcpy(serializedPacketData.data() + sizeof(short) + sizeof(PacketID), &playerId, sizeof(char));
+	memcpy(serializedPacketData.data() + sizeof(short) + sizeof(PacketID) + sizeof(char), &sequenceNumber, sizeof(int));
+	serializedPacketData.insert(serializedPacketData.end(), voiceData.begin(), voiceData.end());
+
+	ExpOver* over = new ExpOver(IOType::Send);
+	memcpy(over->_buffer.data(), serializedPacketData.data(), serializedPacketData.size());
+	over->_wsaBuffer.buf = (char*)over->_buffer.data();
+	over->_wsaBuffer.len = serializedPacketData.size();
+	WSASendTo(_udpSocket, &over->_wsaBuffer, 1, 0, 0,(sockaddr*)&expOver->_udpAddr, expOver->_udpAddrLen, &over->_over, nullptr);
+}
+
+void ServerNetwork::ProcessSignupPacket(C_Signup_Packet packet, int clientIndex)
+{
+	// DB 요청
 	/*DBWork work{DBType::ExistID, clientIndex, packet.id };
 	g_dbManager->AddWork(work);*/
 
+	// 이건 ProcessDB로 옮길 예정
+	SignupResult result = SignupResult::Sucess;
+
+	// 회원가입 결과 전송
+	SendSignupResultPacket(result, _clients[clientIndex]);
+}
+
+void ServerNetwork::ProcessLoginPacket(C_Login_Packet packet, int clientIndex)
+{
+	// 현재 접속하고 있는 ID라면 로그인 실패
+	for (const auto& client : _clients)
+	{
+		if (client->_isConnected && client->_name == packet.id)
+		{
+			SendLoginResultPacket(LoginResult::IsExit, clientIndex, _clients[clientIndex]);
+			return;
+		}
+	}
+
+	// DB에 존재하는 ID인지 확인 요청
+	/*DBWork work{DBType::ExistID, clientIndex, packet.id };
+	g_dbManager->AddWork(work);*/
+
+	// 이건 ProcessDB로 옮길 예정
 	LoginResult result = LoginResult::Sucess;
-	SendLoginResultPacket(result, _clients[clientIndex]);
+
+	// 로그인 결과 전송
+	SendLoginResultPacket(result, clientIndex, _clients[clientIndex]);
+
+	// 로그인에 성공했다면 RoomList 보내주기
+	if(result == LoginResult::Sucess)
+		SendCurrentRoomListPacket(_clients[clientIndex]);
 }
 
 void ServerNetwork::ProcessLogoutPacket(C_Logout_Packet packet, int clientIndex)
 {
 	// RoomList 보내주는 Client 목록에서 제외
+
+	// 게임 중이었다면, Room에서 제외
+	_clients[clientIndex]->_room->RemoveObject(ObjectType::Player, _clients[clientIndex]->_player->GetID(), true);
+	_clients[clientIndex]->_player = nullptr;
+	_clients[clientIndex]->_room = nullptr;
 }
 
 void ServerNetwork::ProcessCreateRoomPacket(C_CreateRoom_Packet packet, int clientIndex)
 {
-	// 패킷 정보를 활용해 Room 추가하기
+	Room* room = _framework->AddRoom(_clients[clientIndex]->_name);
+	if (!room)
+	{
+		// Room 생성 실패 알림
+		SendCreateRoomResultPacket(false, _clients[clientIndex]);
+		return;
+	}
+
+	// Room 생성 성공 알림
+	SendCreateRoomResultPacket(true, _clients[clientIndex]);
+	_clients[clientIndex]->_room = room;
+	_clients[clientIndex]->_player = _clients[clientIndex]->_room->AddPlayer();
+	_clients[clientIndex]->_player->SetClient(_clients[clientIndex]);
+
+	// 새로 접속한 Client에게 자신을 나타낼 Player 정보 전송
+	SendAddPlayerPacket(_clients[clientIndex]->_player, _clients[clientIndex]);
+
+	// 기본 셋팅 정보 전송
+	SendUpdateQuestPacket(_clients[clientIndex]->_room->GetMainQuest(), true, _clients[clientIndex]);
+	SendUpdateQuestPacket(_clients[clientIndex]->_room->GetSubQuest(), false, _clients[clientIndex]);
+	SendUpdateCreditPacket(_clients[clientIndex]->_room->GetGoalCredit(), _clients[clientIndex]->_room->GetCollectCredit(), _clients[clientIndex]->_room->GetCurrentCredit(), _clients[clientIndex]);
 }
 
 void ServerNetwork::ProcessEnterRoomPacket(C_EnterRoom_Packet packet, int clientIndex)
 {
 	// 요청한 Room에 들어갈 수 있는지 확인
+	std::array<Room*, MAX_ROOM>& rooms = _framework->GetRooms();
 	
-	// 들어갈 수 있다면, 해당 Room에 Player 추가
-	// 나중에 Accept에 있는 코드 가져오기
+	// 들어갈 수 없다면, 실패 패킷 전송
+	if (rooms[packet.roomID]->GetRoomState() != RoomState::Wait)
+	{
+		SendEnterRoomResultPacket(false, _clients[clientIndex]);
+		return;
+	}
+		
+	SendEnterRoomResultPacket(true, _clients[clientIndex]);
+	
+	_clients[clientIndex]->_room = rooms[packet.roomID];
+	_clients[clientIndex]->_player = _clients[clientIndex]->_room->AddPlayer();
+	_clients[clientIndex]->_player->SetClient(_clients[clientIndex]);
+
+	// 새로 접속한 Client에게 자신을 나타낼 Player 정보 전송
+	SendAddPlayerPacket(_clients[clientIndex]->_player, _clients[clientIndex]);
+
+	// 새로 접속한 Client에게 기존에 있던 Object 정보 전송
+	for (auto& player : _clients[clientIndex]->_room->GetPlayers())
+	{
+		if (!player->GetClient())
+			continue;
+
+		// 자기 자신 제외
+		if (_clients[clientIndex]->_player == player)
+			continue;
+
+		SendAddPlayerPacket(player, _clients[clientIndex]);
+	}
+
+	// 기본 셋팅 정보 전송
+	SendUpdateQuestPacket(_clients[clientIndex]->_room->GetMainQuest(), true, _clients[clientIndex]);
+	SendUpdateQuestPacket(_clients[clientIndex]->_room->GetSubQuest(), false, _clients[clientIndex]);
+	SendUpdateCreditPacket(_clients[clientIndex]->_room->GetGoalCredit(), _clients[clientIndex]->_room->GetCollectCredit(), _clients[clientIndex]->_room->GetCurrentCredit(), _clients[clientIndex]);
 }
 
 void ServerNetwork::ProcessExitRoomPacket(C_ExitRoom_Packet packet, int clientIndex)
 {
-	// 접속할 있는 RoomList 전송
-	//SendCurrentRoomListPacket()
+	// Room에서 Player 제거
+	_clients[clientIndex]->_room->RemoveObject(ObjectType::Player, _clients[clientIndex]->_player->GetID(), true);
+	_clients[clientIndex]->_player = nullptr;
+	_clients[clientIndex]->_room = nullptr;
+
+	// RoomList 전송
+	SendCurrentRoomListPacket(_clients[clientIndex]);
 }
 
 void ServerNetwork::ProcessMovePacket(C_Move_Packet packet, int clientIndex)
@@ -1320,6 +1557,9 @@ void ServerNetwork::ProcessChangeEmotionPacket(C_ChangeEmotion_Packet packet, in
 	
 	if (packet.emotion == Emotion::Surprise)
 		_clients[clientIndex]->_room->AddSurpriseCount();
+
+	if (packet.emotion == Emotion::Sad)
+		_clients[clientIndex]->_room->AddSadCount();
 }
 
 void ServerNetwork::ProcessEmotionResultPacket(C_EmotionResult_Packet packet, int clientIndex)
@@ -1328,13 +1568,19 @@ void ServerNetwork::ProcessEmotionResultPacket(C_EmotionResult_Packet packet, in
 
 void ServerNetwork::ProcessStartStagePacket(C_StartStage_Packet packet, int clientIndex)
 {
-	// Broadcast
+	// 게임 시작을 요청한 Client가 소속한 방이 없다면 무시
+	if (!_clients[clientIndex]->_room)
+		return;
+
+	// 방의 State가 게임 진행중이면 무시
+	if (_clients[clientIndex]->_room->GetRoomState() == RoomState::Play)
+		return;
+
+	// 방에 있는 모든 Player에게 게임 시작을 알림
 	for (auto& p : _clients[clientIndex]->_room->GetPlayers())
 	{
-		if (!p->GetClient())
-			continue;
-
-		SendStartStagePacket(p->GetClient());
+		if (p->GetClient())
+			SendStartStagePacket(p->GetClient());
 	}
 	
 	_clients[clientIndex]->_room->StartStage();
@@ -1342,17 +1588,19 @@ void ServerNetwork::ProcessStartStagePacket(C_StartStage_Packet packet, int clie
 
 void ServerNetwork::ProcessEndStagePacket(C_EndStage_Packet packet, int clientIndex)
 {
-	// Broadcast
+	// 게임 종료를 요청한 Client가 소속한 방이 없다면 무시
+	if (!_clients[clientIndex]->_room)
+		return;
+
+	// 방의 State가 게임 진행중이 아니면 무시
+	if (_clients[clientIndex]->_room->GetRoomState() != RoomState::Play)
+		return;
+
+	// 방에 있는 모든 Player에게 게임 종료를 알림
 	for (auto& p : _clients[clientIndex]->_room->GetPlayers())
 	{
-		if (!p->GetClient())
-			continue;
-
-		// Player들 처음 위치로 이동
-		p->SetPos({ 0, 0, 25 });
-		SendMovePacket(p, p->GetClient());
-
-		SendEndStagePacket(p->GetClient());
+		if (p->GetClient())
+			SendEndStagePacket(p->GetClient());
 	}
 
 	_clients[clientIndex]->_room->EndStage();
@@ -1442,5 +1690,22 @@ void ServerNetwork::ProcessRequestQuestRewardPacket(C_RequestQuestReward_Packet 
 			if (p->GetClient())
 				SendUpdateQuestPacket(quest, packet.isMain, _clients[clientIndex]);
 		}
+	}
+}
+
+void ServerNetwork::ProcessVoiceDataPacket(C_VoiceData_Packet packet, ExpOver* expOver)
+{
+	if (packet.clientID < 0 || packet.clientID >= MAX_CLIENT)
+		return;
+
+	if (!_clients[packet.clientID]->_isConnected || !_clients[packet.clientID]->_room || !_clients[packet.clientID]->_player)
+		return;
+
+	// 살아있는 Player와 죽어있는 Player 통신 따로 하기
+	bool isDead = _clients[packet.clientID]->_player->GetState() == ObjectState::DEAD;
+	for (auto& player : _clients[packet.clientID]->_room->GetPlayers())
+	{
+		if (player->GetClient() && isDead == (player->GetState() == ObjectState::DEAD))
+			SendVoiceDataPacket(packet.playerID, packet.sequenceNumber, packet.audioData, expOver);
 	}
 }

@@ -12,6 +12,7 @@ public:
 	
 private:
 	void ProcessRecv();
+	void ProcessUDPRecv();
 
 public:
 	template <class T >
@@ -24,8 +25,12 @@ public:
 	std::vector<T> DeserializeVector(std::vector<char>& data);
 
 public:
+	void SendSignupPacket(const std::vector<char>& id);
 	void SendLoginPacket(const std::vector<char>& id);
 	void SendLogoutPacket();
+	void SendCreateRoomPacket();
+	void SendEnterRoomPacket(char roomID);
+	void SendExitRoomPacket();
 	void SendMovePacket(ObjectType type, int id, Vector pos, Rotation rotation, ObjectState state);
 	void SendUpdateObjectStatePacket(int id, ObjectType type, ObjectState state);
 	void SendGetItemPacket(int itemID, bool isTool, int playerID);
@@ -44,6 +49,7 @@ public:
 	void SendEndStagePacket();
 	void SendSubmitItemPacket(int itemID, int playerID);
 	void SendRequestQuestRewardPacket(bool isMain);
+	void SendVoiceDataPacket(short clientID, char playerID, int sequenceNumber, std::vector<char>& audioData);
 
 public:
 	std::vector<NetworkEventRef>& GetRecvEvents() { return _recvEvents; }
@@ -53,12 +59,17 @@ private:
 	fd_set _writeSet{};
 
 	SOCKET _clientSocket{};
+	SOCKET _udpSocket{};
+
+	sockaddr_in _serverAddr;
 
 	std::vector<NetworkEventRef> _recvEvents;
 	std::vector<NetworkEventRef> _sendEvents;
+	std::vector<NetworkEventRef> _unpSendEvents;
 
 	std::mutex _recvMutex;
 	std::mutex _sendMutex;
+	std::mutex _udpSendMutex;
 };
 
 template<class T>

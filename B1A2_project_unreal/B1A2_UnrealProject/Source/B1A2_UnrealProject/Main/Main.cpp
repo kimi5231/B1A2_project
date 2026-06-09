@@ -18,6 +18,8 @@
 #include "Widget/EmotionResultWidget.h"
 #include "Widget/ShopWidget.h"
 #include "Widget/QuestWidget.h"
+#include "MainMenuPlayerController.h"
+#include "Misc/PackageName.h"
 
 #define BUFSIZE	64
 
@@ -25,11 +27,16 @@ void UMain::Init()
 {
 	Super::Init();
 
+	ConnectServer();
+
 	// 시작할 때 카메라 연결
 	//ConnectOpenCV();
 
 	// DataManager
 	LoadQuestData();
+
+	// 맵 로드 완료시 (메뉴 레벨 -> 메인 레벨 변경 시 호출)
+	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UMain::OnLevelLoadComplete);
 }
 
 void UMain::Shutdown()
@@ -57,6 +64,8 @@ void UMain::Shutdown()
 		delete _recvThread;
 		_recvThread = nullptr;
 	}
+
+	FCoreUObjectDelegates::PostLoadMapWithWorld.RemoveAll(this);
 
 	Super::Shutdown();
 }
@@ -113,14 +122,87 @@ void UMain::ProcessRecv()
 
 	for (NetworkEventRef event : recvEvents)
 	{
+		// 게임 레벨 로딩 중일 때 패킷 처리 중단
+		if (_bIsLoadingGameLevel.load())
+			return;
+
 		switch (event->packetID)
 		{
+		case S_SignupResult:
+		{
+			S_SignupResult_Packet signupResultPacket;
+			FMemory::Memcpy(&signupResultPacket, event->serializedPacketData.data(), sizeof(S_SignupResult_Packet));
+			RecvSignupResult(signupResultPacket);
+			event->isComplete = true;
+			break;
+		}
 		case S_LoginResult:
 		{
 			S_LoginResult_Packet loginResultPacket;
 			FMemory::Memcpy(&loginResultPacket, event->serializedPacketData.data(), sizeof(S_LoginResult_Packet));
 			RecvLoginResult(loginResultPacket);
 			event->isComplete = true;
+			break;
+		}
+		case S_CurrentRoomList:
+		{
+			unsigned short packetSize;
+			memcpy(&packetSize, event->serializedPacketData.data(), sizeof(unsigned short));
+			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned short) + sizeof(PacketID));
+			S_CurrentRoomList_Packet currentRoomListPacket;
+			currentRoomListPacket.size = packetSize;
+			currentRoomListPacket.packetID = S_CurrentRoomList;
+
+			char roomDTOSize;
+			memcpy(&roomDTOSize, event->serializedPacketData.data(), sizeof(unsigned char));
+			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned char));
+			
+			for(int i = 0; i < roomDTOSize; ++i)
+			{
+				RoomDTO roomDTO;
+
+				memcpy(&roomDTO.playerCount, event->serializedPacketData.data(), sizeof(unsigned char));
+				event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned char));
+				memcpy(&roomDTO.roomID, event->serializedPacketData.data(), sizeof(unsigned char));
+				event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned char));
+				memcpy(&roomDTO.roomState, event->serializedPacketData.data(), sizeof(RoomState));
+				event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(RoomState));
+				
+				char roomTitleSize;
+				memcpy(&roomTitleSize, event->serializedPacketData.data(), sizeof(unsigned char));
+				event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned char));
+				roomDTO.roomTitle.resize(roomTitleSize);
+				memcpy(roomDTO.roomTitle.data(), event->serializedPacketData.data(), sizeof(char) * roomTitleSize);
+				event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(char) * roomTitleSize);
+				currentRoomListPacket.roomList.push_back(roomDTO);
+			}
+
+			RecvCurrentRoomList(currentRoomListPacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_CreateRoomResult:
+		{
+			S_CreateRoomResult_Packet createRoomResultPacket;
+			FMemory::Memcpy(&createRoomResultPacket, event->serializedPacketData.data(), sizeof(S_CreateRoomResult_Packet));
+			RecvCreateRoomResultList(createRoomResultPacket);
+			event->isComplete = true;
+
+			if (createRoomResultPacket.result)
+				_bIsLoadingGameLevel.store(true);
+
+			break;
+		}
+		case S_EnterRoomResult:
+		{
+			S_EnterRoomResult_Packet enterRoomResultPacket;
+			FMemory::Memcpy(&enterRoomResultPacket, event->serializedPacketData.data(), sizeof(S_EnterRoomResult_Packet));
+			RecvEnterRoomResultList(enterRoomResultPacket);
+			event->isComplete = true;
+
+			if (enterRoomResultPacket.result)
+				_bIsLoadingGameLevel.store(true);
+	
 			break;
 		}
 		case S_AddPlayer:
@@ -335,9 +417,42 @@ void UMain::ProcessRecv()
 		}
 		case S_EndStage:
 		{
+			unsigned short packetSize;
+			memcpy(&packetSize, event->serializedPacketData.data(), sizeof(unsigned short));
+			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned short) + sizeof(PacketID));
 			S_EndStage_Packet endStagePacket;
-			FMemory::Memcpy(&endStagePacket, event->serializedPacketData.data(), sizeof(S_EndStage_Packet));
+			endStagePacket.size = packetSize;
+			endStagePacket.packetID = S_EndStage;
+
+			char stageResultDTOSize;
+			memcpy(&stageResultDTOSize, event->serializedPacketData.data(), sizeof(unsigned char));
+			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned char));
+
+			for (int i = 0; i < stageResultDTOSize; ++i)
+			{
+				StageResultDTO stageResultDTO;
+
+				memcpy(&stageResultDTO.isDead, event->serializedPacketData.data(), sizeof(bool));
+				event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(bool));
+
+				char nameSize;
+				memcpy(&nameSize, event->serializedPacketData.data(), sizeof(unsigned char));
+				event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned char));
+				stageResultDTO.name.resize(nameSize);
+				memcpy(stageResultDTO.name.data(), event->serializedPacketData.data(), sizeof(char) * nameSize);
+				event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(char) * nameSize);
+				endStagePacket.stageResult.push_back(stageResultDTO);
+			}
+
 			RecvEndStage(endStagePacket);
+			event->isComplete = true;
+			break;
+		}
+		case S_GameOver:
+		{
+			S_GameOver_Packet gameOverPacket;
+			FMemory::Memcpy(&gameOverPacket, event->serializedPacketData.data(), sizeof(S_GameOver_Packet));
+			RecvGameOver(gameOverPacket);
 			event->isComplete = true;
 			break;
 		}
@@ -365,12 +480,152 @@ void UMain::ProcessRecv()
 			event->isComplete = true;
 			break;
 		}
+		case S_VoiceData:
+		{
+			unsigned short packetSize;
+			memcpy(&packetSize, event->serializedPacketData.data(), sizeof(unsigned short));
+			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned short) + sizeof(PacketID));
+			unsigned char playerID;
+			memcpy(&playerID, event->serializedPacketData.data(), sizeof(unsigned char));
+			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned char));
+			int sequenceNumber;
+			memcpy(&sequenceNumber, event->serializedPacketData.data(), sizeof(int));
+			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(int));
+			
+			S_VoiceData_Packet voiceDataPacket{ packetSize, S_VoiceData, playerID, sequenceNumber, _gameNetwork->DeserializeVector<char>(event->serializedPacketData) };
+			RecvVoiceData(voiceDataPacket);
+			event->isComplete = true;
+			break;
+		}
 		}
 	}
 }
 
+void UMain::RecvSignupResult(S_SignupResult_Packet packet)
+{
+}
+
 void UMain::RecvLoginResult(S_LoginResult_Packet packet)
 {
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		UWorld* World = GetWorld();
+		if (!World) return;
+
+		APlayerController* PC = World->GetFirstPlayerController();
+		AMainMenuPlayerController* menuPC = Cast<AMainMenuPlayerController>(PC);
+
+		if (menuPC)
+		{
+			menuPC->HandleLoginResult(packet.result);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("현재 PlayerController가 AMainMenuPlayerController가 아닙니다."));
+		}
+	});
+}
+
+void UMain::RecvCurrentRoomList(S_CurrentRoomList_Packet packet)
+{
+	UE_LOG(LogTemp, Display, TEXT("[Lobby] RecvCurrentRoomList is called"));
+	
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		UWorld* World = GetWorld();
+		if (!World) 
+		{
+			UE_LOG(LogTemp, Display, TEXT("[Lobby] RecvCurrentRoomList is called, but world is not exist"));
+			return;
+		}
+		UE_LOG(LogTemp, Display, TEXT("[Lobby] RecvCurrentRoomList is called, and world exist"));
+
+
+		AMainMenuPlayerController* MenuPC = Cast<AMainMenuPlayerController>(World->GetFirstPlayerController());
+		if (MenuPC)
+		{
+			if (!packet.roomList.empty())
+			{
+				UE_LOG(LogTemp, Display, TEXT("[Lobby] Successfully processing room list. Room Count: %d"), (int32)packet.roomList.size());
+				MenuPC->HandleCurrentRoomList(packet.roomList);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Display, TEXT("[Lobby] RecvCurrentRoomList is called but roomList is empty"));
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Display, TEXT("[Lobby] RecvCurrentRoomList is called but Player Controller is not valid"));
+		}
+	});
+}
+
+void UMain::RecvCreateRoomResultList(S_CreateRoomResult_Packet packet)
+{
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		UWorld* World = GetWorld();
+		if (!World) return;
+
+		// 성공 시 - 레벨 변경
+		if (packet.result) 
+		{
+			if (!MainGameLevel.IsNull())
+			{
+				FName LevelName = FName(*MainGameLevel.ToSoftObjectPath().GetLongPackageName());
+
+				UGameplayStatics::OpenLevel(World, LevelName);
+				UE_LOG(LogTemp, Warning, TEXT("[Level] Level Change %s"), *LevelName.ToString());
+
+				APlayerController* PC = World->GetFirstPlayerController();
+				if (PC)
+				{
+					PC->bShowMouseCursor = false;
+					FInputModeGameOnly InputMode;
+					PC->SetInputMode(InputMode);
+				}
+			}
+		}
+		// 실패 시 - 실패 위젯 띄우기
+		else
+		{
+			// ...
+			// ...
+			// ...
+
+			UE_LOG(LogTemp, Error, TEXT("[Level] Room Failed..."));
+		}
+	});
+}
+
+void UMain::RecvEnterRoomResultList(S_EnterRoomResult_Packet packet)
+{
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{	
+		UWorld* World = GetWorld();
+		if (!World) return;
+		
+		// 성공 시 - 레벨 변경
+		if (packet.result)
+		{
+			if (!MainGameLevel.IsNull())
+			{
+				FName LevelName = FName(*MainGameLevel.ToSoftObjectPath().GetLongPackageName());
+
+				UGameplayStatics::OpenLevel(World, LevelName);
+				UE_LOG(LogTemp, Warning, TEXT("[Level] Level Change %s"), *LevelName.ToString());
+
+				APlayerController* PC = World->GetFirstPlayerController();
+				if (PC)
+				{
+					PC->bShowMouseCursor = false;
+					FInputModeGameOnly InputMode;
+					PC->SetInputMode(InputMode);
+				}
+			}
+		}
+	});
 }
 
 void UMain::ProcessSend(PacketID id, const void* packetData, int dataSize)
@@ -620,6 +875,43 @@ void UMain::SendRequestQuestReward(bool isMain)
 	_gameNetwork->SendRequestQuestRewardPacket(isMain);
 }
 
+void UMain::SendLogin(const std::vector<char>& id)
+{
+	// 로그인 할 땐 _myID 검사 X
+	UWorld* world = GetWorld();
+	if (!world)
+		return;
+
+	_gameNetwork->SendLoginPacket(id);
+}
+
+void UMain::SendLogout()
+{
+	UWorld* world = GetWorld();
+	if (!world)
+		return;
+
+	_gameNetwork->SendLogoutPacket();
+}
+
+void UMain::SendCreateRoom()
+{
+	UWorld* world = GetWorld();
+	if (!world)
+		return;
+
+	_gameNetwork->SendCreateRoomPacket();
+}
+
+void UMain::SendEnterRoom(char roomID)
+{
+	UWorld* world = GetWorld();
+	if (!world)
+		return;
+
+	_gameNetwork->SendEnterRoomPacket(roomID);
+}
+
 void UMain::Update()
 {
 	if (!_gameNetwork)
@@ -645,6 +937,8 @@ void UMain::RecvAddPlayer(S_AddPlayer_Packet packet)
 		{
 			UWorld* world = GetWorld();
 			if (!world) return;
+
+			UE_LOG(LogTemp, Warning, TEXT("[Player] Spawn Player Level: %s"), *world->GetMapName());
 
 			FVector spawnLocation(packet.pos.x, packet.pos.y, packet.pos.z + 98.f);
 			FRotator spawnRotation(0, packet.rotation.yaw, 0);
@@ -1865,7 +2159,7 @@ void UMain::RecvTurnOffLantern(S_TurnOffLantern_Packet packet)
 void UMain::RecvEndStage(S_EndStage_Packet packet)
 {
 	// 연출 ~~~
-	// 방 닫기 ~~~
+	// 결과 창 띄우기
 }
 
 void UMain::RecvStartStage(S_StartStage_Packet packet)
@@ -1908,6 +2202,14 @@ void UMain::RecvStartStage(S_StartStage_Packet packet)
 			It.RemoveCurrent();
 		}
 	});
+}
+
+void UMain::RecvGameOver(S_GameOver_Packet packet)
+{
+	// 게임 오버 연출
+	// 할당량 못채웠을 때 EndGame 후에 GameOver
+	// 이거 오면 전체 리셋
+	// 초기화는 서버가 따로 보냄
 }
 
 void UMain::RecvUpdateHp(S_UpdateHp_Packet packet)
@@ -2084,6 +2386,10 @@ void UMain::RecvUpdateCredit(S_UpdateCredit_Packet packet)
 	});
 }
 
+void UMain::RecvVoiceData(S_VoiceData_Packet packet)
+{
+}
+
 void UMain::RecvUpdateQuest(S_UpdateQuest_Packet packet)
 {
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
@@ -2165,6 +2471,28 @@ void UMain::HandleNewEmotionData(const TArray<float>& emotionScores)
 		// 마지막 전송 상태 갱신
 		_lastSentEmotionIndex = maxIndex;
 		UE_LOG(LogTemp, Warning, TEXT("[Emotion] State Changed to index [%d]. Packet Sent!"), maxIndex);
+	}
+}
+
+void UMain::OnLevelLoadComplete(UWorld* loadedWorld)
+{
+	if (!loadedWorld) return;
+
+	FString currentMapPath = loadedWorld->GetOutermost()->GetName();
+	FString targetMapPath = MainGameLevel.ToSoftObjectPath().GetLongPackageName();
+
+	// 파일 명만 추출
+	FString currentMapName = FPackageName::GetShortName(currentMapPath);
+	FString targetMapName = FPackageName::GetShortName(targetMapPath);
+	if (currentMapName.Contains(targetMapName))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[Level] MainLevel Loaded SUCCESS!!!"));
+
+		_bIsLoadingGameLevel.store(false);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Display, TEXT("[Level] currentMapName != targetMapName"));
 	}
 }
 

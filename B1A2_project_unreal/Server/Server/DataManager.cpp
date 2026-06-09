@@ -9,6 +9,7 @@ DataManager::DataManager()
 {
     _dataPath = std::filesystem::current_path().parent_path() / "Data";
 
+    LoadQuota();
     LoadCubeConditionInfos();
     LoadCubeInfos();
     LoadCubeTilemaps();
@@ -17,6 +18,25 @@ DataManager::DataManager()
     LoadItemInfos();
     LoadPlayerStat();
     LoadSpiderStat();
+}
+
+void DataManager::LoadQuota()
+{
+    std::ifstream file(_dataPath / "Quota.json");
+    json data = json::parse(file);
+
+    // quota √ﬂ√‚
+    Quota quota;
+
+    quota.initialQuota = data["initialQuota"];
+    quota.increaseCredit = data["increaseCredit"];
+    quota.relaxivityValue = data["relaxivityValue"];
+    quota.minEmotion = data["minEmotion"];
+    quota.maxEmotion = data["maxEmotion"];
+    quota.baseEmotion = data["baseEmotion"];
+    quota.avgBadEmotionCnt = data["avgBadEmotionCnt"];
+
+    _quota = quota;
 }
 
 void DataManager::LoadCubeConditionInfos()

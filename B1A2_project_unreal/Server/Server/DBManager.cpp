@@ -80,17 +80,23 @@ void DBManager::ProcessExistID(DBWork work)
 {
     SQLRETURN retcode;
 
-    wchar_t szSql[256];
-    swprintf_s(szSql, L"{CALL ExistID('%s')}", work.loginID.data());
-    retcode = SQLExecDirect(_hstmt, (SQLWCHAR*)szSql, SQL_NTS);
+	/*wchar_t szSql[] = L"{CALL ExistID(N'%s')}"; 
+    swprintf_s(szSql, L"{CALL ExistID(N'%s')}", work.loginID.data());*/
+
+    SQLWCHAR query[] = L"{CALL ExistID(?)}";
+    SQLLEN cbPlayerId = work.loginID.size();
+    SQLRETURN ret = SQLBindParameter(_hstmt, 1, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_WVARCHAR, 50, 0, (SQLPOINTER)work.loginID.data(), 0, &cbPlayerId);
+
+    if (!SQL_SUCCEEDED(ret)) {
+        std::cout << "파라미터 바인딩 실패\n";
+        SQLFreeHandle(SQL_HANDLE_STMT, _hstmt);
+        return;
+    }
+
+    retcode = SQLExecDirectW(_hstmt, query, SQL_NTS);
 
     if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
     {
-        wchar_t id[20];
-        SQLLEN idLen = 0;
-
-        SQLBindCol(_hstmt, 1, SQL_C_WCHAR, id, sizeof(id), &idLen);
-
         ExpOver* over = new ExpOver(IOType::DB);
         over->_dbType = DBType::ExistID;
 
@@ -99,9 +105,12 @@ void DBManager::ProcessExistID(DBWork work)
         else
             over->_dbResult = false;
 
+        while (SQLMoreResults(_hstmt) == SQL_SUCCESS);
+
         PostQueuedCompletionStatus(g_network->GetIOCP(), 0, static_cast<ULONG_PTR>(work.id), &over->_over);
     }
 
     SQLFreeStmt(_hstmt, SQL_CLOSE);
+    SQLFreeStmt(_hstmt, SQL_RESET_PARAMS);
     SQLFreeStmt(_hstmt, SQL_UNBIND);
 }

@@ -21,6 +21,7 @@ public:
 	void ProcessAccept();
 	void ProcessDisconnected(int clientIndex);
 	void ProcessRecv(int clientIndex, int numByte, ExpOver* expOver);
+	void ProcessUDPRecv(int numByte, ExpOver* expOver);
 	void ProcessPacket(std::vector<char>& packet, int clientIndex);
 	void ProcessDB(int clientIndex, ExpOver* expOver);
 	
@@ -36,8 +37,11 @@ private:
 
 public:
 	// Send
-	void SendLoginResultPacket(LoginResult result, Session* client);
-	void SendCurrentRoomListPacket(std::array<Room*, MAX_ROOM>& rooms, Session* client);
+	void SendSignupResultPacket(SignupResult result, Session* client);
+	void SendLoginResultPacket(LoginResult result, short clientID, Session* client);
+	void SendCurrentRoomListPacket(Session* client);
+	void SendCreateRoomResultPacket(bool result, Session* client);
+	void SendEnterRoomResultPacket(bool result, Session* client);
 	void SendAddPlayerPacket(Player* player, Session* client);
 	void SendAddMonsterPacket(Monster* monster, Session* client);
 	void SendAddItemPacket(Item* item, bool isTool, Session* client);
@@ -62,12 +66,15 @@ public:
 	void SendSpawnParticlePacket(Vector pos, Session* client);
 	void SendStartStagePacket(Session* client);
 	void SendEndStagePacket(Session* client);
+	void SendGameOverPacket(Session* client);
 	void SendUpdateQuestPacket(Quest* quest, bool isMain, Session* client);
 	void SendUpdateQuestProgressPacket(Quest* quest, bool isMain, Session* client);
 	void SendUpdateCreditPacket(short goalCredit, short collectCredit, short currentCredit, Session* client);
-	
+	void SendVoiceDataPacket(char playerId, int sequenceNumber, std::vector<char>& audioData, ExpOver* expOver);
+
 public:
 	// Recv
+	void ProcessSignupPacket(C_Signup_Packet packet, int clientIndex);
 	void ProcessLoginPacket(C_Login_Packet packet, int clientIndex);
 	void ProcessLogoutPacket(C_Logout_Packet packet, int clientIndex);
 	void ProcessCreateRoomPacket(C_CreateRoom_Packet packet, int clientIndex);
@@ -91,12 +98,14 @@ public:
 	void ProcessEndStagePacket(C_EndStage_Packet packet, int clientIndex);
 	void ProcessSubmitItemPacket(C_SubmitItem_Packet packet, int clientIndex);
 	void ProcessRequestQuestRewardPacket(C_RequestQuestReward_Packet packet, int clientIndex);
+	void ProcessVoiceDataPacket(C_VoiceData_Packet packet, ExpOver* expOver);
 
 public:
 	HANDLE GetIOCP() const { return _iocp; }
 
 private:
 	SOCKET _listenSocket{};
+	SOCKET _udpSocket{};
 	SOCKET _tempSocket{};
 	ExpOver _acceptOver{};
 	HANDLE _iocp{};

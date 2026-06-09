@@ -5,6 +5,7 @@
 enum PacketID : char
 {
 	// Client
+	C_Signup,
 	C_Login,
 	C_Logout,
 	C_CreateRoom,
@@ -28,10 +29,14 @@ enum PacketID : char
 	C_EndStage,
 	C_SubmitItem,
 	C_RequestQuestReward,
+	C_VoiceData,
 
 	//Server
+	S_SignupResult,
 	S_LoginResult,
 	S_CurrentRoomList,
+	S_CreateRoomResult,
+	S_EnterRoomResult,
 	S_AddPlayer,
 	S_AddMonster,
 	S_AddItem,
@@ -56,9 +61,11 @@ enum PacketID : char
 	S_SpawnParticle,
 	S_StartStage,
 	S_EndStage,
+	S_GameOver,
 	S_UpdateQuest,
 	S_UpdateQuestProgress,
 	S_UpdateCredit,
+	S_VoiceData,
 };
 
 #pragma pack(push, 1)
@@ -95,7 +102,20 @@ struct SellingMachineDTO
 	unsigned char creditLimit;
 };
 
+struct StageResultDTO
+{
+	bool isDead;
+	std::vector<char> name;
+};
+
 // Client
+struct C_Signup_Packet
+{
+	unsigned char size;
+	PacketID packetID;
+	std::vector<char> id;
+};
+
 struct C_Login_Packet
 {
 	unsigned char size;
@@ -113,9 +133,6 @@ struct C_CreateRoom_Packet
 {
 	unsigned char size;
 	PacketID packetID;
-	bool isLock;
-	std::vector<char> roomTitle;
-	std::vector<char> password;
 };
 
 struct C_EnterRoom_Packet
@@ -285,19 +302,51 @@ struct C_RequestQuestReward_Packet
 	bool isMain;
 };
 
+struct C_VoiceData_Packet
+{
+	unsigned short size;
+	PacketID packetID;
+	unsigned short clientID;
+	unsigned char playerID;
+	unsigned int sequenceNumber;
+	std::vector<char> audioData;
+};
+
 // Server
+struct S_SignupResult_Packet
+{
+	unsigned short size;
+	PacketID packetID;
+	SignupResult result;
+};
+
 struct S_LoginResult_Packet
 {
-	unsigned char size;
+	unsigned short size;
 	PacketID packetID;
 	LoginResult result;
+	unsigned short clientID;
 };
 
 struct S_CurrentRoomList_Packet
 {
-	unsigned char size;
+	unsigned short size;
 	PacketID packetID;
 	std::vector<RoomDTO> roomList;
+};
+
+struct S_CreateRoomResult_Packet
+{
+	unsigned short size;
+	PacketID packetID;
+	bool result;
+};
+
+struct S_EnterRoomResult_Packet
+{
+	unsigned short size;
+	PacketID packetID;
+	bool result;
 };
 
 struct S_AddPlayer_Packet
@@ -523,6 +572,13 @@ struct S_EndStage_Packet
 {
 	unsigned short size;
 	PacketID packetID;
+	std::vector<StageResultDTO> stageResult;
+};
+
+struct S_GameOver_Packet
+{
+	unsigned short size;
+	PacketID packetID;
 };
 
 struct S_UpdateQuest_Packet
@@ -552,5 +608,14 @@ struct S_UpdateCredit_Packet
 	unsigned short goalCredit;
 	unsigned short collectCredit;
 	unsigned short currentCredit;
+};
+
+struct S_VoiceData_Packet
+{
+	unsigned short size;
+	PacketID packetID;
+	unsigned char playerID;
+	unsigned int sequenceNumber;
+	std::vector<char> audioData;
 };
 #pragma pack(pop)
