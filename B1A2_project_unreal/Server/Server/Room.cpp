@@ -611,7 +611,7 @@ void Room::EndStage()
 
 			for (auto& player : _players)
 			{
-				if (!player->GetClient())
+				if (player->GetClient())
 					g_network->SendGameOverPacket(player->GetClient());
 			}
 		}
