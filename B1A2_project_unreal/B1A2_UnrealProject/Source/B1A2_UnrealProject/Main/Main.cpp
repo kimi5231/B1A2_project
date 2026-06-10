@@ -1317,8 +1317,16 @@ void UMain::RecvRemoveObject(S_RemoveObject_Packet packet)
 		break;
 	case ObjectType::Item:
 		RemoveItem(packet);
-	//case ObjectType::Tool:
-	//	RemoveTool(packet);
+		break;
+	case ObjectType::Obstacle:
+		RemoveObstacle(packet);
+		break;
+	case ObjectType::Door:
+		RemoveDoor(packet);
+		break;
+	case ObjectType::SellingMachine:
+		RemoveSellingMachine(packet);
+		break;
 	default:
 		break;
 	}
@@ -1386,10 +1394,102 @@ void UMain::RemoveItem(S_RemoveObject_Packet packet)
 	//_items.Remove(packet.objectID);
 }
 
-void UMain::RemoveTool(S_RemoveObject_Packet packet)
+void UMain::RemoveObstacle(S_RemoveObject_Packet packet)
 {
-	// Map에서 제거
-	//_tools.Remove(packet.objectID);
+	int id = packet.id;
+
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		UWorld* world = GetWorld();
+		if (!world)
+			return;
+		
+		AActor** foundObstacle = _webs.Find(id);
+		if (!foundObstacle || !(*foundObstacle))
+		{
+			UE_LOG(LogTemp, Log, TEXT("[Obstacle] Remove Failed... ID %llu Not found"), id);
+			return;
+		}
+
+		AActor* obstacle = *foundObstacle;
+
+		// Map에서 제거
+		_webs.Remove(id);
+		// 월드에서 제거
+		obstacle->Destroy();
+
+		UE_LOG(LogTemp, Log, TEXT("[Obstacle] Obstacle Removed!!! ID %llu, Name %s"), id, *obstacle->GetName());
+	});
+}
+
+void UMain::RemoveDoor(S_RemoveObject_Packet packet)
+{
+	int id = packet.id;
+
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		UWorld* world = GetWorld();
+		if (!world)
+			return;
+
+		// ID가 0이면 hatch
+		if (id == 0)
+		{
+			ABaseHatch* hatch = _hatch;
+
+			// 참조 제거
+			_hatch = nullptr;
+			// 월드에서 제거
+			hatch->Destroy();
+
+			UE_LOG(LogTemp, Log, TEXT("[Hatch] Hatch Removed"));
+			return;
+		}
+
+		ABaseDoor** foundDoor = _doors.Find(id);
+		if (!foundDoor || !(*foundDoor))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[Door] Remove Failed... ID %llu Not Found"), id);
+			return;
+		}
+
+		ABaseDoor* door = *foundDoor;
+
+		// Map에서 제거
+		_doors.Remove(id);
+		// 월드에서 제거
+		door->Destroy();
+
+		UE_LOG(LogTemp, Log, TEXT("[Door] Removed!!! ID %llu, Name %s"), id, *door->GetName());
+	});
+}
+
+void UMain::RemoveSellingMachine(S_RemoveObject_Packet packet)
+{
+	int id = packet.id;
+
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		UWorld* world = GetWorld();
+		if (!world)
+			return;
+
+		ABaseSellingMachine** foundSM = _sellingMachines.Find(id);
+		if (!foundSM || !(*foundSM))
+		{
+			UE_LOG(LogTemp, Log, TEXT("[SellingMachine] Remove Failed... ID %llu Not found"), id);
+			return;
+		}
+
+		AActor* sm = *foundSM;
+
+		// Map에서 제거
+		_sellingMachines.Remove(id);
+		// 월드에서 제거
+		sm->Destroy();
+
+		UE_LOG(LogTemp, Log, TEXT("[SellingMachine] SellingMachine Removed!!! ID %llu, Name %s"), id, *sm->GetName());
+	});
 }
 
 void UMain::RecvMoveObject(S_Move_Packet packet)
@@ -2160,6 +2260,12 @@ void UMain::RecvEndStage(S_EndStage_Packet packet)
 {
 	// 연출 ~~~
 	// 결과 창 띄우기
+
+	UE_LOG(LogTemp, Display, TEXT("[EndStage] Recv End Stage Packet"));
+
+	//AsyncTask(ENamedThreads::GameThread, [=, this]()
+	//{
+	//});
 }
 
 void UMain::RecvStartStage(S_StartStage_Packet packet)
@@ -2210,6 +2316,12 @@ void UMain::RecvGameOver(S_GameOver_Packet packet)
 	// 할당량 못채웠을 때 EndGame 후에 GameOver
 	// 이거 오면 전체 리셋
 	// 초기화는 서버가 따로 보냄
+
+	UE_LOG(LogTemp, Display, TEXT("[GameOver] Recv GameOver Packet"));
+
+	/*AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+	});*/
 }
 
 void UMain::RecvUpdateHp(S_UpdateHp_Packet packet)

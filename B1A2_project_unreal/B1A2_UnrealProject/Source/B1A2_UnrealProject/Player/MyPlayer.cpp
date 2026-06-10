@@ -677,15 +677,15 @@ void AMyPlayer::SendEndStageAndStartStage()
 	if (laverPullCount == 0)
 	{
 		laverPullCount = 1;
-		gameInstance->SendEndStage(true);
-		UE_LOG(LogTemp, Display, TEXT("[Stage] Send C_EndStage_Packet (Count: 0->1)"));
+		gameInstance->SendStartStage(true);
+		UE_LOG(LogTemp, Display, TEXT("[Stage] Send C_StartStage_Packet (Count: 0->1)"));
 	}
 	// 레버를 두 번째 당길 때
 	else if (laverPullCount == 1)
 	{
 		laverPullCount = 0;
-		gameInstance->SendStartStage(true);
-		UE_LOG(LogTemp, Display, TEXT("[Stage] Send C_StartStage_Packet (Count: 1->0)"));
+		gameInstance->SendEndStage(true);
+		UE_LOG(LogTemp, Display, TEXT("[Stage] Send C_EndStage_Packet (Count: 1->0)"));
 	}
 }
 

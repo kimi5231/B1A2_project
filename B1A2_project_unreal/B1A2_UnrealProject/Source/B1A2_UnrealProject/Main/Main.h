@@ -104,7 +104,9 @@ public:
 	void RemovePlayer(S_RemoveObject_Packet packet);
 	void RemoveMonster(S_RemoveObject_Packet packet);
 	void RemoveItem(S_RemoveObject_Packet packet);
-	void RemoveTool(S_RemoveObject_Packet packet);
+	void RemoveObstacle(S_RemoveObject_Packet packet);
+	void RemoveDoor(S_RemoveObject_Packet packet);
+	void RemoveSellingMachine(S_RemoveObject_Packet packet);
 
 	void RecvMoveObject(S_Move_Packet packet);
 	void RecvMovePlayer(S_Move_Packet packet);
@@ -313,8 +315,8 @@ private:
 	TMap<uint64, AStaticMeshActor*> _cubes;
 
 	// 문
-	TMap<uint64, ABaseDoor*> _doors;
-	ABaseHatch* _hatch;
+	TMap<uint64, ABaseDoor*> _doors; // id > 0
+	ABaseHatch* _hatch;	// id == 0
 
 	// 판매기
 	TMap<uint64, ABaseSellingMachine*> _sellingMachines;
