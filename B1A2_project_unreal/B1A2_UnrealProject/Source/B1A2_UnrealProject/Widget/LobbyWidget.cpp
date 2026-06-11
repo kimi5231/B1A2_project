@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "LobbyWidget.h"
+#include "Widget/LobbyWidget.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "Components/ScrollBox.h"
 #include "Main/Main.h"
-#include "MainMenuWidget.h"
+#include "Widget/MainMenuWidget.h"
 
 void ULobbyWidget::NativeConstruct()
 {

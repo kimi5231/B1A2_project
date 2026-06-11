@@ -2,7 +2,7 @@
 
 
 #include "BaseItem.h"
-#include "ScanInfoWidget.h"
+#include "Widget/ScanInfoWidget.h"
 
 // Sets default values
 ABaseItem::ABaseItem()

@@ -18,7 +18,7 @@
 #include "Widget/EmotionResultWidget.h"
 #include "Widget/ShopWidget.h"
 #include "Widget/QuestWidget.h"
-#include "MainMenuPlayerController.h"
+#include "Player/MainMenuPlayerController.h"
 #include "Misc/PackageName.h"
 
 #define BUFSIZE	64

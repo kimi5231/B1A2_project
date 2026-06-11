@@ -4,8 +4,8 @@
 #include "MainMenuPlayerController.h"
 #include "Blueprint/UserWidget.h"
 #include "Main/Main.h"
-#include "LobbyWidget.h"
-#include "MainMenuWidget.h"
+#include "Widget/LobbyWidget.h"
+#include "Widget/MainMenuWidget.h"
 
 void AMainMenuPlayerController::BeginPlay()
 {

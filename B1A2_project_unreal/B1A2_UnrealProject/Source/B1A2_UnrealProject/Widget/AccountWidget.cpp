@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "AccountWidget.h"
+#include "Widget/AccountWidget.h"
 #include "Components/Button.h"
 #include "Components/EditableText.h"
 #include "Main/Main.h"
-#include "MainMenuWidget.h"
+#include "Widget/MainMenuWidget.h"
 
 void UAccountWidget::NativeConstruct()
 {

@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Network/Includes.h"
-#include "RoomWidget.h"
+#include "Widget/RoomWidget.h"
 
 #include "LobbyWidget.generated.h"
 
