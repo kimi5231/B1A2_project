@@ -168,9 +168,9 @@ void UMain::ProcessRecv()
 				memcpy(&roomDTO.roomState, event->serializedPacketData.data(), sizeof(RoomState));
 				event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(RoomState));
 				
-				char roomTitleSize;
-				memcpy(&roomTitleSize, event->serializedPacketData.data(), sizeof(unsigned char));
-				event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned char));
+				int roomTitleSize;
+				memcpy(&roomTitleSize, event->serializedPacketData.data(), sizeof(int));
+				event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(int));
 				roomDTO.roomTitle.resize(roomTitleSize);
 				memcpy(roomDTO.roomTitle.data(), event->serializedPacketData.data(), sizeof(char) * roomTitleSize);
 				event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(char) * roomTitleSize);
