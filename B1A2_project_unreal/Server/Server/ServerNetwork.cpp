@@ -1066,11 +1066,6 @@ void ServerNetwork::ProcessLoginPacket(C_Login_Packet packet, int clientIndex)
 void ServerNetwork::ProcessLogoutPacket(C_Logout_Packet packet, int clientIndex)
 {
 	// RoomList 보내주는 Client 목록에서 제외
-
-	// 게임 중이었다면, Room에서 제외
-	_clients[clientIndex]->_room->RemoveObject(ObjectType::Player, _clients[clientIndex]->_player->GetID(), true);
-	_clients[clientIndex]->_player = nullptr;
-	_clients[clientIndex]->_room = nullptr;
 }
 
 void ServerNetwork::ProcessCreateRoomPacket(C_CreateRoom_Packet packet, int clientIndex)
@@ -1147,6 +1142,8 @@ void ServerNetwork::ProcessExitRoomPacket(C_ExitRoom_Packet packet, int clientIn
 
 	// RoomList 전송
 	SendCurrentRoomListPacket(_clients[clientIndex]);
+
+	// RoomList 보내주는 리스트에 추가
 }
 
 void ServerNetwork::ProcessMovePacket(C_Move_Packet packet, int clientIndex)
