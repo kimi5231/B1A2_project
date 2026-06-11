@@ -13,6 +13,7 @@ public:
 	void Update();
 
 	Room* AddRoom(std::vector<char>& title);
+	void  RemoveRoom(int id);
 
 public:
 	Room* GetRoom(int id) { return _rooms[id]; }

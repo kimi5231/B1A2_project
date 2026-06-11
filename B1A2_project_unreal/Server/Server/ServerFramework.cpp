@@ -41,3 +41,11 @@ Room* ServerFramework::AddRoom(std::vector<char>& title)
 
 	return nullptr;
 }
+
+void ServerFramework::RemoveRoom(int id)
+{
+	// 초기화 및 RoomState 변경
+	_rooms[id]->SetCollectCredit(0);
+	_rooms[id]->EndStage();
+	_rooms[id]->SetRoomState(RoomState::Reusable);
+}

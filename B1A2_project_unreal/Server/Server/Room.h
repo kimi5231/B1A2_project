@@ -66,6 +66,7 @@ public:
 	const std::vector<SellingMachine*>& GetSellingMachine() { return _sellingMachines; }
 	int GetGoalCredit() { return _goalCredit; }
 	int GetCollectCredit() { return _collectCredit; }
+	void SetCollectCredit(int collectCredit) { _collectCredit = collectCredit; }
 	int GetCurrentCredit() { return _currentCredit; }
 	int GetCurrentFearCount() { return _currentFearCount; }
 	int GetCurrentSurpriseCount() { return _currentSurpriseCount; }

@@ -200,6 +200,8 @@ void ServerNetwork::ProcessDisconnected(int clientIndex)
 	if (_clients[clientIndex]->_room)
 	{
 		_clients[clientIndex]->_room->RemoveObject(ObjectType::Player, _clients[clientIndex]->_player->GetID(), true);
+		if (_clients[clientIndex]->_room->GetCurrentPlayerCount() == 0)
+			_framework->RemoveRoom(_clients[clientIndex]->_room->GetID());
 		_clients[clientIndex]->_room = nullptr;
 		_clients[clientIndex]->_player = nullptr;
 	}
@@ -1071,6 +1073,8 @@ void ServerNetwork::ProcessLoginPacket(C_Login_Packet packet, int clientIndex)
 void ServerNetwork::ProcessLogoutPacket(C_Logout_Packet packet, int clientIndex)
 {
 	// RoomList 보내주는 Client 목록에서 제외
+
+	_clients[clientIndex]->_name.clear();
 }
 
 void ServerNetwork::ProcessCreateRoomPacket(C_CreateRoom_Packet packet, int clientIndex)
@@ -1142,6 +1146,8 @@ void ServerNetwork::ProcessExitRoomPacket(C_ExitRoom_Packet packet, int clientIn
 {
 	// Room에서 Player 제거
 	_clients[clientIndex]->_room->RemoveObject(ObjectType::Player, _clients[clientIndex]->_player->GetID(), true);
+	if (_clients[clientIndex]->_room->GetCurrentPlayerCount() == 0)
+		_framework->RemoveRoom(_clients[clientIndex]->_room->GetID());
 	_clients[clientIndex]->_player = nullptr;
 	_clients[clientIndex]->_room = nullptr;
 
