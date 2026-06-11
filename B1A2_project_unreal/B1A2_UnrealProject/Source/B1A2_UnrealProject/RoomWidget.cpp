@@ -6,13 +6,17 @@
 #include "Components/CheckBox.h"
 #include "LobbyWidget.h"
 
-void URoomWidget::SetupEntry(int roomID, const FString& Title, const FText& State, ULobbyWidget* parent)
+void URoomWidget::SetupEntry(int roomID, const FString& Title, int playerCount, ULobbyWidget* parent)
 {
 	_roomID = roomID;
 	_parentLobby = parent;
 
 	if (Text_RoomTitle) Text_RoomTitle->SetText(FText::FromString(Title));
-	if (Text_RoomState) Text_RoomState->SetText(State);
+	if (Text_PlayerCount)
+	{
+		FText playerCountText = FText::Format(FText::FromString("{0}/4"), FText::AsNumber(playerCount));
+		Text_PlayerCount->SetText(playerCountText);
+	}
 	if (CheckBox_Select) CheckBox_Select->SetIsChecked(false);
 }
 

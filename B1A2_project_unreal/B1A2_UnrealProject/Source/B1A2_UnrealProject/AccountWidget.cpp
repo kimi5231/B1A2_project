@@ -5,6 +5,7 @@
 #include "Components/Button.h"
 #include "Components/EditableText.h"
 #include "Main/Main.h"
+#include "MainMenuWidget.h"
 
 void UAccountWidget::NativeConstruct()
 {
@@ -21,16 +22,21 @@ void UAccountWidget::NativeConstruct()
 	}
 }
 
+void UAccountWidget::SetButtonEnable(bool enable)
+{
+	if (LoginButton) LoginButton->SetIsEnabled(enable);
+	if (CancelButton) CancelButton->SetIsEnabled(enable);
+}
+
 void UAccountWidget::OnLoginClicked()
 {
 	if (!EditableText_ID) return;
 
-	FString UserID = EditableText_ID->GetText().ToString();
+	FString userID = EditableText_ID->GetText().ToString();
 
-	if (UserID.IsEmpty())
+	// 아이디가 비었다면 리턴
+	if (userID.IsEmpty())
 	{
-		// 아이디가 비어있을 때의 예외 처리
-		// 경고창 띄우기??
 		return;
 	}
 
@@ -38,7 +44,7 @@ void UAccountWidget::OnLoginClicked()
 	UMain* gameInstance = Cast<UMain>(GetGameInstance());
 	if (gameInstance)
 	{
-		FTCHARToUTF8 Convert(*UserID);
+		FTCHARToUTF8 Convert(*userID);
 		std::vector<char> IdVector(Convert.Get(), Convert.Get() + Convert.Length());
 		gameInstance->SendLogin(IdVector);
 
@@ -48,6 +54,12 @@ void UAccountWidget::OnLoginClicked()
 
 void UAccountWidget::OnCancelClicked()
 {
+	// MainMenu 위젯의 Start, Quit 버튼 활성화
+	if (MainMenuOwner)
+	{
+		MainMenuOwner->SetButtonEnable(true); 
+	}
+
 	// Account 창 숨기기
 	RemoveFromParent();
 }

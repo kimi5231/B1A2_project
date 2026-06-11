@@ -9,6 +9,7 @@
 
 #include "LobbyWidget.generated.h"
 
+class UMainMenuWidget;
 /**
  * 
  */
@@ -65,7 +66,12 @@ public:
 	void SetSelectedRoom(URoomWidget* newSelected);
 	URoomWidget* GetSelectedRoom() const { return SelectedRoomWidget; }
 
+	void SetMainMenuOwner(UMainMenuWidget* mainMenu) { MainMenuOwner = mainMenu; }
+
 private:
 	UPROPERTY()
 	URoomWidget* SelectedRoomWidget = nullptr;
+
+	UPROPERTY()
+	UMainMenuWidget* MainMenuOwner = nullptr;
 };

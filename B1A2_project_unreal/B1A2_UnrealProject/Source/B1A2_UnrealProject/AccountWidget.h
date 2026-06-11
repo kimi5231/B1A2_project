@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "AccountWidget.generated.h"
 
+class UMainMenuWidget;
 /**
  * 
  */
@@ -26,10 +27,19 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	class UButton* CancelButton;
 
+public:
+	void SetMainMenuOwner(UMainMenuWidget* InMainMenu) { MainMenuOwner = InMainMenu; }
+
+	// Lobby 창을 띄울 때 버튼 비활성화
+	void SetButtonEnable(bool enable);
+
 private:
 	UFUNCTION()
 	void OnLoginClicked();
 
 	UFUNCTION()
 	void OnCancelClicked();
+
+	UPROPERTY()
+	UMainMenuWidget* MainMenuOwner;
 };

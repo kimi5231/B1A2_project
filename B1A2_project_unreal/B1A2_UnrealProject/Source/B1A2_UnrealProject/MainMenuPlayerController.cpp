@@ -5,6 +5,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Main/Main.h"
 #include "LobbyWidget.h"
+#include "MainMenuWidget.h"
 
 void AMainMenuPlayerController::BeginPlay()
 {
@@ -33,12 +34,31 @@ void AMainMenuPlayerController::HandleLoginResult(LoginResult result)
 	if (result == LoginResult::Sucess)
 	{
 		// 로비 위젯 생성 & 띄우기
-		if (LobbyWidgetClass && !LobbyWidgetInstance)
+		if (LobbyWidgetClass)
 		{
-			LobbyWidgetInstance = CreateWidget<UUserWidget>(this, LobbyWidgetClass);
-			if (LobbyWidgetInstance)
+			if (!LobbyWidgetInstance)
+			{
+				LobbyWidgetInstance = CreateWidget<UUserWidget>(this, LobbyWidgetClass);
+			}
+
+			if (LobbyWidgetInstance && !LobbyWidgetInstance->IsInViewport())
 			{
 				LobbyWidgetInstance->AddToViewport();
+			}
+		}
+
+		UMainMenuWidget* MainMenuUI = Cast<UMainMenuWidget>(MainMenuWidgetInstance);
+		ULobbyWidget* LobbyUI = Cast<ULobbyWidget>(LobbyWidgetInstance);
+
+		if (MainMenuUI)
+		{
+			// 메인 메뉴 버튼 비활성화
+			MainMenuUI->SetAccountButtonEnable(false);
+
+			// 레퍼런스 저장
+			if (LobbyUI)
+			{
+				LobbyUI->SetMainMenuOwner(MainMenuUI);
 			}
 		}
 	}

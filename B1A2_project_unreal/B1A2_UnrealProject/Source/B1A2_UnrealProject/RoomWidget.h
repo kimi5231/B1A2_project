@@ -21,7 +21,7 @@ protected:
 
 public:
 	// 개별 방 목록에 텍스트 세팅
-	void SetupEntry(int roomID, const FString& Title, const FText& State, ULobbyWidget* parent);
+	void SetupEntry(int roomID, const FString& Title, int playerCount, ULobbyWidget* parent);
 	void SetSelected(bool selected);
 	int GetRoomID() const { return _roomID; }
 
@@ -30,7 +30,7 @@ protected:
 	UTextBlock* Text_RoomTitle;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* Text_RoomState;
+	UTextBlock* Text_PlayerCount;
 	
 	UPROPERTY(meta = (BindWidget))
 	UCheckBox* CheckBox_Select;

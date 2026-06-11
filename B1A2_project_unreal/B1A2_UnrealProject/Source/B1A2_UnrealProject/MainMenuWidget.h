@@ -29,6 +29,15 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<class UAccountWidget> AccountWidgetClass;
 
+public:
+	// Account에서 Quit 버튼을 눌렀을 때, 비활성화된 Start, Quit 버튼 활성화
+	void SetButtonEnable(bool enable);
+
+	// Lobby 창을 띄울 떄 Account의 버튼 비활성화
+	void SetAccountButtonEnable(bool enable);
+
+	void RemoveAccountWidget();
+
 private:
 	UFUNCTION()
 	void OnStartClicked();

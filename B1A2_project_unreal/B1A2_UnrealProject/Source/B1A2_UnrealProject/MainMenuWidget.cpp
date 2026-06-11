@@ -22,17 +22,34 @@ void UMainMenuWidget::NativeConstruct()
 	}
 }
 
+void UMainMenuWidget::SetButtonEnable(bool enable)
+{
+	if (StartButton) StartButton->SetIsEnabled(enable);
+	if (QuitButton) QuitButton->SetIsEnabled(enable);
+
+}
+
+void UMainMenuWidget::SetAccountButtonEnable(bool enable)
+{
+	if (AccountWidgetInstance)
+	{
+		AccountWidgetInstance->SetButtonEnable(enable);
+	}
+}
+
+void UMainMenuWidget::RemoveAccountWidget()
+{
+	if (AccountWidgetInstance)
+	{
+		AccountWidgetInstance->RemoveFromParent();
+	}
+}
+
 void UMainMenuWidget::OnStartClicked()
 {
-	// 수정 필요!!!!!!!!!!!!! 스타트 버튼 한 번 누르면 비활성화 되도록
-	if (StartButton)
-	{
-		StartButton->SetIsEnabled(false);
-	}
-	if (QuitButton)
-	{
-		QuitButton->SetIsEnabled(false);
-	}
+	// Account 창을 띄우고, Start & Quit 버튼 비활성화
+	if (StartButton)	StartButton->SetIsEnabled(false);
+	if (QuitButton)		QuitButton->SetIsEnabled(false);
 
 	if (AccountWidgetClass)
 	{
@@ -43,6 +60,8 @@ void UMainMenuWidget::OnStartClicked()
 
 		if (AccountWidgetInstance && !AccountWidgetInstance->IsInViewport())
 		{
+			AccountWidgetInstance->SetMainMenuOwner(this);
+			AccountWidgetInstance->SetButtonEnable(true);
 			AccountWidgetInstance->AddToViewport();
 		}
 	}

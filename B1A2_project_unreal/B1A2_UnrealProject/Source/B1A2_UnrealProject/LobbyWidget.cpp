@@ -6,6 +6,7 @@
 #include "Components/TextBlock.h"
 #include "Components/ScrollBox.h"
 #include "Main/Main.h"
+#include "MainMenuWidget.h"
 
 void ULobbyWidget::NativeConstruct()
 {
@@ -57,6 +58,17 @@ void ULobbyWidget::OnLeaveClicked()
 
 		UE_LOG(LogTemp, Log, TEXT("[Lobby] Send LogOut Packet!"));
 	}
+
+	if (MainMenuOwner)
+	{
+		// Account 창 지움
+		MainMenuOwner->RemoveAccountWidget();
+		// MainMenu의 버튼 활성화
+		MainMenuOwner->SetButtonEnable(true);
+	}
+
+	// Lobby 창 숨기기
+	RemoveFromParent();
 }
 
 void ULobbyWidget::UpdateRoomList(const std::vector<RoomDTO>& roomList)
@@ -76,20 +88,12 @@ void ULobbyWidget::UpdateRoomList(const std::vector<RoomDTO>& roomList)
 	// 방 목록 배열을 순회하며 동적으로 자식 위젯 생성하기
 	for (const RoomDTO& RoomData : roomList)
 	{
+		// Title
 		FString titleStr = TEXT("No Title");
 		if (!RoomData.roomTitle.empty())
 		{
 			std::string StdTitle(RoomData.roomTitle.begin(), RoomData.roomTitle.end());
 			titleStr = FString(UTF8_TO_TCHAR(StdTitle.c_str()));
-		}
-
-		FText stateStr = FText::FromString(TEXT("Unknown"));
-		switch (RoomData.roomState)
-		{
-		case RoomState::Reusable: stateStr = State_Reusable; break;
-		case RoomState::Wait:     stateStr = State_Wait;     break;
-		case RoomState::Play:     stateStr = State_Play;     break;
-		case RoomState::Full:     stateStr = State_Full;     break;
 		}
 
 		UUserWidget* NewEntryWidget = CreateWidget<UUserWidget>(GetWorld(), RoomEntryWidgetClass);
@@ -98,7 +102,7 @@ void ULobbyWidget::UpdateRoomList(const std::vector<RoomDTO>& roomList)
 			URoomWidget* RoomWidget = Cast<URoomWidget>(NewEntryWidget);
 			if (RoomWidget)
 			{
-				RoomWidget->SetupEntry(RoomData.roomID, titleStr, stateStr, this);
+				RoomWidget->SetupEntry(RoomData.roomID, titleStr, RoomData.playerCount, this);
 				ScrollBox_RoomList->AddChild(NewEntryWidget);
 
 			}
