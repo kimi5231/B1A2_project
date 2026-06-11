@@ -607,7 +607,6 @@ void ServerNetwork::SendCurrentRoomListPacket(Session* client)
 		roomData.push_back(roomDTO.playerCount);
 		roomData.push_back(roomDTO.roomID);
 		roomData.push_back(static_cast<char>(roomDTO.roomState));
-		roomData.push_back(roomDTO.roomTitle.size());
 		roomData.insert(roomData.end(), roomDTO.roomTitle.begin(), roomDTO.roomTitle.end());
 	}
 

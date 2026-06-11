@@ -54,7 +54,7 @@ public:
 	void SetRoomState(RoomState state) { _roomState = state; }
 	int GetCurrentPlayerCount() { return _currentPlayerCount; }
 	const std::vector<char>& GetTitle() { return _title; }
-	void SetTitle(const std::vector<char>& title) { _title.insert(_title.end(), title.begin(), title.end());  }
+	void SetTitle(const std::vector<char>& title) { _title = title; }
 
 public:
 	GameObject* GetGameObject(ObjectType type, int id);
