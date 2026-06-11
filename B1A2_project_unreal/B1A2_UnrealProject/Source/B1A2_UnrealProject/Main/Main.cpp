@@ -2349,7 +2349,7 @@ void UMain::RecvAddObstacle(S_AddObstacle_Packet packet)
 	}
 
 	FVector spawnLocation(packet.pos.x, packet.pos.y, packet.pos.z);
-	FRotator spawnRotation(0, 0, 0);
+	FRotator spawnRotation(packet.rotation.pitch, packet.rotation.yaw, packet.rotation.roll);
 	int id = packet.id;
 
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
@@ -2363,7 +2363,7 @@ void UMain::RecvAddObstacle(S_AddObstacle_Packet packet)
 		{
 			_webs.Add(id, webActor);
 			webActor->SetActorLocation(spawnLocation);
-			UE_LOG(LogTemp, Log, TEXT("Web Spawned! [%d], %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
+			UE_LOG(LogTemp, Log, TEXT("Web Spawned! [%d], location: %f, %f, %f, rotation: %f, %f, %f"), id, spawnLocation.X, spawnLocation.Y, spawnLocation.Z, spawnRotation.Pitch, spawnRotation.Yaw, spawnRotation.Roll);
 		}
 		else
 		{
