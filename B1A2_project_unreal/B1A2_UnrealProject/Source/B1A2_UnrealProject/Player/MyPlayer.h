@@ -142,6 +142,10 @@ public:
 	void AddItemToInventory(ItemType type, int id, float weight, int cost);
 	int32 AddToolToToolBar(ItemType type, int id, float weight, int cost);
 
+	// 거미줄 충돌
+	void AddWebOverlap();
+	void RemoveWebOverlap();
+
 protected:
 	UPROPERTY()
 	TSet<AActor*> _nearInteractables;
@@ -273,6 +277,8 @@ protected:
 
 	bool isRunning = false;
 	void UpdateMovementStats();
+
+	int32 _overlappedWebCount = 0;
 
 	// 스테미나, 무게, 이속 등
 	UPROPERTY(BlueprintReadOnly, Category = "Stats")

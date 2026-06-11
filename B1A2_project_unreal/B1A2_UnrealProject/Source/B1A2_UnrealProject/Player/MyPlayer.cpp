@@ -399,6 +399,18 @@ int32 AMyPlayer::AddToolToToolBar(ItemType type, int id, float weight, int cost)
 		return -1;
 }
 
+void AMyPlayer::AddWebOverlap()
+{
+	_overlappedWebCount++;
+	UpdateMovementStats();
+}
+
+void AMyPlayer::RemoveWebOverlap()
+{
+	_overlappedWebCount = FMath::Max(0, _overlappedWebCount - 1); // 음수 방지
+	UpdateMovementStats();
+}
+
 void AMyPlayer::ToggleInventory()
 {
 	if (!_inventoryWidgetInstance)
@@ -715,6 +727,12 @@ void AMyPlayer::UpdateMovementStats()
 	float weightRatio = _currentWeight / _referenceWeight;
 	float speedModifier = 1.0f / (1.0f + weightRatio);
 
+	// 거미줄 감속 적용(하나 이상이면 0.5배)
+	if (_overlappedWebCount > 0)
+	{
+		speedModifier *= 0.5f;
+	}
+
 	UCharacterMovementComponent* moveComp = GetCharacterMovement();
 	if (moveComp)
 	{
@@ -1013,6 +1031,7 @@ void AMyPlayer::Interact()
 			return;
 
 		gameInstance->SendInteractDoor(gameInstance->GetMyID(), door->GetDoorID());
+		UE_LOG(LogTemp, Display, TEXT("[Door] Interact Packet Send!, doorID: %d"), door->GetDoorID());
 	}
 	else if (ABaseHatch* hatch = Cast<ABaseHatch>(_focusedActor))
 	{
