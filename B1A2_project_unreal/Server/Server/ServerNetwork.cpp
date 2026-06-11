@@ -1053,14 +1053,19 @@ void ServerNetwork::ProcessLoginPacket(C_Login_Packet packet, int clientIndex)
 	g_dbManager->AddWork(work);*/
 
 	// 이건 ProcessDB로 옮길 예정
-	LoginResult result = LoginResult::Sucess;
+	{
+		LoginResult result = LoginResult::Sucess;
 
-	// 로그인 결과 전송
-	SendLoginResultPacket(result, clientIndex, _clients[clientIndex]);
+		// 로그인 결과 전송
+		SendLoginResultPacket(result, clientIndex, _clients[clientIndex]);
 
-	// 로그인에 성공했다면 RoomList 보내주기
-	if(result == LoginResult::Sucess)
-		SendCurrentRoomListPacket(_clients[clientIndex]);
+		// 로그인에 성공했다면 RoomList 보내주고 ID 기록
+		if (result == LoginResult::Sucess)
+		{
+			SendCurrentRoomListPacket(_clients[clientIndex]);
+			_clients[clientIndex]->_name = packet.id;
+		}
+	}
 }
 
 void ServerNetwork::ProcessLogoutPacket(C_Logout_Packet packet, int clientIndex)
