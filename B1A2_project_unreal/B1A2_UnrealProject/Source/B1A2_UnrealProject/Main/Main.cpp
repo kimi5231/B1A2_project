@@ -2080,6 +2080,10 @@ void UMain::RecvInteractDoorNotify(S_InteractDoorNotify_Packet packet)
 	int doorID = packet.doorID;
 	ObjectState state = packet.doorState;
 
+	// Log
+	if (doorID == 0)
+		UE_LOG(LogTemp, Log, TEXT("[Hatch] Hatch ID %d State Updated to %d"), doorID, (int)state);
+
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
 		UWorld* world = GetWorld();
