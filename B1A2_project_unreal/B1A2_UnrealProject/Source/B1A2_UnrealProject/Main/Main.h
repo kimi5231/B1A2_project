@@ -1,9 +1,10 @@
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Engine/GameInstance.h"
 #include "Network/UnrealPackets.h"
 #include "Network/Includes.h"
+
+#include "CoreMinimal.h"
+#include "Engine/GameInstance.h"
 #include "GameFramework/Character.h"
 #include "Engine/StaticMeshActor.h"
 #include "Animation/AnimMontage.h"
@@ -24,6 +25,8 @@ class ABaseDoor;
 class ABaseHatch;
 class ABaseSellingMachine;
 class ABaseMonster;
+
+class UPlayerMicComponent;
 
 // 매초 저장되는 감정 데이터 구조체
 USTRUCT(BlueprintType)
@@ -162,6 +165,13 @@ private:
 
 	// 메뉴에서 게임 레벨로 전환 중인지 여부
 	std::atomic<bool> _bIsLoadingGameLevel{ false };
+
+private:
+	UPROPERTY()
+	UPlayerMicComponent* MicCaptureComponent;
+
+	// 내 마이크 캡처 시 호출될 콜백 함수
+	void OnLocalVoiceCaptured(const TArray<uint8>& RawBytes);
 
 public:
 	// Base Class
@@ -302,6 +312,7 @@ private:
 	// 내 플레이어
 	AMyPlayer* _myPlayer;
 	int _myID{-1};
+	int _clientID{ -1 };
 
 	// 몬스터
 	TMap<uint64, ABaseMonster*> _monsters;

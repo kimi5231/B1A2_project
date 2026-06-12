@@ -8,9 +8,8 @@ public class B1A2_UnrealProject : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "OpenCVHelper", "OpenCV", "NavigationSystem", "NavMesh" });
-
-		PublicDependencyModuleNames.AddRange(new string[] {
+		PublicDependencyModuleNames.AddRange(new string[] 
+		{
 			"Core",
 			"CoreUObject",
 			"Engine",
@@ -20,7 +19,15 @@ public class B1A2_UnrealProject : ModuleRules
 			"StateTreeModule",
 			"GameplayStateTreeModule",
 			"UMG",
-			"Slate"
+			"Slate",
+			"OpenCVHelper",
+			"OpenCV",
+			"NavigationSystem",
+			"NavMesh",
+			"AudioCapture",
+			"AudioCaptureCore",
+			"AudioMixer",       
+			"SignalProcessing"  
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });

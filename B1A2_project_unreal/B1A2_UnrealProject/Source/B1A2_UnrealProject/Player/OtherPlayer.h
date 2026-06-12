@@ -10,6 +10,7 @@
 
 #include "OtherPlayer.generated.h"
 
+class UVoiceSynthComponent;
 
 UCLASS()
 class B1A2_UNREALPROJECT_API AOtherPlayer : public ACharacter
@@ -104,4 +105,8 @@ protected:
 	ABaseItem* _currentAttachedToolActor;
 	
 	TSubclassOf<class ABaseItem> GetToolClass(ItemType Type);
+
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio")
+	UVoiceSynthComponent* VoiceSynthComponent;
 };

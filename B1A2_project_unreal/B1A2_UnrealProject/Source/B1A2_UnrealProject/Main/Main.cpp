@@ -20,6 +20,8 @@
 #include "Widget/QuestWidget.h"
 #include "Player/MainMenuPlayerController.h"
 #include "Misc/PackageName.h"
+#include "PlayerMicComponent.h"
+#include "VoiceSynthComponent.h"
 
 #define BUFSIZE	64
 
@@ -34,6 +36,16 @@ void UMain::Init()
 
 	// DataManager
 	LoadQuestData();
+
+	// Voice
+	MicCaptureComponent = NewObject<UPlayerMicComponent>(this);
+	if (MicCaptureComponent)
+	{
+		MicCaptureComponent->OnVoiceCaptured.BindUObject(this, &UMain::OnLocalVoiceCaptured);
+		UE_LOG(LogTemp, Log, TEXT("[Voice] Mike Component and Main is Binded!"));
+
+		MicCaptureComponent->StartCapture();
+	}
 
 	// 맵 로드 완료시 (메뉴 레벨 -> 메인 레벨 변경 시 호출)
 	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UMain::OnLevelLoadComplete);
@@ -63,6 +75,12 @@ void UMain::Shutdown()
 		_recvThread->WaitForCompletion();
 		delete _recvThread;
 		_recvThread = nullptr;
+	}
+
+	// Voice
+	if (MicCaptureComponent)
+	{
+		MicCaptureComponent->StopCapture();
 	}
 
 	FCoreUObjectDelegates::PostLoadMapWithWorld.RemoveAll(this);
@@ -518,6 +536,7 @@ void UMain::RecvLoginResult(S_LoginResult_Packet packet)
 		if (menuPC)
 		{
 			menuPC->HandleLoginResult(packet.result);
+			_clientID = packet.clientID;
 		}
 		else
 		{
@@ -2504,6 +2523,20 @@ void UMain::RecvUpdateCredit(S_UpdateCredit_Packet packet)
 
 void UMain::RecvVoiceData(S_VoiceData_Packet packet)
 {
+	uint64 targetID = static_cast<uint64>(packet.playerID);
+
+	if (_otherPlayers.Contains(targetID))
+	{
+		AOtherPlayer* targetPlayer = _otherPlayers[targetID];
+		if (targetPlayer && targetPlayer->VoiceSynthComponent)
+		{
+			TArray<uint8> RawBytes;
+			RawBytes.AddUninitialized(packet.audioData.size());
+			FMemory::Memcpy(RawBytes.GetData(), packet.audioData.data(), packet.audioData.size());
+
+			targetPlayer->VoiceSynthComponent->PushAudioByteData(RawBytes);
+		}
+	}
 }
 
 void UMain::RecvUpdateQuest(S_UpdateQuest_Packet packet)
@@ -2610,6 +2643,17 @@ void UMain::OnLevelLoadComplete(UWorld* loadedWorld)
 	{
 		UE_LOG(LogTemp, Display, TEXT("[Level] currentMapName != targetMapName"));
 	}
+}
+
+void UMain::OnLocalVoiceCaptured(const TArray<uint8>& RawBytes)
+{
+	if (!_gameNetwork || _myID == -1 || _clientID == -1) return;
+
+	std::vector<char> AudioData(RawBytes.Num());
+	FMemory::Memcpy(AudioData.data(), RawBytes.GetData(), RawBytes.Num());
+
+	static int SeqNum = 0;
+	_gameNetwork->SendVoiceDataPacket(static_cast<short>(_clientID), static_cast<char>(_myID), SeqNum++, AudioData);
 }
 
 TArray<class ABaseItem*> UMain::GetAllScanableItems()
