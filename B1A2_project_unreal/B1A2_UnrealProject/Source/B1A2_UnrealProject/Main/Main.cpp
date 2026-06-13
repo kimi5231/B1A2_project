@@ -1245,8 +1245,12 @@ void UMain::RecvDropItem(S_DropItem_Packet packet)
 				tool = world->SpawnActor<ABaseItem>(LanternClass, (spawnLocation.X, spawnLocation.Y, spawnLocation), spawnRotation);
 				tool->SetItemType(ItemType::LANTERN);
 
-				// 여기서 Lanter의 배터리를 설정해줘야 함!!!!!!!!!
-				//
+				ALantern* LanternActor = Cast<ALantern>(tool);
+				if (LanternActor)
+				{
+					LanternActor->SetBattery(static_cast<float>(lanternBattery));
+					UE_LOG(LogTemp, Log, TEXT("[Tool] Lantern Battery Restored: %f"), LanternActor->GetBattery());
+				}
 
 				UE_LOG(LogTemp, Log, TEXT("[Tool] Lantern Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
 				break;
