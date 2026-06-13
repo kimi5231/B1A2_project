@@ -511,7 +511,9 @@ void UMain::ProcessRecv()
 			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(int));
 			
 			S_VoiceData_Packet voiceDataPacket{ packetSize, S_VoiceData, playerID, sequenceNumber, _gameNetwork->DeserializeVector<char>(event->serializedPacketData) };
-			RecvVoiceData(voiceDataPacket);
+			if (playerID != _myID)
+				RecvVoiceData(voiceDataPacket);
+
 			event->isComplete = true;
 			break;
 		}
@@ -2523,12 +2525,13 @@ void UMain::RecvUpdateCredit(S_UpdateCredit_Packet packet)
 
 void UMain::RecvVoiceData(S_VoiceData_Packet packet)
 {
-	uint64 targetID = static_cast<uint64>(packet.playerID);
+	int playerID = packet.playerID;
 
-	if (_otherPlayers.Contains(targetID))
+	AOtherPlayer** foundPlayer = _otherPlayers.Find(playerID);
+	if (foundPlayer && *foundPlayer)
 	{
-		AOtherPlayer* targetPlayer = _otherPlayers[targetID];
-		if (targetPlayer && targetPlayer->VoiceSynthComponent)
+		AOtherPlayer* targetPlayer = *foundPlayer;
+		if (targetPlayer->VoiceSynthComponent)
 		{
 			TArray<uint8> RawBytes;
 			RawBytes.AddUninitialized(packet.audioData.size());
