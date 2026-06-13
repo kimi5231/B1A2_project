@@ -275,6 +275,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Tool")
 	TSubclassOf<class ABaseItem> LanternClass;
 
+	DataManager* GetDataManager() { return _dataManager; }
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Settings")
 	TSoftObjectPtr<UWorld> MainGameLevel;
