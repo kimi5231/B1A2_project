@@ -34,8 +34,8 @@ void UAccountWidget::OnLoginClicked()
 
 	FString userID = EditableText_ID->GetText().ToString();
 
-	// 아이디가 비었다면 리턴
-	if (userID.IsEmpty())
+	// 아이디가 비었거나, 문자열에 공백이 존재하면 리턴
+	if (userID.IsEmpty() || userID.Contains(TEXT(" ")))
 	{
 		return;
 	}
