@@ -125,7 +125,7 @@ void UMain::CreateBase()
 		FActorSpawnParameters params;
 		params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-		AStaticMeshActor* BaseActor = world->SpawnActor<AStaticMeshActor>(BaseClass, pos, rot, params);
+		_baseActor = world->SpawnActor<AStaticMeshActor>(BaseClass, pos, rot, params);
 		UE_LOG(LogTemp, Log, TEXT("[Base] Base Spawned!"));
 	});
 }
@@ -1768,6 +1768,27 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 		UWorld* world = GetWorld();
 		if (!world)
 			return;
+
+		// 상호작용 없는 hatch 지우기
+		if (_baseActor)
+		{
+			TArray<UStaticMeshComponent*> MeshComponents;
+			_baseActor->GetComponents<UStaticMeshComponent>(MeshComponents);
+
+			for (UStaticMeshComponent* Comp : MeshComponents)
+			{
+				if (Comp)
+				{
+					FString CompName = Comp->GetName();
+
+					if (CompName.Contains(TEXT("Hatch")) || CompName.Contains(TEXT("RightDoor")) || CompName.Contains(TEXT("LeftDoor")))
+					{
+						Comp->DestroyComponent();
+						UE_LOG(LogTemp, Log, TEXT("[Base] Destroyed Blueprint Component: %s"), *CompName);
+					}
+				}
+			}
+		}
 
 		// Cube
 		for (int i = 0; i < packet.cubes.size(); ++i)

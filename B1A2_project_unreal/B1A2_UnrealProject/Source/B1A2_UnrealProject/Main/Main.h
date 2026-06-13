@@ -340,6 +340,10 @@ private:
 	TMap<uint64, ABaseDoor*> _doors; // id > 0
 	ABaseHatch* _hatch;	// id == 0
 
+	// 상호작용 없는 hatch(스테이지 시작 전, 스테이지 끝나고)
+	UPROPERTY()
+	AStaticMeshActor* _baseActor = nullptr;
+
 	// 판매기
 	TMap<uint64, ABaseSellingMachine*> _sellingMachines;
 
