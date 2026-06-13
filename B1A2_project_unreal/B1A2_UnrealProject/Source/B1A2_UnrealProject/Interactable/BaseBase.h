@@ -10,6 +10,8 @@
 
 #include "BaseBase.generated.h"
 
+class USkeletalMeshComponent;
+class UAnimationAsset;
 /**
  * 
  */
@@ -34,6 +36,11 @@ public:
 
 	void ShowInteractionUI_Dynamic(bool isInventoryOpen);
 
+	void PlayLeverAnimation();
+
+	// MyPlayer가 L키를 눌렀을 때 호출
+	void RequestLeverPull();
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UBoxComponent* CollisionBox;		// 플레이어와 충돌 처리
@@ -47,4 +54,29 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UWidgetComponent* SubmitWidget;
 
+	// 레버 관련
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UBoxComponent* LeverCollisionBox;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UWidgetComponent* LeverWidget;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USkeletalMeshComponent* LeverMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
+	UAnimationAsset* LeverPullAnim;
+
+private:
+	UFUNCTION()
+	void OnLeverOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnLeverOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	// 플레이어가 레버 근처에 있는지?
+	bool bIsPlayerNearLever = false;
+
+	// 레버 당긴 횟수
+	int32 LeverPullCount = 0;
 };

@@ -110,6 +110,9 @@ protected:
 
 	// 레버 당기기 Cheat Key
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
+	UInputAction* InteractLaverCheatAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
 	UInputAction* InteractLaverAction;
 
 	// 판매하기
@@ -326,7 +329,13 @@ public:
 	bool GetIsLanternOn() const { return _isLanternOn; }
 	float GetCurrentBattery() const { return _currentBattery; }
 
+	void PullLeverInput();
+
 private:
+	// 레버 당기기
+	UPROPERTY()
+	class ABaseBase* OverlappedLeverActor = nullptr;
+
 	// 아이템 상호작용
 	UFUNCTION()
 	void OnItemOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

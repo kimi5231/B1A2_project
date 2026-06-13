@@ -23,6 +23,7 @@
 #include "PlayerMicComponent.h"
 #include "VoiceSynthComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Interactable/BaseBase.h"
 
 #define BUFSIZE	64
 
@@ -1419,8 +1420,35 @@ void UMain::RemoveMonster(S_RemoveObject_Packet packet)
 
 void UMain::RemoveItem(S_RemoveObject_Packet packet)
 {
-	// Map에서 제거 (월드에서는 애니메이션 중간에 지움)
-	//_items.Remove(packet.objectID);
+	int itemID = packet.id;
+
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		UWorld* world = GetWorld();
+		if (!world)
+			return;
+
+		ABaseItem** foundItem = _items.Find(itemID);
+		if (!foundItem || !(*foundItem))
+		{
+			UE_LOG(LogTemp, Log, TEXT("[Item] item not found... ID %llu Not found"), itemID);
+			return;
+		}
+
+		if (_items.Contains(itemID))
+		{
+			ABaseItem* itemActor = _items[itemID];
+			if (itemActor)
+			{
+				// 월드에서 액터 삭제
+				itemActor->Destroy();
+				UE_LOG(LogTemp, Log, TEXT("[SellingMachine] Item ID %lld Destroyed from World."), itemID);
+			}
+
+			// 맵에서 제거
+			_items.Remove(itemID);
+		}
+	});
 }
 
 void UMain::RemoveObstacle(S_RemoveObject_Packet packet)
@@ -2338,6 +2366,15 @@ void UMain::RecvStartStage(S_StartStage_Packet packet)
 	// 기지(현재는 MainEntrance) 빼고 큐브, 문 다 지우기
 	AsyncTask(ENamedThreads::GameThread, [this, packet]()
 	{
+		if (UWorld* World = GetWorld())
+		{
+			AActor* FoundActor = UGameplayStatics::GetActorOfClass(World, ABaseBase::StaticClass());
+			if (ABaseBase* BaseBaseActor = Cast<ABaseBase>(FoundActor))
+			{
+				BaseBaseActor->PlayLeverAnimation();
+			}
+		}
+
 		// Cube 제거
 		for (auto It = _cubes.CreateIterator(); It; ++It)
 		{
@@ -2377,6 +2414,18 @@ void UMain::RecvStartStage(S_StartStage_Packet packet)
 
 void UMain::RecvGameOver(S_GameOver_Packet packet)
 {
+	AsyncTask(ENamedThreads::GameThread, [this, packet]()
+	{
+		if (UWorld* World = GetWorld())
+		{
+			AActor* FoundActor = UGameplayStatics::GetActorOfClass(World, ABaseBase::StaticClass());
+			if (ABaseBase* BaseBaseActor = Cast<ABaseBase>(FoundActor))
+			{
+				BaseBaseActor->PlayLeverAnimation();
+			}
+		}
+	});
+
 	// 게임 오버 연출
 	// 할당량 못채웠을 때 EndGame 후에 GameOver
 	// 이거 오면 전체 리셋

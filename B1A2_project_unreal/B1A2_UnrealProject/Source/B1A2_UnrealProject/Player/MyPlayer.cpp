@@ -23,6 +23,7 @@
 #include "Interactable/BaseDoor.h"
 #include "Interactable/BaseHatch.h"
 #include "Interactable/BaseSellingMachine.h"
+#include "Interactable/BaseBase.h"
 
 #include "Widget/InventoryWidget.h" 
 #include "Widget/ToolBarWidget.h" 
@@ -286,8 +287,10 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(SendScissorAction, ETriggerEvent::Started, this, &AMyPlayer::SendScissor);
 		EnhancedInputComponent->BindAction(SendPaperAction, ETriggerEvent::Started, this, &AMyPlayer::SendPaper);
 		
-		// Laber Cheat Key
-		EnhancedInputComponent->BindAction(InteractLaverAction, ETriggerEvent::Started, this, &AMyPlayer::SendEndStageAndStartStage);
+		// Laver Cheat Key
+		EnhancedInputComponent->BindAction(InteractLaverCheatAction, ETriggerEvent::Started, this, &AMyPlayer::SendEndStageAndStartStage);
+		// Laver
+		EnhancedInputComponent->BindAction(InteractLaverAction, ETriggerEvent::Started, this, &AMyPlayer::PullLeverInput);
 
 		// Sell Item
 		EnhancedInputComponent->BindAction(SellAction, ETriggerEvent::Started, this, &AMyPlayer::InteractSellingMachine);
@@ -861,9 +864,25 @@ void AMyPlayer::UpdateScanEffect()
 	FollowCamera->PostProcessSettings.AutoExposureBias = CurrentScanAlpha * 2.f;
 }
 
+void AMyPlayer::PullLeverInput()
+{
+	if (OverlappedLeverActor)
+	{
+		OverlappedLeverActor->RequestLeverPull();
+	}
+}
+
 void AMyPlayer::OnItemOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (!OtherActor) return;
+
+	// 레버
+	if (OtherComp && OtherComp->GetName() == TEXT("LeverCollisionBox"))
+	{
+		OverlappedLeverActor = Cast<ABaseBase>(OtherActor);
+		UE_LOG(LogTemp, Log, TEXT("[MyPlayer] Lever Setup Success. Ready to press 'L'"));
+		return;
+	}
 
 	if (ABaseSellingMachine* SellingMachine = Cast<ABaseSellingMachine>(OtherActor))
 	{
@@ -893,6 +912,17 @@ void AMyPlayer::OnItemOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAc
 void AMyPlayer::OnItemOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	if (!OtherActor) return;
+
+	// 레버
+	if (OtherComp && OtherComp->GetName() == TEXT("LeverCollisionBox"))
+	{
+		if (OverlappedLeverActor == OtherActor)
+		{
+			OverlappedLeverActor = nullptr;
+			UE_LOG(LogTemp, Log, TEXT("[MyPlayer] Left Lever Range. Clear Lever Pointer"));
+		}
+		return;
+	}
 
 	// 판매기 구역에서 벗어난 경우 처리
 	if (ABaseSellingMachine* SellingMachine = Cast<ABaseSellingMachine>(OtherActor))
