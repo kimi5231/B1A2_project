@@ -152,13 +152,13 @@ void ServerNetwork::Update()
 	}
 
 	// 5초에 한 번씩 RoomList Update
-	_updateLobbyTime += g_timer->GetDeltaTime();
+	/*_updateLobbyTime += g_timer->GetDeltaTime();
 	if (_updateLobbyTime > 5)
 	{
 		_updateLobbyTime = 0;
 		for (const auto& [id, client] : _lobbyClients)
 			SendCurrentRoomListPacket(client);
-	}
+	}*/
 }
 
 void ServerNetwork::ProcessAccept()
@@ -305,7 +305,9 @@ void ServerNetwork::ProcessUDPRecv(int numByte, ExpOver* expOver)
 		packet.erase(packet.begin(), packet.begin() + sizeof(unsigned int));
 		voiceDataPacket.audioData = DeserializeVector<char>(packet);
 		
-		ProcessVoiceDataPacket(voiceDataPacket, expOver);
+		_clients[voiceDataPacket.clientID]->_recvOver._udpAddr = expOver->_udpAddr;
+
+		ProcessVoiceDataPacket(voiceDataPacket);
 		break;
 	}
 	}
@@ -1724,7 +1726,7 @@ void ServerNetwork::ProcessRequestQuestRewardPacket(C_RequestQuestReward_Packet 
 	}
 }
 
-void ServerNetwork::ProcessVoiceDataPacket(C_VoiceData_Packet packet, ExpOver* expOver)
+void ServerNetwork::ProcessVoiceDataPacket(C_VoiceData_Packet packet)
 {
 	if (packet.clientID < 0 || packet.clientID >= MAX_CLIENT)
 		return;
@@ -1736,7 +1738,10 @@ void ServerNetwork::ProcessVoiceDataPacket(C_VoiceData_Packet packet, ExpOver* e
 	bool isDead = _clients[packet.clientID]->_player->GetState() == ObjectState::DEAD;
 	for (auto& player : _clients[packet.clientID]->_room->GetPlayers())
 	{
-		if (player->GetClient() && isDead == (player->GetState() == ObjectState::DEAD))
-			SendVoiceDataPacket(packet.playerID, packet.sequenceNumber, packet.audioData, expOver);
+		if (player->GetClient() == _clients[packet.clientID])
+			continue;
+
+		if (player->GetClient() && player->GetClient()->_recvOver._udpAddr.sin_family != 0 && isDead == (player->GetState() == ObjectState::DEAD))
+			SendVoiceDataPacket(packet.playerID, packet.sequenceNumber, packet.audioData, &player->GetClient()->_recvOver);
 	}
 }

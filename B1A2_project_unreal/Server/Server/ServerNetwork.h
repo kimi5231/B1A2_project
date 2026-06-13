@@ -98,7 +98,7 @@ public:
 	void ProcessEndStagePacket(C_EndStage_Packet packet, int clientIndex);
 	void ProcessSubmitItemPacket(C_SubmitItem_Packet packet, int clientIndex);
 	void ProcessRequestQuestRewardPacket(C_RequestQuestReward_Packet packet, int clientIndex);
-	void ProcessVoiceDataPacket(C_VoiceData_Packet packet, ExpOver* expOver);
+	void ProcessVoiceDataPacket(C_VoiceData_Packet packet);
 
 public:
 	HANDLE GetIOCP() const { return _iocp; }
