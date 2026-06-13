@@ -28,6 +28,8 @@ class ABaseMonster;
 
 class UPlayerMicComponent;
 
+class UNiagaraSystem;
+
 // 매초 저장되는 감정 데이터 구조체
 USTRUCT(BlueprintType)
 struct FEmotionRecord
@@ -174,6 +176,10 @@ private:
 	void OnLocalVoiceCaptured(const TArray<uint8>& RawBytes);
 
 public:
+	// Dies Effect
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effects")
+	UNiagaraSystem* DieEffect;
+
 	// Base Class
 	UPROPERTY(EditDefaultsOnly, Category = "Base")
 	TSubclassOf<AStaticMeshActor> BaseClass;

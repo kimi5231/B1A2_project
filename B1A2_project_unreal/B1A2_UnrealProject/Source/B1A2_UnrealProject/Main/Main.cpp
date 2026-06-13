@@ -22,6 +22,7 @@
 #include "Misc/PackageName.h"
 #include "PlayerMicComponent.h"
 #include "VoiceSynthComponent.h"
+#include "NiagaraFunctionLibrary.h"
 
 #define BUFSIZE	64
 
@@ -1399,6 +1400,13 @@ void UMain::RemoveMonster(S_RemoveObject_Packet packet)
 		}
 
 		ABaseMonster* monster = *foundMonster;
+
+		// Die Effect 재생
+		FVector targetLocation = monster->GetActorLocation();
+		if (DieEffect)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(world, DieEffect, targetLocation);
+		}
 
 		// Map에서 제거
 		_monsters.Remove(id);

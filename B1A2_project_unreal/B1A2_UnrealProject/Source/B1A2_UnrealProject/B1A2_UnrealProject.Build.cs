@@ -27,7 +27,8 @@ public class B1A2_UnrealProject : ModuleRules
 			"AudioCapture",
 			"AudioCaptureCore",
 			"AudioMixer",       
-			"SignalProcessing"  
+			"SignalProcessing",
+			"Niagara"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
