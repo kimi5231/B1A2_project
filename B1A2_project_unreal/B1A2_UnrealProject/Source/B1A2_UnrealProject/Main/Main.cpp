@@ -1603,6 +1603,12 @@ void UMain::RecvUpdateStateMonster(S_UpdateObjectState_Packet packet)
 		{
 			ABaseMonster* monster = (*findMonster);
 
+			// Hit Sound 재생
+			if (packet.state == ObjectState::HIT)
+			{
+				monster->PlayHitEffect();
+			}
+
 			// EmotionGame이 Grab 상태라면 모니터 바꾸기
 			if (packet.state == ObjectState::GRAB)
 			{

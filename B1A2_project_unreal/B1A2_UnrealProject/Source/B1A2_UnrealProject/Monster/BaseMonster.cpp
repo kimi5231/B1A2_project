@@ -2,6 +2,7 @@
 
 #include "BaseMonster.h"
 #include "Components/SceneComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ABaseMonster::ABaseMonster()
@@ -84,4 +85,12 @@ void ABaseMonster::Tick(float DeltaTime)
     {
         IsAirborne = FMath::Abs(verticalInstantSpeed) > 150.f;
     }*/
+}
+
+void ABaseMonster::PlayHitEffect()
+{
+    if (HitSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation());
+    }
 }

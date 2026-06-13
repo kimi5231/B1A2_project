@@ -252,6 +252,9 @@ public:
 	// Monster Montage
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
 	UAnimMontage* SpiderMontage;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
+	UAnimMontage* TrashCollectorMontage;
 
 	// Item
 	UPROPERTY(EditDefaultsOnly, Category = "Item")

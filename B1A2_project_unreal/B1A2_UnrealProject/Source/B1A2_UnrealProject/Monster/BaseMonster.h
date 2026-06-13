@@ -6,6 +6,8 @@
 #include "GameFramework/Pawn.h"
 #include "BaseMonster.generated.h"
 
+class USoundBase;
+
 UCLASS()
 class B1A2_UNREALPROJECT_API ABaseMonster : public APawn
 {
@@ -22,6 +24,8 @@ public:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	void PlayHitEffect();
 
 protected:
 	// Root Component
@@ -45,6 +49,9 @@ protected:
 	float AnimSmoothingSpeed = 10.0f;
 
 	bool _isInterpolation = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio")
+	USoundBase* HitSound;
 
 private:
 	FVector _destPos;
