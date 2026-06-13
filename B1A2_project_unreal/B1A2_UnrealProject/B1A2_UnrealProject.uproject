@@ -11,7 +11,8 @@
 			"AdditionalDependencies": [
 				"Engine",
 				"AIModule",
-				"UMG"
+				"UMG",
+				"AudioMixer"
 			]
 		}
 	],
@@ -33,6 +34,10 @@
 		},
 		{
 			"Name": "OpenCV",
+			"Enabled": true
+		},
+		{
+			"Name": "AudioCapture",
 			"Enabled": true
 		}
 	]

@@ -9,9 +9,9 @@ public:
 		ZeroMemory(&_over, sizeof(_over));
 		ZeroMemory(&_udpAddr, sizeof(_udpAddr));
 		_udpAddrLen = sizeof(_udpAddr);
-		_buffer.resize(BufferSize);
+		_buffer.resize(BufSize);
 		_wsaBuffer.buf = reinterpret_cast<char*>(_buffer.data());
-		_wsaBuffer.len = BufferSize;
+		_wsaBuffer.len = BufSize;
 	}
 
 	ExpOver(IOType ioType)
@@ -20,9 +20,9 @@ public:
 		ZeroMemory(&_over, sizeof(_over));
 		ZeroMemory(&_udpAddr, sizeof(_udpAddr));
 		_udpAddrLen = sizeof(_udpAddr);
-		_buffer.resize(BufferSize);
+		_buffer.resize(BufSize);
 		_wsaBuffer.buf = reinterpret_cast<char*>(_buffer.data());
-		_wsaBuffer.len = BufferSize;
+		_wsaBuffer.len = BufSize;
 	}
 
 	WSAOVERLAPPED _over;

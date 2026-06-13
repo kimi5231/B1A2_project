@@ -1,7 +1,7 @@
 #pragma once
 
 #define PORT 7777
-#define BufferSize 10000
+#define BufSize 10000
 #define TileSize 25
 
 using TimePoint = std::chrono::steady_clock::time_point;

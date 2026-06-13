@@ -117,7 +117,7 @@ void GameNetwork::ProcessRecv()
 	// 나중에 재조립하기
 	unsigned short packetSize{};
 	recv(_clientSocket, (char*)&packetSize, sizeof(unsigned short), MSG_WAITALL);
-	std::vector<char> packet(BufferSize);
+	std::vector<char> packet(BufSize);
 	recv(_clientSocket, packet.data(), packetSize - sizeof(unsigned short), MSG_WAITALL);
 	
 	PacketID id;
@@ -495,7 +495,7 @@ void GameNetwork::ProcessRecv()
 void GameNetwork::ProcessUDPRecv()
 {
 	int addrLen = sizeof(_serverAddr);
-	std::vector<char> packet(BufferSize);
+	std::vector<char> packet(BufSize);
 	int recvBytes = recvfrom(_udpSocket, packet.data(), packet.size(), 0, (sockaddr*)&_serverAddr, &addrLen);
 
 	if (recvBytes < sizeof(short) + sizeof(PacketID))

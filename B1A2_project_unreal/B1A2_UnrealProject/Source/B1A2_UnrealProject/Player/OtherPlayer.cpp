@@ -6,6 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Interactable/BaseItem.h"
 #include "Main/Main.h"
+#include "VoiceSynthComponent.h"
 
 // Sets default values
 AOtherPlayer::AOtherPlayer()
@@ -33,13 +34,15 @@ AOtherPlayer::AOtherPlayer()
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 
+	// 보이스 컴포넌트 장착 <- 위치 동기화
+	VoiceSynthComponent = CreateDefaultSubobject<UVoiceSynthComponent>(TEXT("VoiceSynthComponent"));
+	VoiceSynthComponent->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
 void AOtherPlayer::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
