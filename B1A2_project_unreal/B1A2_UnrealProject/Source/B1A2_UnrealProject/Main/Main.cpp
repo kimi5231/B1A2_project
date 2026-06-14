@@ -655,6 +655,57 @@ void UMain::ProcessSend(PacketID id, const void* packetData, int dataSize)
 {
 }
 
+void UMain::ProcessSendFinalEmotion()
+{
+	AsyncTask(ENamedThreads::GameThread, [this]()
+	{
+		if (EmotionHistory.Num() > 0)
+		{
+			TArray<float> TotalScores;
+			TotalScores.Init(0.f, 7);
+
+			for (const FEmotionRecord& Record : EmotionHistory)
+			{
+				if (Record.Scores.Num() == 7)
+				{
+					for (int32 i = 0; i < 7; ++i)
+					{
+						TotalScores[i] += Record.Scores[i];
+					}
+				}
+			}
+
+			// 평균 계산
+			float RecordCount = static_cast<float>(EmotionHistory.Num());
+			float AvgAngry = TotalScores[0] / RecordCount;
+			float AvgDisgust = TotalScores[1] / RecordCount;
+			float AvgFear = TotalScores[2] / RecordCount;
+			float AvgHappy = TotalScores[3] / RecordCount;
+			float AvgSad = TotalScores[4] / RecordCount;
+			float AvgSurprise = TotalScores[5] / RecordCount;
+			float AvgNeutral = TotalScores[6] / RecordCount;
+
+			// 패킷 전송 함수 호출
+			SendEmotionResult(AvgAngry, AvgDisgust, AvgFear, AvgHappy, AvgSad, AvgSurprise, AvgNeutral);
+
+			UE_LOG(LogTemp, Log, TEXT("[Stage] Final Emotion Result Sent! (Based on %d records)"), EmotionHistory.Num());
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[Stage] EmotionHistory is empty. Sent All data 0.f"));
+			// 기록이 전혀 없을 경우
+			SendEmotionResult(0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f);
+		}
+
+		// 변수 초기화
+		_totalElapsedTime = 0.f;
+		_lastSentEmotionIndex = -1;
+		EmotionHistory.Empty();
+
+		UE_LOG(LogTemp, Log, TEXT("[Stage] Emotion history and tracking variables have been reset."));
+	});
+}
+
 void UMain::SendLocalPosition()
 {
 	if (_myID == -1)
@@ -2437,19 +2488,76 @@ void UMain::RecvTurnOffLantern(S_TurnOffLantern_Packet packet)
 
 void UMain::RecvEndStage(S_EndStage_Packet packet)
 {
-	// 연출 ~~~
-	// 결과 창 띄우기
+	// 월드 & Map에 있는 모든 것들 지우기(Monster, Door, Hatch, Web 등)
+	// 연출 및 결과 창 띄우기
 
-	UE_LOG(LogTemp, Display, TEXT("[EndStage] Recv End Stage Packet"));
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		//// 정리
+		//{
+		//	// 몬스터 정리
+		//	for (auto& Pair : _monsters)
+		//	{
+		//		if (IsValid(Pair.Value))
+		//		{
+		//			Pair.Value->Destroy();
+		//		}
+		//	}
+		//	_monsters.Empty();
 
-	//AsyncTask(ENamedThreads::GameThread, [=, this]()
-	//{
-	//});
+		//	// 아이템 정리
+		//	for (auto& Pair : _items)
+		//	{
+		//		if (IsValid(Pair.Value))
+		//		{
+		//			Pair.Value->Destroy();
+		//		}
+		//	}
+		//	_items.Empty();
+
+		//	// 장비 정리
+		//	for (auto& Pair : _tools)
+		//	{
+		//		if (IsValid(Pair.Value))
+		//		{
+		//			Pair.Value->Destroy();
+		//		}
+		//	}
+		//	_tools.Empty();
+
+		//	// 해치 정리
+		//	if (IsValid(_hatch))
+		//	{
+		//		_hatch->Destroy();
+		//	}
+		//	_hatch = nullptr;
+
+		//	// 판매기 정리
+		//	for (auto& Pair : _sellingMachines)
+		//	{
+		//		if (IsValid(Pair.Value))
+		//		{
+		//			Pair.Value->Destroy();
+		//		}
+		//	}
+		//	_sellingMachines.Empty();
+
+		//	// 거미줄 정리
+		//	for (auto& Pair : _webs)
+		//	{
+		//		if (IsValid(Pair.Value))
+		//		{
+		//			Pair.Value->Destroy();
+		//		}
+		//	}
+		//	_webs.Empty();
+		// UE_LOG(LogTemp, Warning, TEXT("[Stage] All stage actors successfully destroyed and maps cleared."));
+		// }
+	});
 }
 
 void UMain::RecvStartStage(S_StartStage_Packet packet)
 {
-	// 기지(현재는 MainEntrance) 빼고 큐브, 문 다 지우기
 	AsyncTask(ENamedThreads::GameThread, [this, packet]()
 	{
 		if (UWorld* World = GetWorld())
@@ -2461,40 +2569,43 @@ void UMain::RecvStartStage(S_StartStage_Packet packet)
 			}
 		}
 
+		// 기지(현재는 MainEntrance) 빼고 큐브, 문 다 지우기
 		// Cube 제거
-		for (auto It = _cubes.CreateIterator(); It; ++It)
-		{
-			AStaticMeshActor* CubeActor = It.Value();
+		//for (auto It = _cubes.CreateIterator(); It; ++It)
+		//{
+		//	AStaticMeshActor* CubeActor = It.Value();
 
-			if (CubeActor && CubeActor->IsValidLowLevel())
-			{
-				// MainEntrance는 지우지 않음
-				if (CubeActor->GetClass() == MainEntranceRoomClass)
-				{
-					continue;
-				}
+		//	if (CubeActor && CubeActor->IsValidLowLevel())
+		//	{
+		//		// MainEntrance는 지우지 않음
+		//		if (CubeActor->GetClass() == MainEntranceRoomClass)
+		//		{
+		//			continue;
+		//		}
 
-				// 월드에서 액터 삭제
-				CubeActor->Destroy();
-			}
+		//		// 월드에서 액터 삭제
+		//		CubeActor->Destroy();
+		//	}
 
-			// 맵에서 제거
-			It.RemoveCurrent();
-		}
+		//	// 맵에서 제거
+		//	It.RemoveCurrent();
+		//}
 
-		// Door & Wall 제거
-		for (auto It = _doors.CreateIterator(); It; ++It)
-		{
-			ABaseDoor* DoorActor = It.Value();
+		//// Door & Wall 제거
+		//for (auto It = _doors.CreateIterator(); It; ++It)
+		//{
+		//	ABaseDoor* DoorActor = It.Value();
 
-			if (DoorActor && DoorActor->IsValidLowLevel())
-			{
-				DoorActor->Destroy();
-			}
+		//	if (DoorActor && DoorActor->IsValidLowLevel())
+		//	{
+		//		DoorActor->Destroy();
+		//	}
 
-			// 맵에서 제거
-			It.RemoveCurrent();
-		}
+		//	// 맵에서 제거
+		//	It.RemoveCurrent();
+		//}
+
+		UE_LOG(LogTemp, Display, TEXT("[Cube] Cube and Door and Wall is Removed"));
 	});
 }
 

@@ -700,6 +700,8 @@ void AMyPlayer::SendEndStageAndStartStage()
 	{
 		laverPullCount = 0;
 		gameInstance->SendEndStage(true);
+		gameInstance->ProcessSendFinalEmotion();
+
 		UE_LOG(LogTemp, Display, TEXT("[Stage] Send C_EndStage_Packet (Count: 1->0)"));
 	}
 }

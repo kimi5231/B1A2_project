@@ -66,6 +66,7 @@ public:
 
 	// Send
 	void ProcessSend(PacketID id, const void* packetData, int dataSize);
+	void ProcessSendFinalEmotion();	// 최종 감정 데이터 계산 후 서버 전송 후 변수 초기화
 
 	void SendLocalPosition();
 	void SendGetItem(int itemID, bool isTool, int playerID);
@@ -326,18 +327,24 @@ private:
 	int _clientID{ -1 };
 
 	// 몬스터
+	UPROPERTY()
 	TMap<uint64, ABaseMonster*> _monsters;
 
 	// 아이템
+	UPROPERTY()
 	TMap<uint64, ABaseItem*> _items;
 	// 장비
+	UPROPERTY()
 	TMap<uint64, ABaseItem*> _tools;
 
 	// 큐브
+	UPROPERTY()
 	TMap<uint64, AStaticMeshActor*> _cubes;
 
 	// 문
+	UPROPERTY()
 	TMap<uint64, ABaseDoor*> _doors; // id > 0
+	UPROPERTY()
 	ABaseHatch* _hatch;	// id == 0
 
 	// 상호작용 없는 hatch(스테이지 시작 전, 스테이지 끝나고)
@@ -345,12 +352,14 @@ private:
 	AStaticMeshActor* _baseActor = nullptr;
 
 	// 판매기
+	UPROPERTY()
 	TMap<uint64, ABaseSellingMachine*> _sellingMachines;
 
 	// 거미줄
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AActor> WebClass;
 
+	UPROPERTY()
 	TMap<uint64, AActor*> _webs;
 
 	// MainEntrance가 한 번만 생성되도록 체크하는 플래그
