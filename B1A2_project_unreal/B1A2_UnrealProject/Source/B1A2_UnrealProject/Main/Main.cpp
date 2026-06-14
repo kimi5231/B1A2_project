@@ -1415,10 +1415,53 @@ void UMain::RemoveMonster(S_RemoveObject_Packet packet)
 
 		// Map에서 제거
 		_monsters.Remove(id);
-		// 월드에서 제거
-		monster->Destroy();
 
-		UE_LOG(LogTemp, Log, TEXT("[Monster] Monster Removed!!! ID %llu, Name %s"), id, *monster->GetName());
+		// AnimInstance 추출
+		USkeletalMeshComponent* MeshComp = monster->FindComponentByClass<USkeletalMeshComponent>();
+		UAnimInstance* AnimInstance = MeshComp ? MeshComp->GetAnimInstance() : nullptr;
+
+		FString className = monster->GetClass()->GetName();
+		UAnimMontage* MontageToPlay = nullptr;
+
+		if (className.Contains(TEXT("Spider")))
+		{
+			MontageToPlay = SpiderMontage;
+		}
+		else if (className.Contains(TEXT("TrashCollector")))
+		{
+			MontageToPlay = TrashCollectorMontage;
+		}
+
+		// Spider or TrashCollector일 때
+		if (MontageToPlay && AnimInstance)
+		{
+			FName name = FName("Die");
+
+			AnimInstance->Montage_Play(MontageToPlay, 1.0f);
+			AnimInstance->Montage_JumpToSection(name, MontageToPlay);
+
+			TWeakObjectPtr<ABaseMonster> WeakMonster(monster);
+
+			FOnMontageEnded MontageEndedDelegate;
+
+			MontageEndedDelegate.BindLambda([WeakMonster](UAnimMontage* Montage, bool bInterrupted)
+			{
+				if (WeakMonster.IsValid())
+				{
+					WeakMonster->Destroy(); // 애니메이션이 끝나면 월드에서 삭제
+					UE_LOG(LogTemp, Log, TEXT("[Monster] Delayed Monster Destroyed after Animation!"));
+				}
+			});
+
+			AnimInstance->Montage_SetEndDelegate(MontageEndedDelegate, MontageToPlay);
+			UE_LOG(LogTemp, Log, TEXT("[Monster] Play Die Animation for ID %llu"), id);
+		}
+		// 다른 몬스터들은 바로 월드에서 삭제
+		else
+		{
+			monster->Destroy();
+			UE_LOG(LogTemp, Log, TEXT("[Monster] Monster Instantly Removed!!! ID %llu, Name %s"), id, *monster->GetName());
+		}
 	});
 }
 
@@ -1633,7 +1676,6 @@ void UMain::RecvUpdateObjectState(S_UpdateObjectState_Packet packet)
 
 void UMain::RecvUpdateStateMonster(S_UpdateObjectState_Packet packet)
 {
-	// 상태 별 애니메이션 재생(지금은 Spider 몽타주만 재생!!)
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
 		if (!GetWorld()) return;
@@ -1717,16 +1759,35 @@ void UMain::RecvUpdateStateMonster(S_UpdateObjectState_Packet packet)
 					// 유효한 섹션이 결정된 경우에만 재생
 					if (!name.IsNone())
 					{
-						if (!AnimInstance->Montage_IsPlaying(SpiderMontage))
+						// Spider
+						if (className.Contains(TEXT("Spider")))
 						{
-							// 몽타주가 실행 중이 아니면 새로 시작
-							AnimInstance->Montage_Play(SpiderMontage, 1.0f);
-							AnimInstance->Montage_JumpToSection(name, SpiderMontage);
+							if (!AnimInstance->Montage_IsPlaying(SpiderMontage))
+							{
+								// 몽타주가 실행 중이 아니면 새로 시작
+								AnimInstance->Montage_Play(SpiderMontage, 1.0f);
+								AnimInstance->Montage_JumpToSection(name, SpiderMontage);
+							}
+							else
+							{
+								// 이미 재생 중이면 해당 섹션으로 즉시 점프
+								AnimInstance->Montage_JumpToSection(name, SpiderMontage);
+							}
 						}
-						else
+						// TrashCollector
+						else if (className.Contains(TEXT("TrashCollector")))
 						{
-							// 이미 재생 중이면 해당 섹션으로 즉시 점프
-							AnimInstance->Montage_JumpToSection(name, SpiderMontage);
+							if (!AnimInstance->Montage_IsPlaying(TrashCollectorMontage))
+							{
+								// 몽타주가 실행 중이 아니면 새로 시작
+								AnimInstance->Montage_Play(TrashCollectorMontage, 1.0f);
+								AnimInstance->Montage_JumpToSection(name, TrashCollectorMontage);
+							}
+							else
+							{
+								// 이미 재생 중이면 해당 섹션으로 즉시 점프
+								AnimInstance->Montage_JumpToSection(name, TrashCollectorMontage);
+							}
 						}
 					}
 				}
