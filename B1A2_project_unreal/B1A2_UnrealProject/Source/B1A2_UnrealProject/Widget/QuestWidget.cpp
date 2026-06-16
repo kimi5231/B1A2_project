@@ -177,6 +177,12 @@ void UQuestWidget::UpdateQuestUI()
 			// 보상 버튼 활성화 및 완료 대사 출력
 			if (_mainQuestSlot.canClaimReward)
 			{
+				// 퀘스트 완료 시 설명 지우기
+				MainTitleText->SetVisibility(ESlateVisibility::Collapsed);
+				MainClientText->SetVisibility(ESlateVisibility::Collapsed);	
+				MainRequestText->SetVisibility(ESlateVisibility::Collapsed);
+				MainRewardText->SetVisibility(ESlateVisibility::Collapsed);
+
 				// 퀘스트 완료 시 버튼과 대사를 모두 노출
 				if (MainRewardButton) MainRewardButton->SetVisibility(ESlateVisibility::Visible);
 				if (MainCompleteText) MainCompleteText->SetVisibility(ESlateVisibility::Visible);
@@ -217,10 +223,17 @@ void UQuestWidget::UpdateQuestUI()
 
 			if (_subQuestSlot.canClaimReward)
 			{
+				// 퀘스트 완료 시 설명 지우기
+				SubTitleText->SetVisibility(ESlateVisibility::Collapsed);
+				SubClientText->SetVisibility(ESlateVisibility::Collapsed);
+				SubRequestText->SetVisibility(ESlateVisibility::Collapsed);
+				SubRewardText->SetVisibility(ESlateVisibility::Collapsed);
+
+				// 퀘스트 완료 시 버튼과 대사를 모두 노출
 				if (SubRewardButton) SubRewardButton->SetVisibility(ESlateVisibility::Visible);
 				if (SubCompleteText) SubCompleteText->SetVisibility(ESlateVisibility::Visible);
 
-				SubCompleteText->SetText(FText::FromString(info.reward));
+				SubCompleteText->SetText(FText::FromString(info.complete));
 			}
 			else
 			{
