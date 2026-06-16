@@ -14,7 +14,7 @@ UVoiceSynthComponent::UVoiceSynthComponent(const FObjectInitializer& ObjectIniti
 
 bool UVoiceSynthComponent::Init(int32& InSampleRate)
 {
-	InSampleRate = 48000;
+	InSampleRate = 16000;
 	return true;
 }
 
