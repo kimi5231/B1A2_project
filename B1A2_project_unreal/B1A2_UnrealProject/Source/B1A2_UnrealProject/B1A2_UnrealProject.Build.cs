@@ -26,8 +26,7 @@ public class B1A2_UnrealProject : ModuleRules
 			"NavMesh",
 			"AudioCapture",
 			"AudioCaptureCore",
-			"AudioMixer",
-			"Voice",
+			"AudioMixer",       
 			"SignalProcessing",
 			"Niagara"
 		});
