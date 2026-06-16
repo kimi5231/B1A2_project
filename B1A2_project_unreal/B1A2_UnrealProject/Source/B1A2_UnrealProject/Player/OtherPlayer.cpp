@@ -43,6 +43,11 @@ AOtherPlayer::AOtherPlayer()
 void AOtherPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (VoiceSynthComponent)
+	{
+		VoiceSynthComponent->Start();
+	}
 }
 
 // Called every frame

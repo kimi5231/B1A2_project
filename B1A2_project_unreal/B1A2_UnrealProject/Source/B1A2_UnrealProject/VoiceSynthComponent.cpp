@@ -8,11 +8,13 @@ UVoiceSynthComponent::UVoiceSynthComponent(const FObjectInitializer& ObjectIniti
 {
 	PrimaryComponentTick.bCanEverTick = false;
 	bAutoActivate = true;
+
+	NumChannels = 1;
 }
 
 bool UVoiceSynthComponent::Init(int32& InSampleRate)
 {
-	InSampleRate = 16000;
+	InSampleRate = 48000;
 	return true;
 }
 
