@@ -5,13 +5,21 @@ struct DummyPlayer
 {
 	SOCKET socket;
 	int id;
-	float x, y;
+	Vector pos;
 };
 
 int main()
 {
-	for (int i = 0; i < 600; ++i)
-	{
+	GameNetwork network;
 
+	while (true)
+	{
+		std::vector<char> id;
+		id.push_back('T');
+		id.push_back('e');
+		id.push_back('s');
+		id.push_back('t');
+		network.SendLoginPacket(id);
+		network.Update();
 	}
 }

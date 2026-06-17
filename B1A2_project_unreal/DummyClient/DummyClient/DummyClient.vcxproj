@@ -138,6 +138,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Server\Server\Packets.h" />
+    <ClInclude Include="..\..\Server\Server\Types.h" />
     <ClInclude Include="DataManager.h" />
     <ClInclude Include="GameNetwork.h" />
     <ClInclude Include="pch.h" />
