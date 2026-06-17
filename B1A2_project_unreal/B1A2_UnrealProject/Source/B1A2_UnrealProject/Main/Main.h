@@ -375,4 +375,8 @@ public:
 	// 스캔 시 맵에 있는 아이템 + 장비 반환
 	UFUNCTION(BlueprintCallable, Category = "Item")
 	TArray<class ABaseItem*> GetAllScanableItems();
+
+	// EndStage 패킷 받으면 띄울 Game Result 패킷
+	UPROPERTY(EditAnywhere, Category = "UI")
+	TSubclassOf<class UGameResultWidget> GameResultWidgetClass;
 };

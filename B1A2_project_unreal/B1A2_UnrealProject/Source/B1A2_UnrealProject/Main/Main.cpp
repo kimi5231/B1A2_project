@@ -24,6 +24,7 @@
 #include "VoiceSynthComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Interactable/BaseBase.h"
+#include "GameResultWidget.h"
 
 #define BUFSIZE	64
 
@@ -2494,7 +2495,7 @@ void UMain::RecvEndStage(S_EndStage_Packet packet)
 	// 월드 & Map에 있는 모든 것들 지우기(Monster, Door, Hatch, Web 등)
 	// 연출 및 결과 창 띄우기
 
-	AsyncTask(ENamedThreads::GameThread, [this]()
+	AsyncTask(ENamedThreads::GameThread, [this, packet]()
 	{
 		auto DestroyActorsInMap = [](auto& Map) 
 		{
@@ -2526,9 +2527,36 @@ void UMain::RecvEndStage(S_EndStage_Packet packet)
 		// ...
 
 		UE_LOG(LogTemp, Log, TEXT("[Stage] All Actors Destroyed and Maps Cleared."));
+		if (GameResultWidgetClass)
+		{
+			UGameResultWidget* ResultUI = CreateWidget<UGameResultWidget>(GetWorld(), GameResultWidgetClass);
+			if (ResultUI)
+			{
+				TArray<FString> Names;
+				TArray<bool> States;
 
-		// 여기에 결과 창 UI 띄우는 함수 호출
-		// ShowResultUI();
+				for (const auto& dto : packet.stageResult)
+				{
+					FString PlayerName(UTF8_TO_TCHAR(dto.name.data()));
+					Names.Add(PlayerName);
+					States.Add(dto.isDead);
+				}
+
+				// 업데이트
+				ResultUI->NativeUpdatePlayerList(Names, States);
+				ResultUI->AddToViewport();
+
+				// 5초 후 위젯 지우기
+				FTimerHandle TimerHandle;
+				GetWorld()->GetTimerManager().SetTimer(TimerHandle, [ResultUI]()
+				{
+					if (IsValid(ResultUI))
+					{
+						ResultUI->RemoveFromParent();
+					}
+				}, 5.0f, false);
+			}
+		}
 	});
 }
 
@@ -2544,42 +2572,6 @@ void UMain::RecvStartStage(S_StartStage_Packet packet)
 				BaseBaseActor->PlayLeverAnimation();
 			}
 		}
-
-		// 기지(현재는 MainEntrance) 빼고 큐브, 문 다 지우기
-		// Cube 제거
-		//for (auto It = _cubes.CreateIterator(); It; ++It)
-		//{
-		//	AStaticMeshActor* CubeActor = It.Value();
-
-		//	if (CubeActor && CubeActor->IsValidLowLevel())
-		//	{
-		//		// MainEntrance는 지우지 않음
-		//		if (CubeActor->GetClass() == MainEntranceRoomClass)
-		//		{
-		//			continue;
-		//		}
-
-		//		// 월드에서 액터 삭제
-		//		CubeActor->Destroy();
-		//	}
-
-		//	// 맵에서 제거
-		//	It.RemoveCurrent();
-		//}
-
-		//// Door & Wall 제거
-		//for (auto It = _doors.CreateIterator(); It; ++It)
-		//{
-		//	ABaseDoor* DoorActor = It.Value();
-
-		//	if (DoorActor && DoorActor->IsValidLowLevel())
-		//	{
-		//		DoorActor->Destroy();
-		//	}
-
-		//	// 맵에서 제거
-		//	It.RemoveCurrent();
-		//}
 
 		UE_LOG(LogTemp, Display, TEXT("[Cube] Cube and Door and Wall is Removed"));
 	});
