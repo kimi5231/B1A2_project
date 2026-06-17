@@ -38,7 +38,7 @@ using ToolRef = std::shared_ptr<class Tool>;
 using DoorRef = std::shared_ptr<class Door>;
 using ObstacleRef = std::shared_ptr<class Obstacle>;
 
-#define MAX_CLIENT 600
+#define MAX_CLIENT 650
 #define MAX_ROOM 200
 #define MAX_TITLE 30
 

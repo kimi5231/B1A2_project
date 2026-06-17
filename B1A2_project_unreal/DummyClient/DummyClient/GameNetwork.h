@@ -7,9 +7,10 @@ public:
 
 public:
 	void Update();
-	
+	void UpdateDummy();
+
 private:
-	void ProcessRecv();
+	void ProcessRecv(int dummyID);
 
 public:
 	template <class T >
@@ -22,23 +23,23 @@ public:
 	std::vector<T> DeserializeVector(std::vector<char>& data);
 
 public:
-	void SendLoginPacket(const std::vector<char>& id);
-	void SendCreateRoomPacket();
-	void SendEnterRoomPacket(char roomID);
-	void SendMovePacket(ObjectType type, int id, Vector pos, Rotation rotation, ObjectState state);
-	void SendStartStagePacket();
-	void SendEndStagePacket();
+	void SendLoginPacket(int dummyID, const std::vector<char>& id);
+	void SendCreateRoomPacket(int dummyID);
+	void SendEnterRoomPacket(int dummyID, char roomID);
+	void SendMovePacket(int dummyID, ObjectType type, int id, Vector pos, Rotation rotation, ObjectState state);
+	void SendStartStagePacket(int dummyID);
+	void SendEndStagePacket(int dummyID);
 
 public:
-	void ProcessLoginResultPacket(S_LoginResult_Packet packet);
+	void ProcessLoginResultPacket(int dummyID, S_LoginResult_Packet packet);
+	void ProcessCurrentRoomListPacket(int dummyID, S_CurrentRoomList_Packet packet);
+	void ProcessCreateRoomResultPacket(int dummyID, S_CreateRoomResult_Packet packet);
 
 private:
 	fd_set _readSet{};
 	fd_set _writeSet{};
 
-	SOCKET _clientSocket{};
-
-	std::vector<NetworkEventRef> _sendEvents;
+	std::array<DummyPlayer, DummyCount> _dummys;
 };
 
 template<class T>

@@ -1,11 +1,13 @@
 #pragma once
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #define FD_SETSIZE 600
+#define DummyCount 600
 
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <iostream>
 #include <vector>
+#include <array>
 #include <unordered_map>
 #include <variant>
 #include <memory>
@@ -23,6 +25,13 @@
 #undef min
 #undef max
 
+enum class DummyState
+{
+	Title,
+	Lobby,
+	Room,
+};
+
 struct NetworkEvent
 {
 	bool isComplete = false;
@@ -31,3 +40,14 @@ struct NetworkEvent
 };
 
 using NetworkEventRef = std::shared_ptr<NetworkEvent>;
+
+struct DummyPlayer
+{
+	DummyState state;
+	SOCKET socket;
+	int dummyID;
+	std::vector<NetworkEventRef> sendEvents;
+	int clientID;
+	int playerID;
+	Vector pos;
+};

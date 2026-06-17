@@ -181,7 +181,7 @@ void ServerNetwork::ProcessAccept()
 		return;
 	}
 
-	std::cout << "Client 立加" << std::endl;
+	std::cout << "Client[" << clientIndex << "] 立加" << std::endl;
 
 	// clientSocket 殿废
 	CreateIoCompletionPort((HANDLE)_tempSocket, _iocp, clientIndex, 0);
