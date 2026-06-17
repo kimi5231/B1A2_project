@@ -24,6 +24,7 @@
 #include "VoiceSynthComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Interactable/BaseBase.h"
+#include "GameResultWidget.h"
 
 #define BUFSIZE	64
 
@@ -1902,16 +1903,20 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 			}
 		}
 
+		// 이전 데이터 비우기
+		for (auto& Elem : _cubes)
+		{
+			if (IsValid(Elem.Value))
+			{
+				Elem.Value->Destroy();
+			}
+		}
+		_cubes.Empty();
+
 		// Cube
 		for (int i = 0; i < packet.cubes.size(); ++i)
 		{
 			const CubeDTO& cube = packet.cubes[i];
-
-			if (cube.type == CubeType::MainEntranceRoom && isMainEntranceAlreadySpawned)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("MainEntranceRoom already exists. Skipping spawn."));
-				continue;
-			}
 
 			FVector pos(cube.pos.x, cube.pos.y, cube.pos.z);
 			FRotator rot = DirToRotation(cube.dir);
@@ -1924,7 +1929,6 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 			{
 			case CubeType::MainEntranceRoom:
 				roomActor = world->SpawnActor<AStaticMeshActor>(MainEntranceRoomClass, pos, rot, params);
-				isMainEntranceAlreadySpawned = true;	// 플래그 설정
 				UE_LOG(LogTemp, Log, TEXT("[Room] MainEntrance Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
 				break;
 			case CubeType::GapRoom:
@@ -2491,68 +2495,68 @@ void UMain::RecvEndStage(S_EndStage_Packet packet)
 	// 월드 & Map에 있는 모든 것들 지우기(Monster, Door, Hatch, Web 등)
 	// 연출 및 결과 창 띄우기
 
-	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	AsyncTask(ENamedThreads::GameThread, [this, packet]()
 	{
-		//// 정리
-		//{
-		//	// 몬스터 정리
-		//	for (auto& Pair : _monsters)
-		//	{
-		//		if (IsValid(Pair.Value))
-		//		{
-		//			Pair.Value->Destroy();
-		//		}
-		//	}
-		//	_monsters.Empty();
+		auto DestroyActorsInMap = [](auto& Map) 
+		{
+			for (auto& Elem : Map)
+			{
+				if (Elem.Value && IsValid(Elem.Value))
+				{
+					Elem.Value->Destroy();
+				}
+			}
+			Map.Empty();
+		};
 
-		//	// 아이템 정리
-		//	for (auto& Pair : _items)
-		//	{
-		//		if (IsValid(Pair.Value))
-		//		{
-		//			Pair.Value->Destroy();
-		//		}
-		//	}
-		//	_items.Empty();
+		DestroyActorsInMap(_monsters);
+		DestroyActorsInMap(_items);
+		DestroyActorsInMap(_tools);
+		//DestroyActorsInMap(_cubes);
+		DestroyActorsInMap(_doors);
+		DestroyActorsInMap(_sellingMachines);
+		DestroyActorsInMap(_webs);
 
-		//	// 장비 정리
-		//	for (auto& Pair : _tools)
-		//	{
-		//		if (IsValid(Pair.Value))
-		//		{
-		//			Pair.Value->Destroy();
-		//		}
-		//	}
-		//	_tools.Empty();
+		if (_hatch && IsValid(_hatch))
+		{
+			_hatch->Destroy();
+			_hatch = nullptr;
+		}
 
-		//	// 해치 정리
-		//	if (IsValid(_hatch))
-		//	{
-		//		_hatch->Destroy();
-		//	}
-		//	_hatch = nullptr;
+		// 상호작용 없는 Hatch Spawn하기
+		// ...
 
-		//	// 판매기 정리
-		//	for (auto& Pair : _sellingMachines)
-		//	{
-		//		if (IsValid(Pair.Value))
-		//		{
-		//			Pair.Value->Destroy();
-		//		}
-		//	}
-		//	_sellingMachines.Empty();
+		UE_LOG(LogTemp, Log, TEXT("[Stage] All Actors Destroyed and Maps Cleared."));
+		if (GameResultWidgetClass)
+		{
+			UGameResultWidget* ResultUI = CreateWidget<UGameResultWidget>(GetWorld(), GameResultWidgetClass);
+			if (ResultUI)
+			{
+				TArray<FString> Names;
+				TArray<bool> States;
 
-		//	// 거미줄 정리
-		//	for (auto& Pair : _webs)
-		//	{
-		//		if (IsValid(Pair.Value))
-		//		{
-		//			Pair.Value->Destroy();
-		//		}
-		//	}
-		//	_webs.Empty();
-		// UE_LOG(LogTemp, Warning, TEXT("[Stage] All stage actors successfully destroyed and maps cleared."));
-		// }
+				for (const auto& dto : packet.stageResult)
+				{
+					FString PlayerName(UTF8_TO_TCHAR(dto.name.data()));
+					Names.Add(PlayerName);
+					States.Add(dto.isDead);
+				}
+
+				// 업데이트
+				ResultUI->NativeUpdatePlayerList(Names, States);
+				ResultUI->AddToViewport();
+
+				// 5초 후 위젯 지우기
+				FTimerHandle TimerHandle;
+				GetWorld()->GetTimerManager().SetTimer(TimerHandle, [ResultUI]()
+				{
+					if (IsValid(ResultUI))
+					{
+						ResultUI->RemoveFromParent();
+					}
+				}, 5.0f, false);
+			}
+		}
 	});
 }
 
@@ -2568,42 +2572,6 @@ void UMain::RecvStartStage(S_StartStage_Packet packet)
 				BaseBaseActor->PlayLeverAnimation();
 			}
 		}
-
-		// 기지(현재는 MainEntrance) 빼고 큐브, 문 다 지우기
-		// Cube 제거
-		//for (auto It = _cubes.CreateIterator(); It; ++It)
-		//{
-		//	AStaticMeshActor* CubeActor = It.Value();
-
-		//	if (CubeActor && CubeActor->IsValidLowLevel())
-		//	{
-		//		// MainEntrance는 지우지 않음
-		//		if (CubeActor->GetClass() == MainEntranceRoomClass)
-		//		{
-		//			continue;
-		//		}
-
-		//		// 월드에서 액터 삭제
-		//		CubeActor->Destroy();
-		//	}
-
-		//	// 맵에서 제거
-		//	It.RemoveCurrent();
-		//}
-
-		//// Door & Wall 제거
-		//for (auto It = _doors.CreateIterator(); It; ++It)
-		//{
-		//	ABaseDoor* DoorActor = It.Value();
-
-		//	if (DoorActor && DoorActor->IsValidLowLevel())
-		//	{
-		//		DoorActor->Destroy();
-		//	}
-
-		//	// 맵에서 제거
-		//	It.RemoveCurrent();
-		//}
 
 		UE_LOG(LogTemp, Display, TEXT("[Cube] Cube and Door and Wall is Removed"));
 	});

@@ -362,9 +362,6 @@ private:
 	UPROPERTY()
 	TMap<uint64, AActor*> _webs;
 
-	// MainEntrance가 한 번만 생성되도록 체크하는 플래그
-	bool isMainEntranceAlreadySpawned = false;
-
 	// 누적 데이터 저장
 	UPROPERTY()
 	TArray<FEmotionRecord> EmotionHistory;
@@ -378,4 +375,8 @@ public:
 	// 스캔 시 맵에 있는 아이템 + 장비 반환
 	UFUNCTION(BlueprintCallable, Category = "Item")
 	TArray<class ABaseItem*> GetAllScanableItems();
+
+	// EndStage 패킷 받으면 띄울 Game Result 패킷
+	UPROPERTY(EditAnywhere, Category = "UI")
+	TSubclassOf<class UGameResultWidget> GameResultWidgetClass;
 };
