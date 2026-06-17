@@ -30,7 +30,7 @@ public:
 	void SendEndStagePacket();
 
 public:
-	std::vector<NetworkEventRef>& GetRecvEvents() { return _recvEvents; }
+	void ProcessLoginResultPacket(S_LoginResult_Packet packet);
 
 private:
 	fd_set _readSet{};
@@ -38,11 +38,7 @@ private:
 
 	SOCKET _clientSocket{};
 
-	std::vector<NetworkEventRef> _recvEvents;
 	std::vector<NetworkEventRef> _sendEvents;
-
-	std::mutex _recvMutex;
-	std::mutex _sendMutex;
 };
 
 template<class T>

@@ -1,21 +1,21 @@
 ﻿  GameNetwork.cpp
-C:\Programming\B1A2_project\B1A2_project_unreal\DummyClient\DummyClient\GameNetwork.cpp(64,92): warning C4267: '인수': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Programming\B1A2_project\B1A2_project_unreal\DummyClient\DummyClient\GameNetwork.cpp(63,92): warning C4267: '인수': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   (소스 파일 '/GameNetwork.cpp'을(를) 컴파일하는 중)
   
-C:\Programming\B1A2_project\B1A2_project_unreal\DummyClient\DummyClient\GameNetwork.cpp(466,18): warning C4267: '초기화 중': 'size_t'에서 'char'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Programming\B1A2_project\B1A2_project_unreal\DummyClient\DummyClient\GameNetwork.cpp(192,18): warning C4267: '초기화 중': 'size_t'에서 'char'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   (소스 파일 '/GameNetwork.cpp'을(를) 컴파일하는 중)
   
-C:\Programming\B1A2_project\B1A2_project_unreal\DummyClient\DummyClient\GameNetwork.cpp(500,74): warning C4838: 'char'에서 'unsigned char'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Programming\B1A2_project\B1A2_project_unreal\DummyClient\DummyClient\GameNetwork.cpp(224,74): warning C4838: 'char'에서 'unsigned char'(으)로의 변환에는 축소 변환이 필요합니다.
   (소스 파일 '/GameNetwork.cpp'을(를) 컴파일하는 중)
   
-C:\Programming\B1A2_project\B1A2_project_unreal\DummyClient\DummyClient\GameNetwork.cpp(516,59): warning C4838: 'int'에서 'unsigned char'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Programming\B1A2_project\B1A2_project_unreal\DummyClient\DummyClient\GameNetwork.cpp(239,59): warning C4838: 'int'에서 'unsigned char'(으)로의 변환에는 축소 변환이 필요합니다.
   (소스 파일 '/GameNetwork.cpp'을(를) 컴파일하는 중)
   
-C:\Programming\B1A2_project\B1A2_project_unreal\DummyClient\DummyClient\GameNetwork.h(58,11): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Programming\B1A2_project\B1A2_project_unreal\DummyClient\DummyClient\GameNetwork.h(56,11): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   (소스 파일 '/GameNetwork.cpp'을(를) 컴파일하는 중)
-      C:\Programming\B1A2_project\B1A2_project_unreal\DummyClient\DummyClient\GameNetwork.h(58,11):
+      C:\Programming\B1A2_project\B1A2_project_unreal\DummyClient\DummyClient\GameNetwork.h(56,11):
       템플릿 인스턴스화 컨텍스트(가장 오래된 인스턴스화 컨텍스트)가
-          C:\Programming\B1A2_project\B1A2_project_unreal\DummyClient\DummyClient\GameNetwork.cpp(465,29):
+          C:\Programming\B1A2_project\B1A2_project_unreal\DummyClient\DummyClient\GameNetwork.cpp(191,29):
           컴파일되는 함수 템플릿 인스턴스화 'std::vector<char,std::allocator<char>> GameNetwork::SerializeVector<char>(const std::vector<char,std::allocator<char>> &)'에 대한 참조를 확인하세요.
   
   DummyClient.vcxproj -> C:\Programming\B1A2_project\B1A2_project_unreal\DummyClient\x64\Debug\DummyClient.exe
