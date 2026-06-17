@@ -1882,7 +1882,7 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 			return;
 
 		// 상호작용 없는 hatch 지우기
-		if (_baseActor)
+	/*	if (_baseActor)
 		{
 			TArray<UStaticMeshComponent*> MeshComponents;
 			_baseActor->GetComponents<UStaticMeshComponent>(MeshComponents);
@@ -1900,18 +1900,22 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 					}
 				}
 			}
+		}*/
+
+		// 이전 데이터 비우기
+		for (auto& Elem : _cubes)
+		{
+			if (IsValid(Elem.Value))
+			{
+				Elem.Value->Destroy();
+			}
 		}
+		_cubes.Empty();
 
 		// Cube
 		for (int i = 0; i < packet.cubes.size(); ++i)
 		{
 			const CubeDTO& cube = packet.cubes[i];
-
-			if (cube.type == CubeType::MainEntranceRoom && isMainEntranceAlreadySpawned)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("MainEntranceRoom already exists. Skipping spawn."));
-				continue;
-			}
 
 			FVector pos(cube.pos.x, cube.pos.y, cube.pos.z);
 			FRotator rot = DirToRotation(cube.dir);
@@ -1924,7 +1928,6 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 			{
 			case CubeType::MainEntranceRoom:
 				roomActor = world->SpawnActor<AStaticMeshActor>(MainEntranceRoomClass, pos, rot, params);
-				isMainEntranceAlreadySpawned = true;	// 플래그 설정
 				UE_LOG(LogTemp, Log, TEXT("[Room] MainEntrance Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
 				break;
 			case CubeType::GapRoom:
@@ -2491,68 +2494,41 @@ void UMain::RecvEndStage(S_EndStage_Packet packet)
 	// 월드 & Map에 있는 모든 것들 지우기(Monster, Door, Hatch, Web 등)
 	// 연출 및 결과 창 띄우기
 
-	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	AsyncTask(ENamedThreads::GameThread, [this]()
 	{
-		//// 정리
-		//{
-		//	// 몬스터 정리
-		//	for (auto& Pair : _monsters)
-		//	{
-		//		if (IsValid(Pair.Value))
-		//		{
-		//			Pair.Value->Destroy();
-		//		}
-		//	}
-		//	_monsters.Empty();
+		auto DestroyActorsInMap = [](auto& Map) 
+		{
+			for (auto& Elem : Map)
+			{
+				if (Elem.Value && IsValid(Elem.Value))
+				{
+					Elem.Value->Destroy();
+				}
+			}
+			Map.Empty();
+		};
 
-		//	// 아이템 정리
-		//	for (auto& Pair : _items)
-		//	{
-		//		if (IsValid(Pair.Value))
-		//		{
-		//			Pair.Value->Destroy();
-		//		}
-		//	}
-		//	_items.Empty();
+		DestroyActorsInMap(_monsters);
+		DestroyActorsInMap(_items);
+		DestroyActorsInMap(_tools);
+		DestroyActorsInMap(_cubes);
+		DestroyActorsInMap(_doors);
+		DestroyActorsInMap(_sellingMachines);
+		DestroyActorsInMap(_webs);
 
-		//	// 장비 정리
-		//	for (auto& Pair : _tools)
-		//	{
-		//		if (IsValid(Pair.Value))
-		//		{
-		//			Pair.Value->Destroy();
-		//		}
-		//	}
-		//	_tools.Empty();
+		if (_hatch && IsValid(_hatch))
+		{
+			_hatch->Destroy();
+			_hatch = nullptr;
+		}
 
-		//	// 해치 정리
-		//	if (IsValid(_hatch))
-		//	{
-		//		_hatch->Destroy();
-		//	}
-		//	_hatch = nullptr;
+		// 상호작용 없는 Hatch Spawn하기
+		// ...
 
-		//	// 판매기 정리
-		//	for (auto& Pair : _sellingMachines)
-		//	{
-		//		if (IsValid(Pair.Value))
-		//		{
-		//			Pair.Value->Destroy();
-		//		}
-		//	}
-		//	_sellingMachines.Empty();
+		UE_LOG(LogTemp, Log, TEXT("[Stage] All Actors Destroyed and Maps Cleared."));
 
-		//	// 거미줄 정리
-		//	for (auto& Pair : _webs)
-		//	{
-		//		if (IsValid(Pair.Value))
-		//		{
-		//			Pair.Value->Destroy();
-		//		}
-		//	}
-		//	_webs.Empty();
-		// UE_LOG(LogTemp, Warning, TEXT("[Stage] All stage actors successfully destroyed and maps cleared."));
-		// }
+		// 여기에 결과 창 UI 띄우는 함수 호출
+		// ShowResultUI();
 	});
 }
 

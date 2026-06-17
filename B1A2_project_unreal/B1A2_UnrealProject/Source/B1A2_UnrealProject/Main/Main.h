@@ -362,9 +362,6 @@ private:
 	UPROPERTY()
 	TMap<uint64, AActor*> _webs;
 
-	// MainEntrance가 한 번만 생성되도록 체크하는 플래그
-	bool isMainEntranceAlreadySpawned = false;
-
 	// 누적 데이터 저장
 	UPROPERTY()
 	TArray<FEmotionRecord> EmotionHistory;
