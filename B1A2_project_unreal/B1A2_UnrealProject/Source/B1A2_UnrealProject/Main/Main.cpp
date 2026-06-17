@@ -1882,7 +1882,7 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 			return;
 
 		// 상호작용 없는 hatch 지우기
-	/*	if (_baseActor)
+		if (_baseActor)
 		{
 			TArray<UStaticMeshComponent*> MeshComponents;
 			_baseActor->GetComponents<UStaticMeshComponent>(MeshComponents);
@@ -1900,7 +1900,7 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 					}
 				}
 			}
-		}*/
+		}
 
 		// 이전 데이터 비우기
 		for (auto& Elem : _cubes)
@@ -2511,7 +2511,7 @@ void UMain::RecvEndStage(S_EndStage_Packet packet)
 		DestroyActorsInMap(_monsters);
 		DestroyActorsInMap(_items);
 		DestroyActorsInMap(_tools);
-		DestroyActorsInMap(_cubes);
+		//DestroyActorsInMap(_cubes);
 		DestroyActorsInMap(_doors);
 		DestroyActorsInMap(_sellingMachines);
 		DestroyActorsInMap(_webs);
