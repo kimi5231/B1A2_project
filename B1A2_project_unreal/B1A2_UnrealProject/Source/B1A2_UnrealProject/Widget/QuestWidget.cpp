@@ -174,12 +174,17 @@ void UQuestWidget::UpdateQuestUI()
 			MainRequestText->SetText(FText::FromString(FString::Printf(TEXT("의뢰 내용:\n%s"), *info.request)));
 			MainRewardText->SetText(FText::FromString(info.reward));
 
+			MainTitleText->SetVisibility(ESlateVisibility::Visible);
+			MainClientText->SetVisibility(ESlateVisibility::Visible);
+			MainRequestText->SetVisibility(ESlateVisibility::Visible);
+			MainRewardText->SetVisibility(ESlateVisibility::Visible);
+
 			// 보상 버튼 활성화 및 완료 대사 출력
 			if (_mainQuestSlot.canClaimReward)
 			{
 				// 퀘스트 완료 시 설명 지우기
 				MainTitleText->SetVisibility(ESlateVisibility::Collapsed);
-				MainClientText->SetVisibility(ESlateVisibility::Collapsed);	
+				MainClientText->SetVisibility(ESlateVisibility::Collapsed);
 				MainRequestText->SetVisibility(ESlateVisibility::Collapsed);
 				MainRewardText->SetVisibility(ESlateVisibility::Collapsed);
 
@@ -220,6 +225,11 @@ void UQuestWidget::UpdateQuestUI()
 			SubClientText->SetText(FText::FromString(FString::Printf(TEXT("의뢰인: %s"), *info.client)));
 			SubRequestText->SetText(FText::FromString(FString::Printf(TEXT("의뢰 내용:\n%s"), *info.request)));
 			SubRewardText->SetText(FText::FromString(info.reward));
+
+			SubTitleText->SetVisibility(ESlateVisibility::Visible);
+			SubClientText->SetVisibility(ESlateVisibility::Visible);
+			SubRequestText->SetVisibility(ESlateVisibility::Visible);
+			SubRewardText->SetVisibility(ESlateVisibility::Visible);
 
 			if (_subQuestSlot.canClaimReward)
 			{
