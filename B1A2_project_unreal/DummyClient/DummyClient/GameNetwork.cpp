@@ -17,6 +17,7 @@ GameNetwork::GameNetwork()
 		_dummys[i].dummyID = i;
 		_dummys[i].playerID = -1;
 		_dummys[i].state = DummyState::Title;
+		_dummys[i].playerCount = 0;
 
 		// TCP
 		{
@@ -101,6 +102,12 @@ void GameNetwork::UpdateDummy()
 			break;
 		}
 		case DummyState::Room:
+		{
+			if (dummy.dummyID % 4 == 0 && dummy.playerCount == 4)
+				SendStartStagePacket(dummy.dummyID);
+			break;
+		}
+		case DummyState::Play:
 		{
 			// ·£´ý ÀÌµ¿
 			Dir dir = static_cast<Dir>(rand() % 4);
@@ -209,19 +216,18 @@ void GameNetwork::ProcessRecv(int dummyID)
 		ProcessAddPlayerPacket(dummyID, addPlayerPacket);
 		break;
 	}
-	case S_Move:
-	{
-		
-		break;
-	}
 	case S_StartStage:
 	{
-		
+		S_StartStage_Packet startStagePacket;
+		memcpy(&startStagePacket, packet.data(), sizeof(S_StartStage_Packet));
+		ProcessStartStagePacket(dummyID, startStagePacket);
 		break;
 	}
 	case S_EndStage:
 	{
-		
+		S_EndStage_Packet endStagePacket;
+		memcpy(&endStagePacket, packet.data(), sizeof(S_EndStage_Packet));
+		ProcessEndStagePacket(dummyID, endStagePacket);
 		break;
 	}
 	}
@@ -370,4 +376,16 @@ void GameNetwork::ProcessAddPlayerPacket(int dummyID, S_AddPlayer_Packet packet)
 		_dummys[dummyID].playerID = packet.id;
 		_dummys[dummyID].pos = packet.pos;
 	}
+
+	_dummys[dummyID].playerCount++;
+}
+
+void GameNetwork::ProcessStartStagePacket(int dummyID, S_StartStage_Packet packet)
+{
+	_dummys[dummyID].state = DummyState::Play;
+}
+
+void GameNetwork::ProcessEndStagePacket(int dummyID, S_EndStage_Packet packet)
+{
+	_dummys[dummyID].state = DummyState::Room;
 }

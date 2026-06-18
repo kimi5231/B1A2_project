@@ -100,6 +100,8 @@ private:
 	std::unordered_map<MonsterType, int> _currentMonsterCount;
 	std::unordered_map<Dir, std::vector<Door*>> _connectableDoors;
 
+	int loop;
+
 // 게임 진행에 필요한 정보
 private:
 	float _updateMonsterTime;

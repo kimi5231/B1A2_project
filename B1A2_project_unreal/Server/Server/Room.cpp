@@ -468,6 +468,7 @@ void Room::CreateCubes()
 	_currentPower += trashCollector->GetPower();
 	_currentMonsterCount[MonsterType::TrashCollector]++;
 
+	loop = 0;
 	while (_currentPower < conditions.power)
 	{
 		MonsterType type;
@@ -503,6 +504,10 @@ void Room::CreateCubes()
 		// 이미 최대 수만큼 생성됐다면 무시
 		if (_currentMonsterCount[type] == _maxMonsterCount[type])
 			continue;
+
+		loop++;
+		if (loop > 30)
+			break;
 
 		// 타입에 맞는 몬스터 생성 후 Power 증가
 		std::uniform_int_distribution<int> selectCube(0, _cubes.size() - 1);
@@ -714,6 +719,8 @@ Monster* Room::AddMonster(MonsterType monsterType, Vector pos)
 			return monster;
 		}
 	}
+
+	return nullptr;
 }
 
 Item* Room::AddItem(bool isTool, ItemType itemType, Vector pos)

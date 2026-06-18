@@ -36,6 +36,8 @@ public:
 	void ProcessCreateRoomResultPacket(int dummyID, S_CreateRoomResult_Packet packet);
 	void ProcessEnterRoomResultPacket(int dummyID, S_EnterRoomResult_Packet packet);
 	void ProcessAddPlayerPacket(int dummyID, S_AddPlayer_Packet packet);
+	void ProcessStartStagePacket(int dummyID, S_StartStage_Packet packet);
+	void ProcessEndStagePacket(int dummyID, S_EndStage_Packet packet);
 
 private:
 	fd_set _readSet{};

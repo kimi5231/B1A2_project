@@ -1,7 +1,7 @@
 #pragma once
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #define FD_SETSIZE 600
-#define DummyCount 150
+#define DummyCount 200
 
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -52,4 +52,5 @@ struct DummyPlayer
 	int clientID;
 	int playerID;
 	Vector pos;
+	int playerCount;
 };

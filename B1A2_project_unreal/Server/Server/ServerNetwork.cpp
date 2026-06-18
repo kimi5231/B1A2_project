@@ -114,9 +114,9 @@ ServerNetwork::~ServerNetwork()
 void ServerNetwork::Update()
 {
 	DWORD numByte;
-	ULONG_PTR key;
+	ULONG_PTR key = -1;
 	LPOVERLAPPED over;
-	GetQueuedCompletionStatus(_iocp, &numByte, &key, &over, 0);
+	GetQueuedCompletionStatus(_iocp, &numByte, &key, &over, INFINITE);
 	
 	if (over == nullptr)
 	{
