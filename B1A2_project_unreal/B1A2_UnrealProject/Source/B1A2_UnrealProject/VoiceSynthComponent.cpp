@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "VoiceSynthComponent.h"
+#include "Sound/SoundAttenuation.h"
 
 UVoiceSynthComponent::UVoiceSynthComponent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -10,6 +10,9 @@ UVoiceSynthComponent::UVoiceSynthComponent(const FObjectInitializer& ObjectIniti
 	bAutoActivate = true;
 
 	NumChannels = 1;
+
+	// 3D »ç¿îµå
+	bAllowSpatialization = true;
 }
 
 bool UVoiceSynthComponent::Init(int32& InSampleRate)
@@ -23,6 +26,11 @@ void UVoiceSynthComponent::BeginPlay()
 	Super::BeginPlay();
 
 	SetVolumeMultiplier(1.0f);
+
+	if (VoiceAttenuationSettings)
+	{
+		AttenuationSettings = VoiceAttenuationSettings;
+	}
 }
 
 void UVoiceSynthComponent::PushAudioByteData(const TArray<uint8>& RawBytes)

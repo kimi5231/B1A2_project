@@ -2527,6 +2527,36 @@ void UMain::RecvEndStage(S_EndStage_Packet packet)
 		// ...
 
 		UE_LOG(LogTemp, Log, TEXT("[Stage] All Actors Destroyed and Maps Cleared."));
+
+		// 연출
+		APlayerController* PC = GetWorld()->GetFirstPlayerController();
+		if (PC)
+		{
+			PC->SetIgnoreMoveInput(true); 
+
+			
+			FInputModeGameAndUI InputMode;
+			InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+			PC->SetInputMode(InputMode);
+			PC->bShowMouseCursor = true;
+		}
+
+		FTimerHandle CameraTimerHandle;
+
+		if (PC)
+		{
+			GetWorld()->GetTimerManager().SetTimer(CameraTimerHandle, [PC]() {
+				if (PC)
+				{
+					FRotator CurrentRot = PC->GetControlRotation();
+					CurrentRot.Yaw += 1.0f;
+					CurrentRot.Normalize();
+
+					PC->SetControlRotation(CurrentRot);
+				}
+			}, 0.02f, true);
+		}
+
 		if (GameResultWidgetClass)
 		{
 			UGameResultWidget* ResultUI = CreateWidget<UGameResultWidget>(GetWorld(), GameResultWidgetClass);
@@ -2534,25 +2564,35 @@ void UMain::RecvEndStage(S_EndStage_Packet packet)
 			{
 				TArray<FString> Names;
 				TArray<bool> States;
-
-				for (const auto& dto : packet.stageResult)
-				{
-					FString PlayerName(UTF8_TO_TCHAR(dto.name.data()));
-					Names.Add(PlayerName);
+				for (const auto& dto : packet.stageResult) {
+					Names.Add(FString(UTF8_TO_TCHAR(dto.name.data())));
 					States.Add(dto.isDead);
 				}
 
-				// 업데이트
 				ResultUI->NativeUpdatePlayerList(Names, States);
 				ResultUI->AddToViewport();
 
-				// 5초 후 위젯 지우기
-				FTimerHandle TimerHandle;
-				GetWorld()->GetTimerManager().SetTimer(TimerHandle, [ResultUI]()
+				// 5초 후 모든 연출 복구
+				FTimerHandle CleanupTimer;
+				GetWorld()->GetTimerManager().SetTimer(CleanupTimer, [this, PC, CameraTimerHandle, ResultUI]() mutable
 				{
-					if (IsValid(ResultUI))
+					// UI 제거
+					if (IsValid(ResultUI)) ResultUI->RemoveFromParent();
+
+					// 카메라 회전 타이머 종료
+					if (GetWorld()) GetWorld()->GetTimerManager().ClearTimer(CameraTimerHandle);
+
+					// 게임 모드로 전환함
+					if (PC)
 					{
-						ResultUI->RemoveFromParent();
+						PC->SetIgnoreMoveInput(false);
+						PC->bShowMouseCursor = false;
+
+						FInputModeGameOnly GameOnlyMode;
+						PC->SetInputMode(GameOnlyMode);
+
+						// 카메라 정면 원상복구
+						PC->SetControlRotation(FRotator::ZeroRotator);
 					}
 				}, 5.0f, false);
 			}

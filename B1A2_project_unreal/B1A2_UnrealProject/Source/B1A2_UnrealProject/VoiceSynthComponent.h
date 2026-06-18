@@ -17,6 +17,9 @@ public:
 
 	void PushAudioByteData(const TArray<uint8>& RawBytes);
 
+	// 3D °¨¼â
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
+	class USoundAttenuation* VoiceAttenuationSettings;
 protected:
 	virtual bool Init(int32& InSampleRate) override;
 	virtual void BeginPlay() override;
