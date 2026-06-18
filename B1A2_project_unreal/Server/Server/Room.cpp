@@ -689,7 +689,7 @@ Player* Room::AddPlayer()
 		}
 	}
 
-	return nullptr;
+	return nullptr; 
 }
 
 Monster* Room::AddMonster(MonsterType monsterType, Vector pos)

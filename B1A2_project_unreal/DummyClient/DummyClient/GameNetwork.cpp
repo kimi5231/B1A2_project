@@ -15,6 +15,7 @@ GameNetwork::GameNetwork()
 	for (int i = 0; i < DummyCount; ++i)
 	{
 		_dummys[i].dummyID = i;
+		_dummys[i].playerID = -1;
 		_dummys[i].state = DummyState::Title;
 
 		// TCP
@@ -29,7 +30,7 @@ GameNetwork::GameNetwork()
 			memset(&addr, 0, sizeof(addr));
 			addr.sin_family = AF_INET;
 			addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-			addr.sin_port = htons(7777);
+			addr.sin_port = htons(PORT);
 			if (connect(_dummys[i].socket, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR)
 				return;
 		}
@@ -93,18 +94,36 @@ void GameNetwork::UpdateDummy()
 		{
 		case DummyState::Title:
 		{
-			std::string dummyName = "Dummy" + std::to_string(dummy.dummyID);
-			std::vector<char> id(dummyName.size());
-			std::memcpy(id.data(), dummyName.c_str(), dummyName.size());
+			std::string dummyID = "Dummy" + std::to_string(dummy.dummyID);
+			std::vector<char> id(dummyID.size());
+			std::memcpy(id.data(), dummyID.c_str(), dummyID.size());
 			SendLoginPacket(dummy.dummyID, id);
 			break;
 		}
-		/*case DummyState::Room:
+		case DummyState::Room:
 		{
-			SendMovePacket(dummy.dummyID, ObjectType::Player, 0, Vector{ 0, 0, 0 }, Rotation{ 0, 0, 0 }, ObjectState::IDLE);
+			// 랜덤 이동
+			Dir dir = static_cast<Dir>(rand() % 4);
+			switch (dir)
+			{
+			case Front:
+				dummy.pos.y -= TileSize;
+				break;
+			case Right:
+				dummy.pos.x += TileSize;
+				break;
+			case Back:
+				dummy.pos.y += TileSize;
+				break;
+			case Left:
+				dummy.pos.x -= TileSize;
+				break;
+			}
+
+			SendMovePacket(dummy.dummyID, ObjectType::Player, dummy.playerID, dummy.pos, Rotation{ 0, 0, 0 }, ObjectState::MOVE);
 			std::cout << "Dummy[" << dummy.dummyID << "] 이동\n";
 			break;
-		}*/
+		}
 		}
 	}
 }
@@ -185,7 +204,9 @@ void GameNetwork::ProcessRecv(int dummyID)
 	}
 	case S_AddPlayer:
 	{
-		
+		S_AddPlayer_Packet addPlayerPacket;
+		memcpy(&addPlayerPacket, packet.data(), sizeof(S_AddPlayer_Packet));
+		ProcessAddPlayerPacket(dummyID, addPlayerPacket);
 		break;
 	}
 	case S_RemoveObject:
@@ -310,6 +331,7 @@ void GameNetwork::ProcessLoginResultPacket(int dummyID, S_LoginResult_Packet pac
 	{
 		std::cout << "Dummy[" << dummyID << "] 로그인 성공\n";
 		_dummys[dummyID].state = DummyState::Lobby;
+		_dummys[dummyID].clientID = packet.clientID;
 	}
 }
 
@@ -343,5 +365,14 @@ void GameNetwork::ProcessEnterRoomResultPacket(int dummyID, S_EnterRoomResult_Pa
 	{
 		std::cout << "Dummy[" << dummyID << "] 방 입장 성공\n";
 		_dummys[dummyID].state = DummyState::Room;
+	}
+}
+
+void GameNetwork::ProcessAddPlayerPacket(int dummyID, S_AddPlayer_Packet packet)
+{
+	if (_dummys[dummyID].playerID == -1)
+	{
+		_dummys[dummyID].playerID = packet.id;
+		_dummys[dummyID].pos = packet.pos;
 	}
 }

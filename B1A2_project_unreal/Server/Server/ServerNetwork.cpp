@@ -1178,6 +1178,9 @@ void ServerNetwork::ProcessExitRoomPacket(C_ExitRoom_Packet packet, int clientIn
 
 void ServerNetwork::ProcessMovePacket(C_Move_Packet packet, int clientIndex)
 {
+	if (packet.id < 0 || packet.id >= MAX_PLAYER)
+		return;
+
 	Player* player = dynamic_cast<Player*>(_clients[clientIndex]->_room->GetGameObject(packet.type, packet.id));
 
 	if (player == nullptr)

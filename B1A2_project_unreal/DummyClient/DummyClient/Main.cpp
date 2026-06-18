@@ -21,4 +21,6 @@ int main()
 			network.UpdateDummy();
 		}
 	}
+
+	return 0;
 }
