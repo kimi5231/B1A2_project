@@ -209,11 +209,6 @@ void GameNetwork::ProcessRecv(int dummyID)
 		ProcessAddPlayerPacket(dummyID, addPlayerPacket);
 		break;
 	}
-	case S_RemoveObject:
-	{
-		
-		break;
-	}
 	case S_Move:
 	{
 		

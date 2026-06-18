@@ -1,7 +1,7 @@
 #pragma once
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #define FD_SETSIZE 600
-#define DummyCount 600
+#define DummyCount 150
 
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -31,6 +31,7 @@ enum class DummyState
 	Title,
 	Lobby,
 	Room,
+	Play,
 };
 
 struct NetworkEvent
