@@ -588,7 +588,63 @@ struct SpiderStat
 	int damage;
 	int maxWebCount;
 	int power;
-	VectorInt size;
+};
+
+struct EmotionGameStat
+{
+	bool isInvincible;
+	float idleTime;
+	float playTime;
+	float releaseTime;
+	int aggroRange;
+	int damage;
+	int healValue;
+	int power;
+};
+
+struct GhostStat
+{
+	bool isInvincible;
+	float chaseSpeed;
+	float idleTime;
+	float chaseTime;
+	float waitTime;
+	float absentTime;
+	float staringTime;
+	int damage;
+	int power;
+};
+
+struct PollutionMonitorStat
+{
+	int hp;
+	bool isInvincible;
+	float idleTime;
+	float checkTime;
+	float spawnTime;
+	int damage;
+	int emotionCount;
+	int power;
+};
+
+struct TrashCollectorStat
+{
+	int hp;
+	bool isInvincible;
+	float moveSpeed;
+	float roamingSpeed;
+	float chaseSpeed;
+	float escapeSpeed;
+	float idleTime;
+	float roamingTime;
+	float chaseTime;
+	int escapeDistance;
+	VectorInt aggroRange;
+	VectorInt attackRange;
+	float attackDelay;
+	int damage;
+	int maxScrapCount;
+	int power;
 };
 
 struct DBWork

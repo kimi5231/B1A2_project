@@ -60,7 +60,7 @@ void RoamingState::Tick(Monster* monster)
 	monster->AddDeltaTime();
 	
 	const std::vector<CubeRef>& cubes = monster->GetOwnerRoom()->GetCubes();
-	monster->UpdatePath(SelectRandomPosInCube(cubes[monster->GetCurrentCubeID()]), monster->SelectRandomConnectedCube());
+	monster->UpdatePath(SelectRandomPosInCube(monster->GetSize(), cubes[monster->GetCurrentCubeID()]), monster->SelectRandomConnectedCube());
 	monster->Move(monster->GetRoamingSpeed(), ObjectState::ROAMING);
 }
 
@@ -190,7 +190,7 @@ void TeleportState::Exit(Monster* monster)
 		cube = cubes[selectCube(gen)];
 	
 	// 랜덤한 위치로 순간이동
-	Vector pos = SelectRandomPosInCube(cube);
+	Vector pos = SelectRandomPosInCube(monster->GetSize(), cube);
 	monster->SetPos(pos);
 	std::cout << "EmotionGame " << monster->GetID() << " " << pos.x << " " << pos.y << " " << pos.z << std::endl;
 	
@@ -548,7 +548,7 @@ void EscapeState::Tick(Monster* monster)
 {  
 	TrashCollector* trashCollector = dynamic_cast<TrashCollector*>(monster);
 	CubeRef goalCube = trashCollector->GetEscapeCube();
-	trashCollector->UpdatePath(SelectRandomPosInCube(goalCube), goalCube);
+	trashCollector->UpdatePath(SelectRandomPosInCube(monster->GetSize(), goalCube), goalCube);
 	trashCollector->Move(trashCollector->GetEscapeSpeed(), ObjectState::ESCAPE);
 
 	State::Tick(monster);

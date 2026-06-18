@@ -541,7 +541,8 @@ void Room::CreateCubes()
 		while (index < 2)
 			index = selectCube(gen);
 		CubeRef cube = _cubes[index];
-		Monster* monster = AddMonster(type, SelectRandomPosInCube(cube));
+		const VectorInt& size = g_dataManager->GetMonsterSize(type);
+		Monster* monster = AddMonster(type, SelectRandomPosInCube(size, cube));
 		monster->SetState(ObjectState::HIT, false);
 		monster->SetState(ObjectState::IDLE, false);
 		_currentPower += monster->GetPower();

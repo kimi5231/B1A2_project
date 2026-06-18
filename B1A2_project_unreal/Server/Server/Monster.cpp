@@ -194,16 +194,13 @@ void Monster::Move(float speed, ObjectState state)
 
 			float currentAngle = _rotation.yaw;
 
-			// 각도가 -180도 ~ 180도 사이에서 튈 수 있으므로 최단 거리 회전 보정
 			float angleDiff = angle - currentAngle;
 			while (angleDiff < -180.0f) angleDiff += 360.0f;
 			while (angleDiff > 180.0f)  angleDiff -= 360.0f;
 
-			// 회전 속도 설정 (숫자가 클수록 빠르게 회전, 5.0f~10.0f 정도가 적당해)
 			float rotationSpeed = 8.0f;
 			float nextAngle = currentAngle + angleDiff * rotationSpeed * _ownerRoom->GetUpdateRoomTime();
 
-			// 3. 보정된 회전값 적용
 			Rotation rotation = { 0.f, nextAngle, 0.f };
 
 			_rotation = rotation;

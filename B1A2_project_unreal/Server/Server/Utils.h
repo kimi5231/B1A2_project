@@ -7,9 +7,9 @@ Vector GetForwardVector(float pitch, float yaw);
 
 Vector SelectRandomPosInCube(VectorInt size, const CubeRef cube);
 
-Vector SelectRandomPosInCube(const CubeRef cube);
+//Vector SelectRandomPosInCube(const CubeRef cube);
 
-bool IsCanExist(VectorInt index, const CubeRef cube);
+//bool IsCanExist(VectorInt index, const CubeRef cube);
 
 bool IsCanExist(VectorInt index, VectorInt size, const CubeRef cube);
 
