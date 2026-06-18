@@ -112,6 +112,4 @@ private:
 	std::array<class Session*, MAX_CLIENT> _clients;
 
 	ServerFramework* _framework;
-	float _updateLobbyTime;
-	std::unordered_map<int, class Session*> _lobbyClients;
 };

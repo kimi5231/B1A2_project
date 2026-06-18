@@ -1,13 +1,13 @@
 #include "pch.h"
 #include "Monster.h"
 #include "Global.h"
-#include "Room.h"
 #include "Cube.h"
 #include "DataManager.h"
 #include "FSM.h"
 #include "Door.h"
 #include "State.h"
 #include "Player.h"
+#include "Room.h"
 
 Monster::Monster(MonsterType monsterType, Room* ownerRoom)
 	: _monsterType(monsterType)
@@ -174,7 +174,7 @@ void Monster::Move(float speed, ObjectState state)
 		float distance = dir.Length();
 
 		// 이동 속도 적용
-		float moveDist = speed * g_timer->GetDeltaTime();
+		float moveDist = speed * _ownerRoom->GetUpdateMonsterTime();
 
 		// 남은 거리가 이동할 거리보다 목적지 위치로 바로 이동
 		if (distance <= moveDist)
@@ -201,7 +201,7 @@ void Monster::Move(float speed, ObjectState state)
 
 			// 회전 속도 설정 (숫자가 클수록 빠르게 회전, 5.0f~10.0f 정도가 적당해)
 			float rotationSpeed = 8.0f;
-			float nextAngle = currentAngle + angleDiff * rotationSpeed * g_timer->GetDeltaTime();
+			float nextAngle = currentAngle + angleDiff * rotationSpeed * _ownerRoom->GetUpdateMonsterTime();
 
 			// 3. 보정된 회전값 적용
 			Rotation rotation = { 0.f, nextAngle, 0.f };
@@ -280,8 +280,6 @@ const CubeRef Monster::SelectRandomConnectedCube()
 	return connectedCubes[selectCube(gen)];
 }
 
-
-// 나중에 잠긴 문도 고려하기
 std::deque<CubeRef> Monster::FindCubePath(const CubeRef goalCube, const CubeRef currentCube, const std::vector<CubeRef>& gameRooms)
 {
 	// 길찾기에 필요한 자료구조 정의
@@ -534,6 +532,11 @@ bool Monster::IsPointInCube(VectorInt wp, CubeRef cube)
 	// 단순 AABB 체크
 	return (wp.x >= pos.x - size.x / 2 && wp.x <= pos.x + size.x / 2 &&
 		wp.y >= pos.y - size.y / 2 && wp.y <= pos.y + size.y / 2);
+}
+
+void Monster::AddDeltaTime()
+{
+	_sumTime += _ownerRoom->GetUpdateMonsterTime();
 }
 
 void Monster::UpdateNextAttackTime()

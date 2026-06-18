@@ -25,6 +25,7 @@ int main(void)
 	{
 		framework->Update();
 		g_network->Update();
+		g_timer->Update();
 	}
 
 	return 0;

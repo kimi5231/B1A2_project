@@ -174,7 +174,7 @@ void UMain::ProcessRecv()
 			currentRoomListPacket.size = packetSize;
 			currentRoomListPacket.packetID = S_CurrentRoomList;
 
-			char roomDTOSize;
+			unsigned char roomDTOSize;
 			memcpy(&roomDTOSize, event->serializedPacketData.data(), sizeof(unsigned char));
 			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned char));
 			

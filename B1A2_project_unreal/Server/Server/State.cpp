@@ -3,13 +3,13 @@
 #include "Room.h"
 #include "Cube.h"
 #include "Door.h"
-#include "Global.h"
 #include "Spider.h"
 #include "EmotionGame.h"
 #include "Ghost.h"
 #include "PollutionMonitor.h"
 #include "TrashCollector.h"
 #include "Tool.h"
+#include "Global.h"
 
 void State::Tick(Monster* monster)
 {
@@ -44,7 +44,7 @@ void IdleState::Tick(Monster* monster)
 {
 	State::Tick(monster);
 
-	monster->AddDeltaTime(g_timer->GetDeltaTime());
+	monster->AddDeltaTime();
 }
 
 void IdleState::Exit(Monster* monster)
@@ -57,7 +57,7 @@ void RoamingState::Tick(Monster* monster)
 {
 	State::Tick(monster);
 
-	monster->AddDeltaTime(g_timer->GetDeltaTime());
+	monster->AddDeltaTime();
 	
 	const std::vector<CubeRef>& cubes = monster->GetOwnerRoom()->GetCubes();
 	monster->UpdatePath(SelectRandomPosInCube(cubes[monster->GetCurrentCubeID()]), monster->SelectRandomConnectedCube());
@@ -75,7 +75,7 @@ void ChaseState::Tick(Monster* monster)
 {
 	State::Tick(monster);
 
-	monster->AddDeltaTime(g_timer->GetDeltaTime());
+	monster->AddDeltaTime();
 
 	const std::vector<CubeRef>& cubes = monster->GetOwnerRoom()->GetCubes();
 	monster->UpdatePath(monster->GetTarget()->GetPos(), cubes[monster->GetTarget()->GetCurrentCubeID()]);
@@ -160,7 +160,7 @@ void MakeWebState::Tick(Monster* monster)
 {
 	State::Tick(monster);
 
-	monster->AddDeltaTime(g_timer->GetDeltaTime());
+	monster->AddDeltaTime();
 }
 
 void MakeWebState::Exit(Monster* monster)
@@ -245,7 +245,7 @@ void PlayState::Tick(Monster* monster)
 {
 	State::Tick(monster);
 
-	monster->AddDeltaTime(g_timer->GetDeltaTime());
+	monster->AddDeltaTime();
 }
 
 void PlayState::Exit(Monster* monster)
@@ -291,7 +291,7 @@ void ReleaseState::Tick(Monster* monster)
 {
 	State::Tick(monster);
 
-	monster->AddDeltaTime(g_timer->GetDeltaTime());
+	monster->AddDeltaTime();
 }
 
 void ReleaseState::Exit(Monster* monster)
@@ -315,7 +315,7 @@ void AbsentState::Tick(Monster* monster)
 {
 	State::Tick(monster);
 
-	monster->AddDeltaTime(g_timer->GetDeltaTime());
+	monster->AddDeltaTime();
 	
 	Ghost* ghost = dynamic_cast<Ghost*>(monster);
 	if (ghost->GetAbsentTime() < ghost->GetSumTime())
@@ -396,7 +396,7 @@ void StaringState::Tick(Monster* monster)
 
 	State::Tick(monster);
 
-	monster->AddDeltaTime(g_timer->GetDeltaTime());
+	monster->AddDeltaTime();
 
 	// Player 시야에 Ghost가 들어갔는지 체크
 	Ghost* ghost = dynamic_cast<Ghost*>(monster);
@@ -435,7 +435,7 @@ void CheckState::Tick(Monster* monster)
 	if (room->GetCurrentFearCount() + room->GetCurrentSurpriseCount() < 5)
 		return;
 
-	monster->AddDeltaTime(g_timer->GetDeltaTime());
+	monster->AddDeltaTime();
 
 	// 조건이 충족됐다면 지정된 시간마다 Spawn 할지 말지 확률 적용
 	PollutionMonitor* pollutionMonitor = dynamic_cast<PollutionMonitor*>(monster);
@@ -458,7 +458,7 @@ void SpawnState::Tick(Monster* monster)
 	State::Tick(monster);
 	
 	// 이 누적 시간은 몬스터가 죽을 때까지 초기화하지 않음
-	monster->AddDeltaTime(g_timer->GetDeltaTime());
+	monster->AddDeltaTime();
 }
 
 //--------------AllAttack----------------

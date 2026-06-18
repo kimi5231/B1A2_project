@@ -93,10 +93,16 @@ void GameNetwork::UpdateDummy()
 		{
 		case DummyState::Title:
 		{
-			std::string dummyName = "Dummy_" + std::to_string(dummy.dummyID);
+			std::string dummyName = "Dummy" + std::to_string(dummy.dummyID);
 			std::vector<char> id(dummyName.size());
 			std::memcpy(id.data(), dummyName.c_str(), dummyName.size());
 			SendLoginPacket(dummy.dummyID, id);
+			break;
+		}
+		case DummyState::Room:
+		{
+			SendMovePacket(dummy.dummyID, ObjectType::Player, 0, Vector{ 0, 0, 0 }, Rotation{ 0, 0, 0 }, ObjectState::IDLE);
+			std::cout << "Dummy[" << dummy.dummyID << "] 이동\n";
 			break;
 		}
 		}
@@ -136,7 +142,7 @@ void GameNetwork::ProcessRecv(int dummyID)
 		currentRoomListPacket.size = packetSize;
 		currentRoomListPacket.packetID = S_CurrentRoomList;
 
-		char roomDTOSize;
+		unsigned char roomDTOSize;
 		memcpy(&roomDTOSize, packet.data(), sizeof(unsigned char));
 		packet.erase(packet.begin(), packet.begin() + sizeof(unsigned char));
 
@@ -300,16 +306,30 @@ void GameNetwork::ProcessLoginResultPacket(int dummyID, S_LoginResult_Packet pac
 {
 	if (packet.result == LoginResult::Sucess)
 	{
-		std::cout << "로그인 성공\n";
+		std::cout << "Dummy[" << dummyID << "] 로그인 성공\n";
 		_dummys[dummyID].state = DummyState::Lobby;
 	}
 }
 
 void GameNetwork::ProcessCurrentRoomListPacket(int dummyID, S_CurrentRoomList_Packet packet)
 {
+	// 들어갈 수 있는 방이 없다면 방 생성
+	if (packet.roomList.size() == 0)
+	{
+		SendCreateRoomPacket(dummyID);
+		std::cout << "Dummy[" << dummyID << "] 방 생성\n";
+		return;
+	}
 
+	// 들어갈 수 있는 방이 있으면 방 입장
+	SendEnterRoomPacket(dummyID, packet.roomList[0].roomID);
 }
 
 void GameNetwork::ProcessCreateRoomResultPacket(int dummyID, S_CreateRoomResult_Packet packet)
 {
+	if (packet.result)
+	{
+		std::cout << "Dummy[" << dummyID << "] 방 입장 성공\n";
+		_dummys[dummyID].state = DummyState::Room;
+	}
 }

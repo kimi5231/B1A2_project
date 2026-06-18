@@ -43,6 +43,8 @@ Room::Room()
 	_currentPower = 0;
 	_currentSurpriseCount = 0;
 	_currentFearCount = 0;
+
+	_updateMonsterTime = 0.f;
 }
 
 Room::~Room()
@@ -158,16 +160,9 @@ void Room::Init()
 
 void Room::Update()
 {
-	using namespace std::chrono;
-
-	static auto lastUpdate = steady_clock::now();
-	const auto TICK = 50ms;
-
-	auto now = steady_clock::now();
-	if (now - lastUpdate >= TICK)
-	{
-		g_timer->Update();
-	
+	_updateMonsterTime += g_timer->GetDeltaTime();
+	if (_updateMonsterTime > 0.05)
+	{	 
 		// 몬스터 업데이트
 		for (const auto& monster : _monsters)
 		{
@@ -186,8 +181,8 @@ void Room::Update()
 		}
 
 		_hatch->Update();
-			
-		lastUpdate = now;
+
+		_updateMonsterTime = 0.f;
 	}
 }
 
@@ -680,6 +675,9 @@ Player* Room::AddPlayer()
 			// ObjectPoolState 변경
 			_players[i]->Init();
 			_currentPlayerCount++;
+
+			if (_currentPlayerCount == 4)
+				_roomState = RoomState::Full;
 
 			for (auto& player : _players)
 			{

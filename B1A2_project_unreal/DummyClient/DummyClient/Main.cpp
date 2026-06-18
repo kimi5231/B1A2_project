@@ -5,9 +5,20 @@ int main()
 {
 	GameNetwork network;
 
+	auto lastTick = std::chrono::steady_clock::now();
+
 	while (true)
 	{
 		network.Update();
-		network.UpdateDummy();
+
+		auto now = std::chrono::steady_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastTick).count();
+
+		if (duration >= 100)
+		{
+			lastTick = now;
+
+			network.UpdateDummy();
+		}
 	}
 }

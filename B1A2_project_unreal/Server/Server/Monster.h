@@ -34,7 +34,7 @@ public:
 
 	bool IsPointInCube(VectorInt wp, CubeRef cube);
 
-	void AddDeltaTime(float deltaTime) { _sumTime += deltaTime; }
+	void AddDeltaTime();
 	void InitSumTime() { _sumTime = 0.f; }
 
 	void UpdateNextAttackTime();

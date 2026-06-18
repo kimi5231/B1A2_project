@@ -150,15 +150,6 @@ void ServerNetwork::Update()
 		exit(-1);
 		break;
 	}
-
-	// 5초에 한 번씩 RoomList Update
-	/*_updateLobbyTime += g_timer->GetDeltaTime();
-	if (_updateLobbyTime > 5)
-	{
-		_updateLobbyTime = 0;
-		for (const auto& [id, client] : _lobbyClients)
-			SendCurrentRoomListPacket(client);
-	}*/
 }
 
 void ServerNetwork::ProcessAccept()
@@ -221,7 +212,7 @@ void ServerNetwork::ProcessDisconnected(int clientIndex)
 	// 로비에 있었다면 lobbyClient에서 제외 및 ID 삭제
 	if (!_clients[clientIndex]->_name.empty())
 	{
-		_lobbyClients.erase(_clients[clientIndex]->_id);
+		_framework->RemoveLobbyClient(clientIndex);
 		_clients[clientIndex]->_name.clear();
 	}
 }
@@ -616,7 +607,7 @@ void ServerNetwork::SendCurrentRoomListPacket(Session* client)
 	std::vector<char> serializedPacketData(sizeof(unsigned short));
 	memcpy(serializedPacketData.data(), &packetSize, sizeof(unsigned short));
 	serializedPacketData.push_back(S_CurrentRoomList);
-	serializedPacketData.push_back(roomDTOs.size());
+	serializedPacketData.push_back(static_cast<unsigned char>(roomDTOs.size()));
 	serializedPacketData.insert(serializedPacketData.end(), roomData.begin(), roomData.end());
 
 	client->Send(serializedPacketData);
@@ -1086,7 +1077,7 @@ void ServerNetwork::ProcessLoginPacket(C_Login_Packet packet, int clientIndex)
 		{
 			SendCurrentRoomListPacket(_clients[clientIndex]);
 			_clients[clientIndex]->_name = packet.id;
-			_lobbyClients[_clients[clientIndex]->_id] = _clients[clientIndex];
+			_framework->AddLobbyClient(_clients[clientIndex]);
 		}
 	}
 }
@@ -1094,7 +1085,7 @@ void ServerNetwork::ProcessLoginPacket(C_Login_Packet packet, int clientIndex)
 void ServerNetwork::ProcessLogoutPacket(C_Logout_Packet packet, int clientIndex)
 {
 	// lobbyClient에서 제외 및 ID 삭제
-	_lobbyClients.erase(_clients[clientIndex]->_id);
+	_framework->RemoveLobbyClient(clientIndex);
 	_clients[clientIndex]->_name.clear();
 }
 
@@ -1121,6 +1112,9 @@ void ServerNetwork::ProcessCreateRoomPacket(C_CreateRoom_Packet packet, int clie
 	SendUpdateQuestPacket(_clients[clientIndex]->_room->GetMainQuest(), true, _clients[clientIndex]);
 	SendUpdateQuestPacket(_clients[clientIndex]->_room->GetSubQuest(), false, _clients[clientIndex]);
 	SendUpdateCreditPacket(_clients[clientIndex]->_room->GetGoalCredit(), _clients[clientIndex]->_room->GetCollectCredit(), _clients[clientIndex]->_room->GetCurrentCredit(), _clients[clientIndex]);
+
+	// lobbyClient에서 제외
+	_framework->RemoveLobbyClient(clientIndex);
 }
 
 void ServerNetwork::ProcessEnterRoomPacket(C_EnterRoom_Packet packet, int clientIndex)
@@ -1163,7 +1157,7 @@ void ServerNetwork::ProcessEnterRoomPacket(C_EnterRoom_Packet packet, int client
 	SendUpdateCreditPacket(_clients[clientIndex]->_room->GetGoalCredit(), _clients[clientIndex]->_room->GetCollectCredit(), _clients[clientIndex]->_room->GetCurrentCredit(), _clients[clientIndex]);
 
 	// lobbyClient에서 제외
-	_lobbyClients.erase(_clients[clientIndex]->_id);
+	_framework->RemoveLobbyClient(clientIndex);
 }
 
 void ServerNetwork::ProcessExitRoomPacket(C_ExitRoom_Packet packet, int clientIndex)
@@ -1179,7 +1173,7 @@ void ServerNetwork::ProcessExitRoomPacket(C_ExitRoom_Packet packet, int clientIn
 	SendCurrentRoomListPacket(_clients[clientIndex]);
 
 	// RoomList 보내주는 리스트에 추가
-	_lobbyClients[_clients[clientIndex]->_id] = _clients[clientIndex];
+	_framework->AddLobbyClient(_clients[clientIndex]);
 }
 
 void ServerNetwork::ProcessMovePacket(C_Move_Packet packet, int clientIndex)

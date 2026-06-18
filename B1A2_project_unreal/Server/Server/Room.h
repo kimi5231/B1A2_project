@@ -50,6 +50,7 @@ public:
 
 public:
 	int GetID() { return _id; }
+	void SetID(int id) { _id = id; }
 	RoomState GetRoomState() { return _roomState; }
 	void SetRoomState(RoomState state) { _roomState = state; }
 	int GetCurrentPlayerCount() { return _currentPlayerCount; }
@@ -57,6 +58,7 @@ public:
 	void SetTitle(const std::vector<char>& title) { _title = title; }
 
 public:
+	float GetUpdateMonsterTime() { return _updateMonsterTime; }
 	GameObject* GetGameObject(ObjectType type, int id);
 	const std::array<Player*, MAX_PLAYER>& GetPlayers() { return _players; }
 	const std::array<Monster*, MAX_MONSTER>& GetMonsters() { return _monsters; }
@@ -100,6 +102,8 @@ private:
 
 // 게임 진행에 필요한 정보
 private:
+	float _updateMonsterTime;
+
 	int _stage;
 	int _goalCredit;
 	int _collectCredit;
