@@ -17,8 +17,8 @@ public:
 	void LoadSpiderStat();
 	void LoadEmotionGameStat();
 	void LoadGhostStat();
-	void LoadTrashCollectorStat();
 	void LoadPollutionMonitorStat();
+	void LoadTrashCollectorStat();
 
 public:
 	const Quota& GetQuota() { return _quota; }
@@ -29,7 +29,12 @@ public:
 	const SubQuestInfo& GetSubQuestInfo(int id) { return _subQuestInfos[id]; }
 	const ItemInfo& GetItemInfo(ItemType type) { return _itemInfos[type]; }
 	const PlayerStat& GetPlayerStat() { return _playerStat; }
-	const SpiderStat& GetSpiderStat() { return _spidrStat; }
+	const SpiderStat& GetSpiderStat() { return _spiderStat; }
+	const EmotionGameStat& GetEmotionGameStat() { return _emotionGameStat; }
+	const GhostStat& GetGhostStat() { return _ghostStat; }
+	const PollutionMonitorStat& GetPollutionMonitorStat() { return _pollutionMonitorStat; }
+	const TrashCollectorStat& GetTrashCollectorStat() { return _trashCollectorStat; }
+	const VectorInt& GetMonsterSize(MonsterType type) { return _monsterSizes[type]; }
 
 private:
 	std::filesystem::path _dataPath;
@@ -43,5 +48,11 @@ private:
 	std::unordered_map<ItemType, ItemInfo> _itemInfos;
 
 	PlayerStat _playerStat;
-	SpiderStat _spidrStat;
+	SpiderStat _spiderStat;
+	EmotionGameStat _emotionGameStat;
+	GhostStat _ghostStat;
+	PollutionMonitorStat _pollutionMonitorStat;
+	TrashCollectorStat _trashCollectorStat;
+
+	std::unordered_map<MonsterType, VectorInt> _monsterSizes;
 };

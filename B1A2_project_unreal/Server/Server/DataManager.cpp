@@ -18,6 +18,10 @@ DataManager::DataManager()
     LoadItemInfos();
     LoadPlayerStat();
     LoadSpiderStat();
+    LoadEmotionGameStat();
+    LoadGhostStat();
+    LoadPollutionMonitorStat();
+    LoadTrashCollectorStat();
 }
 
 void DataManager::LoadQuota()
@@ -285,6 +289,7 @@ void DataManager::LoadSpiderStat()
     json data = json::parse(file);
 
     SpiderStat stat;
+    VectorInt size;
 
     stat.hp = data["hp"];
     stat.isInvincible = data["isInvincible"];
@@ -304,25 +309,119 @@ void DataManager::LoadSpiderStat()
     stat.damage = data["damage"];
     stat.maxWebCount = data["maxWebCount"];
     stat.power = data["power"];
-    stat.size.x = data["size"][0];
-    stat.size.y = data["size"][1];
-    stat.size.z = data["size"][2];
+    size.x = data["size"][0];
+    size.y = data["size"][1];
+    size.z = data["size"][2];
 
-    _spidrStat = stat;
+    _spiderStat = stat;
+    _monsterSizes[MonsterType::Spider] = size;
 }
 
 void DataManager::LoadEmotionGameStat()
 {
+    std::ifstream file(_dataPath / "EmotionGameStat.json");
+    json data = json::parse(file);
+
+    EmotionGameStat stat;
+    VectorInt size;
+
+    stat.isInvincible = data["isInvincible"];
+    stat.idleTime = data["idleTime"];
+    stat.playTime = data["playTime"];
+    stat.releaseTime = data["releaseTime"];
+    stat.aggroRange = data["aggroRange"];
+    stat.damage = data["damage"];
+    stat.healValue = data["healValue"];
+    stat.power = data["power"];
+    size.x = data["size"][0];
+    size.y = data["size"][1];
+    size.z = data["size"][2];
+
+    _emotionGameStat = stat;
+    _monsterSizes[MonsterType::EmotionGame] = size;
 }
 
 void DataManager::LoadGhostStat()
 {
-}
+    std::ifstream file(_dataPath / "GhostStat.json");
+    json data = json::parse(file);
 
-void DataManager::LoadTrashCollectorStat()
-{
+    GhostStat stat;
+    VectorInt size;
+
+    stat.isInvincible = data["isInvincible"];
+    stat.chaseSpeed = data["chaseSpeed"];
+    stat.idleTime = data["idleTime"];
+    stat.chaseTime = data["chaseTime"];
+    stat.waitTime = data["waitTime"];
+    stat.absentTime = data["absentTime"];
+    stat.staringTime = data["staringTime"];
+    stat.damage = data["damage"];
+    stat.power = data["power"];
+    size.x = data["size"][0];
+    size.y = data["size"][1];
+    size.z = data["size"][2];
+
+    _ghostStat = stat;
+    _monsterSizes[MonsterType::Ghost] = size;
 }
 
 void DataManager::LoadPollutionMonitorStat()
 {
+    std::ifstream file(_dataPath / "PollutionMonitorStat.json");
+    json data = json::parse(file);
+
+    PollutionMonitorStat stat;
+    VectorInt size;
+
+    stat.hp = data["hp"];
+    stat.isInvincible = data["isInvincible"];
+    stat.idleTime = data["idleTime"];
+    stat.checkTime = data["checkTime"];
+    stat.spawnTime = data["spawnTime"];
+    stat.damage = data["damage"];
+    stat.emotionCount = data["emotionCount"];
+    stat.power = data["power"];
+    size.x = data["size"][0];
+    size.y = data["size"][1];
+    size.z = data["size"][2];
+
+    _pollutionMonitorStat = stat;
+    _monsterSizes[MonsterType::PollutionMonitor] = size;
+}
+
+void DataManager::LoadTrashCollectorStat()
+{
+    std::ifstream file(_dataPath / "TrashCollectorStat.json");
+    json data = json::parse(file);
+
+    TrashCollectorStat stat;
+    VectorInt size;
+
+    stat.hp = data["hp"];
+    stat.isInvincible = data["isInvincible"];
+    stat.moveSpeed = data["moveSpeed"];
+    stat.roamingSpeed = data["roamingSpeed"];
+    stat.chaseSpeed = data["chaseSpeed"];
+    stat.escapeSpeed = data["escapeSpeed"];
+    stat.idleTime = data["idleTime"];
+    stat.roamingTime = data["roamingTime"];
+    stat.chaseTime = data["chaseTime"];
+    stat.escapeDistance = data["escapeDistance"];
+    stat.aggroRange.x = data["aggroRange"][0];
+    stat.aggroRange.y = data["aggroRange"][1];
+    stat.aggroRange.z = data["aggroRange"][2];
+    stat.attackRange.x = data["attackRange"][0];
+    stat.attackRange.y = data["attackRange"][1];
+    stat.attackRange.z = data["attackRange"][2];
+    stat.attackDelay = data["attackDelay"];
+    stat.damage = data["damage"];
+    stat.maxScrapCount = data["maxScrapCount"];
+    stat.power = data["power"];
+    size.x = data["size"][0];
+    size.y = data["size"][1];
+    size.z = data["size"][2];
+
+    _trashCollectorStat = stat;
+    _monsterSizes[MonsterType::TrashCollector] = size;
 }
