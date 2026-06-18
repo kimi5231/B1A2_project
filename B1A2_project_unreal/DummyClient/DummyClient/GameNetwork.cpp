@@ -99,12 +99,12 @@ void GameNetwork::UpdateDummy()
 			SendLoginPacket(dummy.dummyID, id);
 			break;
 		}
-		case DummyState::Room:
+		/*case DummyState::Room:
 		{
 			SendMovePacket(dummy.dummyID, ObjectType::Player, 0, Vector{ 0, 0, 0 }, Rotation{ 0, 0, 0 }, ObjectState::IDLE);
 			std::cout << "Dummy[" << dummy.dummyID << "] 이동\n";
 			break;
-		}
+		}*/
 		}
 	}
 }
@@ -178,7 +178,9 @@ void GameNetwork::ProcessRecv(int dummyID)
 	}
 	case S_EnterRoomResult:
 	{
-		
+		S_EnterRoomResult_Packet enterRoomResultPacket;
+		memcpy(&enterRoomResultPacket, packet.data(), sizeof(S_EnterRoomResult_Packet));
+		ProcessEnterRoomResultPacket(dummyID, enterRoomResultPacket);
 		break;
 	}
 	case S_AddPlayer:
@@ -314,7 +316,7 @@ void GameNetwork::ProcessLoginResultPacket(int dummyID, S_LoginResult_Packet pac
 void GameNetwork::ProcessCurrentRoomListPacket(int dummyID, S_CurrentRoomList_Packet packet)
 {
 	// 들어갈 수 있는 방이 없다면 방 생성
-	if (packet.roomList.size() == 0)
+	if (dummyID % 4 == 0)
 	{
 		SendCreateRoomPacket(dummyID);
 		std::cout << "Dummy[" << dummyID << "] 방 생성\n";
@@ -322,10 +324,20 @@ void GameNetwork::ProcessCurrentRoomListPacket(int dummyID, S_CurrentRoomList_Pa
 	}
 
 	// 들어갈 수 있는 방이 있으면 방 입장
-	SendEnterRoomPacket(dummyID, packet.roomList[0].roomID);
+	if(packet.roomList.size() != 0 && dummyID / 4 < packet.roomList.size())
+		SendEnterRoomPacket(dummyID, packet.roomList[dummyID / 4].roomID);
 }
 
 void GameNetwork::ProcessCreateRoomResultPacket(int dummyID, S_CreateRoomResult_Packet packet)
+{
+	if (packet.result)
+	{
+		std::cout << "Dummy[" << dummyID << "] 방 입장 성공\n";
+		_dummys[dummyID].state = DummyState::Room;
+	}
+}
+
+void GameNetwork::ProcessEnterRoomResultPacket(int dummyID, S_EnterRoomResult_Packet packet)
 {
 	if (packet.result)
 	{

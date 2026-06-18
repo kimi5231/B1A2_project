@@ -34,6 +34,7 @@ public:
 	void ProcessLoginResultPacket(int dummyID, S_LoginResult_Packet packet);
 	void ProcessCurrentRoomListPacket(int dummyID, S_CurrentRoomList_Packet packet);
 	void ProcessCreateRoomResultPacket(int dummyID, S_CreateRoomResult_Packet packet);
+	void ProcessEnterRoomResultPacket(int dummyID, S_EnterRoomResult_Packet packet);
 
 private:
 	fd_set _readSet{};

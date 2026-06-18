@@ -778,6 +778,17 @@ void Room::RemoveObject(ObjectType type, int id, bool isSend)
 		_players[id]->SetPos({0, 0, 0});
 		_currentPlayerCount--;
 
+		if (_currentPlayerCount == 0)
+		{
+			SetCollectCredit(0);
+			EndStage();
+			SetRoomState(RoomState::Reusable);
+			return;
+		}
+
+		if (_currentPlayerCount < 4 && _roomState != RoomState::Play)
+			_roomState = RoomState::Wait;
+
 		// ÃÊ±âÈ­
 		break;
 	case ObjectType::Item:
