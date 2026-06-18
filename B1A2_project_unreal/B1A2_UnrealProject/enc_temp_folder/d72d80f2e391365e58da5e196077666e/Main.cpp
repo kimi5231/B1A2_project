@@ -2532,31 +2532,36 @@ void UMain::RecvEndStage(S_EndStage_Packet packet)
 		APlayerController* PC = GetWorld()->GetFirstPlayerController();
 		if (PC)
 		{
-			PC->SetIgnoreMoveInput(true); 
+			PC->SetIgnoreMoveInput(true); // 캐릭터 이동만 막음
 
-			
+			// [수정] SetIgnoreLookInput(true)를 하면 AddYawInput도 무시되므로 호출하지 않습니다!
+			// 대신 마우스 입력을 막고 결과를 볼 수 있게 UI 모드로 전환해 마우스를 띄웁니다.
 			FInputModeGameAndUI InputMode;
 			InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 			PC->SetInputMode(InputMode);
 			PC->bShowMouseCursor = true;
 		}
 
+		// [수정] 카메라 타이머 핸들 선언 및 캡처 수정
 		FTimerHandle CameraTimerHandle;
 
+		// 3. 카메라 회전 연출 (컨트롤러의 Yaw 각도를 직접 제어)
 		if (PC)
 		{
 			GetWorld()->GetTimerManager().SetTimer(CameraTimerHandle, [PC]() {
 				if (PC)
 				{
+					// 현재 컨트롤러의 회전 값을 가져와서 Yaw축만 변경합니다.
 					FRotator CurrentRot = PC->GetControlRotation();
-					CurrentRot.Yaw += 1.0f;
-					CurrentRot.Normalize();
+					CurrentRot.Yaw += 1.0f; // 1.0f는 회전 속도 (원하는 속도로 조절 가능)
+					CurrentRot.Normalize(); // 각도 한계 처리 (-180 ~ 180)
 
 					PC->SetControlRotation(CurrentRot);
 				}
-			}, 0.02f, true);
+				}, 0.02f, true); // 약 50FPS 주기로 실행
 		}
 
+		// 4. 결과 UI 생성 및 데이터 전달
 		if (GameResultWidgetClass)
 		{
 			UGameResultWidget* ResultUI = CreateWidget<UGameResultWidget>(GetWorld(), GameResultWidgetClass);
@@ -2572,29 +2577,29 @@ void UMain::RecvEndStage(S_EndStage_Packet packet)
 				ResultUI->NativeUpdatePlayerList(Names, States);
 				ResultUI->AddToViewport();
 
-				// 5초 후 모든 연출 복구
+				// 5. 5초 후 모든 연출 복구
 				FTimerHandle CleanupTimer;
 				GetWorld()->GetTimerManager().SetTimer(CleanupTimer, [this, PC, CameraTimerHandle, ResultUI]() mutable
-				{
-					// UI 제거
-					if (IsValid(ResultUI)) ResultUI->RemoveFromParent();
-
-					// 카메라 회전 타이머 종료
-					if (GetWorld()) GetWorld()->GetTimerManager().ClearTimer(CameraTimerHandle);
-
-					// 게임 모드로 전환함
-					if (PC)
 					{
-						PC->SetIgnoreMoveInput(false);
-						PC->bShowMouseCursor = false;
+						// UI 제거
+						if (IsValid(ResultUI)) ResultUI->RemoveFromParent();
 
-						FInputModeGameOnly GameOnlyMode;
-						PC->SetInputMode(GameOnlyMode);
+						// 카메라 회전 타이머 종료
+						if (GetWorld()) GetWorld()->GetTimerManager().ClearTimer(CameraTimerHandle);
 
-						// 카메라 정면 원상복구
-						PC->SetControlRotation(FRotator::ZeroRotator);
-					}
-				}, 5.0f, false);
+						// 입력 복구 및 일반 게임 모드로 전환
+						if (PC)
+						{
+							PC->SetIgnoreMoveInput(false);
+							PC->bShowMouseCursor = false;
+
+							FInputModeGameOnly GameOnlyMode;
+							PC->SetInputMode(GameOnlyMode);
+
+							// 카메라 정면 원상복구
+							PC->SetControlRotation(FRotator::ZeroRotator);
+						}
+					}, 5.0f, false);
 			}
 		}
 	});
