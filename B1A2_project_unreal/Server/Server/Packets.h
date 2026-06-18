@@ -65,6 +65,7 @@ enum PacketID : char
 	S_UpdateQuest,
 	S_UpdateQuestProgress,
 	S_UpdateCredit,
+	S_UpdateTimer,
 	S_VoiceData,
 };
 
@@ -608,6 +609,13 @@ struct S_UpdateCredit_Packet
 	unsigned short goalCredit;
 	unsigned short collectCredit;
 	unsigned short currentCredit;
+};
+
+struct S_UpdateTimer_Packet
+{
+	unsigned short size;
+	PacketID packetID;
+	unsigned short currentTime;
 };
 
 struct S_VoiceData_Packet

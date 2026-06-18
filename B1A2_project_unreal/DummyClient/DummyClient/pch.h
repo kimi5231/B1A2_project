@@ -1,7 +1,7 @@
 #pragma once
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #define FD_SETSIZE 600
-#define DummyCount 200
+#define DummyCount 600
 
 #include <winsock2.h>
 #include <ws2tcpip.h>

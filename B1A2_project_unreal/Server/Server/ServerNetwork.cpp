@@ -1015,6 +1015,17 @@ void ServerNetwork::SendUpdateCreditPacket(short goalCredit, short collectCredit
 	client->Send(serializedPacketData);
 }
 
+void ServerNetwork::SendUpdateTimerPacket(short currentTimer, Session* client)
+{
+	// Packet Data »ý¼º
+	S_UpdateTimer_Packet packetData{ sizeof(S_UpdateTimer_Packet), S_UpdateTimer, currentTimer };
+
+	// Packet Serialize
+	std::vector<char> serializedPacketData = SerializePOD(packetData);
+
+	client->Send(serializedPacketData);
+}
+
 void ServerNetwork::SendVoiceDataPacket(char playerId, int sequenceNumber, std::vector<char>& audioData, ExpOver* expOver)
 {
 	std::vector<char> voiceData = SerializeVector(audioData);

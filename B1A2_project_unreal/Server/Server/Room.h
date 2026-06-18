@@ -58,7 +58,7 @@ public:
 	void SetTitle(const std::vector<char>& title) { _title = title; }
 
 public:
-	float GetUpdateMonsterTime() { return _updateMonsterTime; }
+	float GetUpdateRoomTime() { return _updateRoomTime; }
 	GameObject* GetGameObject(ObjectType type, int id);
 	const std::array<Player*, MAX_PLAYER>& GetPlayers() { return _players; }
 	const std::array<Monster*, MAX_MONSTER>& GetMonsters() { return _monsters; }
@@ -104,7 +104,9 @@ private:
 
 // 게임 진행에 필요한 정보
 private:
-	float _updateMonsterTime;
+	float _prevTimer;
+	float _currentTimer;
+	float _updateRoomTime;
 
 	int _stage;
 	int _goalCredit;

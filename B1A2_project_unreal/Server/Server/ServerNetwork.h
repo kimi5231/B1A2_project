@@ -70,6 +70,7 @@ public:
 	void SendUpdateQuestPacket(Quest* quest, bool isMain, Session* client);
 	void SendUpdateQuestProgressPacket(Quest* quest, bool isMain, Session* client);
 	void SendUpdateCreditPacket(short goalCredit, short collectCredit, short currentCredit, Session* client);
+	void SendUpdateTimerPacket(short currentTimer, Session* client);
 	void SendVoiceDataPacket(char playerId, int sequenceNumber, std::vector<char>& audioData, ExpOver* expOver);
 
 public:

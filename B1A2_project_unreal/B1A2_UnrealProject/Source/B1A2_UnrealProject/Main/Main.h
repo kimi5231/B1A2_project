@@ -149,6 +149,7 @@ public:
 	void RecvUpdateQuest(S_UpdateQuest_Packet packet);
 	void RecvUpdateQuestProgress(S_UpdateQuestProgress_Packet packet);
 	void RecvUpdateCredit(S_UpdateCredit_Packet packet);
+	void RecvUpdateTimer(S_UpdateTimer_Packet packet);
 
 	void RecvVoiceData(S_VoiceData_Packet packet);
 

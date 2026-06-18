@@ -44,7 +44,7 @@ Room::Room()
 	_currentSurpriseCount = 0;
 	_currentFearCount = 0;
 
-	_updateMonsterTime = 0.f;
+	_updateRoomTime = 0.f;
 }
 
 Room::~Room()
@@ -160,8 +160,8 @@ void Room::Init()
 
 void Room::Update()
 {
-	_updateMonsterTime += g_timer->GetDeltaTime();
-	if (_updateMonsterTime > 0.05)
+	_updateRoomTime += g_timer->GetDeltaTime();
+	if (_updateRoomTime > 0.05)
 	{	 
 		// 몬스터 업데이트
 		for (const auto& monster : _monsters)
@@ -182,7 +182,33 @@ void Room::Update()
 
 		_hatch->Update();
 
-		_updateMonsterTime = 0.f;
+		_currentTimer -= _updateRoomTime;
+		
+		// 시간 종료
+		if (_currentTimer < 0)
+		{
+			for (auto& player : _players)
+			{
+				if (player->GetClient())
+					g_network->SendEndStagePacket(player->GetClient());
+			}
+
+			EndStage();
+		}
+		
+		// 1분마다 Client와 동기화
+		if (_prevTimer - _currentTimer > 60)
+		{
+			_prevTimer = _currentTimer;
+
+			for (auto& player : _players)
+			{
+				if (player->GetClient())
+					g_network->SendUpdateTimerPacket(_currentTimer, player->GetClient());
+			}
+		}
+
+		_updateRoomTime = 0.f;
 	}
 }
 
@@ -462,15 +488,19 @@ void Room::CreateCubes()
 	_currentPower += spider->GetPower();
 	_currentMonsterCount[MonsterType::Spider]++;*/
 
-	Monster* trashCollector = AddMonster(MonsterType::TrashCollector, { 0, 675, 25 });
+	/*Monster* trashCollector = AddMonster(MonsterType::TrashCollector, { 0, 675, 25 });
 	trashCollector->SetState(ObjectState::HIT, false);
 	trashCollector->SetState(ObjectState::IDLE, false);
 	_currentPower += trashCollector->GetPower();
-	_currentMonsterCount[MonsterType::TrashCollector]++;
+	_currentMonsterCount[MonsterType::TrashCollector]++;*/
 
 	loop = 0;
 	while (_currentPower < conditions.power)
 	{
+		loop++;
+		if (loop > 30)
+			break;
+
 		MonsterType type;
 
 		// 남은 파워가 8이상이면 Ghost까지 생성 가능
@@ -504,10 +534,6 @@ void Room::CreateCubes()
 		// 이미 최대 수만큼 생성됐다면 무시
 		if (_currentMonsterCount[type] == _maxMonsterCount[type])
 			continue;
-
-		loop++;
-		if (loop > 30)
-			break;
 
 		// 타입에 맞는 몬스터 생성 후 Power 증가
 		std::uniform_int_distribution<int> selectCube(0, _cubes.size() - 1);
@@ -560,6 +586,9 @@ void Room::StartStage()
 {
 	// RoomState 변경
 	_roomState = RoomState::Play;
+
+	_prevTimer = 60.f;
+	_currentTimer = 60.f;
 
 	// Cube 생성
 	CreateCubes();

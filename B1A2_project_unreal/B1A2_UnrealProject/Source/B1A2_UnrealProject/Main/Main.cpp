@@ -501,6 +501,14 @@ void UMain::ProcessRecv()
 			event->isComplete = true;
 			break;
 		}
+		case S_UpdateTimer:
+		{
+			S_UpdateTimer_Packet updateTimerPacket;
+			FMemory::Memcpy(&updateTimerPacket, event->serializedPacketData.data(), sizeof(S_UpdateTimer_Packet));
+			RecvUpdateTimer(updateTimerPacket);
+			event->isComplete = true;
+			break;
+		}
 		case S_VoiceData:
 		{
 			unsigned short packetSize;
@@ -2815,6 +2823,10 @@ void UMain::RecvUpdateCredit(S_UpdateCredit_Packet packet)
 
 		UE_LOG(LogTemp, Display, TEXT("[Credit] Recv Update Credit, currentCredit %d"), packet.currentCredit);
 	});
+}
+
+void UMain::RecvUpdateTimer(S_UpdateTimer_Packet packet)
+{
 }
 
 void UMain::RecvVoiceData(S_VoiceData_Packet packet)

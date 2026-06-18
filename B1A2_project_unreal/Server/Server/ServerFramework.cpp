@@ -36,7 +36,7 @@ void ServerFramework::Update()
 
 	for (int i = 0; i < MAX_ROOM; ++i)
 	{
-		if (_rooms[i]->GetRoomState() != RoomState::Reusable)
+		if (_rooms[i]->GetRoomState() == RoomState::Play)
 			_rooms[i]->Update();
 	}
 }

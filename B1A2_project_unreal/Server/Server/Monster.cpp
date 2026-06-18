@@ -174,7 +174,7 @@ void Monster::Move(float speed, ObjectState state)
 		float distance = dir.Length();
 
 		// 이동 속도 적용
-		float moveDist = speed * _ownerRoom->GetUpdateMonsterTime();
+		float moveDist = speed * _ownerRoom->GetUpdateRoomTime();
 
 		// 남은 거리가 이동할 거리보다 목적지 위치로 바로 이동
 		if (distance <= moveDist)
@@ -201,7 +201,7 @@ void Monster::Move(float speed, ObjectState state)
 
 			// 회전 속도 설정 (숫자가 클수록 빠르게 회전, 5.0f~10.0f 정도가 적당해)
 			float rotationSpeed = 8.0f;
-			float nextAngle = currentAngle + angleDiff * rotationSpeed * _ownerRoom->GetUpdateMonsterTime();
+			float nextAngle = currentAngle + angleDiff * rotationSpeed * _ownerRoom->GetUpdateRoomTime();
 
 			// 3. 보정된 회전값 적용
 			Rotation rotation = { 0.f, nextAngle, 0.f };
@@ -536,7 +536,7 @@ bool Monster::IsPointInCube(VectorInt wp, CubeRef cube)
 
 void Monster::AddDeltaTime()
 {
-	_sumTime += _ownerRoom->GetUpdateMonsterTime();
+	_sumTime += _ownerRoom->GetUpdateRoomTime();
 }
 
 void Monster::UpdateNextAttackTime()
