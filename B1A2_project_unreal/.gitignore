@@ -42,8 +42,9 @@
 *.VC.opendb
 .vsconfig
 
-# Server의 .sln은 예외
+# Server, DummyClient .sln은 예외
 !Server/*.sln
+!DummyClient/*.sln
 
 # Precompiled Assets
 B1A2_UnrealProject/SourceArt/**/*.png
