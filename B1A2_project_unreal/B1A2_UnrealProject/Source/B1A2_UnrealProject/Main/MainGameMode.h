@@ -7,6 +7,7 @@
 #include "MainGameMode.generated.h"
 
 class UMain;
+class AAmbientSoundManager;
 
 /**
  * 
@@ -18,7 +19,12 @@ class B1A2_UNREALPROJECT_API AMainGameMode : public AGameModeBase
 	
 	AMainGameMode();
 
+protected:
 	virtual void BeginPlay() override;
+
+	// πË∞Ê¿Ω
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
+	TSubclassOf<AAmbientSoundManager> AmbientSoundManagerClass;
 
 private:
 	UMain* _main;
