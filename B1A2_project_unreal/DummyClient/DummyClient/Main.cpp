@@ -14,7 +14,7 @@ int main()
 		auto now = std::chrono::steady_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastTick).count();
 
-		if (duration >= 100)
+		if (duration >= 200)
 		{
 			lastTick = now;
 

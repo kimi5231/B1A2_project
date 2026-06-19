@@ -223,13 +223,13 @@ void GameNetwork::ProcessRecv(int dummyID)
 		ProcessStartStagePacket(dummyID, startStagePacket);
 		break;
 	}
-	case S_EndStage:
+	/*case S_EndStage:
 	{
 		S_EndStage_Packet endStagePacket;
 		memcpy(&endStagePacket, packet.data(), sizeof(S_EndStage_Packet));
 		ProcessEndStagePacket(dummyID, endStagePacket);
 		break;
-	}
+	}*/
 	}
 }
 
