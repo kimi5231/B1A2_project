@@ -1128,7 +1128,7 @@ void AMyPlayer::TurnLanternSendOrUseToolAnimationAndSend()
 	// 애니메이션 필요한 경우 판단(Key 사용, Lantern 사용 지금은 애니메이션 X)
 	bool useAnimation = true;
 	FName animName;
-	float animSpeed = 1.f;
+	float animSpeed = 2.f;
 
 	switch (ToolInfo.type)
 	{

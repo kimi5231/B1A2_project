@@ -156,7 +156,7 @@ void AOtherPlayer::PlayPickUpAnimation(ABaseItem* item)
 	if (AnimInstance)
 	{
 		// Àç»ý
-		float Duration = PlayAnimMontage(ComboMontage, 2.f, FName("TakeItem"));
+		float Duration = PlayAnimMontage(ComboMontage, 3.f, FName("TakeItem"));
 
 		if (Duration > 0.f)
 		{
@@ -256,7 +256,7 @@ void AOtherPlayer::PlayUseToolAnimation(ItemType type)
 	switch (type)
 	{
 	case ItemType::CUTLASS:
-		if (ComboMontage) PlayAnimMontage(ComboMontage, 1.0f, FName("Slash"));
+		if (ComboMontage) PlayAnimMontage(ComboMontage, 2.0f, FName("Slash"));
 		break;
 	case ItemType::Blaster:
 		if (ComboMontage) PlayAnimMontage(ComboMontage, 1.0f, FName("Shooting"));
