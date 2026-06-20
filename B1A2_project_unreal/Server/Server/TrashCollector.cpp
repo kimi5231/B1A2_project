@@ -66,7 +66,7 @@ void TrashCollector::Update(Room* room)
 		{
 			for (auto& player : players)
 			{
-				if (player->GetObjectPoolState() == ObjectPoolState::Reusable)
+				if (player->GetObjectPoolState() == ObjectPoolState::Reusable || player->GetState() == ObjectState::DEAD)
 					continue;
 
 				// 플레이어가 있으면, 플레이어 위치를 타겟으로 설정
@@ -82,7 +82,7 @@ void TrashCollector::Update(Room* room)
 		// 인식 범위 안에 플레이어가 있는지 확인
 		for (auto& player : players)
 		{
-			if (player->GetObjectPoolState() == ObjectPoolState::Reusable)
+			if (player->GetObjectPoolState() == ObjectPoolState::Reusable || player->GetState() == ObjectState::DEAD)
 				continue;
 
 			// 플레이어가 있으면, 플레이어 위치를 타겟으로 설정

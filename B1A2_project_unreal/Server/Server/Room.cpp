@@ -758,7 +758,7 @@ Item* Room::AddItem(bool isTool, ItemType itemType, Vector pos)
 	for (auto& item : _items)
 	{
 		// 재사용 가능한 아이템 찾기
-		if (item->GetObjectPoolState() == ObjectPoolState::Reusable && isTool == (dynamic_cast<Tool*>(item) != nullptr))
+		if (item->GetObjectPoolState() == ObjectPoolState::Reusable && isTool == (dynamic_cast<Tool*>(item) != nullptr) && item->GetItemType() == itemType)
 		{
 			// 재사용이 가능하면, 정보 재설정
 			item->SetPos(pos);
