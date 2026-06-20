@@ -1,0 +1,5 @@
+[낙사 가능한 방(큐브) 목록]
+1 BridgeRoom
+4 CabinetRoom
+9 FactoryRoom
+10 RailCatwalk
