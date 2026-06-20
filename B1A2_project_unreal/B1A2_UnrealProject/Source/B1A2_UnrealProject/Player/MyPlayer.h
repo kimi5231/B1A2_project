@@ -122,6 +122,10 @@ protected:
 	// 퀘스트 마우스 입력
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
 	UInputAction* QuestInputAction;
+	
+	// 관전
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
+	UInputAction* SpectateNextAction;
 
 public:
 	AMyPlayer();
@@ -347,6 +351,13 @@ public:
 
 	void PullLeverInput();
 
+	// 관전 대상 전환
+	void NextSpectatePlayer();
+
+	// 현재 관전 중인 타겟
+	UPROPERTY()
+	AActor* CurrentSpectateTarget;
+
 private:
 	// 레버 당기기
 	UPROPERTY()
@@ -372,6 +383,9 @@ private:
 	UFUNCTION()
 	void OnToolMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
+	UFUNCTION()
+	void OnDeathMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+
 	// 위치 정보 Send 타이머
 	float _movePacketSendTimer = 0.2f;	// 현재 남은 시간
 	const float MOVE_PACKET_SEND_DELAY = 0.2f;	// 전송 간격
@@ -387,4 +401,7 @@ private:
 	int32 _lastSentToolID = -1;	
 	// 장비가 있는 슬롯 선택 -> 빈 슬롯 선택: 서버에 패킷 송신
 	// 빈 슬롯 선택 -> 빈 슬롯 선택: 서버에 패킷 송신X
+
+	// 사망 플래그 여부
+	bool _isDead = false;
 };

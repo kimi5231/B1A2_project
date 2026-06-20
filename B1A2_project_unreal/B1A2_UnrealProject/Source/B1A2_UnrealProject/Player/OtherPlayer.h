@@ -49,6 +49,13 @@ public:
 	void PlayUseToolAnimation(ItemType type);
 
 	ABaseItem* GetAttacthedToolActor() { return _currentAttachedToolActor; }
+
+	// 관전용
+	bool GetIsAlive() { return _isAlive; }
+	void SetIsAlive(bool isAlive) { _isAlive = isAlive; }
+
+	FORCEINLINE class UAnimMontage* GetComboMontage() const { return ComboMontage; }
+
 private:
 	FVector _prevPos;
 	FRotator _prevRot;
@@ -105,6 +112,9 @@ protected:
 	ABaseItem* _currentAttachedToolActor;
 	
 	TSubclassOf<class ABaseItem> GetToolClass(ItemType Type);
+
+	// 관전하기 위한 변수
+	bool _isAlive = true;
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio")

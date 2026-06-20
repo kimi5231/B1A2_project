@@ -309,6 +309,9 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 		// Quest Key
 		EnhancedInputComponent->BindAction(QuestInputAction, ETriggerEvent::Started, this, &AMyPlayer::QuestInputToggle);
+		
+		// SpectateNext
+		EnhancedInputComponent->BindAction(SpectateNextAction, ETriggerEvent::Started, this, &AMyPlayer::NextSpectatePlayer);
 	}
 }
 
@@ -902,6 +905,52 @@ void AMyPlayer::SetCurrentHp(float hp)
 
 	// 값 업데이트
 	_currentHp = hp;
+
+	if (_currentHp <= 0.0f)
+	{
+		_isAlive = false;	// 죽음 처리
+
+		// 입력 비활성화 및 이동 중지
+		DetachFromControllerPendingDestroy();
+		if (GetCharacterMovement())
+		{
+			GetCharacterMovement()->DisableMovement();
+			GetCharacterMovement()->StopMovementImmediately();
+		}
+
+		// 캡슐 컴포넌트 충돌 X
+		if (GetCapsuleComponent())
+		{
+			GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
+		}
+
+		// 죽음 애니메이션 몽타주 재생
+		UAnimInstance* AnimInstance = GetMesh() ? GetMesh()->GetAnimInstance() : nullptr;
+		if (ComboMontage && AnimInstance)
+		{
+			IsBusy = true; // 입력 차단 시작
+
+			// 몽타주 실행
+			float duration = PlayAnimMontage(ComboMontage, 1.f, "Dead");
+
+			if (duration > 0.f)
+			{
+				// 종료 델리게이트 설정
+				FOnMontageEnded MontageEndedDelegate;
+				MontageEndedDelegate.BindUObject(this, &AMyPlayer::OnDeathMontageEnded);
+				AnimInstance->Montage_SetEndDelegate(MontageEndedDelegate, ComboMontage);
+			}
+			else
+			{
+				IsBusy = false;
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[Death] DeathMontage is null! Instant spectate."));
+			OnDeathMontageEnded(nullptr, false);
+		}
+	}
 }
 
 void AMyPlayer::UpdateHpFlashEffect()
@@ -935,6 +984,48 @@ void AMyPlayer::PullLeverInput()
 	if (OverlappedLeverActor)
 	{
 		OverlappedLeverActor->RequestLeverPull();
+	}
+}
+
+void AMyPlayer::NextSpectatePlayer()
+{
+	// 내가 살아있다면 관전 모드 X
+	if (_isAlive)
+		return;
+
+	UMain* gameInstance = Cast<UMain>(GetGameInstance());
+	if (!gameInstance) return;
+
+	TArray<AOtherPlayer*> aliveOtherPlayers;
+	for (auto& elem : gameInstance->GetOtherPlayersMap())
+	{
+		AOtherPlayer* other = elem.Value;
+		if (other && IsValid(other) && other->GetIsAlive())
+			aliveOtherPlayers.Add(other);
+	}
+
+	if (aliveOtherPlayers.Num() == 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[Spectate] No alive other players left to spectate."));
+		return;
+	}
+
+	// 현재 타겟의 다음 타겟 찾기
+	int32 CurrentIndex = -1;
+	if (CurrentSpectateTarget)
+	{
+		CurrentIndex = aliveOtherPlayers.Find(Cast<AOtherPlayer>(CurrentSpectateTarget));
+	}
+
+	int32 NextIndex = (CurrentIndex + 1) % aliveOtherPlayers.Num();
+	CurrentSpectateTarget = aliveOtherPlayers[NextIndex];
+
+	// 컨트롤러 시점 전환
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	if (PC && CurrentSpectateTarget)
+	{
+		PC->SetViewTargetWithBlend(CurrentSpectateTarget, 0.3f);
+		UE_LOG(LogTemp, Log, TEXT("[Spectate] Watching Player ID: %s"), *CurrentSpectateTarget->GetName());
 	}
 }
 
@@ -1271,4 +1362,12 @@ void AMyPlayer::OnToolMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 	// 몽타주가 정상 종료되었거나, 다른 애니메이션에 의해 끊겼을 때 종료됨
 	IsBusy = false;
 	UE_LOG(LogTemp, Log, TEXT("[Tool] Montage Ended. IsBusy is now False. Interrupted: %s"), bInterrupted ? TEXT("True") : TEXT("False"));
+}
+
+void AMyPlayer::OnDeathMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	UE_LOG(LogTemp, Log, TEXT("[Death] Death Montage Finished. Switching to Spectator Mode."));
+
+	// 애니메이션이 끝나면, 관전 대상을 찾아 카메라를 돌림
+	NextSpectatePlayer();
 }

@@ -122,6 +122,7 @@ public:
 	void RecvUpdateStateMonster(S_UpdateObjectState_Packet packet);
 	void RecvUpdateStateDoor(S_UpdateObjectState_Packet packet);
 	void RecvUpdateStateSellingMachine(S_UpdateObjectState_Packet packet);
+	void RecvUpdateStatePlayer(S_UpdateObjectState_Packet packet);
 
 	void RecvCreateCubes(S_CreateCubes_Packet packet);
 	void RecvAddItemToInventory(S_AddItemToInventory_Packet packet);
@@ -162,6 +163,8 @@ public:
 	void HandleNewEmotionData(const TArray<float>& emotionScores);
 
 	int32 GetCurrentCredit() { return _currentCredit; }
+
+	FORCEINLINE const TMap<uint64, AOtherPlayer*>& GetOtherPlayersMap() const { return _otherPlayers; }
 
 private:
 	// 맵 로드가 완료됐을 때, C_EnterGame을 송신하기 위한 콜백 함수

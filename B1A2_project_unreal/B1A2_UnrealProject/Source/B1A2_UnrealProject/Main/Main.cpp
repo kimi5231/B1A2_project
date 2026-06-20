@@ -25,6 +25,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "Interactable/BaseBase.h"
 #include "GameResultWidget.h"
+#include "Components/CapsuleComponent.h"
 
 #define BUFSIZE	64
 
@@ -1738,6 +1739,8 @@ void UMain::RecvUpdateObjectState(S_UpdateObjectState_Packet packet)
 		RecvUpdateStateDoor(packet);
 	else if (packet.type == ObjectType::SellingMachine)
 		RecvUpdateStateSellingMachine(packet);
+	else if (packet.type == ObjectType::Player)
+		RecvUpdateStatePlayer(packet);
 }
 
 void UMain::RecvUpdateStateMonster(S_UpdateObjectState_Packet packet)
@@ -1884,6 +1887,64 @@ void UMain::RecvUpdateStateSellingMachine(S_UpdateObjectState_Packet packet)
 		if (foundMachine && *foundMachine)
 		{
 			(*foundMachine)->UpdateMachineState(packet.state);
+		}
+	});
+}
+
+void UMain::RecvUpdateStatePlayer(S_UpdateObjectState_Packet packet)
+{
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		// Player 죽음 처리
+		if (packet.state != ObjectState::DEAD)
+			return;
+
+		AOtherPlayer* targetPlayer = nullptr;
+
+		// MyPlayer는 hp 변수가 0이 될 때 죽음 애니메이션 실행 후 관전하기 때문에 UpdateState는 무시하기
+		if (packet.id == _myID)
+		{
+			return;
+		}
+		// OtherPlayer는 Dead State 수신 시 애니메이션 재생
+		else
+		{
+			AOtherPlayer** findPlayer = _otherPlayers.Find(packet.id);
+			if (findPlayer && *findPlayer)
+			{
+				targetPlayer = *findPlayer;
+			}
+
+			if (targetPlayer)
+			{
+				targetPlayer->SetIsAlive(false);
+
+				// 이동 중지
+				if (targetPlayer->GetCharacterMovement())
+				{
+					targetPlayer->GetCharacterMovement()->DisableMovement();
+					targetPlayer->GetCharacterMovement()->StopMovementImmediately();
+				}
+
+				// 캡슐 컴포넌트 충돌 제거
+				if (targetPlayer->GetCapsuleComponent())
+				{
+					targetPlayer->GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
+				}
+
+				// 죽음 애니메이션 재생
+				UAnimInstance* AnimInstance = targetPlayer->GetMesh() ? targetPlayer->GetMesh()->GetAnimInstance() : nullptr;
+
+				if (targetPlayer->GetComboMontage() && AnimInstance)
+				{
+					targetPlayer->PlayAnimMontage(targetPlayer->GetComboMontage(), 1.f, FName("Dead"));
+					UE_LOG(LogTemp, Log, TEXT("[Death] OtherPlayer ID [%lld] played Dead animation."), packet.id);
+				}
+				else
+				{
+					UE_LOG(LogTemp, Warning, TEXT("[Death] OtherPlayer ID [%lld] ComboMontage or AnimInstance is null!"), packet.id);
+				}
+			}
 		}
 	});
 }
