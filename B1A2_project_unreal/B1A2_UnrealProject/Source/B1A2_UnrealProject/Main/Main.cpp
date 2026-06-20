@@ -1911,8 +1911,6 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 			}
 		}
 
-		_cubes.Empty();
-
 		// Cube
 		for (int i = 0; i < packet.cubes.size(); ++i)
 		{
