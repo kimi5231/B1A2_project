@@ -305,8 +305,24 @@ protected:
 	const float _maxHp = 100.f;
 
 public:
+	// HP Effect
 	float GetCurrentHp() { return _currentHp; }
-	void SetCurrentHp(float hp) { _currentHp = hp; }
+	void SetCurrentHp(float hp);
+
+protected:
+	void UpdateHpFlashEffect();
+	void StartHpFlashEffect();
+
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Effects")
+	UMaterialInterface* BaseHpFlashMaterial;
+
+	UPROPERTY()
+	UMaterialInstanceDynamic* HpFlashMaterialInst;
+
+	FTimerHandle HpFlashTimerHandle;
+	float CurrentHpFlashAlpha = 0.0f;
+	const float HpFlashDuration = 2.0f; // 2초 유지
 
 protected:
 	// 랜턴의 현재 켜짐/꺼짐 상태
