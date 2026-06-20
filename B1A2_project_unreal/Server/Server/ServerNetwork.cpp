@@ -1340,13 +1340,13 @@ void ServerNetwork::ProcessDropItemToSellingMachinePacket(C_DropItemToSellingMac
 			pos.y -= 35;
 			break;
 		case Right:
-			pos.x -= 35;
+			pos.x += 35;
 			break;
 		case Back:
 			pos.y += 35;
 			break;
 		case Left:
-			pos.x += 35;
+			pos.x -= 35;
 			break;
 		}
 		pos.z += 147;

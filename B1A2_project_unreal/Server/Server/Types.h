@@ -56,10 +56,10 @@ enum class ObjectType : char
 enum class MonsterType : char
 {
 	Spider,
+	TrashCollector,
 	EmotionGame,
 	PollutionMonitor,
 	Ghost,
-	TrashCollector,
 
 	MonsterTypeCount,
 };
