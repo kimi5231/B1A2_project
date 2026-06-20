@@ -236,7 +236,10 @@ public:
 	TSubclassOf<ABaseDoor> DoorClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Cube")
-	TSubclassOf<ABaseHatch> HatchClass;
+	TSubclassOf<ABaseHatch> HatchClass;		// 상호작용 가능 Hatch
+
+	UPROPERTY(EditDefaultsOnly, Category = "Cube")
+	TSubclassOf<AStaticMeshActor> BaseHatchClass;	// 상호작용 안 되는 Hatch
 
 	UPROPERTY(EditDefaultsOnly, Category = "Cube")
 	TSubclassOf<ABaseSellingMachine> SellingMachineClass;
@@ -340,13 +343,21 @@ private:
 
 	// 큐브
 	UPROPERTY()
-	TMap<uint64, AStaticMeshActor*> _cubes;
+	TArray<AStaticMeshActor*> _cubes;
 
 	// 문
 	UPROPERTY()
 	TMap<uint64, ABaseDoor*> _doors; // id > 0
+
+	// Wall
+	UPROPERTY()
+	TArray<AStaticMeshActor*> _walls;
+
+	// Hatch
 	UPROPERTY()
 	ABaseHatch* _hatch;	// id == 0
+	UPROPERTY()
+	AStaticMeshActor* _baseHatch;
 
 	// 상호작용 없는 hatch(스테이지 시작 전, 스테이지 끝나고)
 	UPROPERTY()
