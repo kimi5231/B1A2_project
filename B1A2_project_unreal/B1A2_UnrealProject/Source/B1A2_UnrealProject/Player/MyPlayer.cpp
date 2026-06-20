@@ -139,6 +139,18 @@ void AMyPlayer::BeginPlay()
 		// 초기에는 효과가 안 보이도록 0으로 설정
 		ScanMaterialInst->SetScalarParameterValue(TEXT("ScanIntensity"), 0.0f);
 	}
+	// Hp Material 설정
+	if (BaseHpFlashMaterial)
+	{
+		HpFlashMaterialInst = UMaterialInstanceDynamic::Create(BaseHpFlashMaterial, this);
+
+		if (HpFlashMaterialInst)
+		{
+			HpFlashMaterialInst->SetScalarParameterValue(TEXT("FlashIntensity"), 0.0f);
+
+			FollowCamera->PostProcessSettings.WeightedBlendables.Array.Add(FWeightedBlendable(1.0f, HpFlashMaterialInst));
+		}
+	}
 }
 
 void AMyPlayer::Tick(float DeltaTime)
@@ -864,6 +876,58 @@ void AMyPlayer::UpdateScanEffect()
 	// 카메라 노출
 	FollowCamera->PostProcessSettings.bOverride_AutoExposureBias = true;
 	FollowCamera->PostProcessSettings.AutoExposureBias = CurrentScanAlpha * 2.f;
+}
+
+void AMyPlayer::SetCurrentHp(float hp)
+{
+	// 늘었는지 판단
+	if (hp < _currentHp)
+	{
+		// 체력 감소 시 빨간색 이펙트
+		if (HpFlashMaterialInst)
+		{
+			HpFlashMaterialInst->SetVectorParameterValue(TEXT("FlashColor"), FLinearColor::Red);
+		}
+		StartHpFlashEffect();
+	}
+	else if (hp > _currentHp)
+	{
+		// 체력 감소 시 초록색 이펙트
+		if (HpFlashMaterialInst)
+		{
+			HpFlashMaterialInst->SetVectorParameterValue(TEXT("FlashColor"), FLinearColor::Green);
+		}
+		StartHpFlashEffect();
+	}
+
+	// 값 업데이트
+	_currentHp = hp;
+}
+
+void AMyPlayer::UpdateHpFlashEffect()
+{
+	if (CurrentHpFlashAlpha <= 0.0f)
+	{
+		CurrentHpFlashAlpha = 0.0f;
+		HpFlashMaterialInst->SetScalarParameterValue(TEXT("FlashIntensity"), 0.0f);
+
+		GetWorldTimerManager().ClearTimer(HpFlashTimerHandle);
+		return;
+	}
+
+	CurrentHpFlashAlpha -= (0.01f / HpFlashDuration);
+	HpFlashMaterialInst->SetScalarParameterValue(TEXT("FlashIntensity"), CurrentHpFlashAlpha);
+}
+
+void AMyPlayer::StartHpFlashEffect()
+{
+	if (HpFlashMaterialInst)
+	{
+		CurrentHpFlashAlpha = 0.5f;
+		HpFlashMaterialInst->SetScalarParameterValue(TEXT("FlashIntensity"), CurrentHpFlashAlpha);
+
+		GetWorldTimerManager().SetTimer(HpFlashTimerHandle, this, &AMyPlayer::UpdateHpFlashEffect, 0.01f, true);
+	}
 }
 
 void AMyPlayer::PullLeverInput()
