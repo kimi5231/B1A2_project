@@ -29,7 +29,7 @@ enum PacketID : char
 	C_EndStage,
 	C_SubmitItem,
 	C_RequestQuestReward,
-	//C_ChangeInvincible,
+	C_ChangeInvincible,
 	C_VoiceData,
 
 	//Server
