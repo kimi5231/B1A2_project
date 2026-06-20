@@ -63,10 +63,10 @@ void Spider::Update(Room* room)
 	{
 		for (auto& player : players)
 		{
-			if (player->GetObjectPoolState() == ObjectPoolState::Reusable)
+			if (player->GetObjectPoolState() == ObjectPoolState::Reusable || player->GetState() == ObjectState::DEAD)
 				continue;
 
-				// 플레이어가 있으면, 플레이어 위치를 타겟으로 설정
+			// 플레이어가 있으면, 플레이어 위치를 타겟으로 설정
 			if (CheckInclude(player->GetPos(), _attackRange, _attackAngle, _attackHeight))
 			{
 				_target = player;
@@ -75,11 +75,11 @@ void Spider::Update(Room* room)
 			}
 		}
 	}
-	
+
 	// 인식 범위 안에 플레이어가 있는지 확인
 	for (auto& player : players)
 	{
-		if (player->GetObjectPoolState() == ObjectPoolState::Reusable)
+		if (player->GetObjectPoolState() == ObjectPoolState::Reusable || player->GetState() == ObjectState::DEAD)
 			continue;
 
 		// 플레이어가 있으면, 플레이어 위치를 타겟으로 설정
@@ -120,7 +120,7 @@ void Spider::CreateWeb()
 {
 	_ownerRoom->AddObstacle(ObstacleType::Web, _pos, _rotation);
 	_currentWebCount++;
-	std::cout << "Spider " << _id << " created a web. Current web count: " << _currentWebCount << " Pos: (" << _pos.x << ", " << _pos.y << ", " << _pos.z << ")" << std::endl;
+	//std::cout << "Spider " << _id << " created a web. Current web count: " << _currentWebCount << " Pos: (" << _pos.x << ", " << _pos.y << ", " << _pos.z << ")" << std::endl;
 }
 
  bool Spider::SetState(ObjectState state, bool isSend)

@@ -46,8 +46,8 @@ void EmotionGame::Update(Room* room)
 		const std::array<Player*, MAX_PLAYER>& players = room->GetPlayers();
 		for (auto& player : players)
 		{
-			/*if (player->GetObjectPoolState() == ObjectPoolState::Reusable)
-				continue;*/
+			if (player->GetObjectPoolState() == ObjectPoolState::Reusable || player->GetState() == ObjectState::DEAD)
+				continue;
 
 			BoundingBox aggroBox;
 			aggroBox.SetBounds(_pos, _aggroRange, Front);
