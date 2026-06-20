@@ -120,14 +120,20 @@ void UMain::CreateBase()
 		if (!world)
 			return;
 
+		// Base
 		FVector pos(0, 0, 0);
+		FVector posHatch(0, 347, 0);
 		FRotator rot(0, 0, 0);
 
 		FActorSpawnParameters params;
 		params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
+		// Base 건물
 		_baseActor = world->SpawnActor<AStaticMeshActor>(BaseClass, pos, rot, params);
 		UE_LOG(LogTemp, Log, TEXT("[Base] Base Spawned!"));
+
+		// 상호작용 없는 baseHatch
+		_baseHatch = world->SpawnActor<AStaticMeshActor>(BaseHatchClass, posHatch, rot, params);
 	});
 }
 
@@ -1891,27 +1897,12 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 			return;
 
 		// 상호작용 없는 hatch 지우기
-		if (_baseActor)
+		if (_baseHatch && IsValid(_baseHatch))
 		{
-			TArray<UStaticMeshComponent*> MeshComponents;
-			_baseActor->GetComponents<UStaticMeshComponent>(MeshComponents);
-
-			for (UStaticMeshComponent* Comp : MeshComponents)
-			{
-				if (Comp)
-				{
-					FString CompName = Comp->GetName();
-
-					if (CompName.Contains(TEXT("Hatch")) || CompName.Contains(TEXT("RightDoor")) || CompName.Contains(TEXT("LeftDoor")))
-					{
-						Comp->DestroyComponent();
-						UE_LOG(LogTemp, Log, TEXT("[Base] Destroyed Blueprint Component: %s"), *CompName);
-					}
-				}
-			}
+			_baseHatch->Destroy();
+			_baseHatch = nullptr;
+			UE_LOG(LogTemp, Log, TEXT("[Base] Destroyed Static Base Hatch for Stage Start."));
 		}
-
-		_cubes.Empty();
 
 		// Cube
 		for (int i = 0; i < packet.cubes.size(); ++i)
@@ -1924,69 +1915,44 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 			FActorSpawnParameters params;
 			params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-			AStaticMeshActor* roomActor;
-			switch (packet.cubes[i].type)
+			AStaticMeshActor* roomActor = nullptr;
+			UClass* ClassToSpawn = nullptr;
+
+			switch (cube.type)
 			{
-			case CubeType::MainEntranceRoom:
-				roomActor = world->SpawnActor<AStaticMeshActor>(MainEntranceRoomClass, pos, rot, params);
-				UE_LOG(LogTemp, Log, TEXT("[Room] MainEntrance Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
-				break;
-			case CubeType::GapRoom:
-				roomActor = world->SpawnActor<AStaticMeshActor>(GapRoomClass, pos, rot, params);
-				UE_LOG(LogTemp, Log, TEXT("[Room] Gap Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
-				break;
-			case CubeType::ApparatusRoom:
-				roomActor = world->SpawnActor<AStaticMeshActor>(ApparatusRoomClass, pos, rot, params);
-				UE_LOG(LogTemp, Log, TEXT("[Room] ApparatusRoom Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
-				break;
-			case CubeType::ServerRoom:
-				roomActor = world->SpawnActor<AStaticMeshActor>(ServerRoomClass, pos, rot, params);
-				UE_LOG(LogTemp, Log, TEXT("[Room] Server Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
-				break;
-			case CubeType::CabinetRoom:
-				roomActor = world->SpawnActor<AStaticMeshActor>(CabinetRoomClass, pos, rot, params);
-				UE_LOG(LogTemp, Log, TEXT("[Room] Cabinet Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
-				break;
-			case CubeType::StorageRoom_Rect:
-				roomActor = world->SpawnActor<AStaticMeshActor>(StorageRoom_RectClass, pos, rot, params);
-				UE_LOG(LogTemp, Log, TEXT("[Room] StorageRoom_Rect Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
-				break;
-			case CubeType::StorageRoom_Corner:
-				roomActor = world->SpawnActor<AStaticMeshActor>(StorageRoom_ConerClass, pos, rot, params);
-				UE_LOG(LogTemp, Log, TEXT("[Room] StorageRoom_Coner Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
-				break;
-			case CubeType::StorageRoom_Step:
-				roomActor = world->SpawnActor<AStaticMeshActor>(StorageRoom_StepClass, pos, rot, params);
-				UE_LOG(LogTemp, Log, TEXT("[Room] StorageRoom_Step Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
-				break;
-			case CubeType::YellowOfficeRoom:
-				roomActor = world->SpawnActor<AStaticMeshActor>(YellowOfficeRoomClass, pos, rot, params);
-				UE_LOG(LogTemp, Log, TEXT("[Room] YellowOffice Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
-				break;
-			case CubeType::FactoryRoom:
-				roomActor = world->SpawnActor<AStaticMeshActor>(FactoryRoomClass, pos, rot, params);
-				UE_LOG(LogTemp, Log, TEXT("[Room] Factory Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
-				break;
-			case CubeType::RailCatwalk:
-				roomActor = world->SpawnActor<AStaticMeshActor>(RailCatwalkClass, pos, rot, params);
-				UE_LOG(LogTemp, Log, TEXT("[Room] RailCatwalk Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
-				break;
-			case CubeType::PipedHallways_Line:
-				roomActor = world->SpawnActor<AStaticMeshActor>(PipedHallways_LineClass, pos, rot, params);
-				UE_LOG(LogTemp, Log, TEXT("[Room] PipedHallways_Line Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
-				break;
-			case CubeType::PipedHallways_Grid:
-				roomActor = world->SpawnActor<AStaticMeshActor>(PipedHallways_GridClass, pos, rot, params);
-				UE_LOG(LogTemp, Log, TEXT("[Room] PipedHallways_Grid Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
-				break;
-			case CubeType::Staircase:
-				roomActor = world->SpawnActor<AStaticMeshActor>(StaircaseClass, pos, rot, params);
-				UE_LOG(LogTemp, Log, TEXT("[Room] Staircase Room Spawned [%d] pos = %f, %f, %f, type = %d, dir = %d"), i, cube.pos.x, cube.pos.y, cube.pos.z, cube.type, cube.dir);
+			case CubeType::MainEntranceRoom: ClassToSpawn = MainEntranceRoomClass; break;
+			case CubeType::GapRoom:          ClassToSpawn = GapRoomClass; break;
+			case CubeType::ApparatusRoom:    ClassToSpawn = ApparatusRoomClass; break;
+			case CubeType::ServerRoom:       ClassToSpawn = ServerRoomClass; break;
+			case CubeType::CabinetRoom:      ClassToSpawn = CabinetRoomClass; break;
+			case CubeType::StorageRoom_Rect: ClassToSpawn = StorageRoom_RectClass; break;
+			case CubeType::StorageRoom_Corner: ClassToSpawn = StorageRoom_ConerClass; break;
+			case CubeType::StorageRoom_Step: ClassToSpawn = StorageRoom_StepClass; break;
+			case CubeType::YellowOfficeRoom: ClassToSpawn = YellowOfficeRoomClass; break;
+			case CubeType::FactoryRoom:      ClassToSpawn = FactoryRoomClass; break;
+			case CubeType::RailCatwalk:      ClassToSpawn = RailCatwalkClass; break;
+			case CubeType::PipedHallways_Line: ClassToSpawn = PipedHallways_LineClass; break;
+			case CubeType::PipedHallways_Grid: ClassToSpawn = PipedHallways_GridClass; break;
+			case CubeType::Staircase:        ClassToSpawn = StaircaseClass; break;
+			default:
+				UE_LOG(LogTemp, Warning, TEXT("[Room] Unknown Cube Type: %d"), cube.type);
 				break;
 			}
 
-			_cubes.Add(i, roomActor);
-			UE_LOG(LogTemp, Log, TEXT("[Cube] Saved Cube [%d] to _cubes map"), i);
+			if (ClassToSpawn, world)
+			{
+				roomActor = world->SpawnActor<AStaticMeshActor>(ClassToSpawn, pos, rot, params);
+			}
+
+			if (roomActor)
+			{
+				_cubes.Add(roomActor);
+				UE_LOG(LogTemp, Log, TEXT("[Room] Spawned & Saved Cube to Array. Current Total: %d"), _cubes.Num());
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("[Room] Failed to Spawn Cube [%d]"), i);
+			}
 		}
 
 		// Wall or Door
@@ -2026,6 +1992,8 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 			else if (door.doorType == DoorType::Wall)
 			{
 				AStaticMeshActor* wallActor = world->SpawnActor<AStaticMeshActor>(Wall_FillerClass, pos, rot, params);
+
+				_walls.Add(wallActor);
 				UE_LOG(LogTemp, Log, TEXT("[Room] Wall Spawned [%d] pos = %f, %f, %f, dir = %d"), i, door.pos.x, door.pos.y, door.pos.z, door.dir);
 			}
 		}
@@ -2497,6 +2465,10 @@ void UMain::RecvEndStage(S_EndStage_Packet packet)
 
 	AsyncTask(ENamedThreads::GameThread, [this, packet]()
 	{
+		UWorld* world = GetWorld();
+		if (!world)
+			return;
+
 		auto DestroyActorsInMap = [](auto& Map) 
 		{
 			for (auto& Elem : Map)
@@ -2512,20 +2484,45 @@ void UMain::RecvEndStage(S_EndStage_Packet packet)
 		DestroyActorsInMap(_monsters);
 		DestroyActorsInMap(_items);
 		DestroyActorsInMap(_tools);
-		//DestroyActorsInMap(_cubes);
 		DestroyActorsInMap(_doors);
 		DestroyActorsInMap(_sellingMachines);
 		DestroyActorsInMap(_webs);
 
+		// cubes 제거
+		for (AStaticMeshActor* Cube : _cubes)
+		{
+			if (Cube && IsValid(Cube))
+				Cube->Destroy();
+		}
+		_cubes.Empty();
+
+		// Wall 제거
+		for (AStaticMeshActor* Wall : _walls)
+		{
+			if (Wall && IsValid(Wall))
+				Wall->Destroy();
+		}
+		_walls.Empty();
+
+		// 상호작용 hatch 제거
 		if (_hatch && IsValid(_hatch))
 		{
 			_hatch->Destroy();
 			_hatch = nullptr;
+			UE_LOG(LogTemp, Log, TEXT("[EndStage] Interactive Hatch Destroyed."));
 		}
+		// 상호작용 없는 hatch spawn
+		if (BaseHatchClass && !_baseHatch)
+		{
+			FActorSpawnParameters params;
+			params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-		// 상호작용 없는 Hatch Spawn하기
-		// ...
+			FVector posHatch(0, 347, 0);
+			FRotator rot(0, 0, 0);
 
+			_baseHatch = world->SpawnActor<AStaticMeshActor>(BaseHatchClass, posHatch, rot, params);
+			UE_LOG(LogTemp, Log, TEXT("[EndStage] Static Base Hatch Respawned!"));
+		}
 		UE_LOG(LogTemp, Log, TEXT("[Stage] All Actors Destroyed and Maps Cleared."));
 
 		// 연출
