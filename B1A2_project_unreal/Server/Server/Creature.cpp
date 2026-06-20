@@ -14,8 +14,11 @@ bool Creature::TackDamage(int damage)
 
     _hp -= damage;
 
-    if(_hp <= 0)
-		SetState(ObjectState::DEAD);
+    if (_hp < 0)
+    {
+        _hp = 0;
+        SetState(ObjectState::DEAD);
+    }
     else
     	SetState(ObjectState::HIT);
 
