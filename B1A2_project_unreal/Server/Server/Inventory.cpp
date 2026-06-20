@@ -3,64 +3,47 @@
 
 Inventory::Inventory()
 {
+	_maxScrapCount = 25;
+	_maxToolCount = 4;
 }
 
 Inventory::~Inventory()
 {
 }
 
+void Inventory::Init()
+{
+	_scraps.clear();
+	_tools.clear();
+}
+
 bool Inventory::AddItem(bool isTool, int id)
 {
-	// 나중에 인벤 최대 크기 + 무게 고려하기
-	if (isTool)
+	if (isTool && _tools.size() < _maxToolCount)
 	{
-		_tools.push_back(id);
-		return true;
-	}
-	else
-	{
-		_scraps.push_back(id);
-		return true;
+		auto result = _tools.insert(id);
+		return result.second;
 	}
 
-	return false;
+	if (!isTool && _scraps.size() < _maxScrapCount)
+	{
+		auto result = _scraps.insert(id);
+		return result.second;
+	}
 }
 
 bool Inventory::RemoveItem(bool isTool, int id)
 {
 	if (isTool)
-	{
-		// 해당 아이템이 존재하는지 확인 후, 존재하면 삭제
-		auto it = std::find(_tools.begin(), _tools.end(), id);
-		if (it != _tools.end())
-		{
-			_tools.erase(it);
-			return true;
-		}
-	}
+		return _tools.erase(id);
 	else
-	{
-		auto it = std::find(_scraps.begin(), _scraps.end(), id);
-		if (it != _scraps.end())
-		{
-			_scraps.erase(it);
-			return true;
-		}
-	}
-
-	return false;
+		return _scraps.erase(id);
 }
 
 bool Inventory::ExistItem(bool isTool, int id)
 {
 	if (isTool)
-	{
-		auto it = std::find(_tools.begin(), _tools.end(), id);
-		return it != _tools.end();
-	}
+		return _tools.erase(id);
 	else
-	{
-		auto it = std::find(_scraps.begin(), _scraps.end(), id);
-		return it != _tools.end();
-	}
+		return _scraps.erase(id);
 }

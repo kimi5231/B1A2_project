@@ -670,10 +670,9 @@ void Room::EndStage()
 	{
 		if (player->GetClient())
 		{
-			player->SetPos({ 0, 0, 25 });
+			player->Respawn();
 			g_network->SendMovePacket(player, player->GetClient());
 			g_network->SendUpdateCreditPacket(_goalCredit, _collectCredit, _currentCredit, player->GetClient());
-			player->SetState(ObjectState::IDLE, true);
 		}
 	}
 
