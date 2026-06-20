@@ -1366,6 +1366,9 @@ void AMyPlayer::OnToolMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 
 void AMyPlayer::OnDeathMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
+	// 캐릭터 숨김
+	SetActorHiddenInGame(true);
+	
 	UE_LOG(LogTemp, Log, TEXT("[Death] Death Montage Finished. Switching to Spectator Mode."));
 
 	// 애니메이션이 끝나면, 관전 대상을 찾아 카메라를 돌림

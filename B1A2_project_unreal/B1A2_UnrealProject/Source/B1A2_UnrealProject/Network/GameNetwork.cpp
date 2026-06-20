@@ -21,8 +21,8 @@ GameNetwork::GameNetwork()
 		sockaddr_in addr;
 		memset(&addr, 0, sizeof(addr));
 		addr.sin_family = AF_INET;
-		addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-		//addr.sin_addr.s_addr = inet_addr("61.255.49.141");
+		//addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+		addr.sin_addr.s_addr = inet_addr("61.255.49.141");
 		addr.sin_port = htons(7777);
 		if (connect(_clientSocket, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR)
 			return;
@@ -37,7 +37,8 @@ GameNetwork::GameNetwork()
 
 		memset(&_serverAddr, 0, sizeof(_serverAddr));
 		_serverAddr.sin_family = AF_INET;
-		_serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+		//_serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+		_serverAddr.sin_addr.s_addr = inet_addr("61.255.49.141");
 		_serverAddr.sin_port = htons(7777);
 	}
 }

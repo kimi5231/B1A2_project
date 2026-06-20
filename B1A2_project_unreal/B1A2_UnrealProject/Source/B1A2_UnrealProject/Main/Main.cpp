@@ -1895,54 +1895,131 @@ void UMain::RecvUpdateStatePlayer(S_UpdateObjectState_Packet packet)
 {
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
-		// Player 죽음 처리
-		if (packet.state != ObjectState::DEAD)
-			return;
-
-		AOtherPlayer* targetPlayer = nullptr;
-
-		// MyPlayer는 hp 변수가 0이 될 때 죽음 애니메이션 실행 후 관전하기 때문에 UpdateState는 무시하기
-		if (packet.id == _myID)
+		// 부활 처리
+		if (packet.state == ObjectState::IDLE)
 		{
-			return;
-		}
-		// OtherPlayer는 Dead State 수신 시 애니메이션 재생
-		else
-		{
-			AOtherPlayer** findPlayer = _otherPlayers.Find(packet.id);
-			if (findPlayer && *findPlayer)
+			// MyPlayer
+			if (packet.id == _myID)
 			{
-				targetPlayer = *findPlayer;
+				if (_myPlayer && !_myPlayer->GetIsAlive())
+				{
+					_myPlayer->SetIsAlive(true);
+					_myPlayer->SetActorHiddenInGame(false); // 다시 보이도록 설정
+
+					if (_myPlayer->GetCapsuleComponent())
+					{
+						_myPlayer->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Pawn"));
+					}
+
+					if (_myPlayer->GetCharacterMovement())
+					{
+						_myPlayer->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+					}
+
+					// 컨트롤러 및 카메라 복구
+					APlayerController* PC = GetWorld()->GetFirstPlayerController();
+					if (PC)
+					{
+						PC->Possess(_myPlayer);
+						PC->SetViewTargetWithBlend(_myPlayer, 0.3f);
+					}
+
+					UE_LOG(LogTemp, Log, TEXT("[Revive] MyPlayer has successfully revived and re-possessed."));
+				}
 			}
-
-			if (targetPlayer)
+			// OtherPlayer 부활
+			else
 			{
-				targetPlayer->SetIsAlive(false);
-
-				// 이동 중지
-				if (targetPlayer->GetCharacterMovement())
+				AOtherPlayer** findPlayer = _otherPlayers.Find(packet.id);
+				if (findPlayer && *findPlayer)
 				{
-					targetPlayer->GetCharacterMovement()->DisableMovement();
-					targetPlayer->GetCharacterMovement()->StopMovementImmediately();
+					AOtherPlayer* targetPlayer = *findPlayer;
+
+					if (targetPlayer && !targetPlayer->GetIsAlive())
+					{
+						targetPlayer->SetIsAlive(true);
+						targetPlayer->SetActorHiddenInGame(false); // 다시 보이도록 설정
+
+						// 캡슐 컴포넌트 충돌
+						if (targetPlayer->GetCapsuleComponent())
+						{
+							targetPlayer->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Pawn"));
+						}
+
+						// 이동 복구
+						if (targetPlayer->GetCharacterMovement())
+						{
+							targetPlayer->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+						}
+
+						UE_LOG(LogTemp, Log, TEXT("[Revive] OtherPlayer ID [%lld] has revived."), packet.id);
+					}
+				}
+			}
+		}
+
+		// Player 죽음 처리
+		if (packet.state == ObjectState::DEAD)
+		{
+
+			AOtherPlayer* targetPlayer = nullptr;
+
+			// MyPlayer는 hp 변수가 0이 될 때 죽음 애니메이션 실행 후 관전하기 때문에 UpdateState는 무시하기
+			if (packet.id == _myID)
+			{
+				return;
+			}
+			// OtherPlayer는 Dead State 수신 시 애니메이션 재생
+			else
+			{
+				AOtherPlayer** findPlayer = _otherPlayers.Find(packet.id);
+				if (findPlayer && *findPlayer)
+				{
+					targetPlayer = *findPlayer;
 				}
 
-				// 캡슐 컴포넌트 충돌 제거
-				if (targetPlayer->GetCapsuleComponent())
+				if (targetPlayer)
 				{
-					targetPlayer->GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
-				}
+					targetPlayer->SetIsAlive(false);
 
-				// 죽음 애니메이션 재생
-				UAnimInstance* AnimInstance = targetPlayer->GetMesh() ? targetPlayer->GetMesh()->GetAnimInstance() : nullptr;
+					// 이동 중지
+					if (targetPlayer->GetCharacterMovement())
+					{
+						targetPlayer->GetCharacterMovement()->DisableMovement();
+						targetPlayer->GetCharacterMovement()->StopMovementImmediately();
+					}
 
-				if (targetPlayer->GetComboMontage() && AnimInstance)
-				{
-					targetPlayer->PlayAnimMontage(targetPlayer->GetComboMontage(), 1.f, FName("Dead"));
-					UE_LOG(LogTemp, Log, TEXT("[Death] OtherPlayer ID [%lld] played Dead animation."), packet.id);
-				}
-				else
-				{
-					UE_LOG(LogTemp, Warning, TEXT("[Death] OtherPlayer ID [%lld] ComboMontage or AnimInstance is null!"), packet.id);
+					// 캡슐 컴포넌트 충돌 제거
+					if (targetPlayer->GetCapsuleComponent())
+					{
+						targetPlayer->GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
+					}
+
+					// 죽음 애니메이션 재생
+					UAnimInstance* AnimInstance = targetPlayer->GetMesh() ? targetPlayer->GetMesh()->GetAnimInstance() : nullptr;
+
+					if (targetPlayer->GetComboMontage() && AnimInstance)
+					{
+						float duration = targetPlayer->PlayAnimMontage(targetPlayer->GetComboMontage(), 1.f, FName("Dead"));
+						UE_LOG(LogTemp, Log, TEXT("[Death] OtherPlayer ID [%lld] played Dead animation."), packet.id);
+
+						if (duration > 0.f)
+						{
+							// 애니메이션이 끝나고 플레이어 숨기기
+							FTimerHandle TargetDeathTimerHandle;
+							TWeakObjectPtr<AOtherPlayer> WeakTargetPlayer = targetPlayer;
+
+							GetWorld()->GetTimerManager().SetTimer(TargetDeathTimerHandle, [WeakTargetPlayer]()
+							{
+								// OtherPlayer 숨김
+								if (WeakTargetPlayer.IsValid())
+								{
+									WeakTargetPlayer->SetActorHiddenInGame(true);
+									UE_LOG(LogTemp, Log, TEXT("[Death] OtherPlayer Actor Hidden."));
+								}
+							}, duration - 0.1f, false);
+						}
+					}
 				}
 			}
 		}
