@@ -230,6 +230,8 @@ void Room::CreateCubes()
 	for (int i = 0; i < static_cast<int>(MonsterType::MonsterTypeCount); ++i)
 		_currentMonsterCount[static_cast<MonsterType>(i)] = 0;
 
+	_currentPower = 0;
+
 	// 나중에 json으로 불러올 예정
 	// array로 바꾸는 것도 고려할 것, 고정된 크기
 	for (int i = 0; i < DirCount; i++)
@@ -488,11 +490,11 @@ void Room::CreateCubes()
 	_currentPower += spider->GetPower();
 	_currentMonsterCount[MonsterType::Spider]++;*/
 
-	Monster* trashCollector = AddMonster(MonsterType::TrashCollector, { 0, 675, 25 });
+	/*Monster* trashCollector = AddMonster(MonsterType::TrashCollector, { 0, 675, 25 });
 	trashCollector->SetState(ObjectState::HIT, false);
 	trashCollector->SetState(ObjectState::IDLE, false);
 	_currentPower += trashCollector->GetPower();
-	_currentMonsterCount[MonsterType::TrashCollector]++;
+	_currentMonsterCount[MonsterType::TrashCollector]++;*/
 
 	loop = 0;
 	while (_currentPower < conditions.power)
@@ -524,7 +526,14 @@ void Room::CreateCubes()
 			type = static_cast<MonsterType>(selectType(gen));
 		}
 
-		// 남은 파워가 1이상이면 거미까지 생성 가능
+		// 남은 파워가 2이상이면 TrashCollector까지 생성 가능
+		else if (conditions.power - _currentPower >= 2)
+		{
+			std::uniform_int_distribution<int> selectType(static_cast<int>(MonsterType::Spider), static_cast<int>(MonsterType::TrashCollector));
+			type = static_cast<MonsterType>(selectType(gen));
+		}
+
+		// 남은 파워가 1이상이면 Spider까지 생성 가능
 		else if (conditions.power - _currentPower >= 1)
 		{
 			std::uniform_int_distribution<int> selectType(static_cast<int>(MonsterType::Spider), static_cast<int>(MonsterType::Spider));
@@ -573,8 +582,8 @@ void Room::CreateCubes()
 		Item* item = AddItem(false, itemType, SelectRandomPosInCube(itemInfo.size, cube));
 	}
 
-	AddItem(false, ItemType::CardboardBox, { 0, 675, 25 });
-	AddItem(false, ItemType::CardboardBox, { 0, 750, 25 });
+	//AddItem(false, ItemType::CardboardBox, { 0, 675, 25 });
+	//AddItem(false, ItemType::CardboardBox, { 0, 750, 25 });
 	/*AddItem(true, ItemType::CUTLASS, { 0, 0, 25 });
 	AddItem(true, ItemType::Blaster, { 0, 100, 25 });
 	AddItem(true, ItemType::Key, { 0, -100, 25 });
@@ -670,10 +679,9 @@ void Room::EndStage()
 	{
 		if (player->GetClient())
 		{
-			player->SetPos({ 0, 0, 25 });
+			player->Respawn();
 			g_network->SendMovePacket(player, player->GetClient());
 			g_network->SendUpdateCreditPacket(_goalCredit, _collectCredit, _currentCredit, player->GetClient());
-			player->SetState(ObjectState::IDLE, true);
 		}
 	}
 

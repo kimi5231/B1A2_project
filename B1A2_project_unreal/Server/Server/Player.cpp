@@ -39,7 +39,7 @@ void Player::Init()
 	_currentEmotion = Emotion::Neutral;
 	_objectPoolState = ObjectPoolState::InWorld;
 
-	// 인벤토리 초기화 추가하기
+	_inventory->Init();
 }
 
 void Player::Update()
@@ -87,4 +87,17 @@ void Player::Attack(Room* room)
 			}
 		}
 	}
+}
+
+void Player::Respawn()
+{
+	_hp = _maxHP;
+	_fearCount = 0;
+	_isCanMove = true;
+
+	SetPos({ 0, 0, 25 });
+	SetRotation({ 0, 0, 0 });
+	SetState(ObjectState::IDLE, true);
+
+	g_network->SendUpdateHpPacket(_id, _hp, _client);
 }

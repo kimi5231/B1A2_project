@@ -21,6 +21,7 @@ public:
 	bool ExistItem(bool isTool, int id);
 
 	void Attack(Room* room);
+	void Respawn();
 
 	void AddFearCount() { _fearCount++; }
 
