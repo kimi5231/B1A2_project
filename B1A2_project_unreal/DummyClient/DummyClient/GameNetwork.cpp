@@ -223,13 +223,39 @@ void GameNetwork::ProcessRecv(int dummyID)
 		ProcessStartStagePacket(dummyID, startStagePacket);
 		break;
 	}
-	/*case S_EndStage:
+	case S_EndStage:
 	{
+		unsigned short packetSize;
+		memcpy(&packetSize, packet.data(), sizeof(unsigned short));
+		packet.erase(packet.begin(), packet.begin() + sizeof(unsigned short) + sizeof(PacketID));
+		
 		S_EndStage_Packet endStagePacket;
-		memcpy(&endStagePacket, packet.data(), sizeof(S_EndStage_Packet));
+		endStagePacket.size = packetSize;
+		endStagePacket.packetID = S_EndStage;
+
+		unsigned char stageResultDTOSize;
+		memcpy(&stageResultDTOSize, packet.data(), sizeof(unsigned char));
+		packet.erase(packet.begin(), packet.begin() + sizeof(unsigned char));
+
+		for (int i = 0; i < stageResultDTOSize; ++i)
+		{
+			StageResultDTO stageResultDTO;
+
+			memcpy(&stageResultDTO.isDead, packet.data(), sizeof(bool));
+			packet.erase(packet.begin(), packet.begin() + sizeof(bool));
+
+			char nameSize;
+			memcpy(&nameSize, packet.data(), sizeof(unsigned char));
+			packet.erase(packet.begin(), packet.begin() + sizeof(unsigned char));
+			stageResultDTO.name.resize(nameSize);
+			memcpy(stageResultDTO.name.data(), packet.data(), sizeof(char) * nameSize);
+			packet.erase(packet.begin(), packet.begin() + sizeof(char) * nameSize);
+			endStagePacket.stageResult.push_back(stageResultDTO);
+		}
+
 		ProcessEndStagePacket(dummyID, endStagePacket);
 		break;
-	}*/
+	}
 	}
 }
 

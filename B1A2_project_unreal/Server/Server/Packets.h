@@ -29,6 +29,7 @@ enum PacketID : char
 	C_EndStage,
 	C_SubmitItem,
 	C_RequestQuestReward,
+	//C_ChangeInvincible,
 	C_VoiceData,
 
 	//Server
@@ -301,6 +302,13 @@ struct C_RequestQuestReward_Packet
 	unsigned char size;
 	PacketID packetID;
 	bool isMain;
+};
+
+struct C_ChangeInvincible_Packet
+{
+	unsigned char size;
+	PacketID packetID;
+	unsigned char playerID;
 };
 
 struct C_VoiceData_Packet
