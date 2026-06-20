@@ -488,11 +488,11 @@ void Room::CreateCubes()
 	_currentPower += spider->GetPower();
 	_currentMonsterCount[MonsterType::Spider]++;*/
 
-	/*Monster* trashCollector = AddMonster(MonsterType::TrashCollector, { 0, 675, 25 });
+	Monster* trashCollector = AddMonster(MonsterType::TrashCollector, { 0, 675, 25 });
 	trashCollector->SetState(ObjectState::HIT, false);
 	trashCollector->SetState(ObjectState::IDLE, false);
 	_currentPower += trashCollector->GetPower();
-	_currentMonsterCount[MonsterType::TrashCollector]++;*/
+	_currentMonsterCount[MonsterType::TrashCollector]++;
 
 	loop = 0;
 	while (_currentPower < conditions.power)
@@ -588,8 +588,8 @@ void Room::StartStage()
 	// RoomState 변경
 	_roomState = RoomState::Play;
 
-	_prevTimer = 60.f;
-	_currentTimer = 60.f;
+	_prevTimer = 600.f;
+	_currentTimer = 600.f;
 
 	// Cube 생성
 	CreateCubes();

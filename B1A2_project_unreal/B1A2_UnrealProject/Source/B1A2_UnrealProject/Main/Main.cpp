@@ -1911,14 +1911,6 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 			}
 		}
 
-		// 이전 데이터 비우기
-		for (auto& Elem : _cubes)
-		{
-			if (IsValid(Elem.Value))
-			{
-				Elem.Value->Destroy();
-			}
-		}
 		_cubes.Empty();
 
 		// Cube
