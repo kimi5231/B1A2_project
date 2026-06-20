@@ -37,7 +37,6 @@ bool Creature::TackHeal(int heal)
 
 bool Creature::SetState(ObjectState state, bool isSend)
 {
-    // 나중에 GameObject에 있는 내용 옮겨오기
     if (!GameObject::SetState(state, isSend))
         return false;
 

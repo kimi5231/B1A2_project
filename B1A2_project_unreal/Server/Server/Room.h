@@ -34,6 +34,8 @@ public:
 	Obstacle* AddObstacle(ObstacleType obstacleType, Vector pos, Rotation rotation);
 	void RemoveObject(ObjectType type, int id, bool isSend);
 
+	void AddDeadPlayerCount();
+
 	void AddProcessingItem(Item* item) { _processingItems[item->GetID()] = item; }
 	void RemoveProcessingItem(int itemID) { _processingItems.erase(itemID); }
 
@@ -107,6 +109,8 @@ private:
 	float _prevTimer;
 	float _currentTimer;
 	float _updateRoomTime;
+
+	int _deadPlayerCount;
 
 	int _stage;
 	int _goalCredit;

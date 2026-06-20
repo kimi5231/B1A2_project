@@ -26,6 +26,7 @@ public:
 	void AddFearCount() { _fearCount++; }
 
 public:
+	virtual bool SetState(ObjectState state, bool isSend = true);
 	int GetCurrentTool() { return _currentTool; }
 	void SetCurrentTool(int toolID) { _currentTool = toolID; }
 	Emotion GetCurrentEmotion() { return _currentEmotion; }

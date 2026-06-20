@@ -1194,10 +1194,10 @@ void ServerNetwork::ProcessMovePacket(C_Move_Packet packet, int clientIndex)
 
 	Player* player = dynamic_cast<Player*>(_clients[clientIndex]->_room->GetGameObject(packet.type, packet.id));
 
-	if (player == nullptr || player->GetState() == ObjectState::DEAD)
+	if (player == nullptr)
 		return;
 
-	if (player->GetIsCanMove())
+	if (!player->GetIsCanMove())
 		player->SetPos(packet.pos);
 	player->SetRotation(packet.rotation);
 	player->SetState(packet.state);
