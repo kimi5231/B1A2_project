@@ -110,7 +110,7 @@ bool Player::SetState(ObjectState state, bool isSend)
 	if (state == ObjectState::DEAD)
 	{
 		_ownerRoom->AddDeadPlayerCount();
-		_isCanMove = false;
+		//_isCanMove = false;
 	}
 		
 	return true;

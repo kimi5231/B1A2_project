@@ -1197,7 +1197,7 @@ void ServerNetwork::ProcessMovePacket(C_Move_Packet packet, int clientIndex)
 	if (player == nullptr)
 		return;
 
-	if (!player->GetIsCanMove())
+	if (player->GetIsCanMove())
 		player->SetPos(packet.pos);
 	player->SetRotation(packet.rotation);
 	player->SetState(packet.state);
