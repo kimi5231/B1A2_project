@@ -484,11 +484,11 @@ void Room::CreateCubes()
 
 	// 몬스터 생성
 	// 테스트용 먼저 생성
-	/*Monster* spider = AddMonster(MonsterType::Spider, { 0, 675, 25 });
+	Monster* spider = AddMonster(MonsterType::Spider, { 0, 675, 25 });
 	spider->SetState(ObjectState::HIT, false);
 	spider->SetState(ObjectState::IDLE, false);
 	_currentPower += spider->GetPower();
-	_currentMonsterCount[MonsterType::Spider]++;*/
+	_currentMonsterCount[MonsterType::Spider]++;
 
 	/*Monster* trashCollector = AddMonster(MonsterType::TrashCollector, { 0, 675, 25 });
 	trashCollector->SetState(ObjectState::HIT, false);
@@ -599,6 +599,8 @@ void Room::StartStage()
 
 	_prevTimer = 600.f;
 	_currentTimer = 600.f;
+
+	_deadPlayerCount = 0;
 
 	// Cube 생성
 	CreateCubes();
@@ -851,6 +853,21 @@ void Room::RemoveObject(ObjectType type, int id, bool isSend)
 			if (player->GetClient())
 				g_network->SendRemoveObjectPacket(type, id, player->GetClient());
 		}
+	}
+}
+
+void Room::AddDeadPlayerCount()
+{
+	_deadPlayerCount++;
+	if (_deadPlayerCount == _currentPlayerCount)
+	{
+		for (auto& player : _players)
+		{
+			if (player->GetClient())
+				g_network->SendEndStagePacket(player->GetClient());
+		}
+
+		EndStage();
 	}
 }
 

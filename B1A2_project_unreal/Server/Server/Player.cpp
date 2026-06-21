@@ -101,3 +101,17 @@ void Player::Respawn()
 
 	g_network->SendUpdateHpPacket(_id, _hp, _client);
 }
+
+bool Player::SetState(ObjectState state, bool isSend)
+{
+	if (!Creature::SetState(state, isSend))
+		return false;
+
+	if (state == ObjectState::DEAD)
+	{
+		_ownerRoom->AddDeadPlayerCount();
+		//_isCanMove = false;
+	}
+		
+	return true;
+}
