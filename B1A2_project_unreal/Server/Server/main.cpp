@@ -10,6 +10,14 @@ void DBWorkerThread()
 	}
 }
 
+void WorkerThread()
+{
+	while (true)
+	{
+		g_network->Update();
+	}
+}
+
 int main(void)
 {
 	g_dataManager = new DataManager();
@@ -20,11 +28,11 @@ int main(void)
 
 	// DB Thread
 	std::thread dbThread(DBWorkerThread);
+	std::thread workerThread(WorkerThread);
 
 	while (true)
 	{
 		framework->Update();
-		g_network->Update();
 		g_timer->Update();
 	}
 

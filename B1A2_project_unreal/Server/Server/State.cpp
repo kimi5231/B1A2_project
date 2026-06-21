@@ -117,7 +117,7 @@ void AttackState::Enter(Monster* monster)
 		g_network->SendUpdateHpPacket(monster->GetTarget()->GetID(), monster->GetTarget()->GetHP(), p->GetClient());
 	}
 
-	std::cout << "Player " << monster->GetTarget()->GetID() << " HP: " << monster->GetTarget()->GetHP() << "\n";
+	//std::cout << "Player " << monster->GetTarget()->GetID() << " HP: " << monster->GetTarget()->GetHP() << "\n";
 }
 
 void AttackState::Tick(Monster* monster)
@@ -192,7 +192,7 @@ void TeleportState::Exit(Monster* monster)
 	// 랜덤한 위치로 순간이동
 	Vector pos = SelectRandomPosInCube(monster->GetSize(), cube);
 	monster->SetPos(pos);
-	std::cout << "EmotionGame " << monster->GetID() << " " << pos.x << " " << pos.y << " " << pos.z << std::endl;
+	//std::cout << "EmotionGame " << monster->GetID() << " " << pos.x << " " << pos.y << " " << pos.z << std::endl;
 	
 	// Broadcast
 	for (auto& p : monster->GetOwnerRoom()->GetPlayers())
@@ -476,7 +476,7 @@ void AllAttackState::Enter(Monster* monster)
 
 		p->TackDamage(monster->GetDamage());
 		g_network->SendUpdateHpPacket(p->GetID(), p->GetHP(), p->GetClient());
-		std::cout << "Player " << p->GetID() << " HP: " << p->GetHP() << "\n";
+		//std::cout << "Player " << p->GetID() << " HP: " << p->GetHP() << "\n";
 	}
 }
 
