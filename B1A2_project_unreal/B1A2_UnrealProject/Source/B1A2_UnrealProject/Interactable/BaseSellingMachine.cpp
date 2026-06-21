@@ -135,43 +135,14 @@ void ABaseSellingMachine::AddPendingCredit(int32 itemCost)
 
 void ABaseSellingMachine::UpdateWidgetState()
 {
-	// 0: 판매 불가능(CLOSE)
-	// 1: 아이템 내려놓기(OPEN 및 물건 없음)
-	// 2: 판매하기(OPEN 및 물건 있음)
-	// 3: 판매 중 - 이건 버튼 누를 때만 따로 설정하므로 함수 구현 X
+	K2_UpdateWidget(_remainCredit, _currentPendingCredit);
 
-	int32 TargetWidgetState = -1;
-
-	if (_currentState == ObjectState::CLOSE)
-	{
-		TargetWidgetState = 0;
-	}
-	else if (_currentState == ObjectState::OPEN)
-	{
-		if (_currentPendingCredit > 0)
-		{
-			TargetWidgetState = 2;
-		}
-		else
-		{
-			TargetWidgetState = 1;
-		}
-	}
-
-	UE_LOG(LogTemp, Log, TEXT("[SellingMachine] UpdateWidgetState Called. MachineID: %d, MachineState: %d, PendingCredit: %d, Sending Widget State: %d"),
-		GetMachineID(), (int32)_currentState, _currentPendingCredit, TargetWidgetState);
-
-	if (TargetWidgetState != -1)
-	{
-		K2_UpdateWidgetByState(TargetWidgetState);
-	}
+	UE_LOG(LogTemp, Log, TEXT("[SellingMachine] UpdateWidgetState Unified. MachineID: %d, RemainCredit: %d, PendingCredit: %d"),
+		GetMachineID(), _remainCredit, _currentPendingCredit);
 }
 
 void ABaseSellingMachine::PlaySellAnimation()
 {
-	// 위젯을 '판매 중'으로 변경
-	K2_UpdateWidgetByState(3);
-
 	// state는 변경하지 않고, 레버를 올리는 애니메이션 실행
 	leverTimeline.Play();
 
@@ -180,6 +151,8 @@ void ABaseSellingMachine::PlaySellAnimation()
 
 	// 3초 후에 레버를 다시 내리도록 타이머 설정
 	GetWorld()->GetTimerManager().SetTimer(_leverTimerHandle, this, &ABaseSellingMachine::ReverseLeverTimer, 3.0f, false);
+
+	UpdateWidgetState();
 }
 
 void ABaseSellingMachine::OnStateChanged(ObjectState oldState, ObjectState newState)

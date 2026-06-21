@@ -56,6 +56,10 @@ public:
 	void SetMaxCredit(int32 maxCredit) { _maxCredit = maxCredit; }
 	int32 GetMaxCredit() const { return _maxCredit; }
 
+	// 남은 크레딧
+	void SetRemainCredit(int32 remainCredit) { _remainCredit = remainCredit; }
+	int32 GetRemainCredit() const { return _remainCredit; }
+
 	// 위젯 상태 업데이트 통합 관리
 	void UpdateWidgetState();
 
@@ -99,11 +103,12 @@ private:
 
 	int32 _maxCredit{};		// 판매기 제한 크레딧
 	int32 _currentPendingCredit{};	// 현재 올려진 아이템들의 총 가격
+	int32 _remainCredit{};
 
 	// 판매 애니메이션 전용 타이머 핸들
 	FTimerHandle _leverTimerHandle;
 
 protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Machine|UI")
-	void K2_UpdateWidgetByState(int32 StateIndex);
+	void K2_UpdateWidget(int32 RemainCredit, int32 PendingCredit);
 };
