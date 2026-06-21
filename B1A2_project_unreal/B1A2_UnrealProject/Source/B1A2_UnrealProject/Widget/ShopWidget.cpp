@@ -17,11 +17,11 @@ void UShopWidget::NativeOnInitialized()
         CutlassCheckBox->OnCheckStateChanged.RemoveDynamic(this, &UShopWidget::OnCutlassChecked);
         CutlassCheckBox->OnCheckStateChanged.AddDynamic(this, &UShopWidget::OnCutlassChecked);
     }
-    if (BlasterCheckBox) 
+   /* if (BlasterCheckBox) 
     {
         BlasterCheckBox->OnCheckStateChanged.RemoveDynamic(this, &UShopWidget::OnBlasterChecked);
         BlasterCheckBox->OnCheckStateChanged.AddDynamic(this, &UShopWidget::OnBlasterChecked);
-    }
+    }*/
     if (LanternCheckBox) 
     {
         LanternCheckBox->OnCheckStateChanged.RemoveDynamic(this, &UShopWidget::OnLanternChecked);
@@ -41,7 +41,7 @@ void UShopWidget::NativeOnInitialized()
     }
     
     // Blaster
-    if (BlasterButtonMinus) 
+   /* if (BlasterButtonMinus) 
     {
         BlasterButtonMinus->OnClicked.RemoveDynamic(this, &UShopWidget::OnBlasterMinusClicked);
         BlasterButtonMinus->OnClicked.AddDynamic(this, &UShopWidget::OnBlasterMinusClicked);
@@ -50,7 +50,7 @@ void UShopWidget::NativeOnInitialized()
     {
         BlasterButtonPlus->OnClicked.RemoveDynamic(this, &UShopWidget::OnBlasterPlusClicked);
         BlasterButtonPlus->OnClicked.AddDynamic(this, &UShopWidget::OnBlasterPlusClicked);
-    }
+    }*/
 
     // Lantern
     if (LanternButtonMinus) 
@@ -88,11 +88,11 @@ void UShopWidget::NativeConstruct()
 
     _selectedItemType = ItemType::CUTLASS;
     _cutlassQuantity = 0;
-    _blasterQuantity = 0;
+    //_blasterQuantity = 0;
     _lanternQuantity = 0;
 
     if (CutlassCheckBox) CutlassCheckBox->SetIsChecked(true);
-    if (BlasterCheckBox) BlasterCheckBox->SetIsChecked(false);
+    //if (BlasterCheckBox) BlasterCheckBox->SetIsChecked(false);
     if (LanternCheckBox) LanternCheckBox->SetIsChecked(false);
 
     if (APlayerController* PC = GetOwningPlayer())
@@ -129,10 +129,10 @@ void UShopWidget::OnCutlassChecked(bool isChecked)
         _selectedItemType = ItemType::CUTLASS;
         
         _cutlassQuantity = 0;
-        _blasterQuantity = 0;
+        //_blasterQuantity = 0;
         _lanternQuantity = 0;
 
-        if (BlasterCheckBox) BlasterCheckBox->SetIsChecked(false);
+        //if (BlasterCheckBox) BlasterCheckBox->SetIsChecked(false);
         if (LanternCheckBox) LanternCheckBox->SetIsChecked(false);
     }
     else if (_selectedItemType == ItemType::CUTLASS)
@@ -143,26 +143,26 @@ void UShopWidget::OnCutlassChecked(bool isChecked)
     UpdateUI();
 }
 
-void UShopWidget::OnBlasterChecked(bool isChecked)
-{
-    if (isChecked)
-    {
-        _selectedItemType = ItemType::Blaster;
-     
-        _cutlassQuantity = 0;
-        _blasterQuantity = 0;
-        _lanternQuantity = 0;
-
-        if (CutlassCheckBox) CutlassCheckBox->SetIsChecked(false);
-        if (LanternCheckBox) LanternCheckBox->SetIsChecked(false);
-    }
-    else if (_selectedItemType == ItemType::Blaster)
-    {
-        BlasterCheckBox->SetIsChecked(true);
-    }
-
-    UpdateUI();
-}
+//void UShopWidget::OnBlasterChecked(bool isChecked)
+//{
+//    if (isChecked)
+//    {
+//        _selectedItemType = ItemType::Blaster;
+//     
+//        _cutlassQuantity = 0;
+//        _blasterQuantity = 0;
+//        _lanternQuantity = 0;
+//
+//        if (CutlassCheckBox) CutlassCheckBox->SetIsChecked(false);
+//        if (LanternCheckBox) LanternCheckBox->SetIsChecked(false);
+//    }
+//    else if (_selectedItemType == ItemType::Blaster)
+//    {
+//        BlasterCheckBox->SetIsChecked(true);
+//    }
+//
+//    UpdateUI();
+//}
 
 void UShopWidget::OnLanternChecked(bool isChecked)
 {
@@ -171,11 +171,11 @@ void UShopWidget::OnLanternChecked(bool isChecked)
         _selectedItemType = ItemType::LANTERN;
         
         _cutlassQuantity = 0;
-        _blasterQuantity = 0;
+        //_blasterQuantity = 0;
         _lanternQuantity = 0;
 
         if (CutlassCheckBox) CutlassCheckBox->SetIsChecked(false);
-        if (BlasterCheckBox) BlasterCheckBox->SetIsChecked(false);
+        //if (BlasterCheckBox) BlasterCheckBox->SetIsChecked(false);
     }
     else if (_selectedItemType == ItemType::LANTERN)
     {
@@ -211,28 +211,28 @@ void UShopWidget::OnCutlassPlusClicked()
     }
 }
 
-void UShopWidget::OnBlasterMinusClicked()
-{
-    if (_selectedItemType == ItemType::Blaster && _blasterQuantity > 0)
-    {
-        _blasterQuantity--;
-        UpdateUI();
-    }
-}
-
-void UShopWidget::OnBlasterPlusClicked()
-{
-    if (_selectedItemType == ItemType::Blaster && _blasterQuantity < 99)
-    {
-        int32 predictedCost = _blasterPrice * (_blasterQuantity + 1);
-
-        if (predictedCost <= _currentCredit)
-        {
-            _blasterQuantity++;
-            UpdateUI();
-        }
-    }
-}
+//void UShopWidget::OnBlasterMinusClicked()
+//{
+//    if (_selectedItemType == ItemType::Blaster && _blasterQuantity > 0)
+//    {
+//        _blasterQuantity--;
+//        UpdateUI();
+//    }
+//}
+//
+//void UShopWidget::OnBlasterPlusClicked()
+//{
+//    if (_selectedItemType == ItemType::Blaster && _blasterQuantity < 99)
+//    {
+//        int32 predictedCost = _blasterPrice * (_blasterQuantity + 1);
+//
+//        if (predictedCost <= _currentCredit)
+//        {
+//            _blasterQuantity++;
+//            UpdateUI();
+//        }
+//    }
+//}
 
 void UShopWidget::OnLanternMinusClicked()
 {
@@ -264,7 +264,7 @@ void UShopWidget::OnPurchaseButtonClicked()
     switch (_selectedItemType)
     {
     case ItemType::CUTLASS: sendQuantity = _cutlassQuantity; break;
-    case ItemType::Blaster: sendQuantity = _blasterQuantity; break;
+    //case ItemType::Blaster: sendQuantity = _blasterQuantity; break;
     case ItemType::LANTERN: sendQuantity = _lanternQuantity; break;
     default: return;
     }
@@ -291,13 +291,13 @@ void UShopWidget::UpdateUI()
 
     // 아이템별 가격 * 수량 계산
     int32 cutlassTotal = _cutlassPrice * _cutlassQuantity;
-    int32 blasterTotal = _blasterPrice * _blasterQuantity;
+    //int32 blasterTotal = _blasterPrice * _blasterQuantity;
     int32 lanternTotal = _lanternPrice * _lanternQuantity;
 
     // UI 텍스트
     FText unitFormat1 = FText::FromString(TEXT("x{0}"));
     if (CutlassQuantity) CutlassQuantity->SetText(FText::Format(unitFormat1, FText::AsNumber(_cutlassQuantity)));
-    if (BlasterQuantity) BlasterQuantity->SetText(FText::Format(unitFormat1, FText::AsNumber(_blasterQuantity)));
+    //if (BlasterQuantity) BlasterQuantity->SetText(FText::Format(unitFormat1, FText::AsNumber(_blasterQuantity)));
     if (LanternQuantity) LanternQuantity->SetText(FText::Format(unitFormat1, FText::AsNumber(_lanternQuantity)));
 
     // 현재 선택된 아이템의 총 비용 및 수량 판별
@@ -310,10 +310,10 @@ void UShopWidget::UpdateUI()
         activeTotalCost = cutlassTotal;
         activeQuantity = _cutlassQuantity;
         break;
-    case ItemType::Blaster:
+  /*  case ItemType::Blaster:
         activeTotalCost = blasterTotal;
         activeQuantity = _blasterQuantity;
-        break;
+        break;*/
     case ItemType::LANTERN:
         activeTotalCost = lanternTotal;
         activeQuantity = _lanternQuantity;

@@ -32,14 +32,14 @@ public:
 private:
     // CheckBox 이벤트 리스너
     UFUNCTION() void OnCutlassChecked(bool isChecked);
-    UFUNCTION() void OnBlasterChecked(bool isChecked);
+    //UFUNCTION() void OnBlasterChecked(bool isChecked);
     UFUNCTION() void OnLanternChecked(bool isChecked);
 
     // 수량 조절 버튼 리스너
     UFUNCTION() void OnCutlassMinusClicked();
     UFUNCTION() void OnCutlassPlusClicked();
-    UFUNCTION() void OnBlasterMinusClicked();
-    UFUNCTION() void OnBlasterPlusClicked();
+    //UFUNCTION() void OnBlasterMinusClicked();
+    //UFUNCTION() void OnBlasterPlusClicked();
     UFUNCTION() void OnLanternMinusClicked();
     UFUNCTION() void OnLanternPlusClicked();
 
@@ -69,7 +69,7 @@ protected:
     UTextBlock* CutlassQuantity;
 
     // Blaster
-    UPROPERTY(meta = (BindWidget))
+   /* UPROPERTY(meta = (BindWidget))
     UCheckBox* BlasterCheckBox;
 
     UPROPERTY(meta = (BindWidget))
@@ -79,7 +79,7 @@ protected:
     UButton* BlasterButtonPlus;
 
     UPROPERTY(meta = (BindWidget))
-    UTextBlock* BlasterQuantity;
+    UTextBlock* BlasterQuantity;*/
 
     // Lantern
     UPROPERTY(meta = (BindWidget))
@@ -97,13 +97,13 @@ protected:
 private:
     // 가격
     const int32 _cutlassPrice = 65;
-    const int32 _blasterPrice = 100;
+    //const int32 _blasterPrice = 100;
     const int32 _lanternPrice = 30;
 
     // 내부 상태 변수
     ItemType _selectedItemType = ItemType::None;
     int32 _cutlassQuantity = 0;
-    int32 _blasterQuantity = 0;
+    //int32 _blasterQuantity = 0;
     int32 _lanternQuantity = 0;
 
     int32 _currentCredit;

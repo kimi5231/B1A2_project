@@ -35,6 +35,8 @@
 #include "Blueprint/UserWidget.h"
 #include "Interactable/BaseBase.h"
 
+#include "Kismet/GameplayStatics.h"
+
 AMyPlayer::AMyPlayer()
 {
 	// Create a camera boom (pulls in towards the player if there is a collision)
@@ -1345,6 +1347,11 @@ void AMyPlayer::TurnLanternSendOrUseToolAnimationAndSend()
 
 			// ¸ùÅ¸ÁÖ ½ÇÇà
 			float duration = PlayAnimMontage(ComboMontage, animSpeed, animName);
+
+			if (animName == "Slash" && CutlassSound)
+			{
+				UGameplayStatics::PlaySoundAtLocation(this, CutlassSound, GetActorLocation());
+			}
 
 			if (duration > 0.f)
 			{

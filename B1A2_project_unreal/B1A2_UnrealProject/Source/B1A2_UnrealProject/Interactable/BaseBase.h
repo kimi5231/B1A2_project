@@ -67,6 +67,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
 	UAnimationAsset* LeverPullAnim;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound|Weapon", meta = (AllowPrivateAccess = "true"))
+	class USoundBase* LeverSound;
+
 private:
 	UFUNCTION()
 	void OnLeverOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

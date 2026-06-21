@@ -1897,69 +1897,6 @@ void UMain::RecvUpdateStatePlayer(S_UpdateObjectState_Packet packet)
 {
 	AsyncTask(ENamedThreads::GameThread, [=, this]()
 	{
-		// 부활 처리
-		if (packet.state == ObjectState::IDLE)
-		{
-			// MyPlayer
-			if (packet.id == _myID)
-			{
-				if (_myPlayer && !_myPlayer->GetIsAlive())
-				{
-					_myPlayer->SetIsAlive(true);
-					_myPlayer->SetActorHiddenInGame(false); // 다시 보이도록 설정
-
-					if (_myPlayer->GetCapsuleComponent())
-					{
-						_myPlayer->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Pawn"));
-					}
-
-					if (_myPlayer->GetCharacterMovement())
-					{
-						_myPlayer->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
-					}
-
-					// 컨트롤러 및 카메라 복구
-					APlayerController* PC = GetWorld()->GetFirstPlayerController();
-					if (PC)
-					{
-						PC->Possess(_myPlayer);
-						PC->SetViewTargetWithBlend(_myPlayer, 0.3f);
-					}
-
-					UE_LOG(LogTemp, Log, TEXT("[Revive] MyPlayer has successfully revived and re-possessed."));
-				}
-			}
-			// OtherPlayer 부활
-			else
-			{
-				AOtherPlayer** findPlayer = _otherPlayers.Find(packet.id);
-				if (findPlayer && *findPlayer)
-				{
-					AOtherPlayer* targetPlayer = *findPlayer;
-
-					if (targetPlayer && !targetPlayer->GetIsAlive())
-					{
-						targetPlayer->SetIsAlive(true);
-						targetPlayer->SetActorHiddenInGame(false); // 다시 보이도록 설정
-
-						// 캡슐 컴포넌트 충돌
-						if (targetPlayer->GetCapsuleComponent())
-						{
-							targetPlayer->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Pawn"));
-						}
-
-						// 이동 복구
-						if (targetPlayer->GetCharacterMovement())
-						{
-							targetPlayer->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
-						}
-
-						UE_LOG(LogTemp, Log, TEXT("[Revive] OtherPlayer ID [%lld] has revived."), packet.id);
-					}
-				}
-			}
-		}
-
 		// Player 죽음 처리
 		if (packet.state == ObjectState::DEAD)
 		{
@@ -2601,6 +2538,8 @@ void UMain::RecvTurnOffLantern(S_TurnOffLantern_Packet packet)
 
 void UMain::RecvEndStage(S_EndStage_Packet packet)
 {
+	// 타이머 초기화
+	// 죽은 플레이어 부활
 	// 월드 & Map에 있는 모든 것들 지우기(Monster, Door, Hatch, Web 등)
 	// 연출 및 결과 창 띄우기
 
@@ -2610,6 +2549,60 @@ void UMain::RecvEndStage(S_EndStage_Packet packet)
 		if (!world)
 			return;
 
+		// 타이머 갱신
+		_myPlayer->SyncStageTimer(0);
+
+		// 부활 처리
+		if (_myPlayer && !_myPlayer->GetIsAlive())
+		{
+			_myPlayer->SetIsAlive(true);
+			_myPlayer->SetActorHiddenInGame(false); // 다시 보이도록 설정
+
+			if (_myPlayer->GetCapsuleComponent())
+			{
+				_myPlayer->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Pawn"));
+			}
+
+			if (_myPlayer->GetCharacterMovement())
+			{
+				_myPlayer->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+			}
+
+			// 컨트롤러 및 카메라 복구
+			APlayerController* PC = GetWorld()->GetFirstPlayerController();
+			if (PC)
+			{
+				PC->Possess(_myPlayer);
+				PC->SetViewTargetWithBlend(_myPlayer, 0.3f);
+			}
+
+			UE_LOG(LogTemp, Log, TEXT("[Revive] MyPlayer has successfully revived and re-possessed."));
+		}
+
+		for (auto& Pair : _otherPlayers)
+		{
+			AOtherPlayer* targetPlayer = Pair.Value;
+
+			if (targetPlayer && !targetPlayer->GetIsAlive())
+			{
+				targetPlayer->SetIsAlive(true);
+				targetPlayer->SetActorHiddenInGame(false); // 다시 보이도록 설정
+
+				if (targetPlayer->GetCapsuleComponent())
+				{
+					targetPlayer->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Pawn"));
+				}
+
+				if (targetPlayer->GetCharacterMovement())
+				{
+					targetPlayer->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+				}
+
+				UE_LOG(LogTemp, Log, TEXT("[Revive] OtherPlayer ID [%lld] has revived by global reset."), Pair.Key);
+			}
+		}
+
+		// 기존에 있던 액터들 다 지우기
 		auto DestroyActorsInMap = [](auto& Map) 
 		{
 			for (auto& Elem : Map)
@@ -2749,6 +2742,9 @@ void UMain::RecvStartStage(S_StartStage_Packet packet)
 			{
 				BaseBaseActor->PlayLeverAnimation();
 			}
+
+			// 타이머 갱신
+			_myPlayer->SyncStageTimer(600);
 		}
 
 		UE_LOG(LogTemp, Display, TEXT("[Cube] Cube and Door and Wall is Removed"));
