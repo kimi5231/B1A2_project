@@ -641,8 +641,15 @@ void AMyPlayer::ItemOrToolDrop()
 			}
 
 			// 들고 있는 Tool 지우기
-			_currentAttachedToolActor->Destroy();
-			_currentAttachedToolActor = nullptr;
+			if (_currentAttachedToolActor)
+			{
+				_currentAttachedToolActor->Destroy();
+				_currentAttachedToolActor = nullptr;
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("[Tool] _currentAttachedToolActor is null when trying to drop tool. ToolID: %d"), info.itemID);
+			}
 
 			// 랜턴 들기 상태 해제
 			IsCarryingLantern = false;

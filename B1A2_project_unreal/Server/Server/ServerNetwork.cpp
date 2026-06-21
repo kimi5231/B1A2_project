@@ -512,8 +512,11 @@ void ServerNetwork::ProcessDB(int clientIndex, ExpOver* expOver)
 	{
 	case DBType::ExistID:
 	{
-		if(expOver->_dbResult)
+		if (expOver->_dbResult)
+		{
 			SendLoginResultPacket(LoginResult::Sucess, clientIndex, _clients[clientIndex]);
+			_framework->AddLobbyClient(_clients[clientIndex]);
+		}
 		else
 			SendLoginResultPacket(LoginResult::Failed, clientIndex, _clients[clientIndex]);
 		delete expOver;
@@ -1076,25 +1079,11 @@ void ServerNetwork::ProcessLoginPacket(C_Login_Packet packet, int clientIndex)
 		}
 	}
 
+	_clients[clientIndex]->_name = packet.id;
+
 	// DB에 존재하는 ID인지 확인 요청
-	/*DBWork work{DBType::ExistID, clientIndex, packet.id };
-	g_dbManager->AddWork(work);*/
-
-	// 이건 ProcessDB로 옮길 예정
-	{
-		LoginResult result = LoginResult::Sucess;
-
-		// 로그인 결과 전송
-		SendLoginResultPacket(result, clientIndex, _clients[clientIndex]);
-
-		// 로그인에 성공했다면 RoomList 보내주고 ID 기록
-		if (result == LoginResult::Sucess)
-		{
-			SendCurrentRoomListPacket(_clients[clientIndex]);
-			_clients[clientIndex]->_name = packet.id;
-			_framework->AddLobbyClient(_clients[clientIndex]);
-		}
-	}
+	DBWork work{DBType::ExistID, clientIndex, packet.id };
+	g_dbManager->AddWork(work);
 }
 
 void ServerNetwork::ProcessLogoutPacket(C_Logout_Packet packet, int clientIndex)
