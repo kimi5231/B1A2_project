@@ -493,6 +493,17 @@ struct Quota
 	int avgBadEmotionCnt;
 };
 
+struct MapDifficulty
+{
+	float weightFear;
+	float weightSurprise;
+	float weightSad;
+	float weightDeath;
+	int avgBadEmotionCnt;
+	float thresholdEasy;
+	float thresholdHard;
+};
+
 struct CubeConditionInfo
 {
 	int totalCubeCount;
