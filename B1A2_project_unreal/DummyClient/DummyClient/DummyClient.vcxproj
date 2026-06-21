@@ -129,7 +129,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DataManager.cpp" />
     <ClCompile Include="GameNetwork.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="pch.cpp">
@@ -140,7 +139,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\Server\Server\Packets.h" />
     <ClInclude Include="..\..\Server\Server\Types.h" />
-    <ClInclude Include="DataManager.h" />
     <ClInclude Include="GameNetwork.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
