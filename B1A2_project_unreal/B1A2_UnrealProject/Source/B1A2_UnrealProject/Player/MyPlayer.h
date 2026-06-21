@@ -24,6 +24,8 @@ class ABaseSellingMachine;
 class UShopWidget;
 class UQuestWidget;
 
+class UCreditAndTimerWidget;
+
 /**
  * 
  */
@@ -260,6 +262,7 @@ public:
 	UUserWidget* GetEmotionResultWidget() const { return _emotionResultWidgetInstance; }
 	UShopWidget* GetShopWidget() const { return _shopWidgetInstance; }
 	UQuestWidget* GetQuestWidget() const { return _questWidgetInstance; }
+	UCreditAndTimerWidget* GetCreditAndTimerWidget() const { return _creditAndTimerWidgetInstance; }
 
 protected:
 	// Scan
@@ -358,6 +361,9 @@ public:
 	UPROPERTY()
 	AActor* CurrentSpectateTarget;
 
+	// 서버로부터 타이머 패킷이 오면 호출되어 시간을 강제 동기화하는 함수
+	void SyncStageTimer(int32 ServerTime);
+
 private:
 	// 레버 당기기
 	UPROPERTY()
@@ -404,4 +410,17 @@ private:
 
 	// 사망 플래그 여부
 	bool _isDead = false;
+
+	// 타이머 & 크레딧
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UCreditAndTimerWidget> _creditAndTimerWidgetClass;
+
+	UPROPERTY()
+	UCreditAndTimerWidget* _creditAndTimerWidgetInstance = nullptr;
+
+	int32 _currentStageTime = 600;
+	FTimerHandle _stageTimerHandle;
+
+	// 1초마다 시간 변경 후 UI 변경
+	void OnStageTimerTick();
 };

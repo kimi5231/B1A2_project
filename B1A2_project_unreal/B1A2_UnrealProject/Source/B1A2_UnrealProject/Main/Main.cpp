@@ -18,6 +18,8 @@
 #include "Widget/EmotionResultWidget.h"
 #include "Widget/ShopWidget.h"
 #include "Widget/QuestWidget.h"
+#include"CreditAndTimerWidget.h"
+
 #include "Player/MainMenuPlayerController.h"
 #include "Misc/PackageName.h"
 #include "PlayerMicComponent.h"
@@ -2950,6 +2952,7 @@ void UMain::RecvUpdateCredit(S_UpdateCredit_Packet packet)
 		// 위젯 변수 업데이트
 		_myPlayer->GetShopWidget()->SetCurrentCredit(packet.currentCredit);
 		_myPlayer->GetShopWidget()->UpdateUI();
+		_myPlayer->GetCreditAndTimerWidget()->K2_UpdateCredit(packet.goalCredit, packet.collectCredit, packet.currentCredit);
 
 		UE_LOG(LogTemp, Display, TEXT("[Credit] Recv Update Credit, currentCredit %d"), packet.currentCredit);
 	});
@@ -2957,6 +2960,10 @@ void UMain::RecvUpdateCredit(S_UpdateCredit_Packet packet)
 
 void UMain::RecvUpdateTimer(S_UpdateTimer_Packet packet)
 {
+	AsyncTask(ENamedThreads::GameThread, [=, this]()
+	{
+		_myPlayer->SyncStageTimer(packet.currentTime);
+	});
 }
 
 void UMain::RecvVoiceData(S_VoiceData_Packet packet)

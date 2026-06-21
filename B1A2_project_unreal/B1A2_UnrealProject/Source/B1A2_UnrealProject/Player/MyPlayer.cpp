@@ -30,6 +30,7 @@
 #include "Widget/PlayerStatusWidget.h"
 #include "Widget/ShopWidget.h"
 #include "Widget/QuestWidget.h"
+#include "CreditAndTimerWidget.h"
 
 #include "Blueprint/UserWidget.h"
 #include "Interactable/BaseBase.h"
@@ -122,6 +123,17 @@ void AMyPlayer::BeginPlay()
 		if (_questWidgetInstance)
 			_questWidgetInstance->AddToViewport();
 	}
+	// Credit & Timer 위젯
+	if (_creditAndTimerWidgetClass)
+	{
+		_creditAndTimerWidgetInstance = CreateWidget<UCreditAndTimerWidget>(GetWorld(), _creditAndTimerWidgetClass);
+		if (_creditAndTimerWidgetInstance)
+		{
+			_creditAndTimerWidgetInstance->AddToViewport();
+		}
+	}
+	// 클라이언트 타이머
+	GetWorldTimerManager().SetTimer(_stageTimerHandle, this, &AMyPlayer::OnStageTimerTick, 1.0f, true);
 
 	// Scan Material 설정
 	if (ScanMaterialOrigin && FollowCamera)
@@ -150,6 +162,32 @@ void AMyPlayer::BeginPlay()
 
 			FollowCamera->PostProcessSettings.WeightedBlendables.Array.Add(FWeightedBlendable(1.0f, HpFlashMaterialInst));
 		}
+	}
+}
+
+void AMyPlayer::OnStageTimerTick()
+{
+	if (_currentStageTime > 0)
+	{
+		_currentStageTime--;
+	}
+
+	// 매 초마다 UI 호출하여 시간 업데이트
+	if (_creditAndTimerWidgetInstance)
+	{
+		_creditAndTimerWidgetInstance->K2_UpdateTimer(_currentStageTime);
+	}
+}
+
+void AMyPlayer::SyncStageTimer(int32 ServerTime)
+{
+	// 서버 데이터로 덮어쓰기
+	_currentStageTime = ServerTime;
+
+	// 동기화 후  UI 갱신
+	if (_creditAndTimerWidgetInstance)
+	{
+		_creditAndTimerWidgetInstance->K2_UpdateTimer(_currentStageTime);
 	}
 }
 
