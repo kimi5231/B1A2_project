@@ -30,7 +30,7 @@ GameNetwork::GameNetwork()
 			sockaddr_in addr;
 			memset(&addr, 0, sizeof(addr));
 			addr.sin_family = AF_INET;
-			addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+			addr.sin_addr.s_addr = inet_addr("61.255.49.141");
 			addr.sin_port = htons(PORT);
 			if (connect(_dummys[i].socket, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR)
 				return;
@@ -109,12 +109,13 @@ void GameNetwork::UpdateDummy()
 		}
 		case DummyState::Play:
 		{
-			Vector pos{ -200, -200, -200 };
+			Vector pos{ -200, -200, 25};
 
 			// ·£´ý ÀÌµ¿
-			while (dummy.pos.x < -100 || dummy.pos.x > 100 || dummy.pos.y < -100 || dummy.pos.y > 100)
+			while (pos.x < -100 || pos.x > 100 || pos.y < -100 || pos.y > 100)
 			{
 				pos = dummy.pos;
+
 				Dir dir = static_cast<Dir>(rand() % 4);
 				switch (dir)
 				{
