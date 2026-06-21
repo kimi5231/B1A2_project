@@ -109,11 +109,12 @@ void GameNetwork::UpdateDummy()
 		}
 		case DummyState::Play:
 		{
-			Vector pos = dummy.pos;
+			Vector pos{ -100, -100, -100 };
 
 			// ·£´ý ÀÌµ¿
 			while (dummy.pos.x < -100 || dummy.pos.x > 100 || dummy.pos.y < -100 || dummy.pos.y > 100)
 			{
+				pos = dummy.pos;
 				Dir dir = static_cast<Dir>(rand() % 4);
 				switch (dir)
 				{
