@@ -6,21 +6,24 @@
 #include "BoundingBox.h"
 #include "Room.h"
 #include "Player.h"
+#include "Global.h"
 
 EmotionGame::EmotionGame(MonsterType monsterType, Room* ownerRoom)
 	: Monster(monsterType, ownerRoom)
 {
 	// Status ÃÊ±âÈ­
-	_maxHP = 10000;
-	_hp = _maxHP;
-	_isInvincible = true;
-	_idleTime = 15.f;
-	_playTime = 3.f;
-	_releaseTime = 3.f;
-	_damage = 25;
-	_healValue = 7;
-	_aggroRange = 500;
-	_power = 3;
+	EmotionGameStat stat = g_dataManager->GetEmotionGameStat();
+	_isInvincible = stat.isInvincible;
+	
+	_idleTime = stat.idleTime;
+	_playTime = stat.playTime;
+	_releaseTime = stat.releaseTime;
+	_damage = stat.damage;
+	_healValue = stat.healValue;
+	_aggroRange = stat.aggroRange;
+	_power = stat.power;
+
+	_size = g_dataManager->GetMonsterSize(MonsterType::EmotionGame);
 
 	// State Table
 	_stateTable[IDLE] = TELEPORT;

@@ -939,11 +939,15 @@ void ServerNetwork::SendStartStagePacket(Session* client)
 void ServerNetwork::SendEndStagePacket(Session* client)
 {
 	std::vector<StageResultDTO> stageResultDTOs;
+	Room* room = client->_room;
+	if (!room)
+		return; 
+
 	for (auto& player : client->_room->GetPlayers())
 	{
 		if (player->GetClient())
 		{
-			StageResultDTO DTO{ false, client->_name };
+			StageResultDTO DTO{ false, player->GetClient()->_name };
 
 			if (player->GetState() == ObjectState::DEAD)
 				DTO.isDead = true;

@@ -360,7 +360,7 @@ void StaringState::Enter(Monster* monster)
 	if (ghost->GetTarget()->GetClient())
 	{
 		g_network->SendMovePacket(ghost, ghost->GetTarget()->GetClient());
-		std::cout << "Ghost Move\n";
+		//std::cout << "Ghost Move\n";
 	}
 	
 	// 조건 검사

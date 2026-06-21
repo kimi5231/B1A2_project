@@ -18,8 +18,7 @@ Room::Room()
 {
 	_roomState = RoomState::Reusable;
 
-	_currentDifficulty = Difficulty::Easy;
-	_detailDifficulty = Difficulty::Easy;
+	_currentDifficulty = Difficulty::Normal;
 
 	// 몬스터별 최대 개수 초기화 (나중에 Json으로 읽어오기)
 	_maxMonsterCount[MonsterType::Spider] = 9;
@@ -220,7 +219,7 @@ void Room::SetupCubeConditions()
 void Room::CreateCubes()
 {
 	// 난이도에 맞춰 조건 설정
-	CubeConditionInfo conditions = g_dataManager->GetCubeConditionInfo(_currentDifficulty, _detailDifficulty);
+	CubeConditionInfo conditions = g_dataManager->GetCubeConditionInfo(_currentDifficulty);
 
 	// 방별 개수 초기화
 	for (int i = 0; i < static_cast<int>(CubeType::GameRoomTypeCount); ++i)
@@ -592,6 +591,17 @@ void Room::CreateCubes()
 	std::cout << "Success Create Cubes" << std::endl;
 }
 
+void Room::Reset()
+{
+	Quota info = g_dataManager->GetQuota();
+
+	_goalCredit = info.initialQuota;
+	_currentCredit = 0;
+	_collectCredit = 0;
+
+	_stage = 0;
+}
+
 void Room::StartStage()
 {
 	// RoomState 변경
@@ -675,6 +685,15 @@ void Room::EndStage()
 		_roomState = RoomState::Full;
 
 	// 다음 스테이지 난이도 변경
+	MapDifficulty D = g_dataManager->GetMapDifficulty();
+
+	float d = ((_currentFearCount * D.weightFear) + (_currentSurpriseCount * D.weightSurprise) + (_currentSadCount * D.weightSad) + (_deadPlayerCount * D.avgBadEmotionCnt * D.weightDeath)) / D.avgBadEmotionCnt * _currentPlayerCount;
+	if (d >= D.thresholdEasy)
+		_currentDifficulty = Difficulty::Easy;
+	else if(d < D.thresholdHard)
+		_currentDifficulty = Difficulty::Hard;
+	else
+		_currentDifficulty = Difficulty::Normal;
 
 	// Player 초기화 및 Credit 업데이트
 	for (auto& player : _players)

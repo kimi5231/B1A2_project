@@ -38,7 +38,7 @@ void UMain::Init()
 	ConnectServer();
 
 	// 시작할 때 카메라 연결
-	ConnectOpenCV();
+	//ConnectOpenCV();
 
 	// DataManager
 	LoadQuestData();

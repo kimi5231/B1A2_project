@@ -2,21 +2,27 @@
 #include "PollutionMonitor.h"
 #include "FSM.h"
 #include "State.h"
+#include "Global.h"
 
 PollutionMonitor::PollutionMonitor(MonsterType monsterType, Room* ownerRoom)
 	: Monster(monsterType, ownerRoom)
 {
 	// Status ÃÊ±âÈ­
-	_maxHP = 200;
+	PollutionMonitorStat stat = g_dataManager->GetPollutionMonitorStat();
+	_maxHP = stat.hp;
 	_hp = _maxHP;
-	_isInvincible = false;
-	_idleTime = 120.f;
-	_checkTime = 40.f;
-	_spawnTime = 30.f;
-	_damage = 40;
-	_power = 5;
+	_isInvincible = stat.isInvincible;
+	
+	_idleTime = stat.idleTime;
+	_checkTime = stat.checkTime;
+	_spawnTime = stat.spawnTime;
+	
+	_damage = stat.damage;
+	_power = stat.power;
 
-	_emotionCount = 5;
+	_emotionCount = stat.emotionCount;
+
+	_size = g_dataManager->GetMonsterSize(MonsterType::PollutionMonitor);
 
 	// State Table
 	_stateTable[IDLE] = CHECK;

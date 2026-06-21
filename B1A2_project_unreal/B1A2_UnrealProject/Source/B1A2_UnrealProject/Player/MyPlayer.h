@@ -418,7 +418,7 @@ private:
 	UPROPERTY()
 	UCreditAndTimerWidget* _creditAndTimerWidgetInstance = nullptr;
 
-	int32 _currentStageTime = 600;
+	int32 _currentStageTime = 0;
 	FTimerHandle _stageTimerHandle;
 
 	// 1초마다 시간 변경 후 UI 변경

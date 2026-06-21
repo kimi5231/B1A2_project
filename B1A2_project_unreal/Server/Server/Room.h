@@ -24,6 +24,7 @@ public:
 	void SetupCubeConditions();
 	void CreateCubes();
 
+	void Reset();
 	void StartStage();
 	void EndStage();
 
@@ -89,8 +90,6 @@ private:
 private:
 	// 현재 난이도
 	Difficulty _currentDifficulty{};
-	// 세부 난이도 (삭제 예정)
-	Difficulty _detailDifficulty{};
 
 	// 나중에 JSON으로 읽어오기
 	std::unordered_map<MonsterType, int> _maxMonsterCount;

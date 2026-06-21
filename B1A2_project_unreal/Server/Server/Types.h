@@ -493,6 +493,17 @@ struct Quota
 	int avgBadEmotionCnt;
 };
 
+struct MapDifficulty
+{
+	float weightFear;
+	float weightSurprise;
+	float weightSad;
+	float weightDeath;
+	int avgBadEmotionCnt;
+	float thresholdEasy;
+	float thresholdHard;
+};
+
 struct CubeConditionInfo
 {
 	int totalCubeCount;
@@ -571,7 +582,7 @@ struct SpiderStat
 {
 	float hp;
 	bool isInvincible;
-	float roaminSpeed;
+	float roamingSpeed;
 	float returnSpeed;
 	float chaseSpeed;
 	float idleTime;

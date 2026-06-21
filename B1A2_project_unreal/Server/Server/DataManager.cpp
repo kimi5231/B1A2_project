@@ -10,6 +10,7 @@ DataManager::DataManager()
     _dataPath = std::filesystem::current_path().parent_path() / "Data";
 
     LoadQuota();
+    LoadMapDifficulty();
     LoadCubeConditionInfos();
     LoadCubeInfos();
     LoadCubeTilemaps();
@@ -43,6 +44,25 @@ void DataManager::LoadQuota()
     _quota = quota;
 }
 
+void DataManager::LoadMapDifficulty()
+{
+    std::ifstream file(_dataPath / "MapDifficulty.json");
+    json data = json::parse(file);
+
+    // quota √ﬂ√‚
+    MapDifficulty mapDifficulty;
+
+    mapDifficulty.weightFear = data["weightFear"];
+    mapDifficulty.weightSurprise = data["weightSurprise"];
+    mapDifficulty.weightSad = data["weightSad"];
+    mapDifficulty.weightDeath = data["weightDeath"];
+    mapDifficulty.avgBadEmotionCnt = data["avgBadEmotionCnt"];
+    mapDifficulty.thresholdEasy = data["thresholdEasy"];
+    mapDifficulty.thresholdHard = data["thresholdHard"];
+
+    _mapDifficulty = mapDifficulty;
+}
+
 void DataManager::LoadCubeConditionInfos()
 {
     std::ifstream file(_dataPath / "GameRoomConditions.json");
@@ -58,25 +78,17 @@ void DataManager::LoadCubeConditionInfos()
         info.createItemCount.first = condition["createItemCount"]["min"];
         info.createItemCount.second = condition["createItemCount"]["max"];
 
-        info.createExitCount.first = condition["createExitCount"]["min"];
-        info.createExitCount.second = condition["createExitCount"]["max"];
-
         info.createSellingMachineCount = condition["createSellingMachineCount"];
-       
-        info.createSpecialSellingMachineCount = condition["createSpecialSellingMachineCount"];
 
         info.sellingMachineCreditLimit.first = condition["sellingMachineCreditLimit"]["min"];
         info.sellingMachineCreditLimit.second = condition["sellingMachineCreditLimit"]["max"];
         
         info.power = condition["power"];
 
-        info.exitPos.first = condition["exitPos"]["min"];
-        info.exitPos.second = condition["exitPos"]["max"];
-
         info.floor.first = condition["floor"]["min"];
         info.floor.second = condition["floor"]["max"];
 
-       _cubeConditionInfos[{condition["current"], condition["detail"]}] = info;
+       _cubeConditionInfos[condition["current"]] = info;
     }
 }
 
@@ -293,7 +305,7 @@ void DataManager::LoadSpiderStat()
 
     stat.hp = data["hp"];
     stat.isInvincible = data["isInvincible"];
-    stat.roaminSpeed = data["roaminSpeed"];
+    stat.roamingSpeed = data["roaminSpeed"];
     stat.returnSpeed = data["returnSpeed"];
     stat.chaseSpeed = data["chaseSpeed"];
     stat.idleTime = data["idleTime"];
@@ -303,6 +315,7 @@ void DataManager::LoadSpiderStat()
     stat.aggroRange = data["aggroRange"];
     stat.aggroAngle = data["aggroAngle"];
     stat.aggroHeight = data["aggroHeight"];
+    stat.attackRange = data["attackRange"];
     stat.attackAngle = data["attackAngle"];
     stat.attackHeight = data["attackHeight"];
     stat.attackDelay = data["attackDelay"];

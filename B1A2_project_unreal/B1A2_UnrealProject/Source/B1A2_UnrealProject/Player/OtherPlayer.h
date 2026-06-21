@@ -104,6 +104,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	bool IsCarryingLantern = false;
 
+	// Sound
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound|Weapon", meta = (AllowPrivateAccess = "true"))
+	class USoundBase* CutlassSound;
 protected:
 	// Tool 사용 타이머 핸들
 	FTimerHandle ToolChangeTimerHandle;

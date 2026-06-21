@@ -7,6 +7,7 @@
 #include "Interactable/BaseItem.h"
 #include "Main/Main.h"
 #include "VoiceSynthComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AOtherPlayer::AOtherPlayer()
@@ -256,7 +257,15 @@ void AOtherPlayer::PlayUseToolAnimation(ItemType type)
 	switch (type)
 	{
 	case ItemType::CUTLASS:
-		if (ComboMontage) PlayAnimMontage(ComboMontage, 2.0f, FName("Slash"));
+		if (ComboMontage)
+		{
+			PlayAnimMontage(ComboMontage, 2.0f, FName("Slash"));
+
+			if (CutlassSound)
+			{
+				UGameplayStatics::PlaySoundAtLocation(this, CutlassSound, GetActorLocation());
+			}
+		}
 		break;
 	case ItemType::Blaster:
 		if (ComboMontage) PlayAnimMontage(ComboMontage, 1.0f, FName("Shooting"));
