@@ -939,6 +939,10 @@ void ServerNetwork::SendStartStagePacket(Session* client)
 void ServerNetwork::SendEndStagePacket(Session* client)
 {
 	std::vector<StageResultDTO> stageResultDTOs;
+	Room* room = client->_room;
+	if (!room)
+		return; 
+
 	for (auto& player : client->_room->GetPlayers())
 	{
 		if (player->GetClient())

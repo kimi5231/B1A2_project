@@ -3,40 +3,43 @@
 #include "FSM.h"
 #include "State.h"
 #include "Room.h"
+#include "Global.h"
 
 Spider::Spider(MonsterType monsterType, Room* ownerRoom)
 	: Monster(monsterType, ownerRoom)
 {
 	// Status ÃÊ±âÈ­
-	_maxHP = 60;
-	_hp = 60;
-	_isInvincible = false;
+	SpiderStat stat = g_dataManager->GetSpiderStat();
+	_maxHP = stat.hp;
+	_hp = _maxHP;
+	_isInvincible = stat.isInvincible;
 
-	_returnSpeed = 250.f;
-	_roamingSpeed = 250.f; 
-	_chaseSpeed = 400.f; 
-	_idleTime = 1.5f;
-	_roamingTime = 2.5f;
-	_chaseTime = 5.f;
+	_returnSpeed = stat.returnSpeed;
+	_roamingSpeed = stat.roamingSpeed;
+	_chaseSpeed = stat.chaseSpeed;
 
-	_aggroRange = 400;
-	_aggroAngle = 360.f;
-	_aggroHeight = 400;
-	_attackRange = 150;
-	_attackAngle = 90.f;
-	_attackHeight = 400;
+	_idleTime = stat.idleTime;
+	_roamingTime = stat.roamingTime;
+	_chaseTime = stat.chaseTime;
 
-	_attackDelay = 1.f;
+	_aggroRange = stat.aggroRange;
+	_aggroAngle = stat.aggroAngle;
+	_aggroHeight = stat.aggroHeight;
+	_attackRange = stat.attackRange;
+	_attackAngle = stat.attackAngle;
+	_attackHeight = stat.attackHeight;
 
-	_damage = 15;
+	_attackDelay = stat.attackDelay;
 
-	_makeWebTime = 1.5f;
-	_maxWebCount = 8;
+	_damage = stat.damage;
+
+	_makeWebTime = stat.makeWebTime;
+	_maxWebCount = stat.maxWebCount;
 	_currentWebCount = 0;
 
-	_power = 1;
+	_power = stat.power;
 
-	_size = { 80, 80, 80 };
+	_size = g_dataManager->GetMonsterSize(MonsterType::Spider);
 
 	// State Table
 	_stateTable[IDLE] = ROAMING;

@@ -4,36 +4,39 @@
 #include "State.h"
 #include "Item.h"
 #include "Room.h"
+#include "Global.h"
 
 TrashCollector::TrashCollector(MonsterType monsterType, Room* ownerRoom)
 	: Monster(monsterType, ownerRoom)
 {
 	// Status ÃÊ±âÈ­
-	_maxHP = 80;
+	TrashCollectorStat stat = g_dataManager->GetTrashCollectorStat();
+	_maxHP = stat.hp;
 	_hp = _maxHP;
-	_isInvincible = false;
+	_isInvincible = stat.isInvincible;
 
-	_moveSpeed = 400.f;
-	_roamingSpeed = 300.f;
-	_chaseSpeed = 460.f;
-	_escapeSpeed = 520.f;
-	_idleTime = 2.f;
-	_roamingTime = 40.f;
-	_chaseTime = 7.f;
+	_moveSpeed = stat.moveSpeed;
+	_roamingSpeed = stat.roamingSpeed;
+	_chaseSpeed = stat.chaseSpeed;
+	_escapeSpeed = stat.escapeDistance;
 
-	_escapeDistance = 2500;
+	_idleTime = stat.idleTime;
+	_roamingTime = stat.roamingTime;
+	_chaseTime = stat.chaseTime;
 
-	_aggroRange = {600, 600, 300};
-	_attackRange = {70, 140, 140};
+	_escapeDistance = stat.escapeDistance;
 
-	_attackDelay = 3.f;
-	_damage = 20;
+	_aggroRange = stat.aggroRange;
+	_attackRange = stat.attackRange;
 
-	_power = 2;
+	_attackDelay = stat.attackDelay;
+	_damage = stat.damage;
 
-	_size = { 62, 75, 119 };
+	_power = stat.power;
 
-	_maxScrapCount = 3;
+	_size = g_dataManager->GetMonsterSize(MonsterType::TrashCollector);
+
+	_maxScrapCount = stat.maxScrapCount;
 	_currentScrap.reserve(_maxScrapCount);
 
 	_targetScrap = nullptr;

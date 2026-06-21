@@ -571,7 +571,7 @@ struct SpiderStat
 {
 	float hp;
 	bool isInvincible;
-	float roaminSpeed;
+	float roamingSpeed;
 	float returnSpeed;
 	float chaseSpeed;
 	float idleTime;

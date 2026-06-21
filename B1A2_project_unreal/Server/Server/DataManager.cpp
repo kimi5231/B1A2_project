@@ -293,7 +293,7 @@ void DataManager::LoadSpiderStat()
 
     stat.hp = data["hp"];
     stat.isInvincible = data["isInvincible"];
-    stat.roaminSpeed = data["roaminSpeed"];
+    stat.roamingSpeed = data["roaminSpeed"];
     stat.returnSpeed = data["returnSpeed"];
     stat.chaseSpeed = data["chaseSpeed"];
     stat.idleTime = data["idleTime"];
@@ -303,6 +303,7 @@ void DataManager::LoadSpiderStat()
     stat.aggroRange = data["aggroRange"];
     stat.aggroAngle = data["aggroAngle"];
     stat.aggroHeight = data["aggroHeight"];
+    stat.attackRange = data["attackRange"];
     stat.attackAngle = data["attackAngle"];
     stat.attackHeight = data["attackHeight"];
     stat.attackDelay = data["attackDelay"];

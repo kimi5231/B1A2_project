@@ -8,21 +8,22 @@
 Ghost::Ghost(MonsterType monsterType, Room* ownerRoom)
 	: Monster(monsterType, ownerRoom)
 {
-	_maxHP = 10000;
-	_hp = _maxHP;
-	_isInvincible = true;
-	_chaseSpeed = 450.f;
-	_idleTime = 15.f;
-	_chaseTime = 20.f;
-	_waitTime = 180.f;
-	_absentTime = 4.f;
-	_staringTime = 15.f;
-	_power = 8;
+	GhostStat stat = g_dataManager->GetGhostStat();
+	_isInvincible = stat.isInvincible;
+	_chaseSpeed = stat.chaseSpeed;
+	_idleTime = stat.idleTime;
+	_chaseTime = stat.chaseTime;
+	_waitTime = stat.waitTime;
+	_absentTime = stat.absentTime;
+	_staringTime = stat.staringTime;
+	_damage = stat.damage;
+	_power = stat.power;
+
 	_lookCount = 0;
 	_unlookCount = 0;
 	_checkLooking = false;
 
-	_size = { 100, 100, 100 };
+	_size = g_dataManager->GetMonsterSize(MonsterType::Ghost);
 	_box.SetBounds(_pos, _size, Front);
 
 	// State Table
