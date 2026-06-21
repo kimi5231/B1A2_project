@@ -1345,49 +1345,49 @@ void UMain::RecvDropItem(S_DropItem_Packet packet)
 				UE_LOG(LogTemp, Log, TEXT("[Item] CardboardBox Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
 				break;
 			case ItemType::GoldBar:
-				item = world->SpawnActor<ABaseItem>(GoldBarClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
+				item = world->SpawnActor<ABaseItem>(GoldBarClass, (spawnLocation.X, spawnLocation.Y, spawnLocation), spawnRotation);
 				item->SetItemType(ItemType::GoldBar);
-				UE_LOG(LogTemp, Log, TEXT("[Item] GoldBar Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
+				UE_LOG(LogTemp, Log, TEXT("[Item] GoldBar Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
 				break;
 			case ItemType::RubberDuck:
-				item = world->SpawnActor<ABaseItem>(RubberDuckClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
+				item = world->SpawnActor<ABaseItem>(RubberDuckClass, (spawnLocation.X, spawnLocation.Y, spawnLocation), spawnRotation);
 				item->SetItemType(ItemType::RubberDuck);
-				UE_LOG(LogTemp, Log, TEXT("[Item] RubberDuck Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
+				UE_LOG(LogTemp, Log, TEXT("[Item] RubberDuck Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
 				break;
 			case ItemType::PlasticCrate:
-				item = world->SpawnActor<ABaseItem>(PlasticCrateClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
+				item = world->SpawnActor<ABaseItem>(PlasticCrateClass, (spawnLocation.X, spawnLocation.Y, spawnLocation), spawnRotation);
 				item->SetItemType(ItemType::PlasticCrate);
-				UE_LOG(LogTemp, Log, TEXT("[Item] PlasticCrate Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
+				UE_LOG(LogTemp, Log, TEXT("[Item] PlasticCrate Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
 				break;
 			case ItemType::Screw:
-				item = world->SpawnActor<ABaseItem>(ScrewClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
+				item = world->SpawnActor<ABaseItem>(ScrewClass, (spawnLocation.X, spawnLocation.Y, spawnLocation), spawnRotation);
 				item->SetItemType(ItemType::Screw);
-				UE_LOG(LogTemp, Log, TEXT("[Item] Screw Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
+				UE_LOG(LogTemp, Log, TEXT("[Item] Screw Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
 				break;
 			case ItemType::PirateHat:
-				item = world->SpawnActor<ABaseItem>(PirateHatClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
+				item = world->SpawnActor<ABaseItem>(PirateHatClass, (spawnLocation.X, spawnLocation.Y, spawnLocation), spawnRotation);
 				item->SetItemType(ItemType::PirateHat);
-				UE_LOG(LogTemp, Log, TEXT("[Item] PirateHat Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
+				UE_LOG(LogTemp, Log, TEXT("[Item] PirateHat Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
 				break;
 			case ItemType::HardHat:
-				item = world->SpawnActor<ABaseItem>(HardHatClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
+				item = world->SpawnActor<ABaseItem>(HardHatClass, (spawnLocation.X, spawnLocation.Y, spawnLocation), spawnRotation);
 				item->SetItemType(ItemType::HardHat);
-				UE_LOG(LogTemp, Log, TEXT("[Item] HardHat Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
+				UE_LOG(LogTemp, Log, TEXT("[Item] HardHat Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
 				break;
 			case ItemType::EngineCore:
-				item = world->SpawnActor<ABaseItem>(EngineCoreClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
+				item = world->SpawnActor<ABaseItem>(EngineCoreClass, (spawnLocation.X, spawnLocation.Y, spawnLocation), spawnRotation);
 				item->SetItemType(ItemType::EngineCore);
-				UE_LOG(LogTemp, Log, TEXT("[Item] EngineCore Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
+				UE_LOG(LogTemp, Log, TEXT("[Item] EngineCore Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
 				break;
 			case ItemType::ScrapMetal:
-				item = world->SpawnActor<ABaseItem>(ScrapMetalClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
+				item = world->SpawnActor<ABaseItem>(ScrapMetalClass, (spawnLocation.X, spawnLocation.Y, spawnLocation), spawnRotation);
 				item->SetItemType(ItemType::ScrapMetal);
-				UE_LOG(LogTemp, Log, TEXT("[Item] ScrapMetal Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
+				UE_LOG(LogTemp, Log, TEXT("[Item] ScrapMetal Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
 				break;
 			case ItemType::EmptyCan:
-				item = world->SpawnActor<ABaseItem>(EmptyCanClass, (spawnLocation.X, spawnLocation.Y, spawnLocation + 30), spawnRotation);
+				item = world->SpawnActor<ABaseItem>(EmptyCanClass, (spawnLocation.X, spawnLocation.Y, spawnLocation), spawnRotation);
 				item->SetItemType(ItemType::EmptyCan);
-				UE_LOG(LogTemp, Log, TEXT("[Item] EmptyCan Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z + 30);
+				UE_LOG(LogTemp, Log, TEXT("[Item] EmptyCan Spawned! [%d], %f, %f, %f"), itemID, spawnLocation.X, spawnLocation.Y, spawnLocation.Z);
 				break;
 			}
 
@@ -2755,12 +2755,22 @@ void UMain::RecvGameOver(S_GameOver_Packet packet)
 {
 	AsyncTask(ENamedThreads::GameThread, [this, packet]()
 	{
-		if (UWorld* World = GetWorld())
+		if (!GetWorld()) return;
+
+		if (GameOverWidgetClass)
 		{
-			AActor* FoundActor = UGameplayStatics::GetActorOfClass(World, ABaseBase::StaticClass());
-			if (ABaseBase* BaseBaseActor = Cast<ABaseBase>(FoundActor))
+			if (GameOverWidgetInstance != nullptr) return;
+
+			GameOverWidgetInstance = CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass);
+
+			if (GameOverWidgetInstance)
 			{
-				BaseBaseActor->PlayLeverAnimation();
+				GameOverWidgetInstance->AddToViewport();
+
+				GetWorld()->GetTimerManager().ClearTimer(GameOverTimerHandle);
+				GetWorld()->GetTimerManager().SetTimer(GameOverTimerHandle, this, &UMain::RemoveGameOverWidget, 5.0f, false);
+
+				UE_LOG(LogTemp, Log, TEXT("[UI] GameOver Widget Displayed. It will disappear in 5 seconds."));
 			}
 		}
 	});
@@ -2771,10 +2781,17 @@ void UMain::RecvGameOver(S_GameOver_Packet packet)
 	// 초기화는 서버가 따로 보냄
 
 	UE_LOG(LogTemp, Display, TEXT("[GameOver] Recv GameOver Packet"));
+}
 
-	/*AsyncTask(ENamedThreads::GameThread, [=, this]()
+void UMain::RemoveGameOverWidget()
+{
+	if (GameOverWidgetInstance)
 	{
-	});*/
+		GameOverWidgetInstance->RemoveFromParent();
+		GameOverWidgetInstance = nullptr;
+
+		UE_LOG(LogTemp, Log, TEXT("[UI] GameOver Widget Automatically Removed after 5 seconds."));
+	}
 }
 
 void UMain::RecvUpdateHp(S_UpdateHp_Packet packet)
