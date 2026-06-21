@@ -968,7 +968,7 @@ void AMyPlayer::SetCurrentHp(float hp)
 		UAnimInstance* AnimInstance = GetMesh() ? GetMesh()->GetAnimInstance() : nullptr;
 		if (ComboMontage && AnimInstance)
 		{
-			IsBusy = true; // 입력 차단 시작
+			//IsBusy = true; // 입력 차단 시작 <- 아 이거 땜에 입력 안 먹는 것 같음
 
 			// 몽타주 실행
 			float duration = PlayAnimMontage(ComboMontage, 1.f, "Dead");
