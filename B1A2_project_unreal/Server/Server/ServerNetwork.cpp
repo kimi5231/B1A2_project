@@ -943,7 +943,7 @@ void ServerNetwork::SendEndStagePacket(Session* client)
 	{
 		if (player->GetClient())
 		{
-			StageResultDTO DTO{ false, client->_name };
+			StageResultDTO DTO{ false, player->GetClient()->_name };
 
 			if (player->GetState() == ObjectState::DEAD)
 				DTO.isDead = true;
