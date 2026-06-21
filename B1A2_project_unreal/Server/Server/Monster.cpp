@@ -382,12 +382,8 @@ std::deque<VectorInt> Monster::FindPath(Vector goal, const CubeRef currentCube)
 	// 오르내릴 수 있는 Z축 3개 층 오프셋 (현재층, 윗층, 아랫층)
 	const int dz[5] = { 0, 1, 2, -1, -2 };
 
-	int loop = 0;
 	while (!openList.empty())
 	{
-		if (loop++ > 100)
-			return {};
-
 		// openList에서 f값이 가장 작은 노드 꺼내기
 		TileNode* currentNode = openList.top();
 		openList.pop();
