@@ -304,6 +304,17 @@ public:
 
 	DataManager* GetDataManager() { return _dataManager; }
 
+	// GameOver À§Á¬
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI|GameOver")
+	TSubclassOf<class UUserWidget> GameOverWidgetClass;
+
+	UPROPERTY()
+	class UUserWidget* GameOverWidgetInstance = nullptr;
+
+	FTimerHandle GameOverTimerHandle;
+
+	void RemoveGameOverWidget();
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Settings")
 	TSoftObjectPtr<UWorld> MainGameLevel;

@@ -2755,12 +2755,22 @@ void UMain::RecvGameOver(S_GameOver_Packet packet)
 {
 	AsyncTask(ENamedThreads::GameThread, [this, packet]()
 	{
-		if (UWorld* World = GetWorld())
+		if (!GetWorld()) return;
+
+		if (GameOverWidgetClass)
 		{
-			AActor* FoundActor = UGameplayStatics::GetActorOfClass(World, ABaseBase::StaticClass());
-			if (ABaseBase* BaseBaseActor = Cast<ABaseBase>(FoundActor))
+			if (GameOverWidgetInstance != nullptr) return;
+
+			GameOverWidgetInstance = CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass);
+
+			if (GameOverWidgetInstance)
 			{
-				BaseBaseActor->PlayLeverAnimation();
+				GameOverWidgetInstance->AddToViewport();
+
+				GetWorld()->GetTimerManager().ClearTimer(GameOverTimerHandle);
+				GetWorld()->GetTimerManager().SetTimer(GameOverTimerHandle, this, &UMain::RemoveGameOverWidget, 5.0f, false);
+
+				UE_LOG(LogTemp, Log, TEXT("[UI] GameOver Widget Displayed. It will disappear in 5 seconds."));
 			}
 		}
 	});
@@ -2771,10 +2781,17 @@ void UMain::RecvGameOver(S_GameOver_Packet packet)
 	// 초기화는 서버가 따로 보냄
 
 	UE_LOG(LogTemp, Display, TEXT("[GameOver] Recv GameOver Packet"));
+}
 
-	/*AsyncTask(ENamedThreads::GameThread, [=, this]()
+void UMain::RemoveGameOverWidget()
+{
+	if (GameOverWidgetInstance)
 	{
-	});*/
+		GameOverWidgetInstance->RemoveFromParent();
+		GameOverWidgetInstance = nullptr;
+
+		UE_LOG(LogTemp, Log, TEXT("[UI] GameOver Widget Automatically Removed after 5 seconds."));
+	}
 }
 
 void UMain::RecvUpdateHp(S_UpdateHp_Packet packet)
