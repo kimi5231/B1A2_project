@@ -57,6 +57,7 @@ Room* ServerFramework::AddRoom(std::vector<char>& title)
 	{
 		if (_rooms[i]->GetRoomState() == RoomState::Reusable)
 		{
+			_rooms[i]->Reset();
 			_rooms[i]->SetRoomState(RoomState::Wait);
 			_rooms[i]->SetTitle(title);
 			return _rooms[i];

@@ -24,6 +24,7 @@ public:
 	void SetupCubeConditions();
 	void CreateCubes();
 
+	void Reset();
 	void StartStage();
 	void EndStage();
 
