@@ -592,6 +592,17 @@ void Room::CreateCubes()
 	std::cout << "Success Create Cubes" << std::endl;
 }
 
+void Room::Reset()
+{
+	Quota info = g_dataManager->GetQuota();
+
+	_goalCredit = info.initialQuota;
+	_currentCredit = 0;
+	_collectCredit = 0;
+
+	_stage = 0;
+}
+
 void Room::StartStage()
 {
 	// RoomState º¯°æ
