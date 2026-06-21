@@ -11,9 +11,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DataManager.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="GameNetwork.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -25,9 +22,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DataManager.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
     <ClInclude Include="GameNetwork.h">
       <Filter>소스 파일</Filter>
     </ClInclude>

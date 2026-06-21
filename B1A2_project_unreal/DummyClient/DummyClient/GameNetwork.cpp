@@ -109,24 +109,30 @@ void GameNetwork::UpdateDummy()
 		}
 		case DummyState::Play:
 		{
+			Vector pos = dummy.pos;
+
 			// 랜덤 이동
-			Dir dir = static_cast<Dir>(rand() % 4);
-			switch (dir)
+			while (dummy.pos.x < -100 || dummy.pos.x > 100 || dummy.pos.y < -100 || dummy.pos.y > 100)
 			{
-			case Front:
-				dummy.pos.y -= TileSize;
-				break;
-			case Right:
-				dummy.pos.x += TileSize;
-				break;
-			case Back:
-				dummy.pos.y += TileSize;
-				break;
-			case Left:
-				dummy.pos.x -= TileSize;
-				break;
+				Dir dir = static_cast<Dir>(rand() % 4);
+				switch (dir)
+				{
+				case Front:
+					pos.y -= TileSize;
+					break;
+				case Right:
+					pos.x += TileSize;
+					break;
+				case Back:
+					pos.y += TileSize;
+					break;
+				case Left:
+					pos.x -= TileSize;
+					break;
+				}
 			}
 
+			dummy.pos = pos;
 			SendMovePacket(dummy.dummyID, ObjectType::Player, dummy.playerID, dummy.pos, Rotation{ 0, 0, 0 }, ObjectState::MOVE);
 			std::cout << "Dummy[" << dummy.dummyID << "] 이동\n";
 			break;
