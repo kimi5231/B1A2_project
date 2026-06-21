@@ -2152,6 +2152,7 @@ void UMain::RecvCreateCubes(S_CreateCubes_Packet packet)
 			smActor->SetMachineID(sm.id);
 			smActor->SetMachineState(sm.state);
 			smActor->SetMaxCredit(sm.creditLimit);
+			smActor->SetRemainCredit(sm.creditLimit);	// 초반엔 maxCredit으로 설정
 			smActor->SetLeverLength(sm.state);	// 상태에 따라 레버 위치 설정
 
 			_sellingMachines.Add(packet.sellingMachines[i].id, smActor);
@@ -2883,6 +2884,8 @@ void UMain::RecvSellItemResult(S_SellItemResult_Packet packet)
 			ABaseSellingMachine* machine = _sellingMachines[machineID];
 			if (machine)
 			{
+				machine->SetRemainCredit(packet.remainCredit);
+
 				// 올려놨던 아이템 가격 초기화, 위젯 갱신
 				machine->ResetPendingCredit();
 
