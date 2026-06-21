@@ -3,6 +3,7 @@
 
 #include "BaseBase.h"
 #include "Main/Main.h"
+#include "Kismet/GameplayStatics.h"
 
 ABaseBase::ABaseBase()
 {
@@ -99,6 +100,10 @@ void ABaseBase::PlayLeverAnimation()
     if (LeverMesh && LeverPullAnim)
     {
         LeverMesh->PlayAnimation(LeverPullAnim, false);
+      
+        if (LeverSound)
+            UGameplayStatics::PlaySoundAtLocation(this, LeverSound, GetActorLocation());
+
         UE_LOG(LogTemp, Log, TEXT("[Base] Lever Pull Animation Played by Server Packet!"));
     }
 }
