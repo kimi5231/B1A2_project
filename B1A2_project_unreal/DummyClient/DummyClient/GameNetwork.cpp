@@ -109,7 +109,7 @@ void GameNetwork::UpdateDummy()
 		}
 		case DummyState::Play:
 		{
-			Vector pos{ -100, -100, -100 };
+			Vector pos{ -200, -200, -200 };
 
 			// ·£´ý ÀÌµ¿
 			while (dummy.pos.x < -100 || dummy.pos.x > 100 || dummy.pos.y < -100 || dummy.pos.y > 100)
