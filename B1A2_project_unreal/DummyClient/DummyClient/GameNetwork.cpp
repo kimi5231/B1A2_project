@@ -30,7 +30,7 @@ GameNetwork::GameNetwork()
 			sockaddr_in addr;
 			memset(&addr, 0, sizeof(addr));
 			addr.sin_family = AF_INET;
-			addr.sin_addr.s_addr = inet_addr("61.255.49.141");
+			addr.sin_addr.s_addr = inet_addr("192.168.78.46");
 			addr.sin_port = htons(PORT);
 			if (connect(_dummys[i].socket, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR)
 				return;

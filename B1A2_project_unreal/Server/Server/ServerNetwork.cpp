@@ -1082,8 +1082,11 @@ void ServerNetwork::ProcessLoginPacket(C_Login_Packet packet, int clientIndex)
 	_clients[clientIndex]->_name = packet.id;
 
 	// DB에 존재하는 ID인지 확인 요청
-	DBWork work{DBType::ExistID, clientIndex, packet.id };
-	g_dbManager->AddWork(work);
+	/*DBWork work{DBType::ExistID, clientIndex, packet.id };
+	g_dbManager->AddWork(work);*/
+
+	SendLoginResultPacket(LoginResult::Sucess, clientIndex, _clients[clientIndex]);
+	_framework->AddLobbyClient(_clients[clientIndex]);
 }
 
 void ServerNetwork::ProcessLogoutPacket(C_Logout_Packet packet, int clientIndex)
