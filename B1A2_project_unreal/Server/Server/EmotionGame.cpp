@@ -37,16 +37,16 @@ EmotionGame::~EmotionGame()
 {
 }
 
-void EmotionGame::Update(Room* room)
+void EmotionGame::Update()
 {
-	Monster::Update(room);
+	Monster::Update();
 
 	if(_loseCount == 3)
 		SetState(DEAD);
 
 	if (_state == IDLE)
 	{
-		const std::array<Player*, MAX_PLAYER>& players = room->GetPlayers();
+		const std::array<Player*, MAX_PLAYER>& players = _ownerRoom->GetPlayers();
 		for (auto& player : players)
 		{
 			if (player->GetObjectPoolState() == ObjectPoolState::Reusable || player->GetState() == ObjectState::DEAD)

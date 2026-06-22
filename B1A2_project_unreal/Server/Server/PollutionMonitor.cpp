@@ -36,9 +36,9 @@ PollutionMonitor::~PollutionMonitor()
 {
 }
 
-void PollutionMonitor::Update(Room* room)
+void PollutionMonitor::Update()
 {
-	Monster::Update(room);
+	Monster::Update();
 }
 
 bool PollutionMonitor::IsReadyNextState()

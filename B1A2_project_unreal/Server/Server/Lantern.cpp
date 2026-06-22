@@ -22,7 +22,7 @@ void Lantern::Update()
 {
 	if(_isOn)
 	{
-		_sumTime += g_timer->GetDeltaTime();
+		_sumTime += _ownerRoom->GetUpdateRoomTime();
 		if (_sumTime >= 1.f)
 		{
 			_sumTime = 0.f;

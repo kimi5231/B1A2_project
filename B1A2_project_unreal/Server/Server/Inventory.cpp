@@ -43,7 +43,7 @@ bool Inventory::RemoveItem(bool isTool, int id)
 bool Inventory::ExistItem(bool isTool, int id)
 {
 	if (isTool)
-		return _tools.erase(id);
+		return _tools.count(id);
 	else
-		return _scraps.erase(id);
+		return _scraps.count(id);
 }

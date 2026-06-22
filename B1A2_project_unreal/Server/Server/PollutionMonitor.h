@@ -7,7 +7,7 @@ public:
 	PollutionMonitor(MonsterType monsterType, Room* ownerRoom);
 	virtual ~PollutionMonitor();
 
-	virtual void Update(Room* room) override;
+	virtual void Update() override;
 
 public:
 	virtual bool IsReadyNextState() override;
