@@ -598,9 +598,11 @@ void UMain::RecvCurrentRoomList(S_CurrentRoomList_Packet packet)
 				UE_LOG(LogTemp, Display, TEXT("[Lobby] Successfully processing room list. Room Count: %d"), (int32)packet.roomList.size());
 				MenuPC->HandleCurrentRoomList(packet.roomList);
 			}
+			// 룸 리스트가 비어있다면, ui에서 다 지우기
 			else
 			{
 				UE_LOG(LogTemp, Display, TEXT("[Lobby] RecvCurrentRoomList is called but roomList is empty"));
+				MenuPC->HandleCurrentRoomList(packet.roomList);
 			}
 		}
 		else

@@ -85,6 +85,12 @@ void ULobbyWidget::UpdateRoomList(const std::vector<RoomDTO>& roomList)
 		return;
 	}
 
+	if (roomList.empty())
+	{
+		UE_LOG(LogTemp, Display, TEXT("[UI] Room list is empty. Screen cleared."));
+		return;
+	}
+
 	// 방 목록 배열을 순회하며 동적으로 자식 위젯 생성하기
 	for (const RoomDTO& RoomData : roomList)
 	{
