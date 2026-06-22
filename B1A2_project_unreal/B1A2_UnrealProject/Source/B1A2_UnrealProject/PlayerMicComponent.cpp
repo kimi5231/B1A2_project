@@ -37,24 +37,33 @@ void UPlayerMicComponent::StartCapture()
 	Params.DeviceIndex = 0; // 마이크 선택
 
 	auto CaptureCallback = [this](const void* InAudio, int32 NumFrames, int32 NumChannels, int32 InSampleRate, double StreamTime, bool bOverflow)
+	{
+		if (NumFrames <= 0 || !OnVoiceCaptured.IsBound()) return;
+
+		static bool bLogOnce = false;
+		if (!bLogOnce)
 		{
-			if (NumFrames <= 0 || !OnVoiceCaptured.IsBound()) return;
+			UE_LOG(LogTemp, Warning, TEXT("[VoiceMic] Actual Hardware Capture Info -> SampleRate: %d Hz, Channels: %d"), InSampleRate, NumChannels);
+			bLogOnce = true;
+		}
 
-			const float* FloatAudio = static_cast<const float*>(InAudio);
-			const int32 NumSamples = NumFrames * NumChannels;
+		const float* FloatAudio = static_cast<const float*>(InAudio);
 
-			TArray<uint8> ByteData;
-			ByteData.AddUninitialized(NumSamples * sizeof(int16));
-			int16* PcmBuffer = reinterpret_cast<int16*>(ByteData.GetData());
+		// 채널 수와 상관없이 NumFrames 만큼만 할당함
+		TArray<uint8> ByteData;
+		ByteData.AddUninitialized(NumFrames * sizeof(int16));
+		int16* PcmBuffer = reinterpret_cast<int16*>(ByteData.GetData());
 
-			for (int32 i = 0; i < NumSamples; ++i)
-			{
-				float Scaled = FMath::Clamp(FloatAudio[i], -1.0f, 1.0f) * 32767.0f;
-				PcmBuffer[i] = static_cast<int16>(Scaled);
-			}
+		for (int32 i = 0; i < NumFrames; ++i)
+		{
+			// 멀티 채널일 경우 좌측 소리만 샘플링하기
+			int32 SampleIndex = i * NumChannels;
+			float Scaled = FMath::Clamp(FloatAudio[SampleIndex], -1.0f, 1.0f) * 32767.0f;
+			PcmBuffer[i] = static_cast<int16>(Scaled);
+		}
 
-			OnVoiceCaptured.ExecuteIfBound(ByteData);
-		};
+		OnVoiceCaptured.ExecuteIfBound(ByteData);
+	};
 
 	InternalCapture->NativeCapture.OpenAudioCaptureStream(Params, CaptureCallback, 512);
 	InternalCapture->NativeCapture.StartStream(); 
