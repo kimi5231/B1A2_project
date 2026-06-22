@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Team Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body{
+      margin:0;
+      font-family:'Inter', sans-serif;
+      background:#0c0f14;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      min-height:100vh;
+      padding:40px 20px 20px;
+      color:#f0f4ff;
+    }
+    .wrap{
+      width: min(1000px, 92vw);
+      text-align:center;
+    }
+    h1{
+      font-size:40px;
+      margin-bottom:24px;
+      font-weight:700;
+      color:#f0f4ff;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
+      gap:28px;
+    }
+    .card{
+      background:#ffffff;
+      border-radius:18px;
+      padding:26px 24px;
+      box-shadow:0 8px 24px rgba(0,0,0,0.08);
+      text-decoration:none;
+      color:inherit;
+      border:1px solid #e8edf7;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .card:hover{
+      transform:translateY(-4px);
+      box-shadow:0 14px 32px rgba(0,0,0,0.12);
+    }
+    .name{
+      font-size:32px;
+      font-weight:700;
+      margin-bottom:10px;
+      color:#1e2a45;
+    }
+    .role{
+      font-size:18px;
+      color:#6b7280;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Portfolio</h1>
+    <div class="grid">
+      <a class="card" href="https://www.artstation.com/qudgus" target="_blank">
+        <div class="name">김병헌</div>
+        <div class="role">Background Modeling</div>
+      </a>
+      <a class="card" href="https://www.miricanvas.com/v2/design2/v/509388cf-f179-4c25-a9b3-1a07b808108c" target="_blank">
+        <div class="name">조성원</div>
+        <div class="role">Client Programmer</div>
+      </a>
+      <a class="card"  href="https://hwangsuji.my.canva.site/dagxyamyuns" target="_blank">
+        <div class="name">황수지</div>
+        <div class="role">Server Programmer</div> 
+      </a>
+    </div>
+  </div>
+</body>
+</html>  
