@@ -7,7 +7,7 @@ public:
 	Ghost(MonsterType monsterType, Room* ownerRoom);
 	~Ghost();
 
-	virtual void Update(Room* room) override;
+	virtual void Update() override;
 
 public:
 	virtual bool IsReadyNextState() override;

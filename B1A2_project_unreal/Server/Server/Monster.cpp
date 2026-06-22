@@ -31,7 +31,7 @@ Monster::~Monster()
 {
 }
 
-void Monster::Update(Room* room)
+void Monster::Update()
 {
 	_fsm->Update(this);
 }

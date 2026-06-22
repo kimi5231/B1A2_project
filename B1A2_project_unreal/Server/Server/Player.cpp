@@ -100,6 +100,8 @@ void Player::Respawn()
 	SetState(ObjectState::IDLE, true);
 
 	g_network->SendUpdateHpPacket(_id, _hp, _client);
+
+	_inventory->Init();
 }
 
 bool Player::SetState(ObjectState state, bool isSend)

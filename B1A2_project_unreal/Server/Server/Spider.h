@@ -7,7 +7,7 @@ public:
 	Spider(MonsterType monsterType, Room* ownerRoom);
 	~Spider();
 
-	virtual void Update(Room* room) override;
+	virtual void Update() override;
 
 public:
 	virtual bool IsReadyNextState() override;

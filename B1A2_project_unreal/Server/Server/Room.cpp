@@ -168,7 +168,7 @@ void Room::Update()
 			if(monster->GetObjectPoolState() != ObjectPoolState::InWorld)
 				 continue;
 			
-			monster->Update(this);
+			monster->Update();
 		}
 			
 		for (const auto& [id, item] : _processingItems)

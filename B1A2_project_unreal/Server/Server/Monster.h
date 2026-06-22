@@ -11,7 +11,7 @@ public:
 	~Monster();
 
 public:
-	virtual void Update(Room* room);
+	virtual void Update();
 
 public: 
 	virtual bool IsReadyNextState() { return false; };

@@ -56,13 +56,13 @@ TrashCollector::~TrashCollector()
 {
 }
 
-void TrashCollector::Update(Room* room)
+void TrashCollector::Update()
 {
-	Monster::Update(room);
+	Monster::Update();
 
 	if (_state != ObjectState::ESCAPE)
 	{
-		const std::array<Player*, MAX_PLAYER>& players = room->GetPlayers();
+		const std::array<Player*, MAX_PLAYER>& players = _ownerRoom->GetPlayers();
 
 		// 공격 범위 안에 플레이어가 있는지 확인
 		if (std::chrono::steady_clock::now() > _nextAttackTime)
@@ -107,7 +107,7 @@ void TrashCollector::Update(Room* room)
 		// 인식 범위 안에 아이템이 있는지 확인
 		if (_currentScrap.size() != _maxScrapCount && _state != ObjectState::COLLECT)
 		{
-			const std::array<Item*, MAX_ITEM>& items = room->GetItems();
+			const std::array<Item*, MAX_ITEM>& items = _ownerRoom->GetItems();
 
 			for (auto& item : items)
 			{
