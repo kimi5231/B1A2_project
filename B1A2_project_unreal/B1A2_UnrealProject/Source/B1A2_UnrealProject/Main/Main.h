@@ -136,7 +136,7 @@ public:
 	void RecvTurnOnLantern(S_TurnOnLantern_Packet packet);
 	void RecvTurnOffLantern(S_TurnOffLantern_Packet packet);
 
-	void RecvEndStage(S_EndStage_Packet packet);
+	void RecvEndStage(S_EndStage_Packet packet, const std::vector<int>& nameSizes);
 	void RecvStartStage(S_StartStage_Packet packet);
 	void RecvGameOver(S_GameOver_Packet packet);
 

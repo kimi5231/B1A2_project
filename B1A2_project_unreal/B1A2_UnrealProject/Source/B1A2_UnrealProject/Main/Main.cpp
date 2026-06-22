@@ -458,6 +458,9 @@ void UMain::ProcessRecv()
 			memcpy(&stageResultDTOSize, event->serializedPacketData.data(), sizeof(unsigned char));
 			event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned char));
 
+			// 이름 길이 저장
+			std::vector<int> nameSizes;
+
 			for (int i = 0; i < stageResultDTOSize; ++i)
 			{
 				StageResultDTO stageResultDTO;
@@ -468,13 +471,18 @@ void UMain::ProcessRecv()
 				char nameSize;
 				memcpy(&nameSize, event->serializedPacketData.data(), sizeof(unsigned char));
 				event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(unsigned char));
+
+				nameSizes.push_back(static_cast<int>(nameSize));
+
 				stageResultDTO.name.resize(nameSize);
 				memcpy(stageResultDTO.name.data(), event->serializedPacketData.data(), sizeof(char) * nameSize);
 				event->serializedPacketData.erase(event->serializedPacketData.begin(), event->serializedPacketData.begin() + sizeof(char) * nameSize);
 				endStagePacket.stageResult.push_back(stageResultDTO);
+
+				UE_LOG(LogTemp, Display, TEXT("[Result] NameSize: %d"), nameSize);
 			}
 
-			RecvEndStage(endStagePacket);
+			RecvEndStage(endStagePacket, nameSizes);
 			event->isComplete = true;
 			break;
 		}
@@ -2536,14 +2544,14 @@ void UMain::RecvTurnOffLantern(S_TurnOffLantern_Packet packet)
 	});
 }
 
-void UMain::RecvEndStage(S_EndStage_Packet packet)
+void UMain::RecvEndStage(S_EndStage_Packet packet, const std::vector<int>& nameSizes)
 {
 	// 타이머 초기화
 	// 죽은 플레이어 부활
 	// 월드 & Map에 있는 모든 것들 지우기(Monster, Door, Hatch, Web 등)
 	// 연출 및 결과 창 띄우기
 
-	AsyncTask(ENamedThreads::GameThread, [this, packet]()
+	AsyncTask(ENamedThreads::GameThread, [this, packet, nameSizes]()
 	{
 		UWorld* world = GetWorld();
 		if (!world)
@@ -2695,8 +2703,18 @@ void UMain::RecvEndStage(S_EndStage_Packet packet)
 			{
 				TArray<FString> Names;
 				TArray<bool> States;
-				for (const auto& dto : packet.stageResult) {
-					Names.Add(FString(UTF8_TO_TCHAR(dto.name.data())));
+
+				for (int32 i = 0; i < packet.stageResult.size(); ++i)
+				{
+					const auto& dto = packet.stageResult[i];
+					int32 currentNameSize = nameSizes[i];
+
+					std::string cleanName(dto.name.data(), currentNameSize);
+
+					UE_LOG(LogTemp, Display, TEXT("[GameThread] Index: %d, NameSize: %d, Converted: %s"),
+						i, currentNameSize, UTF8_TO_TCHAR(cleanName.c_str()));
+
+					Names.Add(FString(UTF8_TO_TCHAR(cleanName.c_str())));
 					States.Add(dto.isDead);
 				}
 
