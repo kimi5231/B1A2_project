@@ -176,6 +176,32 @@ void AOtherPlayer::PlayPickUpAnimation(ABaseItem* item)
 			}
 		}
 	});
+
+	//if (!item || !ComboMontage) return;
+
+	//IsBusy = true;
+	//_currentPickingUpItem = item;
+
+	//UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	//if (AnimInstance)
+	//{
+	//	// 재생
+	//	float Duration = PlayAnimMontage(ComboMontage, 3.f, FName("TakeItem"));
+
+	//	if (Duration > 0.f)
+	//	{
+	//		IsBusy = true;
+	//		_currentPickingUpItem = item;
+
+	//		// 아이템 파괴 Notify 연결
+	//		AnimInstance->OnPlayMontageNotifyBegin.AddDynamic(this, &AOtherPlayer::PickUpNotifyReached);
+
+	//		// 종료 델리게이트 설정 (애니메이션 재생 후 이동 가능하도록 설정)
+	//		FOnMontageEnded EndDelegate;
+	//		EndDelegate.BindUObject(this, &AOtherPlayer::PickUpMontageEnded);
+	//		AnimInstance->Montage_SetEndDelegate(EndDelegate, ComboMontage);
+	//	}
+	//}
 }
 
 void AOtherPlayer::PickUpNotifyReached(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload)
