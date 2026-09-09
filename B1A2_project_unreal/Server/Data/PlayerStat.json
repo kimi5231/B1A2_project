@@ -1,11 +1,11 @@
 {
 	"hp":100,
 	"stamina": 100,
-	"recoveryStamina": 2,
-	"walkSpeed":5.0,
-	"runSpeed":6.5,
+	"recoveryStamina": 4,
+	"walkSpeed":5.2,
+	"runSpeed":6.8,
 	"jumpSpeed":3.5,
 	"playerWeight":70.0,
-	"maxWeight":30,
+	"maxWeight":60,
 	"size":[32, 55, 163]
 }
