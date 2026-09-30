@@ -27,7 +27,7 @@ int main(void)
 	g_timer = new Timer();
 
 	// DB Thread
-	std::thread dbThread(DBWorkerThread);
+	//std::thread dbThread(DBWorkerThread);
 	std::thread workerThread(WorkerThread);
 
 	while (true)
