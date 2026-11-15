@@ -1,0 +1,9 @@
+{
+    "weightFear": 1.5,
+    "weightSurprise": 1.5,
+    "weightSad": 2.5,
+    "weightDeath": 2.0,
+    "avgBadEmotionCnt": 20,
+    "thresholdEasy": 3.0,
+    "thresholdHard": 0.8
+}

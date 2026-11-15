@@ -1,0 +1,31 @@
+{
+    "conditions": [
+        {
+            "current": 0,
+            "totalRoomCount": 30,
+            "createItemCount": {"min": 18, "max": 25},
+            "createSellingMachineCount": 7,
+            "power" : 23,
+            "sellingMachineCreditLimit" : {"min": 120, "max": 160},
+            "floor": {"min": 2, "max": 2}
+        },
+        {
+            "current": 1,
+            "totalRoomCount": 35,
+            "createItemCount": {"min": 22, "max": 30},
+            "createSellingMachineCount": 8,
+            "power" : 27,
+            "sellingMachineCreditLimit" : {"min": 150, "max": 190},
+            "floor": {"min": 2, "max": 2}
+        },
+        {
+            "current": 2,
+            "totalRoomCount": 45,
+            "createItemCount": {"min": 25, "max": 36},
+            "createSellingMachineCount": 8,
+            "power" : 30,
+            "sellingMachineCreditLimit" : {"min": 180, "max": 230},
+            "floor": {"min": 2, "max": 2}
+        }
+    ]
+}

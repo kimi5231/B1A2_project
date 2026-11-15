@@ -1,0 +1,11 @@
+{
+	"isInvincible" : false,
+	"idleTime" :7.0,
+	"playTime":3.0,
+	"releaseTime":1.5,
+	"damage": 10,
+	"healValue": 15,
+	"aggroRange": 300,
+	"power" : 8,
+	"size":[137, 142, 313]
+}
