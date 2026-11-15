@@ -8,6 +8,9 @@ public class B1A2_UnrealProject : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
+		// OpenCV(cv::Exception) try/catch 사용을 위해 C++ 예외 처리(/EHsc) 활성화
+		bEnableExceptions = true;
+
 		PublicDependencyModuleNames.AddRange(new string[] 
 		{
 			"Core",

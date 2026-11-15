@@ -52,12 +52,16 @@ UTexture2D* ADesktopGameModeBase::MatToTexture2D(const cv::Mat InMat)
 		void* Data = Mip.BulkData.Lock(LOCK_READ_WRITE);//lock the texture data
 		FMemory::Memcpy(Data, bgraImage.data, bgraImage.total() * bgraImage.elemSize());//copy the data
 		Mip.BulkData.Unlock();
+#if WITH_EDITOR
 		Texture->PostEditChange();
+#endif
 		Texture->UpdateResource();
 		return Texture;
 	}
 	//if the texture hasnt the right pixel format, abort.
+#if WITH_EDITOR
 	Texture->PostEditChange();
+#endif
 	Texture->UpdateResource();
 	return Texture;
 }
