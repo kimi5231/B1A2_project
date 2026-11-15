@@ -108,6 +108,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)..\Include\Detour\Include;$(ProjectDir)..\Include\DetourCrowd\Include;$(ProjectDir)..\Include\DetourTileCache\Include;$(ProjectDir)..\Include\Recast\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -126,6 +127,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)..\Include\Detour\Include;$(ProjectDir)..\Include\DetourCrowd\Include;$(ProjectDir)..\Include\DetourTileCache\Include;$(ProjectDir)..\Include\Recast\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
