@@ -80,9 +80,6 @@ void DBManager::ProcessExistID(DBWork work)
 {
     SQLRETURN retcode;
 
-	/*wchar_t szSql[] = L"{CALL ExistID(N'%s')}"; 
-    swprintf_s(szSql, L"{CALL ExistID(N'%s')}", work.loginID.data());*/
-
     SQLWCHAR query[] = L"{CALL ExistID(?)}";
     SQLLEN cbPlayerId = work.loginID.size();
     SQLRETURN ret = SQLBindParameter(_hstmt, 1, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_WVARCHAR, 50, 0, (SQLPOINTER)work.loginID.data(), 0, &cbPlayerId);
