@@ -231,8 +231,7 @@ void Room::CreateCubes()
 
 	_currentPower = 0;
 
-	// 나중에 json으로 불러올 예정
-	// array로 바꾸는 것도 고려할 것, 고정된 크기
+	// 방향별 방 생성 확률 초기화
 	for (int i = 0; i < DirCount; i++)
 		_roomSpawnChance[static_cast<Dir>(i)] = 0.25;
 
@@ -381,12 +380,6 @@ void Room::CreateCubes()
 				break;
 			}
 		}
-
-		// 최소/최대 층수를 넘기지 않는지 확인
-		/*if (static_cast<int>(_minFloor) * 500 > pos.y + info.size.y)
-			continue;
-		if (static_cast<int>(_maxFloor) * 500 < pos.y + info.size.y)
-			continue;*/
 
 		// 자리가 있으면 배치
 		if (isCreate)

@@ -30,6 +30,8 @@ bool Inventory::AddItem(bool isTool, int id)
 		auto result = _scraps.insert(id);
 		return result.second;
 	}
+
+	return false;
 }
 
 bool Inventory::RemoveItem(bool isTool, int id)
